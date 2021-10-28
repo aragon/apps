@@ -1,10 +1,10 @@
 import React from "react";
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
-import Button from "../components/button/Button";
+import Button from "../components/button/button";
 
 export default {
-  title: "design system/components/Button",
+  title: "components/Button",
   component: Button,
   argTypes: {
     backgroundColor: { control: "color" },
