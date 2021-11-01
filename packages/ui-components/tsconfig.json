@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -13,12 +17,15 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react",
+    "jsx": "react-jsx",
     "baseUrl": "./src",
-    "paths": {
-      "*": ["./*"]
-    }
+    "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
-  "exclude": ["**/*.test.ts", "**/*.test.tsx"]
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "**/*.test.ts",
+    "**/*.test.tsx"
+  ]
 }

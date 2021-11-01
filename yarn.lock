@@ -183,7 +183,7 @@
     semver "^5.4.1"
     source-map "^0.5.0"
 
-"@babel/core@^7.1.0", "@babel/core@^7.12.10", "@babel/core@^7.12.3", "@babel/core@^7.14.6", "@babel/core@^7.14.8", "@babel/core@^7.6.0", "@babel/core@^7.7.2", "@babel/core@^7.7.5", "@babel/core@^7.8.4":
+"@babel/core@^7.1.0", "@babel/core@^7.12.10", "@babel/core@^7.12.3", "@babel/core@^7.14.6", "@babel/core@^7.14.8", "@babel/core@^7.7.2", "@babel/core@^7.7.5", "@babel/core@^7.8.4":
   version "7.15.8"
   resolved "https://registry.yarnpkg.com/@babel/core/-/core-7.15.8.tgz#195b9f2bffe995d2c6c159e72fe525b4114e8c10"
   integrity sha512-3UG9dsxvYBMYwRv+gS41WKHno4K60/9GPy1CJaH6xy3Elq8CTtvtjT5R5jmNhXfCYLX2mTw+7/aq5ak/gOE0og==
@@ -1477,15 +1477,6 @@
   dependencies:
     exec-sh "^0.3.2"
     minimist "^1.2.0"
-
-"@craco/craco@^5.5.0":
-  version "5.9.0"
-  resolved "https://registry.yarnpkg.com/@craco/craco/-/craco-5.9.0.tgz#dcd34330b558596a4841374743071b7fa041dce9"
-  integrity sha512-2Q8gIB4W0/nPiUxr9iAKUhGsFlXYN0/wngUdK1VWtfV2NtBv+yllNn2AjieaLbttgpQinuOYmDU65vocC0NMDg==
-  dependencies:
-    cross-spawn "^7.0.0"
-    lodash "^4.17.15"
-    webpack-merge "^4.2.2"
 
 "@csstools/convert-colors@^1.4.0":
   version "1.4.0"
@@ -3626,7 +3617,7 @@
   resolved "https://registry.yarnpkg.com/@types/aria-query/-/aria-query-4.2.2.tgz#ed4e0ad92306a704f9fb132a0cfcf77486dbe2bc"
   integrity sha512-HnYpAE1Y6kRyKM/XkEuiRQhTHvkzMBurTHnpFLYLBGPIylZNPs9jJcuOOYWxPLJCSEtmZT0Y8rHDokKN7rRTig==
 
-"@types/babel__core@^7.0.0", "@types/babel__core@^7.1.14", "@types/babel__core@^7.1.3", "@types/babel__core@^7.1.7":
+"@types/babel__core@^7.0.0", "@types/babel__core@^7.1.14", "@types/babel__core@^7.1.7":
   version "7.1.16"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.1.16.tgz#bc12c74b7d65e82d29876b5d0baf5c625ac58702"
   integrity sha512-EAEHtisTMM+KaKwfWdC3oyllIqswlznXCIVCt7/oRNrh+DhgT4UEBNC/jlADNjvw7UnfbcdkGQcPVZ1xYiLcrQ==
@@ -4074,7 +4065,7 @@
     "@types/source-list-map" "*"
     source-map "^0.7.3"
 
-"@types/webpack@^4.39.2", "@types/webpack@^4.41.13", "@types/webpack@^4.41.26", "@types/webpack@^4.41.8":
+"@types/webpack@^4.41.13", "@types/webpack@^4.41.26", "@types/webpack@^4.41.8":
   version "4.41.31"
   resolved "https://registry.yarnpkg.com/@types/webpack/-/webpack-4.41.31.tgz#c35f252a3559ddf9c85c0d8b0b42019025e581aa"
   integrity sha512-/i0J7sepXFIp1ZT7FjUGi1eXMCg8HCCzLJEQkKsOtbJFontsJLolBcDC+3qxn5pPwiCt1G0ZdRmYRzNBtvpuGQ==
@@ -7446,17 +7437,6 @@ cpy@^8.1.1:
     p-all "^2.1.0"
     p-filter "^2.1.0"
     p-map "^3.0.0"
-
-craco@^0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/craco/-/craco-0.0.3.tgz#1e464b0ae5d9176570382d3a3fcdbf3599577012"
-  integrity sha512-eeibbwJm1CTf/j3xvNgNmsRS7abegp4Cfm5qtn5nE9/0JjZRas+FHj8IlT8FMFWR0XOyZFGcWZgzaTU19DNGoQ==
-  dependencies:
-    "@babel/core" "^7.6.0"
-    "@craco/craco" "^5.5.0"
-    "@types/babel__core" "^7.1.3"
-    "@types/webpack" "^4.39.2"
-    webpack "^4.41.0"
 
 crc-32@^1.2.0:
   version "1.2.0"
@@ -20509,13 +20489,6 @@ webpack-manifest-plugin@2.2.0:
     object.entries "^1.1.0"
     tapable "^1.0.0"
 
-webpack-merge@^4.2.2:
-  version "4.2.2"
-  resolved "https://registry.yarnpkg.com/webpack-merge/-/webpack-merge-4.2.2.tgz#a27c52ea783d1398afd2087f547d7b9d2f43634d"
-  integrity sha512-TUE1UGoTX2Cd42j3krGYqObZbOD+xF7u28WB7tfUordytSjbWTIjK/8V0amkBfTYN4/pB/GIDlJZZ657BGG19g==
-  dependencies:
-    lodash "^4.17.15"
-
 webpack-sources@^1.1.0, webpack-sources@^1.3.0, webpack-sources@^1.4.0, webpack-sources@^1.4.1, webpack-sources@^1.4.3:
   version "1.4.3"
   resolved "https://registry.yarnpkg.com/webpack-sources/-/webpack-sources-1.4.3.tgz#eedd8ec0b928fbf1cbfe994e22d2d890f330a933"
@@ -20539,7 +20512,7 @@ webpack-virtual-modules@^0.2.2:
   dependencies:
     debug "^3.0.0"
 
-webpack@4, webpack@^4.41.0:
+webpack@4:
   version "4.46.0"
   resolved "https://registry.yarnpkg.com/webpack/-/webpack-4.46.0.tgz#bf9b4404ea20a073605e0a011d188d77cb6ad542"
   integrity sha512-6jJuJjg8znb/xRItk7bkT0+Q7AHCYjjFnvKIWQPkNIOyRqoCGvkOs0ipeQzrqz4l5FtN5ZI/ukEHroeX/o1/5Q==

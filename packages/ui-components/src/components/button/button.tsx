@@ -1,9 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-import "../../tailwind.css";
-
-interface IButton {
+export interface IButton {
   /**
    * Is this the principal call to action on the page?
    */
@@ -29,7 +27,7 @@ interface IButton {
 /**
  * Primary UI component for user interaction
  */
-const Button = ({
+export const Button = ({
   size = "medium",
   label,
   primary = false,
@@ -47,8 +45,6 @@ const Button = ({
     </StyledButton>
   );
 };
-
-export default Button;
 
 type StyledButtonProps = {
   backgroundColor?: string;
