@@ -3,6 +3,9 @@ on:
   push:
     paths:
       - 'packages/web-app/**'
+    branches-ignore:
+      - 'develop'
+      - 'main'
 
 env:
   working-directory: packages/web-app
