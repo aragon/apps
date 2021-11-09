@@ -1,25 +1,27 @@
 import styled from 'styled-components';
+import {Button} from '@aragon/ui-components';
 import {NavLink} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
 import React, {useState} from 'react';
 
-import TestNetworkIndicator from 'components/testNetworkIndicator';
 import {Dashboard, Community, Finance, Governance} from 'utils/paths';
 
 const Navbar: React.FC = () => {
   const {t} = useTranslation();
   const [showMenu, setShowMenu] = useState(true);
 
-  const toggleMenu = () => {
-    setShowMenu(!showMenu);
+  const handleMenuClicked = () => {
+    setShowMenu(true);
   };
 
   return (
     <NavContainer data-testid="nav">
       <NavigationBar>
-        <button className="lg:hidden border-2" onClick={toggleMenu}>
-          Menu
-        </button>
+        <Button
+          label="Menu"
+          className="lg:hidden border-2"
+          onClick={handleMenuClicked}
+        />
         <Container>
           <DaoSelectorWrapper>
             <DaoSelector>
@@ -48,7 +50,7 @@ const Navbar: React.FC = () => {
           <TempAvatar />
         </AccountButton>
       </NavigationBar>
-      <TestNetworkIndicator />
+      <TestNetworkIndicator>{t('testnetIndicator')}</TestNetworkIndicator>
     </NavContainer>
   );
 };
@@ -112,4 +114,9 @@ const AccountButton = styled.button.attrs({
 
 const TempAvatar = styled.div.attrs({
   className: 'w-3 h-3 rounded-full bg-primary-700',
+})``;
+
+const TestNetworkIndicator = styled.p.attrs({
+  className:
+    'p-0.5 text-xs font-extrabold text-center text-primary-100 bg-primary-900',
 })``;
