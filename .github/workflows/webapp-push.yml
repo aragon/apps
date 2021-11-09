@@ -1,0 +1,31 @@
+name: WebApp Push
+on:
+  push:
+    paths:
+      - 'packages/web-app/**'
+
+env:
+  working-directory: packages/web-app
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{env.working-directory}}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build ui-components
+        run: |
+          cd ../ui-components
+          yarn
+          yarn build
+          yarn link
+      - name: Install depdendencies
+        run: yarn
+      - name: Link ui-components
+        run: yarn link @aragon/ui-components
+      - name: Lint
+        run: yarn lint
+      - name: Test
+        run: yarn test
