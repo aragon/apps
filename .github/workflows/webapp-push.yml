@@ -13,6 +13,7 @@ env:
 jobs:
   test:
     runs-on: ubuntu-latest
+    container: fleek/create-react-app:node-16
     defaults:
       run:
         working-directory: ${{env.working-directory}}
