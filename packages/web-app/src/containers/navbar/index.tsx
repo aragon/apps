@@ -1,57 +1,76 @@
 import styled from 'styled-components';
-import {Button} from '@aragon/ui-components';
 import {NavLink} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 
+import BottomSheet from 'components/bottomSheet';
 import {Dashboard, Community, Finance, Governance} from 'utils/paths';
 
 const Navbar: React.FC = () => {
   const {t} = useTranslation();
-  const [showMenu, setShowMenu] = useState(true);
+  const [showMenu, setShowMenu] = useState(false);
 
-  const handleMenuClicked = () => {
+  const handleShowMenu = () => {
     setShowMenu(true);
   };
 
+  const handleHideMenu = () => {
+    setShowMenu(false);
+  };
+
+  const renderNavLinks = useCallback(() => {
+    // TODO: Investigate string interpolation with react-i18next
+    return (
+      <>
+        <StyledNavLink to={Dashboard} exact={true} onClick={handleHideMenu}>
+          {t('navLinks.dashboard')}
+        </StyledNavLink>
+        <StyledNavLink to={Governance} exact={true} onClick={handleHideMenu}>
+          {t('navLinks.governance')}
+        </StyledNavLink>
+        <StyledNavLink to={Finance} exact={true} onClick={handleHideMenu}>
+          {t('navLinks.finance')}
+        </StyledNavLink>
+        <StyledNavLink to={Community} exact={true} onClick={handleHideMenu}>
+          {t('navLinks.community')}
+        </StyledNavLink>
+      </>
+    );
+  }, [t]);
+
   return (
-    <NavContainer data-testid="nav">
-      <NavigationBar>
-        <Button
-          label="Menu"
-          className="lg:hidden border-2"
-          onClick={handleMenuClicked}
-        />
-        <Container>
-          <DaoSelectorWrapper>
-            <DaoSelector>
-              <TempDaoAvatar>DN</TempDaoAvatar>
-              <DaoIdentifier>Bushido DAO</DaoIdentifier>
-            </DaoSelector>
-          </DaoSelectorWrapper>
-          <LinksContainer>
-            {/* TODO: Investigate string interpolation with react-i18next */}
-            <StyledNavLink to={Dashboard} exact={true}>
-              {t('navLinks.dashboard')}
-            </StyledNavLink>
-            <StyledNavLink to={Governance} exact={true}>
-              {t('navLinks.governance')}
-            </StyledNavLink>
-            <StyledNavLink to={Finance} exact={true}>
-              {t('navLinks.finance')}
-            </StyledNavLink>
-            <StyledNavLink to={Community} exact={true}>
-              {t('navLinks.community')}
-            </StyledNavLink>
-          </LinksContainer>
-        </Container>
-        <AccountButton>
-          <p className="hidden md:block">punk420.eth</p>
-          <TempAvatar />
-        </AccountButton>
-      </NavigationBar>
-      <TestNetworkIndicator>{t('testnetIndicator')}</TestNetworkIndicator>
-    </NavContainer>
+    <>
+      <NavContainer data-testid="nav">
+        <NavigationBar>
+          <button className="lg:hidden border-2" onClick={handleShowMenu}>
+            # Menu
+          </button>
+          <Container>
+            <DaoSelectorWrapper>
+              <DaoSelector>
+                <TempDaoAvatar>DN</TempDaoAvatar>
+                <DaoIdentifier>Bushido DAO</DaoIdentifier>
+              </DaoSelector>
+            </DaoSelectorWrapper>
+            <LinksContainer>{renderNavLinks()}</LinksContainer>
+          </Container>
+          <AccountButton>
+            <p className="hidden md:block">punk420.eth</p>
+            <TempAvatar />
+          </AccountButton>
+        </NavigationBar>
+        <TestNetworkIndicator>{t('testnetIndicator')}</TestNetworkIndicator>
+      </NavContainer>
+
+      {/* TODO: BottomSheet should probably moved to the root of the application and set as hook(?) */}
+      <BottomSheet
+        isOpen={showMenu}
+        onOpen={handleShowMenu}
+        onClose={handleHideMenu}
+      >
+        {renderNavLinks()}
+      </BottomSheet>
+    </>
   );
 };
 
@@ -90,7 +109,8 @@ const StyledNavLink = styled(NavLink).attrs({
 `;
 
 const DaoSelectorWrapper = styled.div.attrs({
-  className: 'absolute lg:static left-0 w-full lg:w-auto',
+  className:
+    'absolute lg:static left-2/4 lg:left-auto transform -translate-x-1/2 lg:-translate-x-0',
 })``;
 
 const DaoSelector = styled.div.attrs({
