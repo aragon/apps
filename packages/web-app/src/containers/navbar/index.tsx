@@ -42,8 +42,11 @@ const Navbar: React.FC = () => {
     <>
       <NavContainer data-testid="nav">
         <NavigationBar>
-          <button className="lg:hidden border-2" onClick={handleShowMenu}>
-            # Menu
+          <button
+            onClick={handleShowMenu}
+            className="bg-ui-0 lg:hidden py-1.5 px-2 rounded-lg"
+          >
+            Menu
           </button>
           <Container>
             <DaoSelectorWrapper>
@@ -68,7 +71,24 @@ const Navbar: React.FC = () => {
         onOpen={handleShowMenu}
         onClose={handleHideMenu}
       >
-        {renderNavLinks()}
+        <div className="py-3 px-2 text-ui-600">
+          <div className="flex justify-between items-center mb-3">
+            <div className="flex space-x-1.5">
+              <TempDaoAvatar>DN</TempDaoAvatar>
+              <div className="flex flex-col justify-center">
+                <DaoIdentifier>Bushido DAO</DaoIdentifier>
+                <p className="text-xs text-ui-400">dao.aragonid.eth</p>
+              </div>
+            </div>
+            <button
+              onClick={handleShowMenu}
+              className="bg-ui-0 text-primary-500 py-1.5 px-2 rounded-lg"
+            >
+              Switch
+            </button>
+          </div>
+          {renderNavLinks()}
+        </div>
       </BottomSheet>
     </>
   );
@@ -97,10 +117,10 @@ const LinksContainer = styled.div.attrs({
 })``;
 
 const roundedButtonClasses = 'flex items-center h-6 py-1.5 px-2 rounded-lg';
-
+// 'px-2 py-1.5 text-ui-600 bg-ui-0 border-2 border-ui-100 hover:border-ui-300 active:border-ui-800';
 // TODO: investigate NavLink for activeClassName
 const StyledNavLink = styled(NavLink).attrs({
-  className: `${roundedButtonClasses} `,
+  className: `${roundedButtonClasses} active:bg-primary-50 hover:text-primary-500`,
 })`
   &.active {
     color: #003bf5;

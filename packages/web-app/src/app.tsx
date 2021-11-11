@@ -2,7 +2,6 @@ import React, {useEffect} from 'react';
 import {ApmRoute as Route} from '@elastic/apm-rum-react';
 import {Switch, useLocation} from 'react-router-dom';
 
-import Footer from 'containers/footer';
 import Navbar from 'containers/navbar';
 import {trackPage} from 'services/analytics';
 import {PageRoute, routes} from 'routes';
@@ -30,7 +29,6 @@ function App() {
           ))}
         </Switch>
       </div>
-      <Footer />
     </>
   );
 }

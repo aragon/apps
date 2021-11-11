@@ -56,7 +56,7 @@ export default function BottomSheet({
           stiffness: 400,
         }}
         variants={{
-          visible: {y: 0, height: 200},
+          visible: {y: 0, height: 310},
           hidden: {y: 100, height: 0},
         }}
         dragConstraints={{top: 0}}
