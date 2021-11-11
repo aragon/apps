@@ -1,15 +1,25 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
+import {Button} from '@aragon/ui-components';
 
 import Wallet from 'components/wallet';
+import BottomSheet from 'components/BottomSheet';
 
 const Home: React.FC = () => {
   const {t} = useTranslation();
+  const [isOpen, setIsOpen] = useState(false);
+
+  function onClose() {
+    setIsOpen(false);
+  }
+
+  function onOpen() {
+    setIsOpen(true);
+  }
 
   return (
     <div className="bg-white">
-      <p>Placeholder Homepage</p>
       <div className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 mx-auto max-w-screen-xl">
         <div className="text-center">
           <WelcomeMessage>{t('subtitle')}</WelcomeMessage>
@@ -19,6 +29,8 @@ const Home: React.FC = () => {
       </div>
       <h1>Wallet</h1>
       <Wallet />
+      <Button onClick={onOpen} label="Toggle" />
+      <BottomSheet onOpen={onOpen} isOpen={isOpen} onClose={onClose} />
     </div>
   );
 };
