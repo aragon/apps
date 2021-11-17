@@ -4,7 +4,7 @@ import {useTranslation} from 'react-i18next';
 import {Button} from '@aragon/ui-components';
 
 import Wallet from 'components/wallet';
-import BottomSheet from 'components/BottomSheet';
+import BottomSheet from 'components/bottomSheet';
 
 const Home: React.FC = () => {
   const {t} = useTranslation();
@@ -20,7 +20,7 @@ const Home: React.FC = () => {
 
   return (
     <div className="bg-white">
-      <div className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 mx-auto max-w-screen-xl">
+      <div className="px-4 sm:px-6 lg:px-8 mx-auto max-w-screen-xl py-16 sm:py-24">
         <div className="text-center">
           <WelcomeMessage>{t('subtitle')}</WelcomeMessage>
           <Title>{t('title.part1')}</Title>
