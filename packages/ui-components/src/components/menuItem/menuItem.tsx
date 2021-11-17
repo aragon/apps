@@ -37,9 +37,11 @@ export const MenuItem: React.FC<MenuItemProps> = ({
 
 type ContainerProp = {isSelected: boolean};
 const Container = styled.button.attrs(({isSelected}: ContainerProp) => ({
-  className: `flex items-center px-1.5 py-2 space-x-1.5 ${
-    isSelected ? 'text-primary-500 bg-ui-0' : 'text-ui-600'
-  } focus:outline-none focus:ring-2 focus:ring-primary-500 active:text-primary-500 hover:text-ui-800 focus:bg-ui-0 rounded-xl`,
+  // focus:outline-none focus:ring-2 focus:ring-primary-500 TODO: investigate outline
+
+  className: `flex items-center py-1.5 px-2 space-x-1.5 ${
+    isSelected ? 'text-primary-500 bg-ui-0' : 'text-ui-600 hover:text-ui-800'
+  } active:text-primary-500 focus:bg-ui-0 rounded-xl`,
 }))<ContainerProp>`
   cursor: pointer;
 `;
