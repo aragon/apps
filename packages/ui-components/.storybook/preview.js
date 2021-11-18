@@ -1,4 +1,22 @@
 import '../src/styles/tailwind.css';
+import {MINIMAL_VIEWPORTS} from '@storybook/addon-viewport';
+
+const customViewports = {
+  desktop: {
+    name: 'Desktop',
+    styles: {
+      width: '1280px',
+      height: '800px',
+    },
+  },
+  wide: {
+    name: 'Wide screen',
+    styles: {
+      width: '1920px',
+      height: '800px',
+    },
+  },
+};
 
 export const parameters = {
   actions: {argTypesRegex: '^on[A-Z].*'},
@@ -18,5 +36,9 @@ export const parameters = {
         value: '#1F2933',
       },
     ],
+  },
+  viewport: {
+    viewports: {...MINIMAL_VIEWPORTS, ...customViewports}, // newViewports would be an ViewportMap. (see below for examples)
+    defaultViewport: 'Desktop',
   },
 };
