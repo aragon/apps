@@ -1,11 +1,14 @@
 import styled from 'styled-components';
-import {MenuButton} from '@aragon/ui-components';
 import {useTranslation} from 'react-i18next';
 import React, {useState} from 'react';
+import {MenuButton, WalletButton} from '@aragon/ui-components';
 
 import NavLinks from 'components/navLinks';
 import BottomSheet from 'components/bottomSheet';
 import MenuDropdown from 'components/menuDropdown';
+
+const tempIcon =
+  'https://banner2.cleanpng.com/20180325/sxw/kisspng-computer-icons-avatar-avatar-5ab7529a8e4e14.9936310115219636745829.jpg';
 
 const Navbar: React.FC = () => {
   const {t} = useTranslation();
@@ -24,23 +27,33 @@ const Navbar: React.FC = () => {
       <NavContainer data-testid="nav">
         <NavigationBar>
           <div className="lg:hidden">
-            <MenuButton size="small" onClick={handleShowMenu} />
+            <MenuButton
+              size="small"
+              label={t('menu')}
+              isOpen={showMenu}
+              onClick={handleShowMenu}
+              isMobile={true}
+            />
           </div>
           <Container>
             <DaoSelectorWrapper>
+              {/* TODO: replace with avatar and Dao name */}
               <DaoSelector>
                 <TempDaoAvatar>DN</TempDaoAvatar>
                 <DaoIdentifier>Bushido DAO</DaoIdentifier>
               </DaoSelector>
+              {/* TODO: replace with avatar and Dao name */}
             </DaoSelectorWrapper>
+
             <LinksContainer>
               <NavLinks isMobile={false} />
             </LinksContainer>
           </Container>
-          <AccountButton>
-            <p className="hidden md:block">punk420.eth</p>
-            <TempAvatar />
-          </AccountButton>
+          <WalletButton
+            src={tempIcon}
+            label="punk420.eth"
+            onClick={() => null}
+          />
         </NavigationBar>
         <TestNetworkIndicator>{t('testnetIndicator')}</TestNetworkIndicator>
       </NavContainer>
@@ -51,7 +64,12 @@ const Navbar: React.FC = () => {
         onOpen={handleShowMenu}
         onClose={handleHideMenu}
       >
-        <MenuDropdown onMenuItemClick={handleHideMenu} />
+        <Content className="pt-3 pb-2 border">
+          {/* Dao Switcher */}
+          <div className="mx-2 border">DAO Switcher</div>
+          {/* Dao Switcher end */}
+          <MenuDropdown onMenuItemClick={handleHideMenu} />
+        </Content>
       </BottomSheet>
     </>
   );
@@ -83,7 +101,7 @@ const DaoSelectorWrapper = styled.div.attrs({
 })``;
 
 const DaoSelector = styled.div.attrs({
-  className: `flex flex-col order-2 lg:order-1 lg:flex-row items-center pt-1.5 pb-1.5 
+  className: `flex flex-col lg:flex-row items-center pt-1.5 pb-1.5 
     space-y-0.5 space-x-0.5 lg:space-x-1.5 lg:h-6 rounded-lg`,
 })``;
 
@@ -96,16 +114,9 @@ const TempDaoAvatar = styled.div.attrs({
     'flex justify-center items-center w-6 h-6 text-ui-0 bg-primary-700 rounded-xl',
 })``;
 
-const AccountButton = styled.button.attrs({
-  className:
-    'flex items-center h-6 py-1.5 px-2 rounded-lg md:space-x-1.5 bg-ui-0',
-})``;
-
-const TempAvatar = styled.div.attrs({
-  className: 'w-3 h-3 rounded-full bg-primary-700',
-})``;
-
 const TestNetworkIndicator = styled.p.attrs({
   className:
     'p-0.5 text-xs font-extrabold text-center text-primary-100 bg-primary-900',
 })``;
+
+const Content = styled.div``;

@@ -5,6 +5,7 @@
     "part2": "The human centered Dao infrastructure."
   },
   "testnetIndicator": "TESTNET ACTIVE",
+  "menu": "Menu",
   "navLinks": {
     "dashboard": "Dashboard",
     "governance": "Governance",
