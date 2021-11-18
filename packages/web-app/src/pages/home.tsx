@@ -20,7 +20,7 @@ const Home: React.FC = () => {
 
   return (
     <div className="bg-white">
-      <div className="px-4 sm:px-6 lg:px-8 mx-auto max-w-screen-xl py-16 sm:py-24">
+      <div className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 mx-auto max-w-screen-xl">
         <div className="text-center">
           <WelcomeMessage>{t('subtitle')}</WelcomeMessage>
           <Title>{t('title.part1')}</Title>
