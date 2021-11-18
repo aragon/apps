@@ -17,16 +17,21 @@ export type MenuButtonProps = {
    * isMobile is false.
    */
   isOpen: boolean;
+  /**
+   * Button text
+   */
+  label: string;
   onClick: () => void;
 };
 
-// TODO Should the button manage the open/close state from within?
-// TODO Add a isOpen state distinction to the mobile version as well, as soon as
+// TODO: Should the button manage the open/close state from within?
+// TODO: Add a isOpen state distinction to the mobile version as well, as soon as
 // the design is finalized.
 export const MenuButton = ({
   size = 'default',
   isMobile,
   isOpen,
+  label,
   onClick,
 }: MenuButtonProps) => {
   if (isMobile) {
@@ -42,7 +47,7 @@ export const MenuButton = ({
       <OpenButton onClick={onClick} size={size}>
         <FlexDiv side={'left'}>
           <IconClose />
-          <p>Menu</p>
+          <p>{label}</p>
         </FlexDiv>
       </OpenButton>
     );
@@ -51,7 +56,7 @@ export const MenuButton = ({
       <StyledButton onClick={onClick} size={size}>
         <FlexDiv side={'left'}>
           <IconMenu />
-          <p>Menu</p>
+          <p>{label}</p>
         </FlexDiv>
       </StyledButton>
     );
