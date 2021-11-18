@@ -9,12 +9,11 @@ export default {
 
 const Template: Story<DaoSelectorProps> = args => <DaoSelector {...args} />;
 
-export const Test = Template.bind({});
-Test.args = {
+export const Default = Template.bind({});
+Default.args = {
   src:
     'https://banner2.cleanpng.com/20180325/sxw/kisspng-computer-icons-avatar-avatar-5ab7529a8e4e14.9936310115219636745829.jpg',
   label: 'DAO Name',
-  size: 'default',
   onClick: () => {
     alert('hey, you just triggered the onClick method :)');
   },

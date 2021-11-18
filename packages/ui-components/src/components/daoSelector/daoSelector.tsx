@@ -12,7 +12,7 @@ export type DaoSelectorProps = {
 
 export const DaoSelector = ({src, label, onClick}: DaoSelectorProps) => {
   return (
-    <StyledButtonAdaptive onClick={onClick}>
+    <StyledButtonAdaptive data-testid="daoSelector" onClick={onClick}>
       <Avatar src={src} size={'default'} mode="square" />
       <p>{label}</p>
       <HoverIconSwitch />
