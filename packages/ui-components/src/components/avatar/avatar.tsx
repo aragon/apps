@@ -31,7 +31,7 @@ const StyledAvatar = styled.img.attrs(({size, mode}: StyledAvatarProps) => {
   };
   const className: string = `bg-ui-100
     ${sizes[size]}
-    ${mode === 'circle' ? 'rounded-full' : 'rounded-xl'}
+    ${mode === 'circle' ? 'rounded-full' : 'rounded-2xl'}
   `;
 
   return {className};
