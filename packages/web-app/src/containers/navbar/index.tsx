@@ -1,25 +1,40 @@
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import React, {useState} from 'react';
-import {MenuButton, WalletButton} from '@aragon/ui-components';
+import {MenuButton, Popover, WalletButton} from '@aragon/ui-components';
 
 import NavLinks from 'components/navLinks';
 import BottomSheet from 'components/bottomSheet';
 import MenuDropdown from 'components/menuDropdown';
+import DaoSwitcherMenu from 'components/daoSwitcherMenu/daoSwitcherMenu';
 
-const tempIcon =
+const TEMP_ICON =
   'https://banner2.cleanpng.com/20180325/sxw/kisspng-computer-icons-avatar-avatar-5ab7529a8e4e14.9936310115219636745829.jpg';
+
+const TEMP_DAOS = [
+  {
+    name: 'Axolittle Dao',
+    ens: 'axolittle-dao.eth',
+    icon: 'x',
+  },
+  {
+    name: 'Skullx Dao',
+    ens: 'skullx-dao.eth',
+    icon: 'x',
+  },
+];
 
 const Navbar: React.FC = () => {
   const {t} = useTranslation();
-  const [showMenu, setShowMenu] = useState(true);
+  const [showMobileMenu, setShowMobileMenu] = useState(true);
+  const [switcherIsActive, setSwitcherActive] = useState(true);
 
-  const handleShowMenu = () => {
-    setShowMenu(true);
+  const handleShowMobileMenu = () => {
+    setShowMobileMenu(true);
   };
 
-  const handleHideMenu = () => {
-    setShowMenu(false);
+  const handleHideMobileMenu = () => {
+    setShowMobileMenu(false);
   };
 
   return (
@@ -30,19 +45,28 @@ const Navbar: React.FC = () => {
             <MenuButton
               size="small"
               label={t('menu')}
-              isOpen={showMenu}
-              onClick={handleShowMenu}
+              isOpen={showMobileMenu}
+              onClick={handleShowMobileMenu}
               isMobile={true}
             />
           </div>
           <Container>
             <DaoSelectorWrapper>
-              {/* TODO: replace with avatar and Dao name */}
-              <DaoSelector>
-                <TempDaoAvatar>DN</TempDaoAvatar>
-                <DaoIdentifier>Bushido DAO</DaoIdentifier>
-              </DaoSelector>
-              {/* TODO: replace with avatar and Dao name */}
+              {/* TODO: Change popover margin to 0 and with to not required and fit */}
+              <StyledPopover
+                side="bottom"
+                align="start"
+                width="320"
+                content={<DaoSwitcherMenu daos={TEMP_DAOS} />}
+                onOpenChange={setSwitcherActive}
+              >
+                {/* TODO: replace with avatar and Dao name */}
+                <DaoSelector>
+                  <TempDaoAvatar>DN</TempDaoAvatar>
+                  <DaoIdentifier>Bushido DAO</DaoIdentifier>
+                </DaoSelector>
+                {/* TODO: replace with avatar and Dao name */}
+              </StyledPopover>
             </DaoSelectorWrapper>
 
             <LinksContainer>
@@ -50,25 +74,24 @@ const Navbar: React.FC = () => {
             </LinksContainer>
           </Container>
           <WalletButton
-            src={tempIcon}
+            src={TEMP_ICON}
             label="punk420.eth"
             onClick={() => null}
           />
         </NavigationBar>
         <TestNetworkIndicator>{t('testnetIndicator')}</TestNetworkIndicator>
       </NavContainer>
-      {/* TODO: BottomSheet should probably moved to the root of the application and
-      set as hook(?)*/}
+
       <BottomSheet
-        isOpen={showMenu}
-        onOpen={handleShowMenu}
-        onClose={handleHideMenu}
+        isOpen={showMobileMenu}
+        onOpen={handleShowMobileMenu}
+        onClose={handleHideMobileMenu}
       >
-        <Content className="pt-3 pb-2 border">
+        <Content>
           {/* Dao Switcher */}
           <div className="mx-2 border">DAO Switcher</div>
           {/* Dao Switcher end */}
-          <MenuDropdown onMenuItemClick={handleHideMenu} />
+          <MenuDropdown onMenuItemClick={handleHideMobileMenu} />
         </Content>
       </BottomSheet>
     </>
@@ -119,4 +142,8 @@ const TestNetworkIndicator = styled.p.attrs({
     'p-0.5 text-xs font-extrabold text-center text-primary-100 bg-primary-900',
 })``;
 
-const Content = styled.div``;
+const StyledPopover = styled(Popover).attrs({
+  className: 'hidden lg:block',
+})``;
+
+const Content = styled.div.attrs({className: 'pt-3 pb-2 border'})``;

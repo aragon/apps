@@ -11,5 +11,9 @@
     "governance": "Governance",
     "finance": "Finance",
     "community": "Community"
+  },
+  "daoSwitcher": {
+    "title": "Explore",
+    "subtitle": "Find other DAOs to join"
   }
 }
