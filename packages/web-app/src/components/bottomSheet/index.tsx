@@ -87,6 +87,6 @@ const StyledMotionContainer = styled(motion.div).attrs({
   }
 `;
 
-const Content = styled(motion.div).attrs({
+const Content = styled.div.attrs({
   className: 'px-2 pt-2.5 pb-5',
 })``;
