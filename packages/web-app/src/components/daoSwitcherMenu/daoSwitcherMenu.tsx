@@ -32,5 +32,7 @@ const DaoSwitcherMenu: React.FC<DaoSwitcherMenuProps> = ({daos = []}) => {
 
 export default DaoSwitcherMenu;
 
-const Container = styled.div.attrs({className: 'space-y-3'})``;
+const Container = styled.div.attrs({className: 'space-y-3'})`
+  padding: 20px 16px;
+`;
 const DaoListContainer = styled.div.attrs({className: 'space-y-2'})``;

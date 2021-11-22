@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import NavLinks from 'components/navLinks';
 
-type MenuDropdownProps = {onMenuItemClick: () => void};
+type MenuDropdownProps = {onMenuItemClick?: () => void};
 
 const MenuDropdown: React.FC<MenuDropdownProps> = ({onMenuItemClick}) => {
   return (

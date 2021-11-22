@@ -7,10 +7,21 @@ export type PageRoute = {
   name: string;
   path: string;
   component: React.FC;
+  breadcrumb?: string;
 };
 
 // Note that order matters if all routes aren't exact
 export const routes: PageRoute[] = [
-  {name: 'Dashboard', path: Dashboard, component: HomePage, exact: true},
-  {name: 'NotFound', path: NotFound, component: NotFoundPage, exact: false},
+  {
+    name: 'Dashboard',
+    path: Dashboard,
+    component: HomePage,
+    exact: true,
+  },
+  {
+    name: 'NotFound',
+    path: NotFound,
+    component: NotFoundPage,
+    exact: false,
+  },
 ];

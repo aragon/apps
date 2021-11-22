@@ -1,10 +1,13 @@
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
+import withBreadCrumbs from 'react-router-breadcrumbs-hoc';
 import React, {useState} from 'react';
 import {MenuButton, Popover, WalletButton} from '@aragon/ui-components';
 
+import {routes} from 'routes';
 import NavLinks from 'components/navLinks';
-import BottomSheet from 'components/bottomSheet';
+import {Dashboard} from 'utils/paths';
+import Breadcrumbs from 'components/breadcrumbs';
 import MenuDropdown from 'components/menuDropdown';
 import DaoSwitcherMenu from 'components/daoSwitcherMenu/daoSwitcherMenu';
 
@@ -24,17 +27,28 @@ const TEMP_DAOS = [
   },
 ];
 
-const Navbar: React.FC = () => {
+type NavbarProps = {breadcrumbs: Array<React.ReactNode>};
+const Navbar: React.FC<NavbarProps> = ({breadcrumbs}) => {
+  /**
+   * TODO: Ignore all not found routes on breadcrumb
+   */
+
   const {t} = useTranslation();
   const [showMobileMenu, setShowMobileMenu] = useState(true);
-  const [switcherIsActive, setSwitcherActive] = useState(true);
+  const [showCrumbPopover, setShowCrumbPopover] = useState(false);
+  const [showSwitcherPopover, setShowSwitcherPopover] = useState(false);
 
   const handleShowMobileMenu = () => {
     setShowMobileMenu(true);
   };
 
+  // TODO: wire up to bottomsheet menuitem click
   const handleHideMobileMenu = () => {
     setShowMobileMenu(false);
+  };
+
+  const handleHideCrumbPopover = () => {
+    setShowCrumbPopover(false);
   };
 
   return (
@@ -52,13 +66,14 @@ const Navbar: React.FC = () => {
           </div>
           <Container>
             <DaoSelectorWrapper>
-              {/* TODO: Change popover margin to 0 and with to not required and fit */}
               <StyledPopover
+                // Using open so that clicking on DAO name closes the popover
+                open={showSwitcherPopover}
                 side="bottom"
                 align="start"
-                width="320"
+                width={320}
                 content={<DaoSwitcherMenu daos={TEMP_DAOS} />}
-                onOpenChange={setSwitcherActive}
+                onOpenChange={setShowSwitcherPopover}
               >
                 {/* TODO: replace with avatar and Dao name */}
                 <DaoSelector>
@@ -70,7 +85,33 @@ const Navbar: React.FC = () => {
             </DaoSelectorWrapper>
 
             <LinksContainer>
-              <NavLinks isMobile={false} />
+              {breadcrumbs.length > 1 ? (
+                <>
+                  <Popover
+                    // Using open so that clicking on MenuItem closes the popover
+                    open={showCrumbPopover}
+                    side="bottom"
+                    align="start"
+                    width={320}
+                    content={
+                      <MenuDropdown onMenuItemClick={handleHideCrumbPopover} />
+                    }
+                    onOpenChange={setShowCrumbPopover}
+                  >
+                    {/* TODO: replace with ICONBUTTON */}
+                    <MenuButton
+                      size="small"
+                      label="s"
+                      isOpen={showCrumbPopover}
+                      onClick={handleHideCrumbPopover}
+                      isMobile={true}
+                    />
+                  </Popover>
+                  <Breadcrumbs breadcrumbs={breadcrumbs} />
+                </>
+              ) : (
+                <NavLinks isMobile={false} />
+              )}
             </LinksContainer>
           </Container>
           <WalletButton
@@ -85,7 +126,7 @@ const Navbar: React.FC = () => {
   );
 };
 
-export default Navbar;
+export default withBreadCrumbs(routes, {excludePaths: [Dashboard]})(Navbar);
 
 const NavContainer = styled.div.attrs({
   className: `flex fixed md:static bottom-0 flex-col w-full bg-gradient-to-b md:bg-gradient-to-t
@@ -132,5 +173,3 @@ const TestNetworkIndicator = styled.p.attrs({
 const StyledPopover = styled(Popover).attrs({
   className: 'hidden lg:block',
 })``;
-
-const Content = styled.div.attrs({className: 'pt-3 pb-2 border'})``;
