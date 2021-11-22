@@ -1,4 +1,6 @@
+// NOTE Eventually have these types expressed as string patterns [VR 22-11-2021].
 export type Address = string;
+export type EnsName = string;
 
 // get truncated address
 export function shortenAddress(address: Address | null) {

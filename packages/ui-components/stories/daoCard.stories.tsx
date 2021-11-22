@@ -16,6 +16,6 @@ Default.args = {
   src:
     'https://banner2.cleanpng.com/20180325/sxw/kisspng-computer-icons-avatar-avatar-5ab7529a8e4e14.9936310115219636745829.jpg',
   onClick: () => {
-    alert('hey, you just triggered the onClick method :)');
+    alert('Pressing this button would allow to change DAO.');
   },
 };
