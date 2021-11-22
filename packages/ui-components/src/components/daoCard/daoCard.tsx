@@ -1,18 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import {Address, shortenAddress} from '../../utils/addresses';
 import {Avatar, AvatarProps} from '../avatar';
-import {Button} from '../button';
 import {StyledButton} from '../button/button';
+import {FlexDiv} from '../button/iconButton';
 import {IconSwitch} from '../icons';
 
 export type DaoCardProps = {
   daoName: string;
-  daoAddress: string;
+  daoAddress: Address;
   onClick: () => void;
-} & Omit<AvatarProps, 'size'>;
+} & Pick<AvatarProps, 'src'>;
 
-//ts-ignore
 export const DaoCard: React.FC<DaoCardProps> = ({
   daoName,
   daoAddress,
@@ -21,22 +21,30 @@ export const DaoCard: React.FC<DaoCardProps> = ({
 }: DaoCardProps) => {
   return (
     <Card>
-      <Avatar src={src} size={'default'} />
-      <TextContainer></TextContainer>
-      <Button mode={'ghost'} label={'Switch'} onClick={onClick}>
-        <StyledButton mode={'ghost'} size={'small'}>
-          {'Switch'}
+      <Avatar src={src} mode={'square'} size={'large'} />
+      <TextContainer>
+        <DaoName>{daoName}</DaoName>
+        <DaoAddress>{shortenAddress(daoAddress)}</DaoAddress>
+      </TextContainer>
+      <StyledButton mode={'ghost'} size={'small'} onClick={onClick}>
+        <FlexDiv side={'right'}>
           <IconSwitch />
-        </StyledButton>
-      </Button>
+          <p>{'Switch'}</p>
+        </FlexDiv>
+      </StyledButton>
     </Card>
   );
 };
 
-const Card = styled.div``;
+const Card = styled.div.attrs({className: 'inline-flex'})``;
 
-const TextContainer = styled.div``;
+const TextContainer = styled.div.attrs({
+  className: 'pl-1.5 pr-2',
+})``;
 
-// TODO refactor this once typography is fleshed out in design tokens [VR 22-11-2021]
-const DaoName = styled.p``;
-const DaoAddress = styled.p``;
+const DaoName = styled.p.attrs({
+  className: 'text-ui-800 font-bold text-base',
+})``;
+const DaoAddress = styled.p.attrs({
+  className: 'text-ui-400 font-normal text-sm',
+})``;
