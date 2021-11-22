@@ -81,19 +81,6 @@ const Navbar: React.FC = () => {
         </NavigationBar>
         <TestNetworkIndicator>{t('testnetIndicator')}</TestNetworkIndicator>
       </NavContainer>
-
-      <BottomSheet
-        isOpen={showMobileMenu}
-        onOpen={handleShowMobileMenu}
-        onClose={handleHideMobileMenu}
-      >
-        <Content>
-          {/* Dao Switcher */}
-          <div className="mx-2 border">DAO Switcher</div>
-          {/* Dao Switcher end */}
-          <MenuDropdown onMenuItemClick={handleHideMobileMenu} />
-        </Content>
-      </BottomSheet>
     </>
   );
 };

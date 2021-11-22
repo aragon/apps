@@ -1,9 +1,9 @@
 import React from 'react';
-import {useHistory} from 'react-router-dom';
+import {useHistory, useRouteMatch} from 'react-router-dom';
 
 type NavLinkProps = {
   // TODO: Investigate Type
-  component: any;
+  Component: any;
   icon: React.ReactElement;
   label: string;
   to: string;
@@ -11,16 +11,17 @@ type NavLinkProps = {
 };
 
 const NavLink: React.FC<NavLinkProps> = ({
-  component,
+  Component,
   icon,
   label,
   to,
   onClick,
 }) => {
   const history = useHistory();
+  const isMatch = useRouteMatch({path: to, exact: true});
 
   const handleClick = () => {
-    if (history.location.pathname !== to) {
+    if (!isMatch) {
       history.push(to);
     }
 
@@ -33,9 +34,9 @@ const NavLink: React.FC<NavLinkProps> = ({
     icon,
     label,
     onClick: handleClick,
-    isSelected: to === history.location.pathname,
+    isSelected: isMatch,
   };
-  return React.createElement(component, props);
+  return <Component {...props} />;
 };
 
 export default NavLink;
