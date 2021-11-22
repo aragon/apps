@@ -30,10 +30,8 @@ Open.args = {
 };
 
 export const Mobile = Template.bind({});
-Open.args = {
-  isMobile: false,
-  isOpen: true,
-  label: 'Menu',
+Mobile.args = {
+  isMobile: true,
   onClick: () => {
     alert('hey, you just triggered the onClick method :)');
   },

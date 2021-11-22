@@ -56,5 +56,5 @@ const StyledButton = styled(SizedButton).attrs(
 )<StyledButtonProp>``;
 
 const StyledLabel = styled.p.attrs(({isLoading}: StyledLabelProp) => ({
-  className: `md:inline hidden ${isLoading && 'text-primary-500'}`,
+  className: `tablet:inline hidden ${isLoading && 'text-primary-500'}`,
 }))``;
