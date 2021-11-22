@@ -1,13 +1,20 @@
+import {
+  IconClose,
+  IconMenu,
+  IconOnlyButton,
+  MenuButton,
+  Popover,
+  WalletButton,
+} from '@aragon/ui-components';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
-import withBreadCrumbs from 'react-router-breadcrumbs-hoc';
 import React, {useState} from 'react';
-import {MenuButton, Popover, WalletButton} from '@aragon/ui-components';
+import withBreadCrumbs, {BreadcrumbsRoute} from 'react-router-breadcrumbs-hoc';
 
 import {routes} from 'routes';
 import NavLinks from 'components/navLinks';
-import {Dashboard} from 'utils/paths';
 import Breadcrumbs from 'components/breadcrumbs';
+import {Dashboard} from 'utils/paths';
 import MenuDropdown from 'components/menuDropdown';
 import DaoSwitcherMenu from 'components/daoSwitcherMenu/daoSwitcherMenu';
 
@@ -27,14 +34,11 @@ const TEMP_DAOS = [
   },
 ];
 
-type NavbarProps = {breadcrumbs: Array<React.ReactNode>};
+type NavbarProps = {breadcrumbs: React.ReactNode[]};
 const Navbar: React.FC<NavbarProps> = ({breadcrumbs}) => {
-  /**
-   * TODO: Ignore all not found routes on breadcrumb
-   */
-
+  //FIXME: Ignore all not found routes on breadcrumb
   const {t} = useTranslation();
-  const [showMobileMenu, setShowMobileMenu] = useState(true);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showCrumbPopover, setShowCrumbPopover] = useState(false);
   const [showSwitcherPopover, setShowSwitcherPopover] = useState(false);
 
@@ -42,7 +46,7 @@ const Navbar: React.FC<NavbarProps> = ({breadcrumbs}) => {
     setShowMobileMenu(true);
   };
 
-  // TODO: wire up to bottomsheet menuitem click
+  //TODO: wire up to bottomsheet menuitem click
   const handleHideMobileMenu = () => {
     setShowMobileMenu(false);
   };
@@ -67,8 +71,7 @@ const Navbar: React.FC<NavbarProps> = ({breadcrumbs}) => {
           <Container>
             <DaoSelectorWrapper>
               <StyledPopover
-                // Using open so that clicking on DAO name closes the popover
-                open={showSwitcherPopover}
+                open={showSwitcherPopover} // Using open so that clicking on DAO name closes the popover
                 side="bottom"
                 align="start"
                 width={320}
@@ -80,7 +83,6 @@ const Navbar: React.FC<NavbarProps> = ({breadcrumbs}) => {
                   <TempDaoAvatar>DN</TempDaoAvatar>
                   <DaoIdentifier>Bushido DAO</DaoIdentifier>
                 </DaoSelector>
-                {/* TODO: replace with avatar and Dao name */}
               </StyledPopover>
             </DaoSelectorWrapper>
 
@@ -88,23 +90,23 @@ const Navbar: React.FC<NavbarProps> = ({breadcrumbs}) => {
               {breadcrumbs.length > 1 ? (
                 <>
                   <Popover
-                    // Using open so that clicking on MenuItem closes the popover
-                    open={showCrumbPopover}
+                    open={showCrumbPopover} // Using open so that clicking on MenuItem closes the popover
                     side="bottom"
                     align="start"
                     width={320}
                     content={
-                      <MenuDropdown onMenuItemClick={handleHideCrumbPopover} />
+                      <MenuDropdown
+                        selected={
+                          (breadcrumbs[0] as BreadcrumbsRoute)?.match.url
+                        }
+                        onMenuItemClick={handleHideCrumbPopover}
+                      />
                     }
                     onOpenChange={setShowCrumbPopover}
                   >
-                    {/* TODO: replace with ICONBUTTON */}
-                    <MenuButton
-                      size="small"
-                      label="s"
-                      isOpen={showCrumbPopover}
-                      onClick={handleHideCrumbPopover}
-                      isMobile={true}
+                    <IconOnlyButton
+                      icon={showCrumbPopover ? <IconClose /> : <IconMenu />}
+                      isActive={showCrumbPopover}
                     />
                   </Popover>
                   <Breadcrumbs breadcrumbs={breadcrumbs} />

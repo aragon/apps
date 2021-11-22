@@ -3,13 +3,20 @@ import styled from 'styled-components';
 
 import NavLinks from 'components/navLinks';
 
-type MenuDropdownProps = {onMenuItemClick?: () => void};
+type MenuDropdownProps = {selected?: string; onMenuItemClick?: () => void};
 
-const MenuDropdown: React.FC<MenuDropdownProps> = ({onMenuItemClick}) => {
+const MenuDropdown: React.FC<MenuDropdownProps> = ({
+  selected,
+  onMenuItemClick,
+}) => {
   return (
     <Container>
       <NavLinksContainer>
-        <NavLinks onClick={onMenuItemClick} isMobile={true} />
+        <NavLinks
+          selected={selected}
+          onClick={onMenuItemClick}
+          isMobile={true}
+        />
       </NavLinksContainer>
     </Container>
   );

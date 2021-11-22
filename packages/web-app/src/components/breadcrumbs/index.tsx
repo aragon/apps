@@ -2,15 +2,16 @@ import React from 'react';
 import styled from 'styled-components';
 import {Link} from 'react-router-dom';
 import {IconChevronRight} from '@aragon/ui-components';
+import {BreadcrumbsRoute} from 'react-router-breadcrumbs-hoc';
 
-type BreadcrumbsProps = {breadcrumbs: Array<React.ReactNode>};
+type BreadcrumbsProps = {breadcrumbs: React.ReactNode[]};
 
 const Breadcrumbs: React.FC<BreadcrumbsProps> = ({breadcrumbs}) => {
+  const crumbs = breadcrumbs as BreadcrumbsRoute[];
   let isLast: boolean;
   return (
     <Container>
-      {/* TODO: Type */}
-      {breadcrumbs.map(({match, breadcrumb}: any, index) => {
+      {crumbs.map(({match, breadcrumb}, index) => {
         isLast = index === breadcrumbs.length - 1;
 
         return (
@@ -36,5 +37,5 @@ const Container = styled.div.attrs({
 type LabelProps = {isLast: boolean};
 
 const Label = styled(Link).attrs(({isLast}: LabelProps) => ({
-  className: isLast ? 'text-ui-600' : 'text-primary-500',
+  className: isLast ? 'text-ui-600 cursor-default' : 'text-primary-500',
 }))<LabelProps>``;
