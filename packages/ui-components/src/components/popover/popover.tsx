@@ -84,7 +84,6 @@ const StyledContent = styled(Content).attrs(
       background: '#FFFFFF',
       boxShadow: '0px 0px 4px rgba(50, 63, 75, 0.16)',
       borderRadius: 12,
-      padding: '20px 16px',
     };
 
     return {style: currentStyle};
