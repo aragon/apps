@@ -20,7 +20,7 @@ export const DaoCard: React.FC<DaoCardProps> = ({
   src,
 }: DaoCardProps) => {
   return (
-    <Card>
+    <Card data-testid="daoCard">
       <Avatar src={src} mode={'square'} size={'large'} />
       <TextContainer>
         <DaoName>{daoName}</DaoName>
