@@ -11,7 +11,13 @@ export type DaoCardProps = {
   daoName: string;
   /** Dao's ethereum address **or** ENS name */
   daoAddress: Address;
-  /** Handler for the switch button. Will be called when the button is clicked. */
+  /**
+   * Allows the Dao Card component grow vertically, thereby moving the switcher
+   * button right.
+   * */
+  wide: boolean;
+  /** Handler for the switch button. Will be called when the button is clicked.
+   * */
   onClick: () => void;
 } & Pick<AvatarProps, 'src'>;
 
@@ -29,15 +35,18 @@ export const DaoCard: React.FC<DaoCardProps> = ({
   daoName,
   daoAddress,
   onClick,
+  wide = false,
   src,
 }: DaoCardProps) => {
   return (
-    <Card data-testid="daoCard">
-      <Avatar src={src} mode={'square'} size={'large'} />
-      <TextContainer>
-        <DaoName>{daoName}</DaoName>
-        <DaoAddress>{shortenAddress(daoAddress)}</DaoAddress>
-      </TextContainer>
+    <Card data-testid="daoCard" wide={wide}>
+      <LeftContent>
+        <Avatar src={src} mode={'square'} size={'large'} />
+        <TextContainer>
+          <DaoName>{daoName}</DaoName>
+          <DaoAddress>{shortenAddress(daoAddress)}</DaoAddress>
+        </TextContainer>
+      </LeftContent>
       <StyledButton mode={'ghost'} size={'small'} onClick={onClick}>
         <FlexDiv side={'right'}>
           <IconSwitch />
@@ -48,7 +57,17 @@ export const DaoCard: React.FC<DaoCardProps> = ({
   );
 };
 
-const Card = styled.div.attrs({className: 'inline-flex'})``;
+type CardProps = {
+  wide?: boolean;
+};
+
+const Card = styled.div.attrs(({wide}: CardProps) => ({
+  className: wide ? 'flex justify-between' : 'inline-flex',
+}))<CardProps>``;
+
+const LeftContent = styled.div.attrs({
+  className: 'inline-flex',
+})``;
 
 const TextContainer = styled.div.attrs({
   className: 'pl-1.5 pr-2',
