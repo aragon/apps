@@ -1,16 +1,12 @@
-import React, {HTMLAttributes} from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
-import {Avatar} from '../avatar';
+import {Avatar,AvatarProps} from '../avatar';
 import {IconButton} from '../button/iconButton';
 import {IconCopy} from '../icons'
 import {BeautifyLabel} from '../../utils/addresses';
 
-export type WalletCardProps = HTMLAttributes<HTMLElement> & {
-  /** 
-   * Avatar image src
-   * */
-  src: string;
+export type WalletCardProps = {
   /**
   * Action subtitle
   */
@@ -23,7 +19,7 @@ export type WalletCardProps = HTMLAttributes<HTMLElement> & {
   * full width
   */
   wide:boolean;
-}
+} & Pick<AvatarProps, 'src'>;
 
 /**
  * WalletCard UI component
