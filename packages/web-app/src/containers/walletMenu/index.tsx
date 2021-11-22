@@ -16,15 +16,20 @@ const WalletMenu: React.FC = () => {
   const {reset, account} = useWallet();
 
   return (
-    <BottomSheet isOpen={isOpen} onOpen={open} onClose={close}>
-      <div className="space-y-3">
+    <BottomSheet
+      isOpen={isOpen}
+      onOpen={open}
+      onClose={close}
+      data-testid="walletCard"
+    >
+      <Container>
         <WalletCard
           wide
           src={'https://place-hold.it/150x150'}
           title="ens-name.eth"
           subtitle={account}
         />
-        <div className="space-y-1.5">
+        <ActionContainer>
           <ActionListItem
             wide
             title="Metamask"
@@ -40,8 +45,8 @@ const WalletMenu: React.FC = () => {
               close();
             }}
           />
-        </div>
-      </div>
+        </ActionContainer>
+      </Container>
     </BottomSheet>
   );
 };
@@ -49,9 +54,9 @@ const WalletMenu: React.FC = () => {
 export default WalletMenu;
 
 const Container = styled.div.attrs({
-  className: 'px-2 py-2.5',
-});
+  className: 'space-y-3',
+})``;
 
 const ActionContainer = styled.div.attrs({
   className: 'space-y-1.5',
-});
+})``;

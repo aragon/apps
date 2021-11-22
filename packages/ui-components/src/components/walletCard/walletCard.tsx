@@ -19,6 +19,9 @@ export type WalletCardProps = HTMLAttributes<HTMLElement> & {
   * Action label
   */
   title: string;
+  /**
+  * full width
+  */
   wide:boolean;
 }
 
