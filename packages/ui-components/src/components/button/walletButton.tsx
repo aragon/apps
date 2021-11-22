@@ -10,7 +10,7 @@ export type WalletButtonProps = {
   /**
   * set wallet Address/Ens
   */
-  label: string;
+  label: string | null;
   /**
   * Avatar Image source
   */
