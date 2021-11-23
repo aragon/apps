@@ -14,7 +14,7 @@ export type WalletCardProps = {
   /**
   * Wallet eth address
   */
-  address: string;
+  address: string | null;
   /**
   * Allows the Wallet Card component grow horizontally
   * */
@@ -27,7 +27,7 @@ export type WalletCardProps = {
 export const WalletCard: React.FC<WalletCardProps> = ({src, name, address, wide=false}) => {
   
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(address);
+    navigator.clipboard.writeText(address || '');
   }
 
   return (

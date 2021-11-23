@@ -1,11 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import {
-  WalletCard,
-  ActionListItem,
-  IconChevronRight,
-  IconTurnOff,
-} from '@aragon/ui-components';
+import {WalletCard, ActionListItem, IconTurnOff} from '@aragon/ui-components';
 
 import BottomSheet from '../../components/bottomSheet';
 import {useMenuContext} from 'context/menu';
@@ -14,7 +9,6 @@ import {useWallet} from 'context/augmentedWallet';
 const WalletMenu: React.FC = () => {
   const {isOpen, open, close} = useMenuContext();
   const {reset, account} = useWallet();
-  const context: any = useWallet();
 
   return (
     <BottomSheet
