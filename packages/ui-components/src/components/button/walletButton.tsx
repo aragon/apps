@@ -4,13 +4,13 @@ import styled from 'styled-components';
 import {SizedButton} from './button';
 import {Avatar} from '../avatar';
 import {Spinner} from '../spinner';
-import {BeautifyLabel} from '../../utils/addresses';
+import {shortenAddress} from '../../utils/addresses';
 
 export type WalletButtonProps = {
   /**
-  * set wallet Address/Ens
-  */
-  label: string | null;
+   * set wallet Address/Ens
+   */
+  label: string;
   /**
    * Avatar Image source
    */
@@ -35,7 +35,7 @@ export const WalletButton = ({
 }: WalletButtonProps) => {
   return (
     <StyledButton onClick={onClick} size={'default'} isSelected={isSelected}>
-      <StyledLabel {...{isLoading}}>{BeautifyLabel(label)}</StyledLabel>
+      <StyledLabel {...{isLoading}}>{shortenAddress(label)}</StyledLabel>
       {!isLoading ? (
         <Avatar src={src} size={'small'} />
       ) : (

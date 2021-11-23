@@ -27,16 +27,10 @@ const WalletMenu: React.FC = () => {
         <WalletCard
           wide
           src={'https://place-hold.it/150x150'}
-          title="ens-name.eth"
-          subtitle={account}
+          name="ens-name.eth"
+          address={account}
         />
         <ActionContainer>
-          <ActionListItem
-            wide
-            title="Metamask"
-            subtitle="Switch Wallet Provider"
-            icon={<IconChevronRight />}
-          />
           <ActionListItem
             wide
             title="Disconnect Wallet"
