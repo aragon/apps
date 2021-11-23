@@ -8,26 +8,26 @@ import {BeautifyLabel} from '../../utils/addresses';
 
 export type WalletCardProps = {
   /**
-  * Action subtitle
+  * wallet ENS name or wallet eth address
   */
-  subtitle?: string | null;
+  name: string;
   /**
-  * Action label
+  * Wallet eth address
   */
-  title: string;
+  address?: string | null;
   /**
-  * full width
-  */
+  * Allows the Wallet Card component grow vertically
+  * */
   wide:boolean;
 } & Pick<AvatarProps, 'src'>;
 
 /**
  * WalletCard UI component
  */
-export const WalletCard: React.FC<WalletCardProps> = ({src, title, subtitle, wide=false}) => {
+export const WalletCard: React.FC<WalletCardProps> = ({src, name, address, wide=false}) => {
   
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(subtitle || title);
+    navigator.clipboard.writeText(address || name);
   }
 
   return (
@@ -35,8 +35,8 @@ export const WalletCard: React.FC<WalletCardProps> = ({src, title, subtitle, wid
           <Content>
             <Avatar size={'default'} src={src}/>
             <TextContainer>
-              <Title>{BeautifyLabel(title)}</Title>
-              {subtitle && <Subtitle>{BeautifyLabel(subtitle)}</Subtitle>}
+              <Title>{BeautifyLabel(name)}</Title>
+              {address && <Subtitle>{BeautifyLabel(address)}</Subtitle>}
             </TextContainer>
           </Content>
           <IconButton 

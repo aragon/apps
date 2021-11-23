@@ -12,6 +12,6 @@ const Template: Story<WalletCardProps> = args => <WalletCard {...args} />;
 export const Default = Template.bind({});
 Default.args={
     src:'https://place-hold.it/150x150',
-    title:'ens-name.eth',
-    subtitle:'0x6720000000000000000000000000000000007739'
+    name:'ens-name.eth',
+    address:'0x6720000000000000000000000000000000007739'
 }
