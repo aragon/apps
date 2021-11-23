@@ -4,19 +4,19 @@ import styled from 'styled-components';
 import {Avatar,AvatarProps} from '../avatar';
 import {IconButton} from '../button/iconButton';
 import {IconCopy} from '../icons'
-import {BeautifyLabel} from '../../utils/addresses';
+import {shortenAddress} from '../../utils/addresses';
 
 export type WalletCardProps = {
   /**
   * wallet ENS name or wallet eth address
   */
-  name: string;
+  name?: string;
   /**
   * Wallet eth address
   */
-  address?: string | null;
+  address: string;
   /**
-  * Allows the Wallet Card component grow vertically
+  * Allows the Wallet Card component grow horizontally
   * */
   wide:boolean;
 } & Pick<AvatarProps, 'src'>;
@@ -27,7 +27,7 @@ export type WalletCardProps = {
 export const WalletCard: React.FC<WalletCardProps> = ({src, name, address, wide=false}) => {
   
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(address || name);
+    navigator.clipboard.writeText(address);
   }
 
   return (
@@ -35,8 +35,8 @@ export const WalletCard: React.FC<WalletCardProps> = ({src, name, address, wide=
           <Content>
             <Avatar size={'default'} src={src}/>
             <TextContainer>
-              <Title>{BeautifyLabel(name)}</Title>
-              {address && <Subtitle>{BeautifyLabel(address)}</Subtitle>}
+              <Title>{shortenAddress(name || address)}</Title>
+              {address && <Subtitle>{shortenAddress(address)}</Subtitle>}
             </TextContainer>
           </Content>
           <IconButton 
