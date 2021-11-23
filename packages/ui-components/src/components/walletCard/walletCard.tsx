@@ -31,7 +31,7 @@ export const WalletCard: React.FC<WalletCardProps> = ({src, title, subtitle, wid
   }
 
   return (
-      <Container {...{wide}}>
+      <Card {...{wide}} data-testid="walletCard">
           <Content>
             <Avatar size={'default'} src={src}/>
             <TextContainer>
@@ -46,12 +46,12 @@ export const WalletCard: React.FC<WalletCardProps> = ({src, title, subtitle, wid
             side="right" 
             onClick={copyToClipboard}
           />
-      </Container>
+      </Card>
   );
 };
 
 type ContainerProps = Pick<WalletCardProps, 'wide'>;
-const Container = styled.div.attrs(({wide}:ContainerProps)=>({
+const Card = styled.div.attrs(({wide}:ContainerProps)=>({
   className:`flex items-center ${wide && 'w-full justify-between'} space-x-1.5`
 }))``;
 
