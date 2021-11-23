@@ -29,7 +29,7 @@ export const DaoSelector = ({
       onClick={onClick}
       isSelected={isSelected}
     >
-      <Avatar src={src} size={'default'} mode="square" />
+      <Avatar src={src} size="large" mode="square" />
       <p>{label}</p>
       <HoverIconSwitch />
     </StyledButton>
@@ -41,8 +41,8 @@ type StyledButtonProps = {
 };
 
 const StyledButton = styled.button.attrs(({isSelected}: StyledButtonProps) => {
-  const dimensions = 'flex flex-col items-center rounded-2xl text-xs';
-  const baseStyle = 'text-ui-800 font-medium';
+  const dimensions = 'flex flex-col items-center rounded-2xl';
+  const baseStyle = 'text-ui-800 font-bold';
   const dimensionsDesktop =
     'desktop:flex desktop:flex-row desktop:items-center desktop:space-x-2 desktop:pr-1.5';
   const hoverDesktop = 'group ';
