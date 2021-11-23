@@ -73,19 +73,6 @@ export default class Configuration {
   }
 
   /**
-   * Getter for client property
-   *
-   * @var client
-   *
-   * @returns {ClientInterface}
-   *
-   * @public
-   */
-  get client(): ClientInterface {
-    return this.config.client
-  }
-
-  /**
    * Getter for daoFactoryAddress property
    *
    * @var daoFactoryAddress
@@ -96,19 +83,6 @@ export default class Configuration {
    */
   get daoFactoryAddress(): string {
     return this.config.daoFactoryAddress
-  }
-
-  /**
-   * Getter for governRegistry property
-   *
-   * @var governRegistry
-   *
-   * @returns {string}
-   *
-   * @public
-   */
-  get governRegistry(): string {
-    return this.config.governRegistry
   }
 
   /**
@@ -133,10 +107,6 @@ export default class Configuration {
 
     if (!config.daoFactoryAddress) {
       config.daoFactoryAddress = DAO_FACTORY_ADDRESS
-    }
-
-    if (!config.governRegistry) {
-      config.governRegistry = GOVERN_REGISTRY_ADDRESS
     }
 
     defaultConfig = new Configuration(config)
