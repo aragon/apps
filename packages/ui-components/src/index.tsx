@@ -9,3 +9,4 @@ export * from './components/menuItem';
 export * from './components/popover';
 export * from './components/spinner';
 export * from './components/daoCard';
+export * from './components/badge';
