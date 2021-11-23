@@ -6,7 +6,7 @@ import {WalletButton} from '@aragon/ui-components';
 
 import TestNetworkIndicator from 'components/testNetworkIndicator';
 import {Dashboard, Community, Finance, Governance} from 'utils/paths';
-import {useMenuContext} from '../../context/menu';
+import {useMenuContext} from 'context/menu';
 import {useWallet} from 'context/augmentedWallet';
 
 const Navbar: React.FC = () => {
@@ -45,7 +45,7 @@ const Navbar: React.FC = () => {
         </Container>
         <WalletButton
           onClick={onToggle}
-          label={isConnected() ? account : 'Connect account'}
+          label={isConnected() ? account : t('navButtons.connectWallet')}
           src={'https://place-hold.it/150x150'}
         />
       </NavigationBar>
