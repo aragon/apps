@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
-import {ActionListItem} from '@aragon/ui-components';
+import {ActionListItem, IconLinkExternal} from '@aragon/ui-components';
 
 type DaoSwitcherMenuProps = {
   daos?: {name: string; ens: string; icon: string}[];
@@ -22,6 +22,7 @@ const DaoSwitcherMenu: React.FC<DaoSwitcherMenuProps> = ({daos = []}) => {
         ))}
       </DaoListContainer>
       <ActionListItem
+        icon={<IconLinkExternal />}
         title={t('daoSwitcher.title')}
         subtitle={t('daoSwitcher.subtitle')}
         wide
