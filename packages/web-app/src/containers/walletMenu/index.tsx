@@ -14,6 +14,7 @@ import {useWallet} from 'context/augmentedWallet';
 const WalletMenu: React.FC = () => {
   const {isOpen, open, close} = useMenuContext();
   const {reset, account} = useWallet();
+  const context: any = useWallet();
 
   return (
     <BottomSheet
