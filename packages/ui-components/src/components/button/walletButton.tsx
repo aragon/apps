@@ -21,7 +21,7 @@ export type WalletButtonProps = {
   isLoading?: boolean;
   onClick: () => void;
   /**
-   * Whether the current item is active
+   * Whether the current item is active (isSelected)
    */
   isSelected?: boolean;
 };
