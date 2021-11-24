@@ -10,13 +10,14 @@ import {
 } from '@aragon/ui-components';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
-import React, {useState} from 'react';
 import withBreadCrumbs, {BreadcrumbsRoute} from 'react-router-breadcrumbs-hoc';
+import React, {useState, useCallback, useMemo} from 'react';
 
 import {routes} from 'routes';
 import NavLinks from 'components/navLinks';
 import BottomSheet from 'components/bottomSheet';
 import Breadcrumbs from 'components/breadcrumbs';
+import {useWallet} from 'context/augmentedWallet';
 import MenuDropdown from 'components/menuDropdown';
 import DaoSwitcherMenu from 'components/daoSwitcherMenu';
 import {Dashboard, NotFound} from 'utils/paths';
@@ -40,22 +41,31 @@ const TEMP_DAOS = [
 type NavbarProps = {breadcrumbs: React.ReactNode[]};
 const Navbar: React.FC<NavbarProps> = ({breadcrumbs}) => {
   const {t} = useTranslation();
+  const {connect, isConnected, reset, account} = useWallet();
+
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showCrumbPopover, setShowCrumbPopover] = useState(false);
   const [showSwitcherPopover, setShowSwitcherPopover] = useState(false);
 
-  const handleShowMobileMenu = () => {
+  const getWalletLabel = useMemo((): string => {
+    return isConnected() ? (account as string) : t('navButtons.connectWallet');
+  }, [account, isConnected, t]);
+
+  const handleShowMobileMenu = useCallback(() => {
     setShowMobileMenu(true);
-  };
+  }, []);
 
-  //TODO: wire up to bottomsheet menuitem click
-  const handleHideMobileMenu = () => {
+  const handleHideMobileMenu = useCallback(() => {
     setShowMobileMenu(false);
-  };
+  }, []);
 
-  const handleHideCrumbPopover = () => {
+  const handleHideCrumbPopover = useCallback(() => {
     setShowCrumbPopover(false);
-  };
+  }, []);
+
+  const handleWalletButtonClick = useCallback(() => {
+    isConnected() ? reset() : connect('injected');
+  }, [connect, isConnected, reset]);
 
   return (
     <>
@@ -126,9 +136,9 @@ const Navbar: React.FC<NavbarProps> = ({breadcrumbs}) => {
           </Container>
           <div className="border">
             <WalletButton
-              src={TEMP_ICON}
-              label="punk420.eth"
-              onClick={() => null}
+              src={'https://place-hold.it/150x150'}
+              label={getWalletLabel}
+              onClick={handleWalletButtonClick}
             />
           </div>
         </NavigationBar>
