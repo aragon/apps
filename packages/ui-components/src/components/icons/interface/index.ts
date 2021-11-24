@@ -9,6 +9,7 @@ export {IconChevronRight} from './icon_chevron_right';
 export {IconChevronLeft} from './icon_chevron_left';
 export {IconClose} from './icon_close';
 export {IconCopy} from './icon_copy';
+export {IconLinkExternal} from './icon_link_external';
 export {IconFavoriteDefault} from './icon_favorite_default';
 export {IconFavoriteSelected} from './icon_favorite_selected';
 export {IconRemove} from './icon_remove';
