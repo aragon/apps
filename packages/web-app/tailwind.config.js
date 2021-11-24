@@ -59,7 +59,11 @@ module.exports = {
   },
 
   variants: {
-    extend: {},
+    extend: {
+      backgroundColor: ['active', 'disabled'],
+      textColor: ['active', 'disabled'],
+      borderColor: ['active', 'disabled'],
+    },
   },
   plugins: [],
 };

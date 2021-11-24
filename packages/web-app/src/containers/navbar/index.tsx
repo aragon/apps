@@ -29,17 +29,20 @@ const TEMP_DAOS = [
   {
     name: 'Axolittle Dao',
     ens: 'axolittle-dao.eth',
-    icon: 'x',
+    icon: TEMP_ICON,
   },
   {
     name: 'Skullx Dao',
     ens: 'skullx-dao.eth',
-    icon: 'x',
+    icon: TEMP_ICON,
   },
 ];
 
 type NavbarProps = {breadcrumbs: React.ReactNode[]};
 const Navbar: React.FC<NavbarProps> = ({breadcrumbs}) => {
+  /************************************
+   * State and Hooks
+   ************************************/
   const {t} = useTranslation();
   const {connect, isConnected, reset, account} = useWallet();
 
@@ -47,6 +50,9 @@ const Navbar: React.FC<NavbarProps> = ({breadcrumbs}) => {
   const [showCrumbPopover, setShowCrumbPopover] = useState(false);
   const [showSwitcherPopover, setShowSwitcherPopover] = useState(false);
 
+  /************************************
+   * Functions and Handlers
+   ************************************/
   const getWalletLabel = useMemo((): string => {
     return isConnected() ? (account as string) : t('navButtons.connectWallet');
   }, [account, isConnected, t]);
@@ -63,10 +69,17 @@ const Navbar: React.FC<NavbarProps> = ({breadcrumbs}) => {
     setShowCrumbPopover(false);
   }, []);
 
+  const handleHideSwitcherPopover = useCallback(() => {
+    setShowSwitcherPopover(false);
+  }, []);
+
   const handleWalletButtonClick = useCallback(() => {
     isConnected() ? reset() : connect('injected');
   }, [connect, isConnected, reset]);
 
+  /************************************
+   * Render
+   ************************************/
   return (
     <>
       <NavContainer data-testid="nav">
@@ -77,10 +90,10 @@ const Navbar: React.FC<NavbarProps> = ({breadcrumbs}) => {
               label={t('menu')}
               isOpen={showMobileMenu}
               onClick={handleShowMobileMenu}
-              isMobile={true}
             />
           </div>
           <Container>
+            {/* ------- DAO SELECTOR ------- */}
             <DaoSelectorWrapper>
               {/* TODO: investigate popover trigger nested button warning */}
               <StyledPopover
@@ -88,7 +101,12 @@ const Navbar: React.FC<NavbarProps> = ({breadcrumbs}) => {
                 side="bottom"
                 align="start"
                 width={320}
-                content={<DaoSwitcherMenu daos={TEMP_DAOS} />}
+                content={
+                  <DaoSwitcherMenu
+                    daos={TEMP_DAOS}
+                    onClick={handleHideSwitcherPopover}
+                  />
+                }
                 onOpenChange={setShowSwitcherPopover}
               >
                 <DaoSelector
@@ -100,8 +118,11 @@ const Navbar: React.FC<NavbarProps> = ({breadcrumbs}) => {
               </StyledPopover>
             </DaoSelectorWrapper>
 
+            {/* ------- NavLinks (Desktop) ------- */}
             <LinksContainer>
-              {breadcrumbs.length > 1 ? (
+              {breadcrumbs.length <= 1 ? (
+                <NavLinks />
+              ) : (
                 <>
                   <Popover
                     open={showCrumbPopover} // Using open so that clicking on MenuItem closes the popover
@@ -118,33 +139,28 @@ const Navbar: React.FC<NavbarProps> = ({breadcrumbs}) => {
                     }
                     onOpenChange={setShowCrumbPopover}
                   >
-                    <div className="border">
-                      <IconOnlyButton
-                        icon={showCrumbPopover ? <IconClose /> : <IconMenu />}
-                        isActive={showCrumbPopover}
-                      />
-                    </div>
+                    <IconOnlyButton
+                      icon={showCrumbPopover ? <IconClose /> : <IconMenu />}
+                      isActive={showCrumbPopover}
+                    />
                   </Popover>
-                  <div className="border">
-                    <Breadcrumbs breadcrumbs={breadcrumbs} />
-                  </div>
+                  <Breadcrumbs breadcrumbs={breadcrumbs} />
                 </>
-              ) : (
-                <NavLinks />
               )}
             </LinksContainer>
           </Container>
-          <div className="border">
-            <WalletButton
-              src={'https://place-hold.it/150x150'}
-              label={getWalletLabel}
-              onClick={handleWalletButtonClick}
-            />
-          </div>
+
+          {/* ------- Wallet Button (Desktop) ------- */}
+          <WalletButton
+            src={'https://place-hold.it/150x150/c4d7ff/fff/fff&text=Avatar'}
+            label={getWalletLabel}
+            onClick={handleWalletButtonClick}
+          />
         </NavigationBar>
         <TestNetworkIndicator>{t('testnetIndicator')}</TestNetworkIndicator>
       </NavContainer>
 
+      {/* ------- NavLinks (Mobile) ------- */}
       <BottomSheet
         isOpen={showMobileMenu}
         onOpen={handleShowMobileMenu}
@@ -152,11 +168,12 @@ const Navbar: React.FC<NavbarProps> = ({breadcrumbs}) => {
       >
         <div className="space-y-3">
           <DaoCard
-            wide
-            src={TEMP_ICON}
-            onClick={handleHideMobileMenu}
-            daoName="Bushido DAO"
             daoAddress="bushido.aragonid.eth"
+            daoName="Bushido DAO"
+            onClick={handleHideMobileMenu}
+            src={TEMP_ICON}
+            switchLabel={t('daoCard.switchLabel')}
+            wide
           />
           <NavLinks isMobile={true} onClick={handleHideMobileMenu} />
         </div>
@@ -176,11 +193,11 @@ const NavContainer = styled.div.attrs({
 
 const NavigationBar = styled.nav.attrs({
   className: `flex tablet:order-1 h-12 justify-between items-center px-2 pb-2 pt-1.5 
-    tablet:py-2 tablet:px-3 desktop:py-3 desktop:px-5 wide:px-25 text-ui-600 border`,
+    tablet:py-2 tablet:px-3 desktop:py-3 desktop:px-5 wide:px-25 text-ui-600`,
 })``;
 
 const Container = styled.div.attrs({
-  className: 'flex desktop:flex-1 items-center space-x-6 border',
+  className: 'flex desktop:flex-1 items-center space-x-6',
 })``;
 
 const LinksContainer = styled.div.attrs({
@@ -190,7 +207,7 @@ const LinksContainer = styled.div.attrs({
 
 const DaoSelectorWrapper = styled.div.attrs({
   className:
-    'absolute flex items-center desktop:static left-2/4 dekstop:left-auto transform -translate-x-1/2 desktop:-translate-x-0 border',
+    'absolute flex items-center desktop:static left-2/4 dekstop:left-auto transform -translate-x-1/2 desktop:-translate-x-0',
 })``;
 
 const TestNetworkIndicator = styled.p.attrs({

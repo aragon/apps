@@ -12,6 +12,9 @@
     "finance": "Finance",
     "community": "Community"
   },
+  "daoCard": {
+    "switchLabel": "Switch"
+  },
   "daoSwitcher": {
     "title": "Explore",
     "subtitle": "Find other DAOs to join"

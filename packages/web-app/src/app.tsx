@@ -17,7 +17,7 @@ function App() {
   }, [pathname]);
 
   return (
-    <>
+    <div className="bg-primary-50">
       <Navbar />
       <div className="h-screen">
         <Switch>
@@ -33,7 +33,7 @@ function App() {
         </Switch>
       </div>
       <Footer />
-    </>
+    </div>
   );
 }
 

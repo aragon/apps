@@ -1,24 +1,12 @@
-import React, {useState} from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
-import {Button} from '@aragon/ui-components';
-
-import BottomSheet from 'components/bottomSheet';
 
 const Home: React.FC = () => {
   const {t} = useTranslation();
-  const [isOpen, setIsOpen] = useState(false);
-
-  function onClose() {
-    setIsOpen(false);
-  }
-
-  function onOpen() {
-    setIsOpen(true);
-  }
 
   return (
-    <div className="bg-white">
+    <>
       <div className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 mx-auto">
         <div className="text-center">
           <WelcomeMessage>{t('subtitle')}</WelcomeMessage>
@@ -26,9 +14,7 @@ const Home: React.FC = () => {
           <Subtitle>{t('title.part2')}</Subtitle>
         </div>
       </div>
-      <Button onClick={onOpen} label="Toggle" />
-      <BottomSheet onOpen={onOpen} isOpen={isOpen} onClose={onClose} />
-    </div>
+    </>
   );
 };
 
