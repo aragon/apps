@@ -1,6 +1,6 @@
 import React from 'react';
 import {Meta, Story} from '@storybook/react';
-import {IconOnlyButton, IconOnlyButtonProps, IconCommunity} from '../src/';
+import {IconOnlyButton, IconOnlyButtonProps, IconCommunity} from '../src';
 
 export default {
   title: 'Components/Buttons/Icon Only',

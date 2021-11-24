@@ -11,7 +11,6 @@ const Template: Story<MenuButtonProps> = args => <MenuButton {...args} />;
 
 export const Close = Template.bind({});
 Close.args = {
-  isMobile: false,
   isOpen: false,
   label: 'Menu',
   onClick: () => {
@@ -21,17 +20,8 @@ Close.args = {
 
 export const Open = Template.bind({});
 Open.args = {
-  isMobile: false,
   isOpen: true,
   label: 'Menu',
-  onClick: () => {
-    alert('hey, you just triggered the onClick method :)');
-  },
-};
-
-export const Mobile = Template.bind({});
-Mobile.args = {
-  isMobile: true,
   onClick: () => {
     alert('hey, you just triggered the onClick method :)');
   },

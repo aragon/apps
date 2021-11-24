@@ -8,10 +8,6 @@ import {FlexDiv} from './iconButton';
 export type MenuButtonProps = {
   size: 'small' | 'default';
   /**
-   * When set, the button will consist only of the menu icon, with no text.
-   */
-  isMobile: boolean;
-  /**
    * Changes the buttons appearance to either show a the menu icon or the a
    * cross icon. This state distinction is currently only available when
    * isMobile is false.
@@ -29,43 +25,23 @@ export type MenuButtonProps = {
 // the design is finalized.
 export const MenuButton = ({
   size = 'default',
-  isMobile,
   isOpen,
   label,
   onClick,
 }: MenuButtonProps) => {
-  if (isMobile) {
-    return (
-      <StyledButton onClick={onClick} size={'default'}>
-        <IconMenu />
-      </StyledButton>
-    );
-  }
-
-  if (isOpen) {
-    return (
-      <OpenButton onClick={onClick} size={size}>
-        <FlexDiv side={'left'}>
-          <IconClose />
-          <p>{label}</p>
-        </FlexDiv>
-      </OpenButton>
-    );
-  } else {
-    return (
-      <StyledButton onClick={onClick} size={size}>
-        <FlexDiv side={'left'}>
-          <IconMenu />
-          <p>{label}</p>
-        </FlexDiv>
-      </StyledButton>
-    );
-  }
+  return (
+    <Container onClick={onClick} size={size} isOpen={isOpen}>
+      <FlexDiv side={'left'}>
+        {isOpen ? <IconClose /> : <IconMenu />}
+        <p className="hidden tablet:inline">{label}</p>
+      </FlexDiv>
+    </Container>
+  );
 };
 
-const StyledButton = styled(SizedButton).attrs({
-  className: 'bg-ui-0 text-ui-600 border-2',
-})``;
-const OpenButton = styled(SizedButton).attrs({
-  className: 'bg-ui-0 text-primary-500 border-2',
-})``;
+type ContainerProps = {isOpen: boolean};
+const Container = styled(SizedButton).attrs(({isOpen}: ContainerProps) => ({
+  className: `bg-ui-0 ${
+    isOpen ? 'text-primary-500' : 'text-ui-600'
+  } active:text-primary-500 hover:text-ui-800`,
+}))<ContainerProps>``;
