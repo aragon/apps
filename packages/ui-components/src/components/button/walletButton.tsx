@@ -23,18 +23,18 @@ export type WalletButtonProps = {
   /**
    * Whether the current item is active
    */
-  active?: boolean;
+  isSelected?: boolean;
 };
 
 export const WalletButton = ({
   label,
   src,
-  active = false,
+  isSelected = false,
   isLoading,
   onClick,
 }: WalletButtonProps) => {
   return (
-    <StyledButton onClick={onClick} size={'small'} active={active}>
+    <StyledButton onClick={onClick} size={'small'} isSelected={isSelected}>
       <StyledLabel {...{isLoading}}>{shortenAddress(label)}</StyledLabel>
       {!isLoading ? (
         <Avatar src={src} size={'small'} />
@@ -45,13 +45,14 @@ export const WalletButton = ({
   );
 };
 
-type StyledButtonProp = Pick<WalletButtonProps, 'active'>;
+type StyledButtonProp = Pick<WalletButtonProps, 'isSelected'>;
 type StyledLabelProp = Pick<WalletButtonProps, 'isLoading'>;
 
 const StyledButton = styled(SizedButton).attrs(
-  ({active}: StyledButtonProp) => ({
+  ({isSelected}: StyledButtonProp) => ({
     className: `flex tablet:space-x-1.5
-      ${active ? 'text-primary-500 bg-primary-50' : 'text-ui-600 bg-ui-0'}`,
+      ${isSelected ? 'text-primary-500 bg-primary-50' : 'text-ui-600 bg-ui-0'}
+      focus:outline-none focus:ring-2 focus:ring-primary-500 hover:text-primary-500 active:bg-primary-50 disabled:text-ui-300 disabled:bg-ui-0`,
   })
 )<StyledButtonProp>``;
 

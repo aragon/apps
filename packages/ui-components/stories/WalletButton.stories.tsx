@@ -20,7 +20,7 @@ Default.args = {
 
 export const Active = Template.bind({});
 Active.args = {
-  active:true,
+  isSelected:true,
   label:'0x6720000000000000000000000000000000007739',
   src: 'https://banner2.cleanpng.com/20180325/sxw/kisspng-computer-icons-avatar-avatar-5ab7529a8e4e14.9936310115219636745829.jpg',
   onClick: () => {
