@@ -1,9 +1,11 @@
 import React from 'react';
 
 import HomePage from 'pages/home';
+import * as paths from 'utils/paths';
 import FinancePage from 'pages/finance';
 import NotFoundPage from 'pages/notFound';
-import {Dashboard, Finance, NotFound} from 'utils/paths';
+import CommunityPage from 'pages/community';
+import GovernancePage from 'pages/governance';
 
 export type PageRoute = {
   exact: boolean;
@@ -16,8 +18,20 @@ export type PageRoute = {
 // Note that order matters if all routes aren't exact
 export const routes: PageRoute[] = [
   {
+    name: 'Community',
+    path: paths.Community,
+    component: CommunityPage,
+    exact: true,
+  },
+  {
+    name: 'Dashboard',
+    path: paths.Dashboard,
+    component: HomePage,
+    exact: true,
+  },
+  {
     name: 'Finance',
-    path: Finance,
+    path: paths.Finance,
     component: FinancePage,
     exact: true,
   },
@@ -25,15 +39,15 @@ export const routes: PageRoute[] = [
   // Temporary route to test breadcrumbs
   {
     name: 'Temp Finance subroute',
-    path: Finance + '/abc',
+    path: paths.Finance + '/abc',
     component: FinancePage,
     exact: true,
     breadcrumb: 'Temp Finance Subroute',
   },
   {
-    name: 'Dashboard',
-    path: Dashboard,
-    component: HomePage,
+    name: 'Governance',
+    path: paths.Governance,
+    component: GovernancePage,
     exact: true,
   },
 
@@ -44,7 +58,7 @@ export const routes: PageRoute[] = [
    */
   {
     name: 'NotFound',
-    path: NotFound,
+    path: paths.NotFound,
     component: NotFoundPage,
     exact: true,
   },
