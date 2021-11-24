@@ -1,6 +1,6 @@
 module.exports = {
   purge: ['./src/**/*.html', './src/**/*.tsx'],
-  darkMode: false, // or 'media' or 'class'
+  darkMode: false,
   theme: {
     extend: {
       colors: {
@@ -50,7 +50,7 @@ module.exports = {
           700: '#B31B35',
           800: '#901132',
           900: '#770A30',
-        }
+        },
       },
       spacing: {
         0.5: '4px',
@@ -76,6 +76,32 @@ module.exports = {
     fontFamily: {
       sans: ['Manrope'],
     },
+    fluidType: {
+      settings: {
+        fontSizeMin: 1.125, // 1.125rem === 18px
+        fontSizeMax: 1.25, // 1.25rem === 20px
+        ratioMin: 1.125, // Multiplicator Min
+        ratioMax: 1.25, // Multiplicator Max
+        screenMin: 20, // 20rem === 320px
+        screenMax: 96, // 96rem === 1536px
+        unit: 'rem',
+        prefix: '',
+      },
+      // Creates the text-xx classes
+      // These are the default settings and analoguos to the tailwindcss'
+      // default settings. Each `lineHeight` is set unitless
+      values: {
+        xs: [-2, 1.6],
+        sm: [-1, 1.6],
+        base: [0, 1.6],
+        lg: [1, 1.6],
+        xl: [2, 1.2],
+        '2xl': [3, 1.2],
+        '3xl': [4, 1.2],
+        '4xl': [5, 1.1],
+        '5xl': [6, 1.1],
+      },
+    },
   },
   variants: {
     extend: {
@@ -83,6 +109,7 @@ module.exports = {
       textColor: ['active', 'disabled'],
       borderColor: ['active', 'disabled'],
     },
+    fluidType: ['responsive'],
   },
-  plugins: [],
+  plugins: [require('tailwindcss-fluid-type')],
 };
