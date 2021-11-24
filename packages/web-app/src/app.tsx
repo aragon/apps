@@ -4,8 +4,8 @@ import {Switch, useLocation, Redirect} from 'react-router-dom';
 
 import Footer from 'containers/footer';
 import Navbar from 'containers/navbar';
-import {trackPage} from 'services/analytics';
 import {NotFound} from 'utils/paths';
+import {trackPage} from 'services/analytics';
 import {PageRoute, routes} from 'routes';
 import '../i18n.config';
 

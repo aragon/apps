@@ -20,6 +20,7 @@ import Breadcrumbs from 'components/breadcrumbs';
 import {useWallet} from 'context/augmentedWallet';
 import MenuDropdown from 'components/menuDropdown';
 import DaoSwitcherMenu from 'components/daoSwitcherMenu';
+// import {useMenuContext} from 'context/menu';
 import {Dashboard, NotFound} from 'utils/paths';
 
 const TEMP_ICON =
@@ -44,6 +45,7 @@ const Navbar: React.FC<NavbarProps> = ({breadcrumbs}) => {
    * State and Hooks
    ************************************/
   const {t} = useTranslation();
+  // const {open} = useMenuContext();
   const {connect, isConnected, reset, account} = useWallet();
 
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -82,7 +84,7 @@ const Navbar: React.FC<NavbarProps> = ({breadcrumbs}) => {
    ************************************/
   return (
     <>
-      <NavContainer data-testid="nav">
+      <NavContainer data-testid="navbar">
         <NavigationBar>
           <div className="desktop:hidden">
             <MenuButton
