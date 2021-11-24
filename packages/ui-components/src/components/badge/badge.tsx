@@ -29,4 +29,4 @@ const StyledBadge = styled.span.attrs(({ colorScheme }: StyledBadgeProps) => {
   const className: string = `text-xs p-0.5 rounded ${colorCode}`;
 
   return { className };
-}) <any>``;
+}) <StyledBadgeProps>``;
