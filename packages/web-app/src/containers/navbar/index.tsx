@@ -17,7 +17,7 @@ import NavLinks from 'components/navLinks';
 import Breadcrumbs from 'components/breadcrumbs';
 import {Dashboard} from 'utils/paths';
 import MenuDropdown from 'components/menuDropdown';
-import DaoSwitcherMenu from 'components/daoSwitcherMenu/daoSwitcherMenu';
+import DaoSwitcherMenu from 'components/daoSwitcherMenu';
 
 const TEMP_ICON =
   'https://banner2.cleanpng.com/20180325/sxw/kisspng-computer-icons-avatar-avatar-5ab7529a8e4e14.9936310115219636745829.jpg';
@@ -119,7 +119,7 @@ const Navbar: React.FC<NavbarProps> = ({breadcrumbs}) => {
                   </div>
                 </>
               ) : (
-                <NavLinks isMobile={false} />
+                <NavLinks />
               )}
             </LinksContainer>
           </Container>

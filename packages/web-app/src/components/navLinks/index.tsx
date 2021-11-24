@@ -11,17 +11,21 @@ import NavLink from 'components/navLink';
 import {Dashboard, Community, Finance, Governance} from 'utils/paths';
 
 type NavLinksProps = {
-  isMobile: boolean;
+  isMobile?: boolean;
   selected?: string;
   onClick?: () => void;
 };
 
-const NavLinks: React.FC<NavLinksProps> = ({isMobile, selected, onClick}) => {
+const NavLinks: React.FC<NavLinksProps> = ({
+  isMobile = false,
+  selected,
+  onClick,
+}) => {
   const {t} = useTranslation();
 
   // TODO: Investigate string interpolation with react-i18next
   return (
-    <>
+    <div data-testid="navLinks" className="flex">
       <NavLink
         to={Dashboard}
         icon={<IconDashboard />}
@@ -54,7 +58,7 @@ const NavLinks: React.FC<NavLinksProps> = ({isMobile, selected, onClick}) => {
         selected={selected}
         isMobile={isMobile}
       />
-    </>
+    </div>
   );
 };
 
