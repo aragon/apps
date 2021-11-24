@@ -1,5 +1,5 @@
 {
-  "name": "zaragoza",
+  "name": "@aragon/zaragoza-contracts",
   "version": "0.0.1",
   "description": "Aragon V2 DAO Framework",
   "main": "index.js",

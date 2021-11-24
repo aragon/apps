@@ -22,8 +22,7 @@ contract Executor is UUPSUpgradeable, Initializable {
   struct Action {
     address to; // Address to call.
     uint256 value; // Value to be sent with the call. for example (ETH)
-    bytes4 signature; // Selector signiture of the function to be called.
-    bytes arguments; // Arguments of the function to be called.
+    bytes data;
   }
 
   /// @dev Used for UUPS upgradability pattern
@@ -40,12 +39,7 @@ contract Executor is UUPSUpgradeable, Initializable {
     bytes[] memory execResults = new bytes[](actions.length);
 
     for (uint256 i = 0; i < actions.length; i++) {
-      bytes memory response;
-      bool success;
-
-      (success, response) = actions[i].to.call{ value: actions[i].value }(
-        abi.encodeWithSelector(actions[i].signature, actions[i].arguments)
-      );
+      (bool success, bytes memory response) = actions[i].to.call{ value: actions[i].value }(actions[i].data);
 
       require(success, ERROR_ACTION_CALL_FAILED);
 

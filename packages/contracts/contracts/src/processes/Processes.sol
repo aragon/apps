@@ -65,7 +65,7 @@ contract Processes is UUPSUpgradeable, Initializable {
     /// @notice Adds a new process to the DAO
     /// @param name The name of the new process
     /// @param process The process struct defining the new DAO process
-    function addProcess(string calldata name, Process calldata process) external {
+    function setProcess(string calldata name, Process calldata process) external {
         // TODO: Check if name already exists
         processes[name] = process;
 
@@ -90,7 +90,7 @@ contract Processes is UUPSUpgradeable, Initializable {
                 if (action.to == allowedAction.to) { // CONTRACT MATCHED
                     uint256 methodsLength = allowedAction.methods.length;
                     for (uint256 y = 0; y < methodsLength; y++) { // CHECK FOR EVERY ALLOWD METHOD OF A CONTRACT
-                        if (action.signature == allowedAction.methods[y]) { // METHOD FOUND STOP SEARCHING
+                        if (bytes4(action.data[:4]) == allowedAction.methods[y]) { // METHOD FOUND STOP SEARCHING
                             allowed = true;
                             break;
                         } else { // METHOD NOT FOUND

@@ -17,15 +17,10 @@ contract Vault is UUPSUpgradeable, Initializable {
     address internal constant ETH = address(0);
     bytes32 public constant TRANSFER_ROLE = keccak256("TRANSFER_ROLE");
 
-    string private constant ERROR_DATA_NON_ZERO = "VAULT_DATA_NON_ZERO";
-    string private constant ERROR_NOT_DEPOSITABLE = "VAULT_NOT_DEPOSITABLE";
     string private constant ERROR_DEPOSIT_VALUE_ZERO = "VAULT_DEPOSIT_VALUE_ZERO";
     string private constant ERROR_TRANSFER_VALUE_ZERO = "VAULT_TRANSFER_VALUE_ZERO";
     string private constant ERROR_SEND_REVERTED = "VAULT_SEND_REVERTED";
     string private constant ERROR_VALUE_MISMATCH = "VAULT_VALUE_MISMATCH";
-    string private constant ERROR_TOKEN_TRANSFER_FROM_REVERTED = "VAULT_TOKEN_TRANSFER_FROM_REVERT";
-    string private constant ERROR_TOKEN_TRANSFER_REVERTED = "VAULT_TOKEN_TRANSFER_REVERTED";
-
     
     event VaultTransfer(address indexed token, address indexed to, uint256 amount, string reason);
     event VaultETHDeposit(address indexed sender, uint256 amount);
@@ -74,8 +69,7 @@ contract Vault is UUPSUpgradeable, Initializable {
             (bool ok, ) = _to.call{value: _value}("");
             require(ok, ERROR_SEND_REVERTED);
         } else {
-            // TODO: 
-            // require(IERC20(_token).safeTransfer(_to, _value), ERROR_TOKEN_TRANSFER_REVERTED);
+            IERC20(_token).safeTransfer(_to, _value);
         }
 
         emit VaultTransfer(_token, _to, _value, _description);
@@ -95,11 +89,7 @@ contract Vault is UUPSUpgradeable, Initializable {
         if (_token == ETH) {
             require(msg.value == _value, ERROR_VALUE_MISMATCH);
         } else {
-            // TODO: 
-            // require(
-            //     IERC20(_token).safeTransferFrom(msg.sender, address(this), _value),
-            //     ERROR_TOKEN_TRANSFER_FROM_REVERTED
-            // );
+            IERC20(_token).safeTransferFrom(msg.sender, address(this), _value);
         }
 
         emit VaultDeposit(_token, msg.sender, _value, _description);

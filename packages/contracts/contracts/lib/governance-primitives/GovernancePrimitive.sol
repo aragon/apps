@@ -35,19 +35,28 @@ abstract contract GovernancePrimitive is UUPSUpgradeable, Initializable {
     }
 
     struct Execution { // A execution contains the process to execute, the proposal passed by the user, and the state of the execution.
+        uint256 id;
         Processes.Process process;
         Proposal proposal;
         State state;
     }
 
-    uint256 public executionsCounter;
-    mapping(uint256 => Execution) public executions;
+    uint256 private executionsCounter;
+    mapping(uint256 => Execution) private executions;
+
     DAO internal dao;
+
+    string private constant ERROR_NO_EXECUTION = "ERROR_NO_EXECUTION";
+
+    modifier executionExist(uint256 _id) {
+        require(_id < executionsCounter, ERROR_NO_EXECUTION);
+        _;
+    }
 
     /// @dev Used for UUPS upgradability pattern
     /// @param _dao The DAO contract of the current DAO
-    function initialize(DAO _dao) external initializer {
-            dao = _dao;
+    function initialize(DAO _dao) public initializer {
+        dao = _dao;
     }
 
     /// @dev Used for UUPS upgradability pattern
@@ -61,7 +70,7 @@ abstract contract GovernancePrimitive is UUPSUpgradeable, Initializable {
     /// @param process The process definition.
     /// @param proposal The proposal for execution submitted by the user.
     /// @return executionId The id of the newly created execution.
-    function start(Processes.Process calldata process, Proposal calldata proposal) external returns (uint256 executionId) {
+    function start(Processes.Process calldata process, Proposal calldata proposal) public returns (uint256 executionId) {
         require(
             Permissions(dao.permissions.address).checkPermission(
                 process.permissions.start
@@ -69,16 +78,18 @@ abstract contract GovernancePrimitive is UUPSUpgradeable, Initializable {
             "Not allowed to start!"
         );
 
-        Execution memory execution = Execution({
-            process: process,
-            proposal: proposal,
-            state: GovernancePrimitive.State.RUNNING
-        });
-
-        _start(execution); // "Hook" to add logic in start of a concrete implementation.
-
-        executions[executionsCounter] = execution;
         executionsCounter++;
+
+        // the reason behind this - https://matrix.to/#/!poXqlbVpQfXKWGseLY:gitter.im/$6IhWbfjcTqmLoqAVMopWFuIhlQwsoaIRxmsXhhmsaSs?via=gitter.im&via=matrix.org&via=ekpyron.org
+        Execution storage execution = executions[executionsCounter];
+        execution.id = executionsCounter;
+        execution.process = process;
+        execution.proposal = proposal;
+        execution.state = State.RUNNING;
+
+        Execution memory _execution = execution;
+
+        _start(_execution); // "Hook" to add logic in start of a concrete implementation.
 
         emit GovernancePrimitiveStarted(execution, executionId);
 
@@ -88,7 +99,7 @@ abstract contract GovernancePrimitive is UUPSUpgradeable, Initializable {
     /// @notice If called the proposed actions do get executed.
     /// @dev The state of the container does get changed to EXECUTED, the pre-execute method _execute does get called, and the actions executed.
     /// @param executionId The id of the execution struct.
-    function execute(uint256 executionId) external {
+    function execute(uint256 executionId) public {
         Execution storage execution = _getExecution(executionId);
 
         require(

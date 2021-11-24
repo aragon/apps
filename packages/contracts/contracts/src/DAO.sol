@@ -83,8 +83,8 @@ contract DAO is UUPSUpgradeable, Initializable {
     /// @dev Based on the name and the passed Process struct does a new entry get added in Processes
     /// @param name The name of the process as string
     /// @param process The struct defining the governance primitive, allowed actions, permissions, and metadata IPFS hash to describe the process 
-    function addProcess(string calldata name, Processes.Process calldata process) external {
-        processes.addProcess(name, process);
+    function setProcess(string calldata name, Processes.Process calldata process) external  {
+        processes.setProcess(name, process);
     }
 
     /// @notice Sets a new executor address in case it needs to get replaced at all

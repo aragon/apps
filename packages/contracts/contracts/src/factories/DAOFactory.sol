@@ -1,7 +1,7 @@
 /*
  * SPDX-License-Identifier:    MIT
  */
-/*
+
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
@@ -13,6 +13,8 @@ import "../governance-primitives/voting/SimpleVoting.sol";
 import "../tokens/GovernanceERC20.sol";
 import "../tokens/GovernanceWrappedERC20.sol";
 import "../registry/Registry.sol";
+import "../processes/Processes.sol";
+// import "../../lib/acl/ACL.sol";
 
 contract DAOFactory {
 
@@ -21,6 +23,7 @@ contract DAOFactory {
     address private daoBase;
     address private governanceERC20Base;
     address private governanceWrappedERC20Base;
+    address private processesBase;
 
     Registry private registry;
 
@@ -57,7 +60,15 @@ contract DAOFactory {
         ERC1967Proxy dao = new ERC1967Proxy(daoBase, abi.encodeWithSelector(DAO.initialize.selector));    
         ERC1967Proxy voting = new ERC1967Proxy(votingBase, abi.encodeWithSelector(SimpleVoting.initialize.selector, dao, token, _votingSettings));
         ERC1967Proxy vault = new ERC1967Proxy(vaultBase, abi.encodeWithSelector(Vault.initialize.selector, dao, _vaultSettings));
-        
+        ERC1967Proxy processes = new ERC1967Proxy(processesBase, abi.encodeWithSelector(Processes.initialize.selector, dao));
+
+        // permissions
+        // ACLData.BulkItem[] memory items = new ACLData.BulkItem[](4);
+
+        // items[0] = ACLData.BulkItem(ACLData.BulkOp.Grant, Processes.start.selector, address(dao));
+
+        // Processes.bulk(items);        
+
     }
 
     function setupBases() private {
@@ -66,6 +77,7 @@ contract DAOFactory {
         daoBase = address(new DAO());
         governanceERC20Base = address(new GovernanceERC20());
         governanceWrappedERC20Base = address(new GovernanceWrappedERC20());
+        processesBase = address(new Processes());
     }
 }
-*/
+

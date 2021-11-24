@@ -26,12 +26,12 @@ abstract contract VotingGovernancePrimitive is GovernancePrimitive {
             "Not allowed to execute!"
         );
 
-        _vote(data);
+        _vote(executionId, data);
 
         emit VotedOnGovernancePrimitive(execution, data, executionId);
     }
 
     // @dev The concrete implementation of vote.
     /// @param data The arbitrary custom data used for the concrete implementation
-    function _vote(bytes calldata data) internal virtual;
+    function _vote(uint256 executionId, bytes calldata data) internal virtual;
 }

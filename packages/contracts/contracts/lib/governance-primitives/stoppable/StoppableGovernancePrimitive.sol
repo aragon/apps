@@ -18,7 +18,7 @@ abstract contract StoppableGovernancePrimitive is GovernancePrimitive {
     /// @param executionId The identifier of the current execution
     /// @param data The arbitrary custom data used for the concrete implementation
     function stop(uint256 executionId, bytes calldata data) external {
-        Execution memory execution = _getExecution(executionId);
+        Execution storage execution = _getExecution(executionId);
 
         require(
             Permissions(dao.permissions.address).checkPermission(
