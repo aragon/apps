@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import {Button} from '@aragon/ui-components';
 
-import Wallet from 'components/wallet';
 import BottomSheet from 'components/bottomSheet';
 
 const Home: React.FC = () => {
@@ -20,15 +19,13 @@ const Home: React.FC = () => {
 
   return (
     <div className="bg-white">
-      <div className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 mx-auto max-w-screen-xl">
+      <div className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 mx-auto">
         <div className="text-center">
           <WelcomeMessage>{t('subtitle')}</WelcomeMessage>
           <Title>{t('title.part1')}</Title>
           <Subtitle>{t('title.part2')}</Subtitle>
         </div>
       </div>
-      <h1>Wallet</h1>
-      <Wallet />
       <Button onClick={onOpen} label="Toggle" />
       <BottomSheet onOpen={onOpen} isOpen={isOpen} onClose={onClose} />
     </div>

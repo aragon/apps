@@ -1,10 +1,11 @@
 import React, {useEffect} from 'react';
 import {ApmRoute as Route} from '@elastic/apm-rum-react';
-import {Switch, useLocation} from 'react-router-dom';
+import {Switch, useLocation, Redirect} from 'react-router-dom';
 
 import Footer from 'containers/footer';
 import Navbar from 'containers/navbar';
 import {trackPage} from 'services/analytics';
+import {NotFound} from 'utils/paths';
 import {PageRoute, routes} from 'routes';
 import '../i18n.config';
 
@@ -28,6 +29,7 @@ function App() {
               component={route.component}
             />
           ))}
+          <Redirect from="*" to={NotFound} />
         </Switch>
       </div>
       <Footer />

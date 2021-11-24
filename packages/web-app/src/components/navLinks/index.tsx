@@ -25,7 +25,12 @@ const NavLinks: React.FC<NavLinksProps> = ({
 
   // TODO: Investigate string interpolation with react-i18next
   return (
-    <div data-testid="navLinks" className="flex">
+    <div
+      data-testid="navLinks"
+      className={
+        isMobile ? 'flex flex-col space-y-1.5' : 'flex space-x-1.5 items-center'
+      }
+    >
       <NavLink
         to={Dashboard}
         icon={<IconDashboard />}

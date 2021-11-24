@@ -1,4 +1,5 @@
 import {
+  DaoCard,
   DaoSelector,
   IconClose,
   IconMenu,
@@ -14,10 +15,11 @@ import withBreadCrumbs, {BreadcrumbsRoute} from 'react-router-breadcrumbs-hoc';
 
 import {routes} from 'routes';
 import NavLinks from 'components/navLinks';
+import BottomSheet from 'components/bottomSheet';
 import Breadcrumbs from 'components/breadcrumbs';
-import {Dashboard} from 'utils/paths';
 import MenuDropdown from 'components/menuDropdown';
 import DaoSwitcherMenu from 'components/daoSwitcherMenu';
+import {Dashboard, NotFound} from 'utils/paths';
 
 const TEMP_ICON =
   'https://banner2.cleanpng.com/20180325/sxw/kisspng-computer-icons-avatar-avatar-5ab7529a8e4e14.9936310115219636745829.jpg';
@@ -37,7 +39,6 @@ const TEMP_DAOS = [
 
 type NavbarProps = {breadcrumbs: React.ReactNode[]};
 const Navbar: React.FC<NavbarProps> = ({breadcrumbs}) => {
-  //FIXME: Ignore all not found routes on breadcrumb
   const {t} = useTranslation();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showCrumbPopover, setShowCrumbPopover] = useState(false);
@@ -133,11 +134,30 @@ const Navbar: React.FC<NavbarProps> = ({breadcrumbs}) => {
         </NavigationBar>
         <TestNetworkIndicator>{t('testnetIndicator')}</TestNetworkIndicator>
       </NavContainer>
+
+      <BottomSheet
+        isOpen={showMobileMenu}
+        onOpen={handleShowMobileMenu}
+        onClose={handleHideMobileMenu}
+      >
+        <div className="space-y-3">
+          <DaoCard
+            wide
+            src={TEMP_ICON}
+            onClick={handleHideMobileMenu}
+            daoName="Bushido DAO"
+            daoAddress="bushido.aragonid.eth"
+          />
+          <NavLinks isMobile={true} onClick={handleHideMobileMenu} />
+        </div>
+      </BottomSheet>
     </>
   );
 };
 
-export default withBreadCrumbs(routes, {excludePaths: [Dashboard]})(Navbar);
+export default withBreadCrumbs(routes, {
+  excludePaths: [Dashboard, NotFound],
+})(Navbar);
 
 const NavContainer = styled.div.attrs({
   className: `flex fixed tablet:static bottom-0 flex-col w-full bg-gradient-to-b tablet:bg-gradient-to-t
