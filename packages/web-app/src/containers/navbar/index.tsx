@@ -101,11 +101,3 @@ const DaoIdentifier = styled.span.attrs({
 const TempDaoAvatar = styled.div.attrs({
   className: 'w-6 h-6 rounded-xl bg-primary-700',
 })``;
-
-const AccountButton = styled.button.attrs({
-  className: `${roundedButtonClasses} space-x-1.5 bg-ui-0`,
-})``;
-
-const TempAvatar = styled.div.attrs({
-  className: 'w-3 h-3 rounded-full bg-primary-700',
-})``;
