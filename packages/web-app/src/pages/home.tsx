@@ -5,6 +5,7 @@ import {Button} from '@aragon/ui-components';
 
 import Wallet from 'components/wallet';
 import BottomSheet from 'components/bottomSheet';
+import WalletMenu from 'containers/walletMenu';
 
 const Home: React.FC = () => {
   const {t} = useTranslation();
@@ -29,6 +30,7 @@ const Home: React.FC = () => {
       </div>
       <h1>Wallet</h1>
       <Wallet />
+      <WalletMenu />
       <Button onClick={onOpen} label="Toggle" />
       <BottomSheet onOpen={onOpen} isOpen={isOpen} onClose={onClose} />
     </div>
