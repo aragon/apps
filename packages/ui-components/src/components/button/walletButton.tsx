@@ -24,6 +24,10 @@ export type WalletButtonProps = {
    * Whether the current item is active (isSelected)
    */
   isSelected?: boolean;
+  /**
+  * Check if wallet is connected!
+  */
+  isConnected?: boolean;
 };
 
 export const WalletButton = ({
@@ -32,15 +36,16 @@ export const WalletButton = ({
   isSelected = false,
   isLoading,
   onClick,
+  isConnected = false,
 }: WalletButtonProps) => {
   return (
     <StyledButton onClick={onClick} size={'small'} isSelected={isSelected}>
       <StyledLabel {...{isLoading}}>{shortenAddress(label)}</StyledLabel>
-      {!isLoading ? (
+      {isConnected && (!isLoading ? (
         <Avatar src={src} size={'small'} />
       ) : (
         <Spinner size={'small'} />
-      )}
+      ))}
     </StyledButton>
   );
 };

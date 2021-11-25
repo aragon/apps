@@ -12,7 +12,8 @@ import {useWallet} from 'context/augmentedWallet';
 const Navbar: React.FC = () => {
   const {t} = useTranslation();
   const {open} = useMenuContext();
-  const {connect, isConnected, account} = useWallet();
+  const context: any = useWallet();
+  const {connect, isConnected, account, ensName, ensAvatarUrl} = context;
 
   const onToggle = () => {
     isConnected() ? open() : connect('injected');
@@ -45,8 +46,11 @@ const Navbar: React.FC = () => {
         </Container>
         <WalletButton
           onClick={onToggle}
-          label={isConnected() ? account : t('navButtons.connectWallet')}
-          src={'https://place-hold.it/150x150'}
+          isConnected={isConnected()}
+          label={
+            isConnected() ? ensName || account : t('navButtons.connectWallet')
+          }
+          src={ensAvatarUrl || account}
         />
       </NavigationBar>
     </NavContainer>
