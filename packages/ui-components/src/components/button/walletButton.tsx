@@ -14,7 +14,7 @@ export type WalletButtonProps = {
   /**
    * Avatar Image source
    */
-  src: string;
+  src: string | null;
   /**
    * Loading mode
    */
@@ -42,7 +42,7 @@ export const WalletButton = ({
     <StyledButton onClick={onClick} size={'small'} isSelected={isSelected}>
       <StyledLabel {...{isLoading}}>{shortenAddress(label)}</StyledLabel>
       {isConnected && (!isLoading ? (
-        <Avatar src={src} size={'small'} />
+        <Avatar src={src || ''} size={'small'} />
       ) : (
         <Spinner size={'small'} />
       ))}
