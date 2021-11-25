@@ -3,6 +3,7 @@ module.exports = {
   darkMode: false,
   theme: {
     extend: {
+      // extends colors accorging to design system
       colors: {
         primary: {
           50: '#F5F8FF',
@@ -52,6 +53,7 @@ module.exports = {
           900: '#770A30',
         },
       },
+      // extends spacing accorging to design system
       spacing: {
         0.5: '4px',
         1: '8px',
@@ -68,6 +70,7 @@ module.exports = {
         25: '200px',
       },
     },
+    // overwirtes screen breakpoints according to design system
     screens: {
       tablet: '768px',
       desktop: '1440px',
@@ -76,30 +79,43 @@ module.exports = {
     fontFamily: {
       sans: ['Manrope'],
     },
+    // overwirtes font sizes according to design system
+    // These are to be used on components (labels, etc.).
+    fontSize: {
+      xs: ['0.64rem', 1.5],
+      sm: ['0.8rem', 1.5],
+      base: ['1rem', 1.5],
+      lg: ['1.25rem', 1.5],
+      xl: ['1.563rem', 1.2],
+      '2xl': ['1.953rem', 1.2],
+      '3xl': ['2.441rem', 1.2],
+      '4xl': ['3.052rem', 1.2],
+      '5xl': ['3.185rem', 1.2],
+    },
     fluidType: {
       settings: {
-        fontSizeMin: 1.125, // 1.125rem === 18px
-        fontSizeMax: 1.25, // 1.25rem === 20px
-        ratioMin: 1.125, // Multiplicator Min
-        ratioMax: 1.25, // Multiplicator Max
+        fontSizeMin: 0.875, // 0.875rem === 14px
+        fontSizeMax: 1, // 1rem === 16px
+        ratioMin: 1.2, // Multiplicator Min: Minor Third
+        ratioMax: 1.25, // Multiplicator Max Major Third
         screenMin: 20, // 20rem === 320px
         screenMax: 96, // 96rem === 1536px
         unit: 'rem',
-        prefix: '',
+        prefix: 'ft',
       },
-      // Creates the text-xx classes
-      // These are the default settings and analoguos to the tailwindcss'
-      // default settings. Each `lineHeight` is set unitless
+      // Creates the ft-text-xx classes. These are to be used for inline text
+      // and headings.
+      // 'lineHeight' is unitless.
       values: {
-        xs: [-2, 1.6],
-        sm: [-1, 1.6],
-        base: [0, 1.6],
-        lg: [1, 1.6],
+        xs: [-2, 1.5],
+        sm: [-1, 1.5],
+        base: [0, 1.5],
+        lg: [1, 1.5],
         xl: [2, 1.2],
         '2xl': [3, 1.2],
         '3xl': [4, 1.2],
-        '4xl': [5, 1.1],
-        '5xl': [6, 1.1],
+        '4xl': [5, 1.2],
+        '5xl': [6, 1.2],
       },
     },
   },
