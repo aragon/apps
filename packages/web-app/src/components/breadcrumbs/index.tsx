@@ -11,7 +11,7 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({breadcrumbs}) => {
   let isLast: boolean;
 
   return (
-    <Container>
+    <Container data-testid="breadcrumbs">
       {crumbs.map(({match, key, breadcrumb}, index) => {
         isLast = index === breadcrumbs.length - 1;
         return (
