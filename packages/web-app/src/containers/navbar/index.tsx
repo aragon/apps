@@ -18,9 +18,9 @@ import NavLinks from 'components/navLinks';
 import BottomSheet from 'components/bottomSheet';
 import Breadcrumbs from 'components/breadcrumbs';
 import {useWallet} from 'context/augmentedWallet';
-import MenuDropdown from 'components/menuDropdown';
 import DaoSwitcherMenu from 'components/daoSwitcherMenu';
-// import {useMenuContext} from 'context/menu';
+import {useMenuContext} from 'context/menu';
+import BreadcrumbDropdown from 'components/breadcrumbMenuDropdown';
 import {Dashboard, NotFound} from 'utils/paths';
 
 const TEMP_ICON =
@@ -39,14 +39,17 @@ const TEMP_DAOS = [
   },
 ];
 
+// Really? How about a sentence as the variable name?
+const MIN_ROUTE_DEPTH_FOR_BREADCRUMBS = 2;
+
 type NavbarProps = {breadcrumbs: React.ReactNode[]};
 const Navbar: React.FC<NavbarProps> = ({breadcrumbs}) => {
   /************************************
    * State and Hooks
    ************************************/
   const {t} = useTranslation();
-  // const {open} = useMenuContext();
-  const {connect, isConnected, reset, account} = useWallet();
+  const {open} = useMenuContext();
+  const {connect, isConnected, account} = useWallet();
 
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showCrumbPopover, setShowCrumbPopover] = useState(false);
@@ -76,8 +79,8 @@ const Navbar: React.FC<NavbarProps> = ({breadcrumbs}) => {
   }, []);
 
   const handleWalletButtonClick = useCallback(() => {
-    isConnected() ? reset() : connect('injected');
-  }, [connect, isConnected, reset]);
+    isConnected() ? open() : connect('injected');
+  }, [connect, open, isConnected]);
 
   /************************************
    * Render
@@ -122,9 +125,7 @@ const Navbar: React.FC<NavbarProps> = ({breadcrumbs}) => {
 
             {/* ------- NavLinks (Desktop) ------- */}
             <LinksContainer>
-              {breadcrumbs.length <= 1 ? (
-                <NavLinks />
-              ) : (
+              {breadcrumbs.length >= MIN_ROUTE_DEPTH_FOR_BREADCRUMBS ? (
                 <>
                   <Popover
                     open={showCrumbPopover} // Using open so that clicking on MenuItem closes the popover
@@ -132,7 +133,7 @@ const Navbar: React.FC<NavbarProps> = ({breadcrumbs}) => {
                     align="start"
                     width={320}
                     content={
-                      <MenuDropdown
+                      <BreadcrumbDropdown
                         selected={
                           (breadcrumbs[0] as BreadcrumbsRoute)?.match.url
                         }
@@ -148,6 +149,8 @@ const Navbar: React.FC<NavbarProps> = ({breadcrumbs}) => {
                   </Popover>
                   <Breadcrumbs breadcrumbs={breadcrumbs} />
                 </>
+              ) : (
+                <NavLinks />
               )}
             </LinksContainer>
           </Container>
@@ -184,6 +187,7 @@ const Navbar: React.FC<NavbarProps> = ({breadcrumbs}) => {
   );
 };
 
+// Disable generation of breadcrumbs with the base paths "/" and "/notfound"
 export default withBreadCrumbs(routes, {
   excludePaths: [Dashboard, NotFound],
 })(Navbar);

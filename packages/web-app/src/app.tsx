@@ -4,6 +4,7 @@ import {Switch, useLocation, Redirect} from 'react-router-dom';
 
 import Footer from 'containers/footer';
 import Navbar from 'containers/navbar';
+import WalletMenu from 'containers/walletMenu';
 import {NotFound} from 'utils/paths';
 import {trackPage} from 'services/analytics';
 import {PageRoute, routes} from 'routes';
@@ -33,6 +34,7 @@ function App() {
         </Switch>
       </div>
       <Footer />
+      <WalletMenu />
     </div>
   );
 }
