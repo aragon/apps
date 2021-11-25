@@ -3,6 +3,9 @@ import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import {ActionListItem, DaoCard, IconLinkExternal} from '@aragon/ui-components';
 
+const TEMP_ICON =
+  'https://banner2.cleanpng.com/20180325/sxw/kisspng-computer-icons-avatar-avatar-5ab7529a8e4e14.9936310115219636745829.jpg';
+
 type DaoSwitcherMenuProps = {
   daos?: {name: string; ens: string; icon: string}[];
 
@@ -18,7 +21,17 @@ const DaoSwitcherMenu: React.FC<DaoSwitcherMenuProps> = ({
 
   return (
     <Container>
-      <DaoListContainer tabIndex={0}>
+      <DaoListContainer>
+        {/* NOTE: Temporarily static  */}
+        <DaoCard
+          daoAddress="bushido.aragonid.eth"
+          daoName="Bushido DAO"
+          includeSwitch={false}
+          onClick={onClick}
+          src={TEMP_ICON}
+          switchLabel={t('daoCard.switchLabel')}
+          wide
+        />
         {daos.map(({name, ens, icon}) => (
           <div key={name}>
             <DaoCard

@@ -19,7 +19,7 @@ export type DaoCardProps = {
    * */
   wide?: boolean;
   /** Label for switch button */
-  switchLabel: string;
+  switchLabel?: string;
   /** Handler for the switch button. Will be called when the button is clicked.
    * */
   onClick: () => void;
