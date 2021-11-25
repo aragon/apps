@@ -10,11 +10,13 @@ import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "../DAO.sol";
+import "../proxy/Component.sol";
 
-contract Vault is UUPSUpgradeable, Initializable {
+contract Vault is UpgradableComponent {
     using SafeERC20 for IERC20;
 
     address internal constant ETH = address(0);
+
     bytes32 public constant TRANSFER_ROLE = keccak256("TRANSFER_ROLE");
 
     string private constant ERROR_DEPOSIT_VALUE_ZERO = "VAULT_DEPOSIT_VALUE_ZERO";
@@ -25,15 +27,11 @@ contract Vault is UUPSUpgradeable, Initializable {
     event VaultTransfer(address indexed token, address indexed to, uint256 amount, string reason);
     event VaultETHDeposit(address indexed sender, uint256 amount);
     event VaultDeposit(address indexed token, address indexed sender, uint256 amount, string reason);
-
-    DAO private dao;
     
-    function initialize(DAO _dao) public initializer {
-        dao = _dao;
-    }
+    constructor() initializer {}
 
-    function _authorizeUpgrade(address _executor) internal view override {
-        require(dao.executor.address == _executor, "Only executor can call this!");
+    function initialize(DAO _dao) public override initializer {
+        Component.initialize(_dao);
     }
 
     /**  
@@ -60,7 +58,7 @@ contract Vault is UUPSUpgradeable, Initializable {
     // solution or since transfer will only be called by the voting contract, the attack
     // wouldn't happen anymore.
     // 2. add permission role to voting as a first implementation.
-    function transfer(address _token, address _to, uint256 _value, string calldata _description) external {
+    function transfer(address _token, address _to, uint256 _value, string calldata _description) external authP(TRANSFER_ROLE) {
         // require(dao.hasRole(APP_TRANSFER_ROLE, msg.sender), "Not Eligible To transfer");
         require(_value > 0, ERROR_TRANSFER_VALUE_ZERO);
 

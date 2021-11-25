@@ -35,3 +35,4 @@ abstract contract VotingGovernancePrimitive is GovernancePrimitive {
     /// @param data The arbitrary custom data used for the concrete implementation
     function _vote(uint256 executionId, bytes calldata data) internal virtual;
 }
+

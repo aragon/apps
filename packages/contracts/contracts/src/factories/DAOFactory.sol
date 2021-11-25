@@ -7,6 +7,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20VotesUpgradeable.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
+import "@openzeppelin/contracts/utils/Address.sol";
 import "../DAO.sol";
 import "../vault/Vault.sol";
 import "../governance-primitives/voting/SimpleVoting.sol";
@@ -14,16 +15,21 @@ import "../tokens/GovernanceERC20.sol";
 import "../tokens/GovernanceWrappedERC20.sol";
 import "../registry/Registry.sol";
 import "../processes/Processes.sol";
-// import "../../lib/acl/ACL.sol";
+import "../permissions/Permissions.sol";
+import "../executor/Executor.sol";
 
 contract DAOFactory {
 
+    using Address for address;
+    
     address private votingBase;
     address private vaultBase;
     address private daoBase;
     address private governanceERC20Base;
     address private governanceWrappedERC20Base;
     address private processesBase;
+    address private permissionsBase;
+    address private executorBase;
 
     Registry private registry;
 
@@ -39,6 +45,7 @@ contract DAOFactory {
     }
 
     function newDAO(
+        bytes calldata _metadata,
         TokenConfig calldata _tokenConfig,
         uint256[3] calldata _votingSettings,
         uint256[3] calldata _vaultSettings
@@ -57,18 +64,42 @@ contract DAOFactory {
             GovernanceWrappedERC20(token).initialize(IERC20Upgradeable(_tokenConfig.addr), _tokenConfig.name, _tokenConfig.symbol);
         }
 
-        ERC1967Proxy dao = new ERC1967Proxy(daoBase, abi.encodeWithSelector(DAO.initialize.selector));    
-        ERC1967Proxy voting = new ERC1967Proxy(votingBase, abi.encodeWithSelector(SimpleVoting.initialize.selector, dao, token, _votingSettings));
-        ERC1967Proxy vault = new ERC1967Proxy(vaultBase, abi.encodeWithSelector(Vault.initialize.selector, dao, _vaultSettings));
-        ERC1967Proxy processes = new ERC1967Proxy(processesBase, abi.encodeWithSelector(Processes.initialize.selector, dao));
+        // Creates necessary contracts for dao.
+        // Don't call initialize yet as DAO's initialize need contracts
+        // that haven't been deployed yet.
+        DAO dao = DAO(createProxy(daoBase, bytes("")));
+        address voting = createProxy(votingBase, abi.encodeWithSelector(SimpleVoting.initialize.selector, dao, token, _votingSettings));
+        address vault = createProxy(vaultBase, abi.encodeWithSelector(Vault.initialize.selector, dao, _vaultSettings));
+        address processes = createProxy(processesBase, abi.encodeWithSelector(Processes.initialize.selector, dao));
+        address permissions = createProxy(permissionsBase, abi.encodeWithSelector(Permissions.initialize.selector, dao));
+        address executor = createProxy(executorBase, abi.encodeWithSelector(Executor.initialize.selector, dao));
+        
+        dao.initialize(
+            _metadata,
+            Processes(processes),
+            Permissions(permissions),
+            Executor(executor),
+            address(this) // initial ACL root on DAO itself.
+        );
+        
 
-        // permissions
-        // ACLData.BulkItem[] memory items = new ACLData.BulkItem[](4);
+        // TODO: do we really need to cast it to payable ? 
+        dao.grant(vault, voting, Vault(payable(vault)).TRANSFER_ROLE()); // give voting contract the power on vault for transfer role.
+        dao.grant(executor, voting, Executor(executor).EXEC_ROLE()); // give voting contract the power on executor for executing actions.
+        
+        // TODO: come up with a solution that only one grant is enough to accomodate for all contracts.
+        dao.grant(vault, voting, Executor(executor).UPGRADE_ROLE());
+        dao.grant(executor, voting, Executor(executor).UPGRADE_ROLE());
+        dao.grant(permissions, voting, Executor(executor).UPGRADE_ROLE());
+        dao.grant(processes, voting, Executor(executor).UPGRADE_ROLE());
+        dao.grant(voting, voting, Executor(executor).UPGRADE_ROLE());
+        dao.grant(address(dao), voting, Executor(executor).UPGRADE_ROLE());
+              
 
-        // items[0] = ACLData.BulkItem(ACLData.BulkOp.Grant, Processes.start.selector, address(dao));
+    }
 
-        // Processes.bulk(items);        
-
+    function createProxy(address _logic, bytes memory _data) private returns(address) {
+        return address(new ERC1967Proxy(_logic, _data));
     }
 
     function setupBases() private {
@@ -78,6 +109,8 @@ contract DAOFactory {
         governanceERC20Base = address(new GovernanceERC20());
         governanceWrappedERC20Base = address(new GovernanceWrappedERC20());
         processesBase = address(new Processes());
+        permissionsBase = address(new Permissions());
+        executorBase = address(new Executor());
     }
 }
 

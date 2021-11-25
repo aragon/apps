@@ -8,8 +8,11 @@ import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20VotesUpg
 import "../../../lib/governance-primitives/voting/VotingGovernancePrimitive.sol";
 import "../../DAO.sol";
 import "../../executor/Executor.sol";
+// import "../../proxy/Upgradable.sol";
 
-contract SimpleVoting is VotingGovernancePrimitive {
+import "../../proxy/Component.sol";
+
+contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent {
     
     uint64 public constant PCT_BASE = 10 ** 18; // 0% = 0; 1% = 10^16; 100% = 10^18
 
@@ -54,8 +57,7 @@ contract SimpleVoting is VotingGovernancePrimitive {
     event ChangeMinQuorum(uint64 minAcceptQuorumPct);
 
     // TODO: @Giorgi check inheritance cause of initialize
-    function initialize(DAO _dao, ERC20VotesUpgradeable _token, uint64[3] calldata _voteSettings) external initializer { 
-        dao = _dao;
+    function initialize(DAO _dao, ERC20VotesUpgradeable _token, uint64[3] calldata _voteSettings) public initializer { 
         token = _token;
 
         require(_voteSettings[0] <= _voteSettings[1], ERROR_INIT_PCTS);
@@ -65,9 +67,9 @@ contract SimpleVoting is VotingGovernancePrimitive {
         supportRequiredPct = _voteSettings[1]; 
         voteTime = _voteSettings[2];
 
-        super.initialize(_dao);
+        Component.initialize(_dao);
     }
-
+    
     /**
     * @notice Change required support to `@formatPct(_supportRequiredPct)`%
     * @param _supportRequiredPct New required support

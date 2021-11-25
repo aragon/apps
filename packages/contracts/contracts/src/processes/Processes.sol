@@ -10,12 +10,13 @@ import "../../lib/governance-primitives/GovernancePrimitive.sol";
 import "../permissions/Permissions.sol";
 import "../executor/Executor.sol";
 import "../DAO.sol";
+import "../proxy/Component.sol";
 
 /// @title The processes contract defining the flow of every interaction with the DAO
 /// @author Samuel Furter - Aragon Association - 2021
 /// @notice This contract is a central point of the Aragon DAO framework and handles all the processes and stores the different process types with his governance primitives a DAO can have.
 /// @dev A list of process types are stored here pluss it validates if the passed actions in a proposal are valid.
-contract Processes is UUPSUpgradeable, Initializable { 
+contract Processes is UpgradableComponent { 
     event ProcessStarted(GovernancePrimitive.Proposal indexed proposal, uint256 indexed executionId);
     event NewProcessAdded(string indexed name, Process indexed process);
 
@@ -32,18 +33,11 @@ contract Processes is UUPSUpgradeable, Initializable {
     }
     
     mapping(string => Process) public processes; // All existing governance processes in this DAO
-    DAO private dao;
 
     /// @dev Used for UUPS upgradability pattern
     /// @param _dao The DAO contract of the current DAO
-    function initialize(DAO _dao) external initializer {
-        dao = _dao;
-    }
-
-    /// @dev Used for UUPS upgradability pattern
-    /// @param _executor The executor that can update this contract
-    function _authorizeUpgrade(address _executor) internal view override {
-        require(dao.executor.address == _executor, "Only executor can call this!");
+    function initialize(DAO _dao) public override initializer {
+        Component.initialize(_dao);
     }
 
     /// @notice Starts the given process resp. primitive by the given proposal

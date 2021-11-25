@@ -10,12 +10,13 @@ import "../../src/permissions/Permissions.sol";
 import "../../src/processes/Processes.sol";
 import "../../src/executor/Executor.sol";
 import "../../src/DAO.sol";
+import "../../src/proxy/Component.sol";
 
 /// @title Abstract implementation of the governance primitive
 /// @author Samuel Furter - Aragon Association - 2021
 /// @notice This contract can be used to implement concrete stoppable governance primitives and being fully compatible with the DAO framework and UI of Aragon
 /// @dev You only have to define the specific custom logic for your needs in _start, _execute, and _stop
-abstract contract GovernancePrimitive is UUPSUpgradeable, Initializable {
+abstract contract GovernancePrimitive is Component {
     event GovernancePrimitiveStarted(Execution indexed execution, uint256 indexed executionId);
     event GovernancePrimitiveExecuted(Execution indexed execution, uint256 indexed executionId);
 
@@ -44,25 +45,11 @@ abstract contract GovernancePrimitive is UUPSUpgradeable, Initializable {
     uint256 private executionsCounter;
     mapping(uint256 => Execution) private executions;
 
-    DAO internal dao;
-
     string private constant ERROR_NO_EXECUTION = "ERROR_NO_EXECUTION";
 
     modifier executionExist(uint256 _id) {
         require(_id < executionsCounter, ERROR_NO_EXECUTION);
         _;
-    }
-
-    /// @dev Used for UUPS upgradability pattern
-    /// @param _dao The DAO contract of the current DAO
-    function initialize(DAO _dao) public initializer {
-        dao = _dao;
-    }
-
-    /// @dev Used for UUPS upgradability pattern
-    /// @param _executor The executor that can update this contract
-    function _authorizeUpgrade(address _executor) internal view override {
-        require(dao.executor.address == _executor, "Only executor can call this!");
     }
 
     /// @notice If called the governance primitive starts a new execution.

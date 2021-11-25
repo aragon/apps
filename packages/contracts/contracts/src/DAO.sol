@@ -10,13 +10,14 @@ import "../lib/governance-primitives/GovernancePrimitive.sol";
 import "./permissions/Permissions.sol";
 import "./processes/Processes.sol";
 import "./executor/Executor.sol";
+import "./proxy/Component.sol";
 
 // TODO: Add ACL for inter-contract permissions (it is not the same as user roles!)
 /// @title The public interface of the Aragon DAO framework.
 /// @author Samuel Furter - Aragon Association - 2021
 /// @notice This contract is the entry point to the Aragon DAO framework and provides our users a simple and use to use public interface.
 /// @dev Public API of the Aragon DAO framework
-contract DAO is UUPSUpgradeable, Initializable {
+contract DAO is UpgradableComponent, ACL {
     event NewProposal(GovernancePrimitive.Proposal indexed proposal, Processes.Process indexed process, address indexed submitter, uint256 executionId);
 
     bytes public metadata;
@@ -33,18 +34,19 @@ contract DAO is UUPSUpgradeable, Initializable {
         bytes calldata _metadata,
         Processes _processes,
         Permissions _permissions,
-        Executor _executor
+        Executor _executor,
+        address _aclRoot
     ) external initializer {
         metadata = _metadata;
         processes = _processes;
         permissions = _permissions;
         executor = _executor;
+
+        ACL.initACL(_aclRoot);
     }
 
-    /// @dev Used for UUPS upgradability pattern
-    /// @param _executor The executor that can update this contract
-    function _authorizeUpgrade(address _executor) internal view override {
-        require(address(executor) == _executor, "Only the executor can call this!");
+    function hasPermission(address _where, address _who, bytes32 _role) public returns(bool) {
+        return willPerform(_where, _who, _role, ""); // TODO: add data as last argument
     }
 
     /// @notice If called a new governance process based on the submitted proposal does get kicked off
@@ -64,6 +66,7 @@ contract DAO is UUPSUpgradeable, Initializable {
         GovernancePrimitive(governancePrimitive).execute(executionID);
     }
 
+    // TODO: who should be able to do this ? Executor ? what role name can we give this ?  
     /// @notice Update the DAO metadata
     /// @dev Sets a new IPFS hash
     /// @param _metadata The IPFS hash of the new metadata object
@@ -71,6 +74,7 @@ contract DAO is UUPSUpgradeable, Initializable {
         metadata = _metadata;   
     }
 
+    // TODO: who should be able to do this ? Executor ? what role name can we give this ?  
     /// @notice Adds a new role to the permission management
     /// @dev Based on the name and the passed Permission struct does a new entry get added in Permissions
     /// @param role The name of the role as string
@@ -79,6 +83,7 @@ contract DAO is UUPSUpgradeable, Initializable {
         permissions.addRole(role, permission);
     }
 
+    // TODO: who should be able to do this ? Executor ? what role name can we give this ?  
     /// @notice Adds a new process to the DAO
     /// @dev Based on the name and the passed Process struct does a new entry get added in Processes
     /// @param name The name of the process as string
@@ -87,6 +92,7 @@ contract DAO is UUPSUpgradeable, Initializable {
         processes.setProcess(name, process);
     }
 
+    // TODO: who should be able to do this ? Executor ? what role name can we give this ?  
     /// @notice Sets a new executor address in case it needs to get replaced at all
     /// @dev Updates the executor contract property
     /// @param _executor The address of the new executor

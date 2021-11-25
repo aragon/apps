@@ -6,11 +6,15 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
+import "../proxy/Component.sol";
 
 /// @title Implementation of the Executor
 /// @author Sarkawt Azad - Aragon Association - 2021
 /// @notice This contract represent the execution layer.
-contract Executor is UUPSUpgradeable, Initializable {
+contract Executor is UpgradableComponent {
+
+  bytes32 public constant EXEC_ROLE = keccak256("EXEC_ROLE");
+
   event Executed(
     address indexed actor,
     Action[] indexed actions,
@@ -25,11 +29,9 @@ contract Executor is UUPSUpgradeable, Initializable {
     bytes data;
   }
 
-  /// @dev Used for UUPS upgradability pattern
-  /// @param executor The executor that can update this contract
-  function _authorizeUpgrade(address executor) internal view override {
-    require(address(this) == executor, "Only executor can call this!");
-  }
+  function initialize(DAO _dao) public override initializer {
+    Component.initialize(_dao);
+  } 
 
   /// @notice If called, the list of provided actions will be executed.
   /// @dev It run a loop through the array of acctions and execute one by one.
