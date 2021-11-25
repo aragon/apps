@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import {Button, IconButton, IconLinkExternal} from '@aragon/ui-components';
+import {useTranslation} from 'react-i18next';
 
 export type SectionWrapperProps = {
   title: string;
@@ -23,7 +24,7 @@ export const TokenSectionWrapper = ({title, children}: SectionWrapperProps) => {
         />
       </HeaderContainer>
       {children}
-      <Button mode={'ghost'} label={'See all'} />
+      <SeeAllButton />
     </>
   );
 };
@@ -38,9 +39,14 @@ export const TransferSectionWrapper = ({
         <Title>{title}</Title>
       </HeaderContainer>
       {children}
-      <Button mode={'ghost'} label={'See all'} />
+      <SeeAllButton />
     </>
   );
+};
+
+const SeeAllButton = () => {
+  const {t} = useTranslation();
+  return <Button mode={'ghost'} label={t('labels.seeAll')} />;
 };
 
 const Title = styled.p.attrs({
