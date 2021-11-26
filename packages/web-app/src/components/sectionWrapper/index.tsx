@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import {Button, IconButton, IconLinkExternal} from '@aragon/ui-components';
 import {useTranslation} from 'react-i18next';
+import {Link} from 'react-router-dom';
 
 export type SectionWrapperProps = {
   title: string;
@@ -20,7 +21,7 @@ export const TokenSectionWrapper = ({title, children}: SectionWrapperProps) => {
           side="right"
           label={'See on Explorer'}
           icon={<IconLinkExternal />}
-          onClick={() => (window.location.href = 'google.com')}
+          onClick={() => window.open('http://www.google.com', '_blank')}
         />
       </HeaderContainer>
       {children}
@@ -46,7 +47,13 @@ export const TransferSectionWrapper = ({
 
 const SeeAllButton = () => {
   const {t} = useTranslation();
-  return <Button mode={'ghost'} label={t('labels.seeAll')} />;
+  return (
+    <div>
+      <Link to={'/governance'}>
+        <Button mode={'ghost'} label={t('labels.seeAll')} />
+      </Link>
+    </div>
+  );
 };
 
 const Title = styled.p.attrs({
