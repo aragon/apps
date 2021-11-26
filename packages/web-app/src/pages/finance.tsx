@@ -1,7 +1,37 @@
 import React from 'react';
+import styled from 'styled-components';
+
+import {
+  TokenSectionWrapper,
+  TransferSectionWrapper,
+} from 'components/sectionWrapper';
 
 const Finance: React.FC = () => {
-  return <h1>Finance Page</h1>;
+  return (
+    <div className={'m-auto w-8/12 mt-4 space-y-3'}>
+      <h1 className={'text-2xl font-bold text-center '}>Finance Page</h1>
+      <TokenSectionWrapper title="Token Section">
+        <div className="my-2 border-1 border-solid space-y-2">
+          <ColoredDiv />
+          <ColoredDiv />
+          <ColoredDiv />
+          <ColoredDiv />
+          <ColoredDiv />
+        </div>
+      </TokenSectionWrapper>
+      <TransferSectionWrapper title="Token Section">
+        <div className="my-2 border-1 border-solid space-y-2">
+          <ColoredDiv />
+          <ColoredDiv />
+          <ColoredDiv />
+          <ColoredDiv />
+          <ColoredDiv />
+        </div>
+      </TransferSectionWrapper>
+    </div>
+  );
 };
 
 export default Finance;
+
+const ColoredDiv = styled.div.attrs({className: 'h-6 w-full bg-blue-100'})``;
