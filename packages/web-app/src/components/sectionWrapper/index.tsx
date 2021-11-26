@@ -50,9 +50,9 @@ const SeeAllButton = () => {
 };
 
 const Title = styled.p.attrs({
-  className: 'text-lg font-bold',
+  className: 'flex text-lg font-bold items-center',
 })``;
 
 const HeaderContainer = styled.div.attrs({
-  className: 'flex justify-between',
+  className: 'flex justify-between content-center',
 })``;
