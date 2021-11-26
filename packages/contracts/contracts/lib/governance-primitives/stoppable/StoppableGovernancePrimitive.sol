@@ -17,9 +17,10 @@ abstract contract StoppableGovernancePrimitive is GovernancePrimitive {
     /// @dev The state of the container does get changed to STOPPED and the concrete implementation in _stop called.
     /// @param executionId The identifier of the current execution
     /// @param data The arbitrary custom data used for the concrete implementation
-    function stop(uint256 executionId, bytes calldata data) external {
+    function stop(uint256 executionId, bytes calldata data) public executionExist(executionId) {
         Execution storage execution = _getExecution(executionId);
 
+        // TODO: which state should it be able to stop it ? only RUNNING ? 
         require(
             Permissions(dao.permissions.address).checkPermission(
                 execution.process.permissions.stop
@@ -27,9 +28,9 @@ abstract contract StoppableGovernancePrimitive is GovernancePrimitive {
             "Not allowed to execute!"
         );
 
-        _stop(data);
-
         execution.state = State.STOPPED;
+        
+        _stop(data);
 
         emit GovernancePrimitiveStopped(execution, executionId);
     }

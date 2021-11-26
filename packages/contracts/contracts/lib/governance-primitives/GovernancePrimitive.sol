@@ -19,10 +19,13 @@ import "../../src/proxy/Component.sol";
 abstract contract GovernancePrimitive is Component {
 
     bytes32 public constant CREATE_PRIMITIVE_START_ROLE = keccak256("CREATE_PRIMITIVE_START_ROLE");
+    bytes32 public constant PRIMITIVE_EXECUTE_ROLE = keccak256("PRIMITIVE_EXECUTE_ROLE");
 
-    event GovernancePrimitiveStarted(Execution indexed execution, uint256 indexed executionId);
-    event GovernancePrimitiveExecuted(Execution indexed execution, uint256 indexed executionId);
-
+    string internal constant ERROR_EXECUTION_STATE_WRONG = "ERROR_EXECUTION_STATE_WRONG";
+    string internal constant ERROR_NOT_ALLOWED_TO_EXECUTE = "ERROR_NOT_ALLOWED_TO_EXECUTE";
+    string internal constant ERROR_NOT_ALLOWED_TO_START = "ERROR_NOT_ALLOWED_TO_START";
+    string internal constant ERROR_NO_EXECUTION = "ERROR_NO_EXECUTION";
+    
     // The states a execution can have
     enum State {
         RUNNING, 
@@ -48,7 +51,8 @@ abstract contract GovernancePrimitive is Component {
     uint256 private executionsCounter;
     mapping(uint256 => Execution) private executions;
 
-    string private constant ERROR_NO_EXECUTION = "ERROR_NO_EXECUTION";
+    event GovernancePrimitiveStarted(Execution indexed execution, uint256 indexed executionId);
+    event GovernancePrimitiveExecuted(Execution indexed execution, uint256 indexed executionId);
 
     modifier executionExist(uint256 _id) {
         require(_id < executionsCounter, ERROR_NO_EXECUTION);
@@ -61,7 +65,7 @@ abstract contract GovernancePrimitive is Component {
     /// @param proposal The proposal for execution submitted by the user.
     /// @return executionId The id of the newly created execution.
     function start(Processes.Process calldata process, Proposal calldata proposal) 
-        public 
+        external 
         authP(CREATE_PRIMITIVE_START_ROLE) 
         returns (uint256 executionId) 
     {
@@ -69,7 +73,7 @@ abstract contract GovernancePrimitive is Component {
             Permissions(dao.permissions.address).checkPermission(
                 process.permissions.start
             ),
-            "Not allowed to start!"
+            ERROR_NOT_ALLOWED_TO_START
         );
 
         executionsCounter++;
@@ -93,21 +97,22 @@ abstract contract GovernancePrimitive is Component {
     /// @notice If called the proposed actions do get executed.
     /// @dev The state of the container does get changed to EXECUTED, the pre-execute method _execute does get called, and the actions executed.
     /// @param executionId The id of the execution struct.
-    function execute(uint256 executionId) public {
+    function execute(uint256 executionId) public executionExist(executionId) authP(PRIMITIVE_EXECUTE_ROLE) {
         Execution storage execution = _getExecution(executionId);
-
+        
+        require(execution.state == State.RUNNING, ERROR_EXECUTION_STATE_WRONG);
         require(
             Permissions(dao.permissions.address).checkPermission(
                 execution.process.permissions.execute
             ),
-            "Not allowed to execute!"
+            ERROR_NOT_ALLOWED_TO_EXECUTE
         );
-        
+
+        execution.state = State.EXECUTED;
+
         _execute(execution); // "Hook" to add logic in execute of a concrete implementation
 
         Executor(dao.executor.address).execute(execution.proposal.actions);
-
-        execution.state = State.EXECUTED;
 
         emit GovernancePrimitiveExecuted(execution, executionId);
     }

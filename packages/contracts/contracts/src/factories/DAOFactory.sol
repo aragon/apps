@@ -84,7 +84,7 @@ contract DAOFactory {
         );
         
         // create permissions
-        
+
         // The below line means that on any contract's function that has UPGRADE_ROLE, executor will be able to call it.
         dao.grant(address(type(uint160).max), executor, Executor(executor).UPGRADE_ROLE()); // TODO: we can bring address(type(uint160).max) from ACL for consistency.
        
@@ -101,6 +101,7 @@ contract DAOFactory {
         dao.grant(executor, voting, Executor(executor).EXEC_ROLE());
         // voting permissions
         dao.grant(voting, processes, SimpleVoting(voting).CREATE_PRIMITIVE_START_ROLE());
+        dao.grant(voting, address(dao), SimpleVoting(voting).PRIMITIVE_EXECUTE_ROLE());
         dao.grant(voting, executor, SimpleVoting(voting).MODIFY_SUPPORT_ROLE());
         dao.grant(voting, executor, SimpleVoting(voting).MODIFY_QUORUM_ROLE());
     }
