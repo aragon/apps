@@ -10,7 +10,6 @@ import "../../lib/governance-primitives/GovernancePrimitive.sol";
 import "../permissions/Permissions.sol";
 import "../executor/Executor.sol";
 import "../DAO.sol";
-import "../proxy/Component.sol";
 
 /// @title The processes contract defining the flow of every interaction with the DAO
 /// @author Samuel Furter - Aragon Association - 2021
@@ -33,6 +32,8 @@ contract Processes is UpgradableComponent {
     }
     
     mapping(string => Process) public processes; // All existing governance processes in this DAO
+
+    constructor() initializer {}
 
     /// @dev Used for UUPS upgradability pattern
     /// @param _dao The DAO contract of the current DAO

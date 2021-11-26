@@ -10,7 +10,7 @@ import "../lib/governance-primitives/GovernancePrimitive.sol";
 import "./permissions/Permissions.sol";
 import "./processes/Processes.sol";
 import "./executor/Executor.sol";
-import "./proxy/Component.sol";
+import "../lib/Component.sol";
 
 // TODO: Add ACL for inter-contract permissions (it is not the same as user roles!)
 /// @title The public interface of the Aragon DAO framework.
@@ -25,6 +25,8 @@ contract DAO is UpgradableComponent, ACL {
     Permissions public permissions;
     Executor public executor;
 
+    constructor() initializer {}
+
     /// @dev Used for UUPS upgradability pattern
     /// @param _metadata IPFS hash that points to all the metadata (logo, description, tags, etc.) of a DAO
     /// @param _processes All the processes a DAO has
@@ -36,7 +38,7 @@ contract DAO is UpgradableComponent, ACL {
         Permissions _permissions,
         Executor _executor,
         address _aclRoot
-    ) external initializer {
+    ) public initializer {
         metadata = _metadata;
         processes = _processes;
         permissions = _permissions;

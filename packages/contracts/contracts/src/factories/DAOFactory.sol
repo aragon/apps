@@ -87,15 +87,11 @@ contract DAOFactory {
         dao.grant(vault, voting, Vault(payable(vault)).TRANSFER_ROLE()); // give voting contract the power on vault for transfer role.
         dao.grant(executor, voting, Executor(executor).EXEC_ROLE()); // give voting contract the power on executor for executing actions.
         
-        // TODO: come up with a solution that only one grant is enough to accomodate for all contracts.
-        dao.grant(vault, voting, Executor(executor).UPGRADE_ROLE());
-        dao.grant(executor, voting, Executor(executor).UPGRADE_ROLE());
-        dao.grant(permissions, voting, Executor(executor).UPGRADE_ROLE());
-        dao.grant(processes, voting, Executor(executor).UPGRADE_ROLE());
-        dao.grant(voting, voting, Executor(executor).UPGRADE_ROLE());
-        dao.grant(address(dao), voting, Executor(executor).UPGRADE_ROLE());
-              
-
+        // TODO: we can bring address(type(uint160).max) from ACL for consistency.
+        // The below line means that on any contract's function that has UPGRADE_ROLE, voting will be able to call it.
+        dao.grant(address(type(uint160).max), voting, Executor(executor).UPGRADE_ROLE());
+       
+        
     }
 
     function createProxy(address _logic, bytes memory _data) private returns(address) {

@@ -6,7 +6,7 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
-import "../proxy/Component.sol";
+import "../../lib/Component.sol";
 
 /// @title Implementation of the Executor
 /// @author Sarkawt Azad - Aragon Association - 2021
@@ -29,6 +29,10 @@ contract Executor is UpgradableComponent {
     bytes data;
   }
 
+  constructor() initializer {}
+
+  /// @dev Used for UUPS upgradability pattern
+  /// @param _dao The DAO contract of the current DAO
   function initialize(DAO _dao) public override initializer {
     Component.initialize(_dao);
   } 

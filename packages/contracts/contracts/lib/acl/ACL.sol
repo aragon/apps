@@ -33,18 +33,15 @@ contract ACL is Initializable {
     address internal constant UNSET_ROLE = address(0);
     address internal constant FREEZE_FLAG = address(1); // Also used as "who"
     address internal constant ALLOW_FLAG = address(2);
-
-    // Role -> Who -> Access flag (unset or allow) or ACLOracle (any other address denominates auth via ACLOracle)
-    mapping (bytes32 => mapping (address => address)) public roles;
         
     // hash(where, who, role) => Access flag(unset or allow) or ACLOracle (any other address denominates auth via ACLOracle)
     mapping (bytes32 => address) internal authPermissions;
     // hash(where, role) => true(role froze on the where), false(role is not frozen on the where)
     mapping (bytes32 => bool) internal freezePermissions;
 
-    event Granted(bytes32 indexed role, address indexed actor, address indexed who, IACLOracle oracle);
-    event Revoked(bytes32 indexed role, address indexed actor, address indexed who);
-    event Frozen(bytes32 indexed role, address indexed actor);
+    event Granted(bytes32 indexed role, address indexed actor, address indexed who, address where, IACLOracle oracle);
+    event Revoked(bytes32 indexed role, address indexed actor, address indexed who, address where);
+    event Frozen(bytes32 indexed role, address indexed actor, address where);
 
     modifier auth(address _where, bytes32 _role) {
         require(willPerform(_where, msg.sender, _role, msg.data), "acl: auth");
@@ -84,8 +81,9 @@ contract ACL is Initializable {
     }
 
     function willPerform(address _where, address _who, bytes32 _role, bytes memory _data) internal returns (bool) {
-        // First check if the given who is auth'd, then if any address is auth'd
-        return _checkRole(_where, _who, _role, _data) || _checkRole(_where, ANY_ADDR, _role, _data);
+        return _checkRole(_where, _who, _role, _data) // check if _who is eligible for _role on _where
+            || _checkRole(_where, ANY_ADDR, _role, _data) // check if anyone is eligible for _role on _where
+            || _checkRole(ANY_ADDR, _who, _role, _data); // check if _who is eligible for _role on any contract.
     }
 
     function isFrozen(address _where, bytes32 _role) public view returns (bool) {
@@ -107,7 +105,7 @@ contract ACL is Initializable {
         require(authPermissions[permission] == UNSET_ROLE, "acl: role already granted");
         authPermissions[permission] = address(_oracle);
 
-        emit Granted(_role, msg.sender, _who, _oracle);
+        emit Granted(_role, msg.sender, _who, _where, _oracle);
     }
 
     function _revoke(address _where, address _who, bytes32 _role) internal {
@@ -117,7 +115,7 @@ contract ACL is Initializable {
         require(authPermissions[permission] != UNSET_ROLE, "acl: role already revoked");
         authPermissions[permission] = UNSET_ROLE;
 
-        emit Revoked(_role, msg.sender, _who);
+        emit Revoked(_role, msg.sender, _who, _where);
     }
 
     function _freeze(address _where, bytes32 _role) internal {
@@ -127,7 +125,7 @@ contract ACL is Initializable {
         require(!freezePermissions[permission], "acl: role already freeze");
         freezePermissions[freezeHash(_where, _role)] = true;
 
-        emit Frozen(_role, msg.sender);
+        emit Frozen(_role, msg.sender, _where);
     }
 
     function _checkRole(address _where, address _who, bytes32 _role, bytes memory _data) internal returns (bool) {

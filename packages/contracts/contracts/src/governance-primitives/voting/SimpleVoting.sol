@@ -8,9 +8,7 @@ import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20VotesUpg
 import "../../../lib/governance-primitives/voting/VotingGovernancePrimitive.sol";
 import "../../DAO.sol";
 import "../../executor/Executor.sol";
-// import "../../proxy/Upgradable.sol";
-
-import "../../proxy/Component.sol";
+import "../../../lib/Component.sol";
 
 contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent {
     
@@ -56,7 +54,10 @@ contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent {
     event ChangeSupportRequired(uint64 supportRequiredPct);
     event ChangeMinQuorum(uint64 minAcceptQuorumPct);
 
-    // TODO: @Giorgi check inheritance cause of initialize
+    constructor() initializer {}
+
+    /// @dev Used for UUPS upgradability pattern
+    /// @param _dao The DAO contract of the current DAO
     function initialize(DAO _dao, ERC20VotesUpgradeable _token, uint64[3] calldata _voteSettings) public initializer { 
         token = _token;
 
@@ -69,7 +70,7 @@ contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent {
 
         Component.initialize(_dao);
     }
-    
+
     /**
     * @notice Change required support to `@formatPct(_supportRequiredPct)`%
     * @param _supportRequiredPct New required support

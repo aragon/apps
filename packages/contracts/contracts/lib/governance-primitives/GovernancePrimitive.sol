@@ -10,7 +10,7 @@ import "../../src/permissions/Permissions.sol";
 import "../../src/processes/Processes.sol";
 import "../../src/executor/Executor.sol";
 import "../../src/DAO.sol";
-import "../../src/proxy/Component.sol";
+import "../Component.sol";
 
 /// @title Abstract implementation of the governance primitive
 /// @author Samuel Furter - Aragon Association - 2021

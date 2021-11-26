@@ -8,7 +8,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
 import "../../lib/permissions/PermissionValidator.sol";
 import "../DAO.sol";
-import "../proxy/Component.sol";
+import "../../lib/Component.sol";
 
 // TODO: Add update, remove etc. role
 /// @title The permissions contract responsible to handle all the governance process related permissions.
@@ -43,16 +43,12 @@ contract Permissions is UpgradableComponent {
 
     mapping(string => Permission) public permissions;
 
+    constructor() initializer {}
+
     /// @dev Used for UUPS upgradability pattern
     /// @param _dao The DAO contract of the current DAO
     function initialize(DAO _dao) public override initializer {
         Component.initialize(_dao);
-    }
-
-    /// @dev Used for UUPS upgradability pattern
-    /// @param _executor The executor that can update this contract
-    function _authorizeUpgrade(address _executor) internal view override {
-        require(dao.executor.address == _executor, "Only executor can call this!");
     }
 
     /// @notice Adds a new role based on the permission validations passed.

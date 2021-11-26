@@ -9,8 +9,8 @@ import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "../DAO.sol";
-import "../../lib/acl/ACL.sol";
+import "../src/DAO.sol";
+import "./acl/ACL.sol";
 
 
 /**
@@ -34,8 +34,8 @@ abstract contract Component {
 abstract contract UpgradableComponent is Component, UUPSUpgradeable, Initializable {
 
     bytes32 public constant UPGRADE_ROLE = keccak256("UPGRADE_ROLE");
-
-    function _authorizeUpgrade(address /*_newImplementation*/) internal override authP(UPGRADE_ROLE) {
+    
+    function _authorizeUpgrade(address /*_newImplementation*/) internal virtual override authP(UPGRADE_ROLE) {
         // require(willPerform(UPGRADE_ROLE, msg.sender, ""), "Not able to update");
     }
 

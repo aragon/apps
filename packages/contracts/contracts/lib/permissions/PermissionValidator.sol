@@ -17,7 +17,7 @@ abstract contract PermissionValidator is UUPSUpgradeable, Initializable {
 
       /// @dev Used for UUPS upgradability pattern
       /// @param _dao The DAO contract of the current DAO
-      function initialize(DAO _dao) external initializer {
+      function initialize(DAO _dao) public initializer {
             dao = _dao;
       }
 
