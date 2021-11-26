@@ -10,13 +10,16 @@ import "../../src/permissions/Permissions.sol";
 import "../../src/processes/Processes.sol";
 import "../../src/executor/Executor.sol";
 import "../../src/DAO.sol";
-import "../Component.sol";
+import "../../src/proxy/Component.sol";
 
 /// @title Abstract implementation of the governance primitive
 /// @author Samuel Furter - Aragon Association - 2021
 /// @notice This contract can be used to implement concrete stoppable governance primitives and being fully compatible with the DAO framework and UI of Aragon
 /// @dev You only have to define the specific custom logic for your needs in _start, _execute, and _stop
 abstract contract GovernancePrimitive is Component {
+
+    bytes32 public constant CREATE_PRIMITIVE_START_ROLE = keccak256("CREATE_PRIMITIVE_START_ROLE");
+
     event GovernancePrimitiveStarted(Execution indexed execution, uint256 indexed executionId);
     event GovernancePrimitiveExecuted(Execution indexed execution, uint256 indexed executionId);
 
@@ -57,7 +60,11 @@ abstract contract GovernancePrimitive is Component {
     /// @param process The process definition.
     /// @param proposal The proposal for execution submitted by the user.
     /// @return executionId The id of the newly created execution.
-    function start(Processes.Process calldata process, Proposal calldata proposal) public returns (uint256 executionId) {
+    function start(Processes.Process calldata process, Proposal calldata proposal) 
+        public 
+        authP(CREATE_PRIMITIVE_START_ROLE) 
+        returns (uint256 executionId) 
+    {
         require(
             Permissions(dao.permissions.address).checkPermission(
                 process.permissions.start

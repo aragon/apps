@@ -130,16 +130,15 @@ contract ACL is Initializable {
 
     function _checkRole(address _where, address _who, bytes32 _role, bytes memory _data) internal returns (bool) {
         address accessFlagOrAclOracle = authPermissions[permissionHash(_where, _who, _role)];
+        
+        if (accessFlagOrAclOracle != UNSET_ROLE) return false;
+        if (accessFlagOrAclOracle == ALLOW_FLAG) return true;
 
-        if (accessFlagOrAclOracle != UNSET_ROLE) {
-            if (accessFlagOrAclOracle == ALLOW_FLAG) return true;
-
-            // Since it's not a flag, assume it's an ACLOracle and try-catch to skip failures
-            try IACLOracle(accessFlagOrAclOracle).willPerform(_where, _who, _role, _data) returns (bool allowed) {
-                if (allowed) return true;
-            } catch { }
-        }
-
+        // Since it's not a flag, assume it's an ACLOracle and try-catch to skip failures
+        try IACLOracle(accessFlagOrAclOracle).willPerform(_where, _who, _role, _data) returns (bool allowed) {
+            if (allowed) return true;
+        } catch { }
+        
         return false;
     }
 

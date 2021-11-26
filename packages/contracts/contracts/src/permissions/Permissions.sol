@@ -8,13 +8,16 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
 import "../../lib/permissions/PermissionValidator.sol";
 import "../DAO.sol";
-import "../../lib/Component.sol";
+import "../proxy/Component.sol";
 
 // TODO: Add update, remove etc. role
 /// @title The permissions contract responsible to handle all the governance process related permissions.
 /// @author Samuel Furter - Aragon Association - 2021
 /// @notice This contract is a central point of the Aragon DAO framework and handles all the permissions and stores the different groups a DAO can have.
 contract Permissions is UpgradableComponent {
+    
+    bytes32 public constant PERMISSIONS_SET_ROLE = keccak256("PERMISSIONS_SET_ROLE");
+
     event NewRoleAdded(string indexed role, Permission indexed permission);
 
     // The operator used to combine the validators accordingly to the the users wish
@@ -28,7 +31,8 @@ contract Permissions is UpgradableComponent {
     // A permission consists out of a logical operator that defines how the set of validators should get interpreted
     struct Permission {
         Operator operator;
-        PermissionValidator[] validators;
+        PermissionValidator[] validators; // ERC20Validator, NFTValidator
+        bytes[] data;
     }
 
     // The different permissions to define depending on the type of governance primitive
@@ -55,9 +59,8 @@ contract Permissions is UpgradableComponent {
     /// @dev Here you simple pass the role name and the permission struct with his logical operator and the validators set.
     /// @param role The name of the role as string
     /// @param permission The permission struct to define the permission validation rules
-    function addRole(string calldata role, Permission calldata permission) external {
-        // TODO: Check if name already exists!
-        permissions[role] = permission;
+    function setRole(string calldata role, Permission calldata permission) external authP(PERMISSIONS_SET_ROLE) {
+        permissions[role] = permission; // Group1 => [AND, ERC20Validator]
 
         emit NewRoleAdded(role, permission);
     }
@@ -67,15 +70,17 @@ contract Permissions is UpgradableComponent {
     /// @dev Based on the stored permission struct does it go through all validators and checks the validity of the caller.
     /// @param role The name of the role as string
     /// @return valid The validity check result returned as bool
-    function checkPermission(string calldata role) external returns (bool valid) {
+    function checkPermission(string calldata role) external view returns (bool valid) {
         PermissionValidator[] memory validators = permissions[role].validators;
         Operator operator = permissions[role].operator;
+        bytes[] memory data = permissions[role].data;
+
         uint256 validatorsLength = validators.length;
         uint8 succeeds = 0;
 
         for (uint256 i = 0; i < validatorsLength; i++) {
             PermissionValidator validator = validators[i];
-            if(PermissionValidator(validator).isValid(msg.sender)) {
+            if(PermissionValidator(validator).isValid(msg.sender, data[i])) {
                 succeeds += 1;
             }
         }

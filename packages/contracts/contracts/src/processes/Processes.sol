@@ -16,6 +16,10 @@ import "../DAO.sol";
 /// @notice This contract is a central point of the Aragon DAO framework and handles all the processes and stores the different process types with his governance primitives a DAO can have.
 /// @dev A list of process types are stored here pluss it validates if the passed actions in a proposal are valid.
 contract Processes is UpgradableComponent { 
+
+    bytes32 public constant PROCESSES_START_ROLE = keccak256("PROCESSES_START_ROLE");
+    bytes32 public constant PROCESSES_SET_ROLE = keccak256("PROCESSES_SET_ROLE");
+
     event ProcessStarted(GovernancePrimitive.Proposal indexed proposal, uint256 indexed executionId);
     event NewProcessAdded(string indexed name, Process indexed process);
 
@@ -46,7 +50,11 @@ contract Processes is UpgradableComponent {
     /// @param proposal The proposal for execution submitted by the user.
     /// @return process The Process struct stored
     /// @return executionId The id of the newly created execution.
-    function start(GovernancePrimitive.Proposal calldata proposal) external returns (Process memory process, uint256 executionId) {
+    function start(GovernancePrimitive.Proposal calldata proposal) 
+        external 
+        authP(PROCESSES_START_ROLE) 
+        returns (Process memory process, uint256 executionId) 
+    {
         process = processes[proposal.processName];
         require(checkActions(proposal.actions, process.allowedActions), "Not allowed action!");
 
@@ -60,7 +68,10 @@ contract Processes is UpgradableComponent {
     /// @notice Adds a new process to the DAO
     /// @param name The name of the new process
     /// @param process The process struct defining the new DAO process
-    function setProcess(string calldata name, Process calldata process) external {
+    function setProcess(string calldata name, Process calldata process) 
+        public 
+        authP(PROCESSES_SET_ROLE) 
+    {
         // TODO: Check if name already exists
         processes[name] = process;
 
@@ -73,7 +84,10 @@ contract Processes is UpgradableComponent {
     /// @param actions The proposal for execution submitted by the user.
     /// @param allowedActions The proposal for execution submitted by the user.
     /// @return valid Returns the validity bool value after validating the actions
-    function checkActions(Executor.Action[] calldata actions, AllowedActions[] memory allowedActions) internal pure returns (bool valid) {
+    function checkActions(Executor.Action[] calldata actions, AllowedActions[] memory allowedActions) 
+        internal pure 
+        returns (bool valid) 
+    {
         uint256 actionsLength = actions.length;
         uint256 allowedActionsLength = allowedActions.length;
         bool allowed = false;

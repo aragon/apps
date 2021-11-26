@@ -10,14 +10,17 @@ import "../lib/governance-primitives/GovernancePrimitive.sol";
 import "./permissions/Permissions.sol";
 import "./processes/Processes.sol";
 import "./executor/Executor.sol";
-import "../lib/Component.sol";
+import "../src/proxy/Component.sol";
+import "../lib/acl/ACL.sol";
 
-// TODO: Add ACL for inter-contract permissions (it is not the same as user roles!)
 /// @title The public interface of the Aragon DAO framework.
 /// @author Samuel Furter - Aragon Association - 2021
 /// @notice This contract is the entry point to the Aragon DAO framework and provides our users a simple and use to use public interface.
 /// @dev Public API of the Aragon DAO framework
 contract DAO is UpgradableComponent, ACL {
+    
+    bytes32 public constant DAO_CONFIG_ROLE = keccak256("DAO_CONFIG_ROLE");
+
     event NewProposal(GovernancePrimitive.Proposal indexed proposal, Processes.Process indexed process, address indexed submitter, uint256 executionId);
 
     bytes public metadata;
@@ -72,7 +75,7 @@ contract DAO is UpgradableComponent, ACL {
     /// @notice Update the DAO metadata
     /// @dev Sets a new IPFS hash
     /// @param _metadata The IPFS hash of the new metadata object
-    function setMetadata(bytes calldata _metadata) external {
+    function setMetadata(bytes calldata _metadata) external authP(DAO_CONFIG_ROLE) {
         metadata = _metadata;   
     }
 
@@ -81,8 +84,8 @@ contract DAO is UpgradableComponent, ACL {
     /// @dev Based on the name and the passed Permission struct does a new entry get added in Permissions
     /// @param role The name of the role as string
     /// @param permission The struct defining the logical operator and validators set for this role
-    function addRole(string calldata role, Permissions.Permission calldata permission) external {
-        permissions.addRole(role, permission);
+    function addRole(string calldata role, Permissions.Permission calldata permission) external authP(DAO_CONFIG_ROLE) {
+        permissions.setRole(role, permission);
     }
 
     // TODO: who should be able to do this ? Executor ? what role name can we give this ?  
@@ -90,7 +93,7 @@ contract DAO is UpgradableComponent, ACL {
     /// @dev Based on the name and the passed Process struct does a new entry get added in Processes
     /// @param name The name of the process as string
     /// @param process The struct defining the governance primitive, allowed actions, permissions, and metadata IPFS hash to describe the process 
-    function setProcess(string calldata name, Processes.Process calldata process) external  {
+    function setProcess(string calldata name, Processes.Process calldata process) external authP(DAO_CONFIG_ROLE) {
         processes.setProcess(name, process);
     }
 
@@ -98,7 +101,7 @@ contract DAO is UpgradableComponent, ACL {
     /// @notice Sets a new executor address in case it needs to get replaced at all
     /// @dev Updates the executor contract property
     /// @param _executor The address of the new executor
-    function setExecutor(Executor _executor) external {
+    function setExecutor(Executor _executor) external authP(DAO_CONFIG_ROLE) {
         executor = _executor;
     }
 } 

@@ -65,6 +65,7 @@ contract DAOFactory {
         }
 
         // Creates necessary contracts for dao.
+
         // Don't call initialize yet as DAO's initialize need contracts
         // that haven't been deployed yet.
         DAO dao = DAO(createProxy(daoBase, bytes("")));
@@ -82,16 +83,26 @@ contract DAOFactory {
             address(this) // initial ACL root on DAO itself.
         );
         
-
-        // TODO: do we really need to cast it to payable ? 
-        dao.grant(vault, voting, Vault(payable(vault)).TRANSFER_ROLE()); // give voting contract the power on vault for transfer role.
-        dao.grant(executor, voting, Executor(executor).EXEC_ROLE()); // give voting contract the power on executor for executing actions.
+        // create permissions
         
-        // TODO: we can bring address(type(uint160).max) from ACL for consistency.
-        // The below line means that on any contract's function that has UPGRADE_ROLE, voting will be able to call it.
-        dao.grant(address(type(uint160).max), voting, Executor(executor).UPGRADE_ROLE());
+        // The below line means that on any contract's function that has UPGRADE_ROLE, executor will be able to call it.
+        dao.grant(address(type(uint160).max), executor, Executor(executor).UPGRADE_ROLE()); // TODO: we can bring address(type(uint160).max) from ACL for consistency.
        
-        
+        // vault permissions
+        dao.grant(vault, executor, Vault(payable(vault)).TRANSFER_ROLE()); // TODO: do we really need to cast it to payable ? 
+        // permissions permissions
+        dao.grant(permissions, address(dao), Permissions(permissions).PERMISSIONS_SET_ROLE());
+        // processes permissions
+        dao.grant(processes, address(dao), Processes(processes).PROCESSES_START_ROLE());
+        dao.grant(processes, address(dao), Processes(processes).PROCESSES_SET_ROLE());
+        // dao permissions
+        dao.grant(address(dao), executor, dao.DAO_CONFIG_ROLE());
+        // executor permissions
+        dao.grant(executor, voting, Executor(executor).EXEC_ROLE());
+        // voting permissions
+        dao.grant(voting, processes, SimpleVoting(voting).CREATE_PRIMITIVE_START_ROLE());
+        dao.grant(voting, executor, SimpleVoting(voting).MODIFY_SUPPORT_ROLE());
+        dao.grant(voting, executor, SimpleVoting(voting).MODIFY_QUORUM_ROLE());
     }
 
     function createProxy(address _logic, bytes memory _data) private returns(address) {

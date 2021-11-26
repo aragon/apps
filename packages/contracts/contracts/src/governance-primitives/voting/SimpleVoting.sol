@@ -8,10 +8,13 @@ import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20VotesUpg
 import "../../../lib/governance-primitives/voting/VotingGovernancePrimitive.sol";
 import "../../DAO.sol";
 import "../../executor/Executor.sol";
-import "../../../lib/Component.sol";
+import "../../proxy/Component.sol";
 
 contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent {
     
+    bytes32 public constant MODIFY_SUPPORT_ROLE = keccak256("MODIFY_SUPPORT_ROLE");
+    bytes32 public constant MODIFY_QUORUM_ROLE = keccak256("MODIFY_QUORUM_ROLE");
+
     uint64 public constant PCT_BASE = 10 ** 18; // 0% = 0; 1% = 10^16; 100% = 10^18
 
     enum VoterState { Absent, Yea, Nay }
@@ -75,7 +78,7 @@ contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent {
     * @notice Change required support to `@formatPct(_supportRequiredPct)`%
     * @param _supportRequiredPct New required support
     */
-    function changeSupportRequiredPct(uint64 _supportRequiredPct) external {
+    function changeSupportRequiredPct(uint64 _supportRequiredPct) external authP(MODIFY_SUPPORT_ROLE) {
         require(minAcceptQuorumPct <= _supportRequiredPct, ERROR_CHANGE_SUPPORT_PCTS);
         require(_supportRequiredPct < PCT_BASE, ERROR_CHANGE_SUPPORT_TOO_BIG);
         supportRequiredPct = _supportRequiredPct;
@@ -87,7 +90,7 @@ contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent {
     * @notice Change minimum acceptance quorum to `@formatPct(_minAcceptQuorumPct)`%
     * @param _minAcceptQuorumPct New acceptance quorum
     */
-    function changeMinAcceptQuorumPct(uint64 _minAcceptQuorumPct) external {
+    function changeMinAcceptQuorumPct(uint64 _minAcceptQuorumPct) external authP(MODIFY_QUORUM_ROLE) {
         require(_minAcceptQuorumPct <= supportRequiredPct, ERROR_CHANGE_QUORUM_PCTS);
         minAcceptQuorumPct = _minAcceptQuorumPct;
 
@@ -174,11 +177,9 @@ contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent {
         }
     }
 
-    function _execute(Execution memory execution) internal override {
+    function _execute(Execution memory execution) internal view override {
         require(_canExecute(execution.id), ERROR_CAN_NOT_EXECUTE);
-        execute(execution.id);
     }
-
     
     /**
     * @dev Return the state of a voter for a given vote by its ID

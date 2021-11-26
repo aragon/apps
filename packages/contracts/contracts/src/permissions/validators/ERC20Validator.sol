@@ -4,12 +4,15 @@
 
 pragma solidity ^0.8.0;
 
-// import "../../lib/permissions/AbstractMembershipValidator.sol";
+import "../../../lib/permissions/PermissionValidator.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-// contract ERC20Validator is AbstractMembershipValidator {
+contract ERC20Validator is PermissionValidator {
 
-//     function isValid(address token, uint amount, address user) public returns(bool) {
-//         return ERC20(token).balanceOf(user) >= amount;
-//     }
+    function isValid(address caller, bytes memory data) external view override returns(bool) {
+        (address token, uint256 amount) = abi.decode(data, (address, uint256));
+
+        return IERC20(token).balanceOf(caller) >= amount;
+    }
     
-// }
+}

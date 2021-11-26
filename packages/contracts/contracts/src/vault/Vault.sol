@@ -10,7 +10,7 @@ import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "../DAO.sol";
-import "../../lib/Component.sol";
+import "../proxy/Component.sol";
 
 contract Vault is UpgradableComponent {
     using SafeERC20 for IERC20;

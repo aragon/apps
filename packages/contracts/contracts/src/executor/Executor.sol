@@ -6,7 +6,7 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
-import "../../lib/Component.sol";
+import "../proxy/Component.sol";
 
 /// @title Implementation of the Executor
 /// @author Sarkawt Azad - Aragon Association - 2021
@@ -41,7 +41,7 @@ contract Executor is UpgradableComponent {
   /// @dev It run a loop through the array of acctions and execute one by one.
   /// @dev If one acction fails, all will be reverted.
   /// @param actions The aray of actions
-  function execute(Action[] memory actions) external {
+  function execute(Action[] memory actions) external authP(EXEC_ROLE) {
     bytes[] memory execResults = new bytes[](actions.length);
 
     for (uint256 i = 0; i < actions.length; i++) {
