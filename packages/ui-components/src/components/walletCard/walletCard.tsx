@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import {Avatar,AvatarProps} from '../avatar';
+import {Avatar} from '../avatar';
 import {IconButton} from '../button/iconButton';
 import {IconCopy} from '../icons'
 import {shortenAddress} from '../../utils/addresses';
@@ -10,16 +10,20 @@ export type WalletCardProps = {
   /**
   * wallet ENS name or wallet eth address
   */
-  name?: string;
+  name?: string | null;
   /**
   * Wallet eth address
   */
   address: string | null;
   /**
   * Allows the Wallet Card component grow horizontally
-  * */
+  */
   wide:boolean;
-} & Pick<AvatarProps, 'src'>;
+  /**
+  * Avatar Image source
+  */
+  src: string | null;
+};
 
 /**
  * WalletCard UI component
@@ -33,10 +37,10 @@ export const WalletCard: React.FC<WalletCardProps> = ({src, name, address, wide=
   return (
       <Card {...{wide}} data-testid="walletCard">
           <Content>
-            <Avatar size={'default'} src={src}/>
+            <Avatar size={'default'} src={src || ''}/>
             <TextContainer>
               <Title>{shortenAddress(name || address)}</Title>
-              {address && <Subtitle>{shortenAddress(address)}</Subtitle>}
+              {name && <Subtitle>{shortenAddress(address)}</Subtitle>}
             </TextContainer>
           </Content>
           <IconButton 

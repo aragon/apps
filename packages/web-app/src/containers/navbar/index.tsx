@@ -3,17 +3,12 @@ import styled from 'styled-components';
 import {NavLink} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
 import {WalletButton} from '@aragon/ui-components';
-import {Wallet} from 'use-wallet/dist/cjs/types';
 
 import TestNetworkIndicator from 'components/testNetworkIndicator';
 import {Dashboard, Community, Finance, Governance} from 'utils/paths';
 import {useMenuContext} from 'context/menu';
 import {useWallet} from 'context/augmentedWallet';
-
-type useWalletProps = {
-  ensName?: string | null;
-  ensAvatarUrl?: string | null;
-} & Wallet;
+import {useWalletProps} from '../walletMenu';
 
 const Navbar: React.FC = () => {
   const {t} = useTranslation();

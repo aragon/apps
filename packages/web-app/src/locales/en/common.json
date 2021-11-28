@@ -12,6 +12,6 @@
     "community": "Community"
   },
   "navButtons":{
-    "connectWallet": "Connect account"
+    "connectWallet": "Login"
   }
 }
