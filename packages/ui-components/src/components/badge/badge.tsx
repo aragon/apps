@@ -9,7 +9,7 @@ export type BadgeProps = {
 };
 
 export const Badge: React.FC<BadgeProps> = ({ label, colorScheme = 'default' }) => {
-  return <StyledBadge colorScheme={colorScheme}>{label}</StyledBadge>
+  return <StyledBadge data-testid="badge" colorScheme={colorScheme}>{label}</StyledBadge>
 };
 
 type StyledBadgeProps = {
