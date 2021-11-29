@@ -7,9 +7,9 @@ export type IconButtonProps = ButtonProps & {
   /** Wheter the icon is left or right of the label */
   side: 'left' | 'right';
   /**
-   * Icon to prepend/append to the button text
+   * Icon to prepend to the button text
    */
-  icon: React.ReactChild; // NOTE can this be typed such that it only accepts component of a certain type?
+  icon: React.ReactNode; // Can this be set to accept only an Icon?
 };
 
 /** Button with settable icon. The icon can be specified via its source and can
