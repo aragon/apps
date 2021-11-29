@@ -20,12 +20,12 @@ abstract contract StoppableGovernancePrimitive is GovernancePrimitive {
     function stop(uint256 executionId, bytes calldata data) public executionExist(executionId) {
         Execution storage execution = _getExecution(executionId);
 
-        // TODO: which state should it be able to stop it ? only RUNNING ? 
+        require(execution.state == State.RUNNING, ERROR_EXECUTION_STATE_WRONG);
         require(
             Permissions(dao.permissions.address).checkPermission(
                 execution.process.permissions.stop
             ),
-            "Not allowed to execute!"
+            ERROR_EXECUTION_STATE_WRONG
         );
 
         execution.state = State.STOPPED;

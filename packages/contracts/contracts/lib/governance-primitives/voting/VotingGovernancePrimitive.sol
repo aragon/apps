@@ -24,7 +24,7 @@ abstract contract VotingGovernancePrimitive is GovernancePrimitive {
             Permissions(dao.permissions.address).checkPermission(
                 execution.process.permissions.vote
             ),
-            "Not allowed to execute!"
+            ERROR_EXECUTION_STATE_WRONG
         );
 
         _vote(executionId, data);
@@ -32,7 +32,7 @@ abstract contract VotingGovernancePrimitive is GovernancePrimitive {
         emit VotedOnGovernancePrimitive(execution, data, executionId);
     }
 
-    // @dev The concrete implementation of vote.
+    /// @dev The concrete implementation of vote.
     /// @param data The arbitrary custom data used for the concrete implementation
     function _vote(uint256 executionId, bytes calldata data) internal virtual;
 }

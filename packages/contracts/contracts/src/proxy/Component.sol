@@ -19,7 +19,7 @@ import "../DAO.sol";
 
 abstract contract Component {
     DAO internal dao;
-
+    
     function initialize(DAO _dao) public virtual  {
         dao = DAO(_dao);
     }
@@ -35,7 +35,7 @@ abstract contract UpgradableComponent is Component, UUPSUpgradeable, Initializab
     bytes32 public constant UPGRADE_ROLE = keccak256("UPGRADE_ROLE");
     
     function _authorizeUpgrade(address /*_newImplementation*/) internal virtual override authP(UPGRADE_ROLE) {
-        // require(willPerform(UPGRADE_ROLE, msg.sender, ""), "Not able to update");
+    
     }
 
 }

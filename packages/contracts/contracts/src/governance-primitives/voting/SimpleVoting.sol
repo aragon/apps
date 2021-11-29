@@ -20,7 +20,6 @@ contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent {
     enum VoterState { Absent, Yea, Nay }
 
     struct Vote {
-        uint256 voteId;
         uint256 startDate;
         uint256 snapshotBlock;
         uint64 supportRequiredPct;
@@ -98,8 +97,8 @@ contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent {
     }
 
     /**
-    * @notice Create a new vote
-    * @param execution TODO: explain
+    * @notice Create a new vote on this concrete implementation
+    * @param execution all the details necessary to create a new vote.
     */
     function _start(Execution memory execution) internal override {
         (
@@ -108,7 +107,7 @@ contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent {
             bool castVote
         ) = abi.decode(execution.proposal.additionalArguments, (string, bool, bool));
 
-        uint256 snapshotBlock = block.number - 1; // TODO:
+        uint256 snapshotBlock = block.number - 1; // TODO: Should be uint64
         
         uint256 votingPower = token.getPastTotalSupply(snapshotBlock);
         require(votingPower > 0, ERROR_NO_VOTING_POWER);
@@ -116,8 +115,7 @@ contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent {
         uint256 voteId = execution.id;
 
         Vote storage vote_ = votes[voteId];
-        vote_.voteId = voteId;
-        vote_.startDate = block.timestamp; // TODO:
+        vote_.startDate = block.timestamp; // TODO: Should be uint64
         vote_.snapshotBlock = snapshotBlock;
         vote_.supportRequiredPct = supportRequiredPct;
         vote_.minAcceptQuorumPct = minAcceptQuorumPct;
@@ -131,7 +129,7 @@ contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent {
     }
 
     /**
-    * @dev Overriden function that actually gets called from the Process.
+    * @dev Overriden function that actually gets called from the VotingGovernancePrimitive.
     * @param data abi encoded data that includes necessary parameters to vote.
     */
     function _vote(uint256 _voteId, bytes calldata data) internal override {
@@ -146,7 +144,11 @@ contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent {
     }
 
     /**
-    * @dev Internal function to cast a vote. It assumes the queried vote exists.
+    * @dev Internal function to cast a vote. It assumes the queried vote exists. 
+    * @param _voteId voteId
+    * @param _supports whether user supports the decision or not
+    * @param _voter the voter address
+    * @param _executesIfDecided if true, and it's the last vote required, immediatelly executes a vote.
     */
     function _vote(uint256 _voteId, bool _supports, address _voter, bool _executesIfDecided) internal {
         Vote storage vote_ = votes[_voteId];
@@ -177,6 +179,11 @@ contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent {
         }
     }
 
+    /**
+    * @dev Internal override function hook to check if vote can be executed. 
+           Gets called from GovernancePrimitive
+    * @param execution current execution data 
+    */
     function _execute(Execution memory execution) internal view override {
         require(_canExecute(execution.id), ERROR_CAN_NOT_EXECUTE);
     }
@@ -190,10 +197,30 @@ contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent {
        return votes[_voteId].voters[_voter];
     }
 
+    /**
+    * @dev Internal function to check if a voter can participate on a vote. It assumes the queried vote exists.
+    * @param _voteId the vote Id
+    * @param _voter the address of the voter to check
+    * @return bool true if user is allowed to vote
+    */
     function canVote(uint256 _voteId, address _voter) public view executionExist(_voteId) returns (bool) {
        return _canVote(_voteId, _voter);
     }
 
+    /**
+    * @dev Return all information for a vote by its ID
+    * @param _voteId Vote id
+    * @return open Vote open status
+    * @return executed Vote executed status
+    * @return startDate start date
+    * @return snapshotBlock snapshot block
+    * @return supportRequired support required
+    * @return minAcceptQuorum minimum acceptance quorum
+    * @return yea yeas amount
+    * @return nay nays amount
+    * @return votingPower power
+    * @return actions Actions
+    */
     function getVote(uint256 _voteId)
         public
         view
@@ -213,8 +240,8 @@ contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent {
     {
         Vote storage vote_ = votes[_voteId];
         
-        open = _isVoteOpen(vote_);
-        executed = _isVoteExecuted(vote_.voteId);
+        open = _isVoteOpen(vote_, _voteId);
+        executed = _isVoteExecuted(_voteId);
         startDate = vote_.startDate;
         snapshotBlock = vote_.snapshotBlock;
         supportRequired = vote_.supportRequiredPct;
@@ -222,28 +249,33 @@ contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent {
         yea = vote_.yea;
         nay = vote_.nay;
         votingPower = vote_.votingPower;
-        actions = _getExecution(vote_.voteId).proposal.actions;
+        actions = _getExecution(_voteId).proposal.actions;
     }
 
     /**
     * @dev Internal function to check if a voter can participate on a vote. It assumes the queried vote exists.
+    * @param _voteId the vote Id
+    * @param _voter the address of the voter to check
     * @return True if the given voter can participate a certain vote, false otherwise
     */
     function _canVote(uint256 _voteId, address _voter) internal view returns (bool) {
         Vote storage vote_ = votes[_voteId];
-        return _isVoteOpen(vote_) && token.getPastVotes(_voter, vote_.snapshotBlock) > 0;
+        return _isVoteOpen(vote_, _voteId) && token.getPastVotes(_voter, vote_.snapshotBlock) > 0;
     }
 
     /**
     * @dev Internal function to check if a vote is still open
+    * @param vote_ the vote struct
+    * @param voteId vote id
     * @return True if the given vote is open, false otherwise
     */
-    function _isVoteOpen(Vote storage vote_) internal view returns (bool) {
-        return block.timestamp < vote_.startDate + voteTime && _isVoteExecuted(vote_.voteId); // TODO:
+    function _isVoteOpen(Vote storage vote_, uint256 voteId) internal view returns (bool) {
+        return block.timestamp < vote_.startDate + voteTime && _isVoteExecuted(voteId);
     }
 
     /**
     * @dev Internal function to check if a vote is executed
+    * @param _voteId vote id
     * @return True if the given vote is open, false otherwise
     */
     function _isVoteExecuted(uint256 _voteId) internal view returns(bool) {
@@ -252,6 +284,7 @@ contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent {
 
     /**
     * @dev Internal function to check if a vote can be executed. It assumes the queried vote exists.
+    * @param _voteId vote id
     * @return True if the given vote can be executed, false otherwise
     */
     function _canExecute(uint256 _voteId) internal view returns (bool) {
@@ -267,7 +300,7 @@ contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent {
         }
 
         // Vote ended?
-        if (_isVoteOpen(vote_)) {
+        if (_isVoteOpen(vote_, _voteId)) {
             return false;
         }
         // Has enough support?
@@ -285,6 +318,10 @@ contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent {
 
     /**
     * @dev Calculates whether `_value` is more than a percentage `_pct` of `_total`
+    * @param _value the current value 
+    * @param _total the total value
+    * @param _pct the required support percentage
+    * @return returns if the _value is _pct or more percentage of _total. 
     */
     function _isValuePct(uint256 _value, uint256 _total, uint256 _pct) internal pure returns (bool) {
        if (_total == 0) {
@@ -294,4 +331,4 @@ contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent {
        uint256 computedPct = _value * PCT_BASE / _total;
        return computedPct > _pct;
     }
- }
+}

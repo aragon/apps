@@ -50,9 +50,16 @@ contract Vault is UpgradableComponent {
     
     // TODO: we might need to bring some checks for deposit so that it can't be called without proxy
     // this will make sure that functions don't get called on logic contract and end up there forever.
+    /**
+    *  @notice allows to deposit ether or token into this vault.
+    *  @param _token token address(0x..00 in case of ETH)
+    *  @param _value how much to deposit
+    *  @param _description reason for the deposit
+     */
     function deposit(address _token, uint256 _value, string calldata _description) external payable {
         _deposit(_token, _value, _description);
     }
+    
     
     // TODO: 
     // 1. we use the call instead of send/transfer and now problem is reentrancy.
@@ -60,6 +67,13 @@ contract Vault is UpgradableComponent {
     // solution or since transfer will only be called by the voting contract, the attack
     // wouldn't happen anymore.
     // 2. add permission role to voting as a first implementation.
+    /**
+    *  @notice allows to transfer ether or token from this vault.
+    *  @param _token token address(0x..00 in case of ETH)
+    *  @param _to who to transfer to.
+    *  @param _value how much to transfer
+    *  @param _description reason for the transfer
+     */
     function transfer(address _token, address _to, uint256 _value, string calldata _description) external authP(TRANSFER_ROLE) {
         // require(dao.hasRole(APP_TRANSFER_ROLE, msg.sender), "Not Eligible To transfer");
         require(_value > 0, ERROR_TRANSFER_VALUE_ZERO);
@@ -75,6 +89,11 @@ contract Vault is UpgradableComponent {
         emit VaultTransfer(_token, _to, _value, _description);
     }
 
+    /**
+    * @notice get a Vault balance 
+    * @param _token on which token to get a balance. (0x.000 in case of ETH)
+    * @return balance of the vault on the token address
+    */
     function balance(address _token) public view returns (uint256) {
         if (_token == ETH) {
             return address(this).balance;
@@ -83,6 +102,7 @@ contract Vault is UpgradableComponent {
         }
     }
 
+    /// @dev internal function to handle deposit into the Vault.
     function _deposit(address _token, uint256 _value, string calldata _description) internal {
         require(_value > 0, ERROR_DEPOSIT_VALUE_ZERO);
 
