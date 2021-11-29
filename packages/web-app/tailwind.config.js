@@ -35,23 +35,35 @@ module.exports = {
         1: '8px',
         1.5: '12px',
         2: '16px',
+        2.5: '20px',
         3: '24px',
         4: '32px',
         5: '40px',
         6: '48px',
         8: '64px',
         10: '80px',
+        12: '96px',
         14: '112px',
         25: '200px',
       },
     },
-
+    screens: {
+      tablet: '768px',
+      desktop: '1280px',
+      // desktop: '1440px',
+      wide: '1920px',
+    },
     fontFamily: {
       sans: ['Manrope'],
     },
   },
+
   variants: {
-    extend: {},
+    extend: {
+      backgroundColor: ['active', 'disabled'],
+      textColor: ['active', 'disabled'],
+      borderColor: ['active', 'disabled'],
+    },
   },
   plugins: [],
 };
