@@ -6,7 +6,7 @@ import { TokenCard } from '../src';
 describe('TokenCard', () => {
   function setup(args: any) {
     render(<TokenCard {...args} />);
-    return screen.getByTestId('daoCard');
+    return screen.getByTestId('tokenCard');
   }
 
   test('should render without crashing', () => {

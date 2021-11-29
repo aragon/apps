@@ -22,19 +22,25 @@ export const TokenCard: React.FC<TokenCardProps> = (props) => {
         <CoinDetails>
           <CoinNameAndAllocation>
             <CoinName>{props.tokenName}</CoinName>
-            <Badge label={props.treasurySharePercentage} />
+            <ToggleMobileVisibility visible={false}>
+              <Badge label={props.treasurySharePercentage} />
+            </ToggleMobileVisibility>
           </CoinNameAndAllocation>
           <SecondaryCoinDetails>
             <span>{props.tokenCount}</span>
-            <span>•</span>
-            <span>{props.tokenUSDValue}</span>
+            <ToggleMobileVisibility visible={false}>
+              <span>•</span>
+              <span>{props.tokenUSDValue}</span>
+            </ToggleMobileVisibility>
           </SecondaryCoinDetails>
         </CoinDetails>
       </CoinDetailsWithImage>
       <MarketProperties>
         <FiatValue>{props.treasuryShare}</FiatValue>
         <SecondaryFiatDetails>
-          <span>{props.changeDuringInterval}</span>
+          <ToggleMobileVisibility visible={false}>
+            <span>{props.changeDuringInterval}</span>
+          </ToggleMobileVisibility>
           <Badge label={props.percentageChangeDuringInterval} colorScheme="green" />
         </SecondaryFiatDetails>
       </MarketProperties>
@@ -51,12 +57,12 @@ const CoinDetailsWithImage = styled.div.attrs({
 })``;
 
 const CoinImage = styled.img.attrs(({ src }) => ({
-  className: 'h-5 w-5 rounded-full',
+  className: 'w-3 h-3 lg:h-5 lg:w-5 rounded-full',
   src,
 }))``;
 
 const CoinDetails = styled.div.attrs({
-  className: 'ml-2 space-y-1',
+  className: 'ml-2 space-y-1 overflow-hidden',
 })``;
 
 const CoinNameAndAllocation = styled.p.attrs({
@@ -64,7 +70,7 @@ const CoinNameAndAllocation = styled.p.attrs({
 })``;
 
 const CoinName = styled.h1.attrs({
-  className: 'text-xl font-semibold text-ui-800',
+  className: 'text-xl font-semibold text-ui-800 truncate',
 })``;
 
 const SecondaryCoinDetails = styled.p.attrs({
@@ -72,14 +78,25 @@ const SecondaryCoinDetails = styled.p.attrs({
 })``;
 
 const MarketProperties = styled.div.attrs({
-  className: 'text-right space-y-1',
+  className: 'text-right space-y-1 overflow-hidden',
 })``;
 
 const FiatValue = styled.h1.attrs({
-  className: 'text-xl font-semibold text-ui-800',
+  className: 'text-xl font-semibold text-ui-800 truncate',
 })``;
 
 const SecondaryFiatDetails = styled.p.attrs({
-  className: 'text-sm text-ui-500 space-x-1 flex justify-end items-center',
+  className: 'text-sm text-ui-500 space-x-1 flex justify-end items-center truncate',
 })``;
 
+type ToggleMobileVisibilityProps = {
+  visible: boolean;
+};
+
+const ToggleMobileVisibility: React.FC<ToggleMobileVisibilityProps> = ({ visible, children }) => {
+  return (
+    <div className={visible ? 'inline-block tablet:hidden' : 'hidden tablet:inline-block'}>
+      {children}
+    </div>
+  )
+};
