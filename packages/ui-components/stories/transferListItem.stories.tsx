@@ -29,3 +29,12 @@ Pending.args = {
   tokenSymbol: 'DAI',
   usdValue: '$200.00',
 };
+
+export const LongReference = Template.bind({});
+LongReference.args = {
+  title: 'Deposit DAI so I can do whatever I want whenever I want',
+  transferDate: 'Yesterday',
+  tokenAmount: 300,
+  tokenSymbol: 'DAI',
+  usdValue: '$200.00',
+};

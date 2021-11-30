@@ -62,11 +62,11 @@ const Container = styled.button.attrs({
 })``;
 
 const Content = styled.div.attrs({
-  className: 'flex-1 text-left',
+  className: 'flex-1 text-left min-w-0',
 })``;
 
 const Title = styled.p.attrs({
-  className: 'font-bold text-ui-800 group-hover:text-primary-500',
+  className: 'font-bold text-ui-800 group-hover:text-primary-500 truncate',
 })``;
 
 const Date = styled.p.attrs({
