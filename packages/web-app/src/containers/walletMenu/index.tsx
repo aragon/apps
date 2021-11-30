@@ -33,16 +33,24 @@ const WalletMenu: React.FC = () => {
         <ActionContainer>
           <ActionListItem
             wide
-            title="Disconnect Wallet"
-            icon={<IconTurnOff />}
-            onClick={() => {
-              reset();
-              close();
-            }}
+            src={'https://place-hold.it/150x150'}
+            name="ens-name.eth"
+            address={account}
           />
-        </ActionContainer>
-      </Container>
-    </BottomSheet>
+          <ActionContainer>
+            <ActionListItem
+              wide
+              title="Disconnect Wallet"
+              icon={<IconTurnOff />}
+              onClick={() => {
+                reset();
+                close();
+              }}
+            />
+          </ActionContainer>
+        </Container>
+      </BottomSheet>
+    </StyledContainer>
   );
 };
 
@@ -54,4 +62,8 @@ const Container = styled.div.attrs({
 
 const ActionContainer = styled.div.attrs({
   className: 'space-y-1.5',
+})``;
+
+const StyledContainer = styled.div.attrs({
+  className: 'desktop:hidden',
 })``;
