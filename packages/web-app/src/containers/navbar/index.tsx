@@ -11,7 +11,7 @@ import {
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import withBreadCrumbs, {BreadcrumbsRoute} from 'react-router-breadcrumbs-hoc';
-import React, {useState, useCallback, useMemo} from 'react';
+import React, {useState, useCallback} from 'react';
 
 import {routes} from 'routes';
 import NavLinks from 'components/navLinks';
@@ -60,10 +60,6 @@ const Navbar: React.FC<NavbarProps> = ({breadcrumbs}) => {
   /************************************
    * Functions and Handlers
    ************************************/
-  const getWalletLabel = useMemo((): string => {
-    return isConnected() ? (account as string) : t('navButtons.connectWallet');
-  }, [account, isConnected, t]);
-
   const handleShowMobileMenu = useCallback(() => {
     setShowMobileMenu(true);
   }, []);
@@ -80,9 +76,10 @@ const Navbar: React.FC<NavbarProps> = ({breadcrumbs}) => {
     setShowSwitcherPopover(false);
   }, []);
 
-  const handleWalletButtonClick = useCallback(() => {
+  const handleWalletButtonClick = () => {
+    console.log('trigger');
     isConnected() ? open() : connect('injected');
-  }, [connect, open, isConnected]);
+  };
 
   /************************************
    * Render

@@ -36,7 +36,6 @@ export const WalletButton = ({
   src,
   isSelected = false,
   isLoading,
-  onClick,
   isConnected = false,
   ...props
 }: WalletButtonProps) => {
