@@ -20,6 +20,10 @@ export type TextInputProps = {
    * Wheter the icon is left or right of the input
    */
   side: 'left' | 'right';
+  /**
+   * Placeholder
+   */
+  placeholder?: string;
 };
 
 /** Simple input with variable styling (depending on mode) */

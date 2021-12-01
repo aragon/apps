@@ -1,2 +1,2 @@
 export {TextInputProps, TextInput} from './textInput';
-export {SearchInput} from './SearchInput';
+export {SearchInput, SearchInputProps} from './SearchInput';

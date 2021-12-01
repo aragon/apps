@@ -11,6 +11,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({
 }) => {
   return (
     <TextInput
+      data-testid="search-input"
       {...props} 
       adornment={
         <IconSearch className="text-ui-300"/>
