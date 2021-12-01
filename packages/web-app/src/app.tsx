@@ -20,7 +20,7 @@ function App() {
   return (
     <div className="bg-primary-50">
       <Navbar />
-      <div className="h-screen">
+      <div className="min-h-screen">
         <Switch>
           {routes.map((route: PageRoute) => (
             <Route
