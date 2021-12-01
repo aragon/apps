@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Badge } from '../badge';
+import {Badge} from '../badge';
 
 // TODO: change types accordingly
 export type TokenCardProps = {
@@ -14,7 +14,7 @@ export type TokenCardProps = {
   percentageChangeDuringInterval: string;
 };
 
-export const TokenCard: React.FC<TokenCardProps> = (props) => {
+export const TokenCard: React.FC<TokenCardProps> = props => {
   return (
     <Card data-testid="tokenCard">
       <CoinDetailsWithImage>
@@ -41,7 +41,10 @@ export const TokenCard: React.FC<TokenCardProps> = (props) => {
           <ToggleMobileVisibility visible={false}>
             <span>{props.changeDuringInterval}</span>
           </ToggleMobileVisibility>
-          <Badge label={props.percentageChangeDuringInterval} colorScheme="green" />
+          <Badge
+            label={props.percentageChangeDuringInterval}
+            colorScheme="success"
+          />
         </SecondaryFiatDetails>
       </MarketProperties>
     </Card>
@@ -56,7 +59,7 @@ const CoinDetailsWithImage = styled.div.attrs({
   className: 'flex items-center',
 })``;
 
-const CoinImage = styled.img.attrs(({ src }) => ({
+const CoinImage = styled.img.attrs(({src}) => ({
   className: 'w-3 h-3 lg:h-5 lg:w-5 rounded-full',
   src,
 }))``;
@@ -86,17 +89,25 @@ const FiatValue = styled.h1.attrs({
 })``;
 
 const SecondaryFiatDetails = styled.p.attrs({
-  className: 'text-sm text-ui-500 space-x-1 flex justify-end items-center truncate',
+  className:
+    'text-sm text-ui-500 space-x-1 flex justify-end items-center truncate',
 })``;
 
 type ToggleMobileVisibilityProps = {
   visible: boolean;
 };
 
-const ToggleMobileVisibility: React.FC<ToggleMobileVisibilityProps> = ({ visible, children }) => {
+const ToggleMobileVisibility: React.FC<ToggleMobileVisibilityProps> = ({
+  visible,
+  children,
+}) => {
   return (
-    <div className={visible ? 'inline-block tablet:hidden' : 'hidden tablet:inline-block'}>
+    <div
+      className={
+        visible ? 'inline-block tablet:hidden' : 'hidden tablet:inline-block'
+      }
+    >
       {children}
     </div>
-  )
+  );
 };
