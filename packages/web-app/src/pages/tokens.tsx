@@ -34,7 +34,9 @@ const Tokens: React.FC = () => {
     <div className="m-auto mt-5 space-y-5 w-8/12">
       <div className="flex justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-ui-800">5 Tokens</h1>
+          <h1 className="text-2xl font-bold text-ui-800">
+            5 {t('finance.tokens')}
+          </h1>
           <h2 className="text-lg font-semibold text-ui-500">
             $469,657.98 Holdings
           </h2>
