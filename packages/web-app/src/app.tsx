@@ -15,6 +15,7 @@ function App() {
 
   useEffect(() => {
     trackPage(pathname);
+    window.scrollTo(0, 0);
   }, [pathname]);
 
   return (

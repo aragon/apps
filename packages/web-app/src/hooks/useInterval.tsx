@@ -4,7 +4,7 @@ const DEFAULT_INTERVAL = 300000; //interval in ms
 
 /**
  * Hook running callback at specified interval
- * @param callback Function to run after each interval. Defaults to 60000ms
+ * @param callback Function to run after each interval. Defaults to 300000ms
  * @param interval Delay in milliseconds
  */
 const useInterval = (

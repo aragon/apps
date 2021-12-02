@@ -5,7 +5,7 @@ import useIsMounted from 'hooks/useIsMounted';
 import {fetchTokenUsdPrice} from 'services/prices';
 
 type TokenPrices = {
-  [key: string]: string | null;
+  [key: string]: string | undefined;
 };
 
 /**
@@ -32,17 +32,21 @@ const usePollTokens = (tokenList: string[], interval?: number) => {
 
   const fetchPrices = useCallback(
     async (tokens: string[]) => {
+      const fetchedPrices: TokenPrices = {};
       setIsLoading(true);
-      for (let index = 0; index < tokens.length; index++) {
-        const address = tokens[index];
-        const price = await fetchTokenUsdPrice(address);
 
-        if (isMounted()) {
-          setPrices(prices => ({
-            ...prices,
-            [address]: price || null,
-          }));
-        }
+      try {
+        const allPrices = Promise.all(
+          tokens.map(address => fetchTokenUsdPrice(address))
+        );
+
+        const values = await allPrices;
+        tokens.forEach((address, index) => {
+          fetchedPrices[address] = values[index];
+        });
+        if (isMounted()) setPrices({...fetchedPrices});
+      } catch (error) {
+        console.error(error);
       }
       setIsLoading(false);
     },

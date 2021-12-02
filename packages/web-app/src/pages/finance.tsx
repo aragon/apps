@@ -10,9 +10,7 @@ import {
 } from 'components/sectionWrapper';
 import usePollTokens from 'hooks/usePollTokens';
 
-const TEMP_FETCH_INTERVAL = 300000;
-
-const TOKENS = [
+const TEMP_TOKENS = [
   {
     name: 'Ethereum',
     address: constants.AddressZero,
@@ -37,7 +35,7 @@ const TOKENS = [
   {
     name: 'Patito DAO TOken',
     address: 'randomAddress',
-    imgUrl: null,
+    imgUrl: '',
     count: 500000,
     symbol: 'PDT',
   },
@@ -50,7 +48,7 @@ const TOKENS = [
   },
 ];
 
-const TOKEN_ADDRESSES = TOKENS.map(({address}) => address);
+const TOKEN_ADDRESSES = TEMP_TOKENS.map(({address}) => address);
 
 const usdFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -64,25 +62,26 @@ const numberFormatter = new Intl.NumberFormat('en-US', {
 
 const Finance: React.FC = () => {
   const {t} = useTranslation();
-  const {prices} = usePollTokens(TOKEN_ADDRESSES, TEMP_FETCH_INTERVAL);
+  const {prices} = usePollTokens(TOKEN_ADDRESSES);
 
   return (
     <div className={'m-auto mt-4 w-8/12'}>
-      <h1 className={'text-2xl font-bold text-center '}>Finance Page</h1>
+      <h1 className={'text-2xl font-bold text-center'}>Finance Page</h1>
       <div className={'h-4'} />
       <TokenSectionWrapper title={t('finance.tokenSection')}>
         <div className="py-2 space-y-2 border-solid">
           {prices &&
-            TOKENS.map(token => {
+            TEMP_TOKENS.map(token => {
               return (
                 <TokenCard
                   key={token.name}
                   tokenName={token.name}
-                  tokenSymbolURL={token.imgUrl}
+                  tokenCount={numberFormatter.format(token.count)}
+                  tokenSymbol={token.symbol}
+                  tokenImageUrl={token.imgUrl}
+                  changeDuringInterval="+$150,002.3"
                   treasurySharePercentage="20%"
-                  tokenCount={`${numberFormatter.format(token.count)} ${
-                    token.symbol
-                  }`}
+                  percentageChangeDuringInterval="+ 0.01%"
                   tokenUSDValue={
                     prices[token.address]
                       ? usdFormatter.format(Number(prices[token.address]))
@@ -95,8 +94,6 @@ const Finance: React.FC = () => {
                         )
                       : t('finance.unknownUSDValue')
                   }
-                  changeDuringInterval="+$150,002.3"
-                  percentageChangeDuringInterval="+ 0.01%"
                 />
               );
             })}
