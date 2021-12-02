@@ -1,0 +1,146 @@
+specVersion: 0.0.2
+description: A template for Aragon subgraphs
+repository: https://github.com/zaragoza
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: Registry
+    network: rinkeby
+    source:
+      abi: Registry
+      address: '0x1A5c73459E4F24e50bdF4d1c677A9Be2b7b7663f'
+      startBlock: 9727066
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Dao
+      abis:
+        - name: Registry
+          file: ./abis/Registry.json
+      eventHandlers:
+        - event: NewDAO(indexed string,indexed address,indexed address)
+          handler: handleNewDAO
+      file: ./src/mapping.ts
+# templates
+templates:
+  # DAO
+  - name: DAO
+    kind: ethereum/contract
+    network: rinkeby
+    source:
+      abi: DAO
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/mapping.ts
+      entities:
+        - Proposal
+      abis:
+        - name: DAO
+          file: ./abis/DAO.json
+      eventHandlers:
+        - event: NewProposal((indexed string,(address,uint256,bytes)[],bytes,bytes),(indexed address,(string,string,string,string,string,string),(address,bytes4[])[],bytes),indexed address,uint256)
+          handler: handleNewProposal
+  # Permissions
+  - name: Permissions
+    kind: ethereum/contract
+    network: rinkeby
+    source:
+      abi: Permissions
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/mapping.ts
+      entities:
+        - Role
+      abis:
+        - name: Permissions
+          file: ./abis/Permissions.json
+      eventHandlers:
+        - event: NewRoleAdded(indexed string,(indexed uint8,address[],bytes[]))
+          handler: handleNewRoleAdded
+  # Processes
+  - name: Processes
+    kind: ethereum/contract
+    network: rinkeby
+    source:
+      abi: Processes
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/mapping.ts
+      entities:
+        - Process
+      abis:
+        - name: Processes
+          file: ./abis/Processes.json
+      eventHandlers:
+        - event: NewProcessAdded(indexed string,(indexed address,(string,string,string,string,string,string),(address,bytes4[])[],bytes))
+          handler: handleNewProcessAdded
+        - event: ProcessStarted((indexed string,(address,uint256,bytes)[],bytes,bytes),indexed uint256)
+          handler: handleProcessStarted
+  # Vault
+  - name: Vault
+    kind: ethereum/contract
+    network: rinkeby
+    source:
+      abi: Vault
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/mapping.ts
+      entities:
+        - VaultTransfer
+        - VaultEthDeposit
+        - ValutDeposit
+      abis:
+        - name: Vault
+          file: ./abis/Vault.json
+      eventHandlers:
+        - event: VaultTransfer(indexed address,indexed address,uint256,string)
+          handler: handleVaultTransfer
+        - event: VaultETHDeposit(indexed address,uint256)
+          handler: handleVaultETHDeposit
+        - event: VaultDeposit(indexed address,indexed address,uint256,string)
+          handler: handleVaultDeposit
+  # Voting
+  - name: SimpleVoting
+    kind: ethereum/contract
+    network: rinkeby
+    source:
+      abi: SimpleVoting
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/mapping.ts
+      entities:
+        - Execution
+        - Vote
+      abis:
+        - name: SimpleVoting
+          file: ./abis/SimpleVoting.json
+      eventHandlers:
+        - event: CastVote(indexed uint256,indexed address,bool,uint256)
+          handler: heandleCastVote
+        - event: ChangeMinQuorum(uint64)
+          handler: heandleChangeMinQuorum
+        - event: ChangeSupportRequired(uint64)
+          handler: heandleChangeSupportRequired
+        - event: ExecuteVote(indexed uint256)
+          handler: heandleExecuteVote
+        - event: GovernancePrimitiveExecuted((indexed uint256,(address,(string,string,string,string,string,string),(address,bytes4[])[],bytes),(string,(address,uint256,bytes)[],bytes,bytes),uint8),indexed uint256)
+          handler: heandleGovernancePrimitiveExecuted
+        - event: GovernancePrimitiveStarted((indexed uint256,(address,(string,string,string,string,string,string),(address,bytes4[])[],bytes),(string,(address,uint256,bytes)[],bytes,bytes),uint8),indexed uint256)
+          handler: heandleGovernancePrimitiveStarted
+        - event: StartVote(indexed uint256,indexed address,string)
+          handler: heandleStartVote
+        - event: VotedOnGovernancePrimitive((indexed uint256,(address,(string,string,string,string,string,string),(address,bytes4[])[],bytes),(string,(address,uint256,bytes)[],bytes,bytes),uint8),indexed bytes,uint256)
+          handler: heandleVotedOnGovernancePrimitive
