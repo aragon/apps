@@ -10,6 +10,7 @@ import {
 } from 'components/sectionWrapper';
 import usePollTokens from 'hooks/usePollTokens';
 
+// Temporary, should be gotten from subgraph or as props
 const TEMP_TOKENS = [
   {
     name: 'Ethereum',
@@ -17,6 +18,7 @@ const TEMP_TOKENS = [
     imgUrl: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png',
     count: 0.255555,
     symbol: 'ETH',
+    decimals: 18,
   },
   {
     name: 'Aragon',
@@ -38,6 +40,7 @@ const TEMP_TOKENS = [
     imgUrl: '',
     count: 500000,
     symbol: 'PDT',
+    decimals: 18,
   },
   {
     name: 'Tether',
@@ -45,10 +48,14 @@ const TEMP_TOKENS = [
     imgUrl: 'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png',
     count: 344578,
     symbol: 'USDT',
+    decimals: 6,
   },
 ];
 
-const TOKEN_ADDRESSES = TEMP_TOKENS.map(({address}) => address);
+const POLL_TOKEN_LIST = TEMP_TOKENS.map(({address, decimals}) => ({
+  address,
+  decimals,
+}));
 
 const usdFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -62,7 +69,7 @@ const numberFormatter = new Intl.NumberFormat('en-US', {
 
 const Finance: React.FC = () => {
   const {t} = useTranslation();
-  const {prices} = usePollTokens(TOKEN_ADDRESSES);
+  const {prices} = usePollTokens(POLL_TOKEN_LIST);
 
   return (
     <div className={'m-auto mt-4 w-8/12'}>

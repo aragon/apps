@@ -8,6 +8,11 @@ type TokenPrices = {
   [key: string]: string | undefined;
 };
 
+type Token = {
+  address: string;
+  decimals: number | undefined;
+};
+
 /**
  * Hook for fetching token prices at specified intervals
  * @param tokenList List of token symbols or addresses to fetch USD value for
@@ -25,24 +30,26 @@ type TokenPrices = {
  * const {price, isLoading} = usePollTokens(ETH, 1000);
  * console.log(price) // '4521.1420'
  */
-const usePollTokens = (tokenList: string[], interval?: number) => {
+const usePollTokens = (tokenList: Token[], interval?: number) => {
   const isMounted = useIsMounted();
   const [prices, setPrices] = useState<TokenPrices>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const fetchPrices = useCallback(
-    async (tokens: string[]) => {
+    async (tokens: Token[]) => {
       const fetchedPrices: TokenPrices = {};
       setIsLoading(true);
 
       try {
         const allPrices = Promise.all(
-          tokens.map(address => fetchTokenUsdPrice(address))
+          tokens.map(({address, decimals}) =>
+            fetchTokenUsdPrice(address, decimals)
+          )
         );
 
         const values = await allPrices;
-        tokens.forEach((address, index) => {
-          fetchedPrices[address] = values[index];
+        tokens.forEach((token, index) => {
+          fetchedPrices[token.address] = values[index];
         });
         if (isMounted()) setPrices({...fetchedPrices});
       } catch (error) {
@@ -55,7 +62,7 @@ const usePollTokens = (tokenList: string[], interval?: number) => {
 
   useInterval(() => fetchPrices(tokenList), interval);
   return tokenList.length === 1
-    ? {price: prices[tokenList[0]], isLoading}
+    ? {price: prices[tokenList[0].address], isLoading}
     : {prices, isLoading};
 };
 
