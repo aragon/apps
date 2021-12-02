@@ -1,11 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
+
 import {Badge} from '../badge';
+
+// TODO: implement image fallback (@rollup/plugin-image); @see https://github.com/jaredpalmer/tsdx/issues/379#issuecomment-568239477
+// import FallbackImg from '../../assets/avatar-token.svg';
 
 // TODO: change types accordingly
 export type TokenCardProps = {
   tokenName: string;
-  tokenSymbolURL: string;
+  tokenSymbol: string;
+  tokenImageUrl: string;
   treasurySharePercentage: string;
   tokenCount: string;
   tokenUSDValue: string;
@@ -18,7 +23,13 @@ export const TokenCard: React.FC<TokenCardProps> = props => {
   return (
     <Card data-testid="tokenCard">
       <CoinDetailsWithImage>
-        <CoinImage src={props.tokenSymbolURL} />
+        {/* <CoinImage
+          src={props.tokenImageUrl}
+          onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
+            e.currentTarget.src = FallbackImg;
+          }}
+        /> */}
+        <CoinImage src={props.tokenImageUrl} />
         <CoinDetails>
           <CoinNameAndAllocation>
             <CoinName>{props.tokenName}</CoinName>
@@ -27,10 +38,12 @@ export const TokenCard: React.FC<TokenCardProps> = props => {
             </ToggleMobileVisibility>
           </CoinNameAndAllocation>
           <SecondaryCoinDetails>
-            <span>{props.tokenCount}</span>
+            <span>
+              {props.tokenCount} {props.tokenSymbol}
+            </span>
             <ToggleMobileVisibility visible={false}>
               <span>•</span>
-              <span>{props.tokenUSDValue}</span>
+              <span>{` ${props.tokenUSDValue}`}</span>
             </ToggleMobileVisibility>
           </SecondaryCoinDetails>
         </CoinDetails>
@@ -68,7 +81,7 @@ const CoinDetails = styled.div.attrs({
   className: 'ml-2 space-y-1 overflow-hidden',
 })``;
 
-const CoinNameAndAllocation = styled.p.attrs({
+const CoinNameAndAllocation = styled.div.attrs({
   className: 'flex items-center space-x-1',
 })``;
 
@@ -76,7 +89,7 @@ const CoinName = styled.h1.attrs({
   className: 'text-xl font-semibold text-ui-800 truncate',
 })``;
 
-const SecondaryCoinDetails = styled.p.attrs({
+const SecondaryCoinDetails = styled.div.attrs({
   className: 'text-sm text-ui-500 space-x-0.5',
 })``;
 
@@ -88,7 +101,7 @@ const FiatValue = styled.h1.attrs({
   className: 'text-xl font-semibold text-ui-800 truncate',
 })``;
 
-const SecondaryFiatDetails = styled.p.attrs({
+const SecondaryFiatDetails = styled.div.attrs({
   className:
     'text-sm text-ui-500 space-x-1 flex justify-end items-center truncate',
 })``;
