@@ -41,7 +41,7 @@ export const TokenCard: React.FC<TokenCardProps> = (props) => {
           <ToggleMobileVisibility visible={false}>
             <span>{props.changeDuringInterval}</span>
           </ToggleMobileVisibility>
-          <Badge label={props.percentageChangeDuringInterval} colorScheme="green" />
+          <Badge label={props.percentageChangeDuringInterval} colorScheme="success" />
         </SecondaryFiatDetails>
       </MarketProperties>
     </Card>
