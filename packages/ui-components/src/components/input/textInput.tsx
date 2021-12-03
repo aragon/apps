@@ -8,10 +8,6 @@ export type TextInputProps = {
    * Whether Input is disabled
    */
   disabled?: boolean;
-   /**
-   * Whether Input is disabled
-   */
-  isSelected?: boolean;
   /**
    * adornment
    */
@@ -31,29 +27,26 @@ export const TextInput: React.FC<TextInputProps> = ({
   mode = 'default',
   side = 'right',
   disabled,
-  isSelected,
   adornment,
   ...props
 }) => {
   return (
-    <Container data-testid="input" {...{mode,disabled,isSelected,side}} >
+    <Container data-testid="input" {...{mode,disabled,side}} >
       <StyledInput {...props} disabled={disabled}/>
       {adornment}
     </Container>
   );
 };
 
-type StyledCotainerProps = Pick<TextInputProps, 'mode' | 'disabled' | 'isSelected' | 'side'>;
+type StyledCotainerProps = Pick<TextInputProps, 'mode' | 'disabled' | 'side'>;
 
-export const Container = styled.div.attrs(({mode, disabled, isSelected, side}: StyledCotainerProps) => {
+export const Container = styled.div.attrs(({mode, disabled, side}: StyledCotainerProps) => {
     let className = `${!disabled && 'bg-ui-0'} flex space-x-1.5 space-x-1.5
     focus:outline-none focus-within:ring-2 focus-within:ring-primary-500 py-1.5 px-2
     rounded-xl hover:border-ui-300 border-2 active:border-primary-500
     ${side === 'left' && 'flex-row-reverse space-x-reverse'} items-center `;
 
-    if (isSelected) {
-      className += 'border-primary-500'
-    } else if (mode === 'default') {
+    if (mode === 'default') {
       className += 'border-ui-100';
     } else if (mode === 'success') {
       className += 'border-success-600';
