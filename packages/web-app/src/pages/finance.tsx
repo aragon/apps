@@ -1,17 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
 import {constants} from 'ethers';
-import {TokenCard} from '@aragon/ui-components';
 import {useTranslation} from 'react-i18next';
 
 import {
   TokenSectionWrapper,
   TransferSectionWrapper,
 } from 'components/sectionWrapper';
+import TokenList from 'components/tokenList';
 import usePollTokens from 'hooks/usePollTokens';
+import {DisplayToken} from 'utils/types';
 
 // Temporary, should be gotten from subgraph or as props
-const TEMP_TOKENS = [
+const TEMP_TOKENS: DisplayToken[] = [
   {
     name: 'Ethereum',
     address: constants.AddressZero,
@@ -26,6 +27,7 @@ const TEMP_TOKENS = [
     imgUrl: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1680.png',
     count: 6,
     symbol: 'ANT',
+    decimals: 18,
   },
   {
     name: 'Dai',
@@ -33,6 +35,7 @@ const TEMP_TOKENS = [
     imgUrl: 'https://s2.coinmarketcap.com/static/img/coins/64x64/4943.png',
     count: 245,
     symbol: 'DAI',
+    decimals: 18,
   },
   {
     name: 'Patito DAO TOken',
@@ -57,16 +60,6 @@ const POLL_TOKEN_LIST = TEMP_TOKENS.map(({address, decimals}) => ({
   decimals,
 }));
 
-const usdFormatter = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-  maximumFractionDigits: 2,
-});
-
-const numberFormatter = new Intl.NumberFormat('en-US', {
-  maximumFractionDigits: 4,
-});
-
 const Finance: React.FC = () => {
   const {t} = useTranslation();
   const {prices} = usePollTokens(POLL_TOKEN_LIST);
@@ -77,33 +70,7 @@ const Finance: React.FC = () => {
       <div className={'h-4'} />
       <TokenSectionWrapper title={t('finance.tokenSection')}>
         <div className="py-2 space-y-2 border-solid">
-          {prices &&
-            TEMP_TOKENS.map(token => {
-              return (
-                <TokenCard
-                  key={token.name}
-                  tokenName={token.name}
-                  tokenCount={numberFormatter.format(token.count)}
-                  tokenSymbol={token.symbol}
-                  tokenImageUrl={token.imgUrl}
-                  changeDuringInterval="+$150,002.3"
-                  treasurySharePercentage="20%"
-                  percentageChangeDuringInterval="+ 0.01%"
-                  tokenUSDValue={
-                    prices[token.address]
-                      ? usdFormatter.format(Number(prices[token.address]))
-                      : t('finance.unknownUSDValue')
-                  }
-                  treasuryShare={
-                    prices[token.address]
-                      ? usdFormatter.format(
-                          Number(prices[token.address]) * token.count
-                        )
-                      : t('finance.unknownUSDValue')
-                  }
-                />
-              );
-            })}
+          <TokenList prices={prices} tokens={TEMP_TOKENS} />
         </div>
       </TokenSectionWrapper>
       <div className={'h-4'} />
