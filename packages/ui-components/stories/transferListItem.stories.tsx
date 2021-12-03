@@ -11,30 +11,33 @@ const Template: Story<TransferListItemProps> = args => (
   <TransferListItem {...args} />
 );
 
-export const Default = Template.bind({});
-Default.args = {
-  title: 'Deposit',
-  transferDate: 'Yesterday',
-  tokenAmount: 300,
-  tokenSymbol: 'DAI',
-  usdValue: '$200.00',
-};
-
 export const Pending = Template.bind({});
 Pending.args = {
   isPending: true,
   title: 'Deposit',
-  transferDate: 'Pending...',
   tokenAmount: 300,
   tokenSymbol: 'DAI',
+  transferDate: 'Pending...',
+  transferType: 'Deposit',
   usdValue: '$200.00',
 };
 
-export const LongReference = Template.bind({});
-LongReference.args = {
+export const Deposit = Template.bind({});
+Deposit.args = {
   title: 'Deposit DAI so I can do whatever I want whenever I want',
+  tokenAmount: 300,
   transferDate: 'Yesterday',
+  tokenSymbol: 'DAI',
+  transferType: 'Deposit',
+  usdValue: '$200.00',
+};
+
+export const Withdraw = Template.bind({});
+Withdraw.args = {
+  title: 'Withdraw',
   tokenAmount: 300,
   tokenSymbol: 'DAI',
+  transferDate: 'Yesterday',
+  transferType: 'Withdraw',
   usdValue: '$200.00',
 };
