@@ -1,7 +1,7 @@
 import React from 'react';
 import {render, screen} from '@testing-library/react';
 
-import {Default as TransferListItem} from '../stories/transferListItem.stories';
+import {Deposit as TransferListItem} from '../stories/transferListItem.stories';
 
 describe('TransferListItem', () => {
   function setup(args?: any) {
