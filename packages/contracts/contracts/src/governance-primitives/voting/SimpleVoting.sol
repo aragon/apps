@@ -5,6 +5,7 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20VotesUpgradeable.sol";
+import "../../../lib/common/TimeHelpers.sol";
 import "../../../lib/governance-primitives/voting/VotingGovernancePrimitive.sol";
 import "../../DAO.sol";
 import "../../executor/Executor.sol";
@@ -20,8 +21,8 @@ contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent {
     enum VoterState { Absent, Yea, Nay }
 
     struct Vote {
-        uint256 startDate;
-        uint256 snapshotBlock;
+        uint64 startDate;
+        uint64 snapshotBlock;
         uint64 supportRequiredPct;
         uint64 minAcceptQuorumPct;
         uint256 yea;
@@ -107,7 +108,7 @@ contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent {
             bool castVote
         ) = abi.decode(execution.proposal.additionalArguments, (string, bool, bool));
 
-        uint256 snapshotBlock = block.number - 1; // TODO: Should be uint64
+        uint64 snapshotBlock = getBlockNumber64() - 1; 
         
         uint256 votingPower = token.getPastTotalSupply(snapshotBlock);
         require(votingPower > 0, ERROR_NO_VOTING_POWER);
@@ -115,7 +116,7 @@ contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent {
         uint256 voteId = execution.id;
 
         Vote storage vote_ = votes[voteId];
-        vote_.startDate = block.timestamp; // TODO: Should be uint64
+        vote_.startDate = getTimestamp64();
         vote_.snapshotBlock = snapshotBlock;
         vote_.supportRequiredPct = supportRequiredPct;
         vote_.minAcceptQuorumPct = minAcceptQuorumPct;
@@ -228,8 +229,8 @@ contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent {
         returns (
             bool open,
             bool executed,
-            uint256 startDate,
-            uint256 snapshotBlock,
+            uint64 startDate,
+            uint64 snapshotBlock,
             uint64 supportRequired,
             uint64 minAcceptQuorum,
             uint256 yea,
@@ -270,7 +271,7 @@ contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent {
     * @return True if the given vote is open, false otherwise
     */
     function _isVoteOpen(Vote storage vote_, uint256 voteId) internal view returns (bool) {
-        return block.timestamp < vote_.startDate + voteTime && _isVoteExecuted(voteId);
+        return getTimestamp64() < vote_.startDate + voteTime && _isVoteExecuted(voteId);
     }
 
     /**

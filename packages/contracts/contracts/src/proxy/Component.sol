@@ -9,6 +9,8 @@ import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "../../lib/common/TimeHelpers.sol";
+
 import "../DAO.sol";
 
 
@@ -17,7 +19,7 @@ import "../DAO.sol";
 *  This includes ACL as well for each contract.
  */
 
-abstract contract Component {
+abstract contract Component is TimeHelpers {
     DAO internal dao;
     
     function initialize(DAO _dao) public virtual  {
@@ -25,7 +27,7 @@ abstract contract Component {
     }
 
     modifier authP(bytes32 role)  {
-        require(dao.hasPermission(address(this), msg.sender, role), "auth: check");
+        require(dao.hasPermission(address(this), msg.sender, role, msg.data), "auth: check");
         _;
     }
 }

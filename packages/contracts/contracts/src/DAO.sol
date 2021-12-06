@@ -50,8 +50,8 @@ contract DAO is UpgradableComponent, ACL {
         ACL.initACL(_aclRoot);
     }
 
-    function hasPermission(address _where, address _who, bytes32 _role) public returns(bool) {
-        return willPerform(_where, _who, _role, ""); // TODO: add data as last argument
+    function hasPermission(address _where, address _who, bytes32 _role, bytes memory data) public returns(bool) {
+        return willPerform(_where, _who, _role, data);
     }
 
     /// @notice If called a new governance process based on the submitted proposal does get kicked off
@@ -71,7 +71,6 @@ contract DAO is UpgradableComponent, ACL {
         GovernancePrimitive(governancePrimitive).execute(executionID);
     }
 
-    // TODO: who should be able to do this ? Executor ? what role name can we give this ?  
     /// @notice Update the DAO metadata
     /// @dev Sets a new IPFS hash
     /// @param _metadata The IPFS hash of the new metadata object
@@ -79,7 +78,6 @@ contract DAO is UpgradableComponent, ACL {
         metadata = _metadata;   
     }
 
-    // TODO: who should be able to do this ? Executor ? what role name can we give this ?  
     /// @notice Adds a new role to the permission management
     /// @dev Based on the name and the passed Permission struct does a new entry get added in Permissions
     /// @param role The name of the role as string
@@ -88,7 +86,6 @@ contract DAO is UpgradableComponent, ACL {
         permissions.setRole(role, permission);
     }
 
-    // TODO: who should be able to do this ? Executor ? what role name can we give this ?  
     /// @notice Adds a new process to the DAO
     /// @dev Based on the name and the passed Process struct does a new entry get added in Processes
     /// @param name The name of the process as string
@@ -97,7 +94,6 @@ contract DAO is UpgradableComponent, ACL {
         processes.setProcess(name, process);
     }
 
-    // TODO: who should be able to do this ? Executor ? what role name can we give this ?  
     /// @notice Sets a new executor address in case it needs to get replaced at all
     /// @dev Updates the executor contract property
     /// @param _executor The address of the new executor

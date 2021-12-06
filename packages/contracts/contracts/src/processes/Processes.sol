@@ -72,7 +72,6 @@ contract Processes is UpgradableComponent {
         public 
         authP(PROCESSES_SET_ROLE) 
     {
-        // TODO: Check if name already exists
         processes[name] = process;
 
         emit NewProcessAdded(name, process);
