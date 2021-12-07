@@ -1,6 +1,7 @@
 import {AddButton, SearchInput, TokenCard} from '@aragon/ui-components';
 import React from 'react';
 import {useTranslation} from 'react-i18next';
+import styled from 'styled-components';
 
 const tokens = [
   {
@@ -33,26 +34,38 @@ const Tokens: React.FC = () => {
   const {t} = useTranslation();
 
   return (
-    <div className="m-auto mt-5 space-y-5 w-8/12">
-      <div className="flex justify-between items-center">
+    <Layout>
+      <CenteredFlex>
         <div className="space-y-1">
-          <h1 className="text-2xl font-bold text-ui-800">
-            5 {t('finance.tokens')}
-          </h1>
-          <h2 className="text-lg font-semibold text-ui-500">
-            $469,657.98 Holdings
-          </h2>
+          <Title>5 {t('finance.tokens')}</Title>
+          <SubTitle>$469,657.98 Holdings</SubTitle>
         </div>
         <AddButton label="New Transfer" />
-      </div>
+      </CenteredFlex>
       <SearchInput placeholder="Type to filter" />
       <div className="space-y-1.5">
         {tokens.map((token, index) => (
           <TokenCard key={index} {...token} />
         ))}
       </div>
-    </div>
+    </Layout>
   );
 };
 
 export default Tokens;
+
+const Layout = styled.div.attrs({
+  className: 'm-auto mt-5 space-y-5 w-8/12',
+})``;
+
+const CenteredFlex = styled.div.attrs({
+  className: 'flex justify-between items-center',
+})``;
+
+const Title = styled.h1.attrs({
+  className: 'text-2xl font-bold text-ui-800',
+})``;
+
+const SubTitle = styled.h2.attrs({
+  className: 'text-lg font-semibold text-ui-500',
+})``;
