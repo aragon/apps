@@ -1,4 +1,7 @@
 import React, {useEffect, lazy, Suspense} from 'react';
+
+// FIXME: Change route to ApmRoute once package has been updated to be
+// compatible with react-router-dom v6
 import {Navigate, Routes, Route, useLocation} from 'react-router-dom';
 
 import Footer from 'containers/footer';
@@ -7,6 +10,9 @@ import WalletMenu from 'containers/walletMenu';
 import {trackPage} from 'services/analytics';
 import '../i18n.config';
 
+// HACK: All pages MUST be exported with the withTransaction function
+// from the '@elastic/apm-rum-react' package in order for analytics to
+// work properly on the pages.
 import HomePage from 'pages/home';
 import * as paths from 'utils/paths';
 const TokensPage = lazy(() => import('pages/tokens'));
