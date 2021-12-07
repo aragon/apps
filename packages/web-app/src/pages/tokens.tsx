@@ -1,11 +1,12 @@
-import {AddButton, Input, TokenCard} from '@aragon/ui-components';
+import {AddButton, SearchInput, TokenCard} from '@aragon/ui-components';
 import React from 'react';
 import {useTranslation} from 'react-i18next';
 
 const tokens = [
   {
     tokenName: 'DAI',
-    tokenSymbolURL:
+    tokenSymbol: 'DAI',
+    tokenImageUrl:
       'https://s2.coinmarketcap.com/static/img/coins/64x64/4943.png',
     treasurySharePercentage: '45%',
     tokenCount: '15,000,230.2323',
@@ -16,7 +17,8 @@ const tokens = [
   },
   {
     tokenName: 'Ethereum',
-    tokenSymbolURL:
+    tokenSymbol: 'ETH',
+    tokenImageUrl:
       'https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png',
     treasurySharePercentage: '15%',
     tokenCount: '500 ETH',
@@ -32,8 +34,8 @@ const Tokens: React.FC = () => {
 
   return (
     <div className="m-auto mt-5 space-y-5 w-8/12">
-      <div className="flex justify-between">
-        <div>
+      <div className="flex justify-between items-center">
+        <div className="space-y-1">
           <h1 className="text-2xl font-bold text-ui-800">
             5 {t('finance.tokens')}
           </h1>
@@ -43,7 +45,7 @@ const Tokens: React.FC = () => {
         </div>
         <AddButton label="New Transfer" />
       </div>
-      <Input placeholder="Type to filter" className="w-full" />
+      <SearchInput placeholder="Type to filter" />
       <div className="space-y-1.5">
         {tokens.map((token, index) => (
           <TokenCard key={index} {...token} />
