@@ -11,7 +11,7 @@ export const Radio: React.FC<RadioProps> = ({value, children}) => {
 
   return (
     <StyledRadioButton
-      active={selectedValue === value}
+      isSelected={selectedValue === value}
       value={value}
       onClick={() => onChange(value)}
     >
@@ -22,13 +22,13 @@ export const Radio: React.FC<RadioProps> = ({value, children}) => {
 
 interface StyledRadioButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement> {
-  active: boolean;
+  isSelected: boolean;
 }
 
 const StyledRadioButton = styled.button.attrs(
-  ({active}: StyledRadioButtonProps) => ({
+  ({isSelected}: StyledRadioButtonProps) => ({
     className: `p-1 font-bold ${
-      active ? 'bg-ui-0 text-primary-500' : 'text-ui-500'
+      isSelected ? 'bg-ui-0 text-primary-500' : 'text-ui-500'
     }`,
     style: {borderRadius: '0.625rem', minWidth: '4rem'},
   })
