@@ -10,6 +10,7 @@ export * from './components/icons';
 export * from './components/input';
 export * from './components/menuItem';
 export * from './components/popover';
+export * from './components/radioGroup';
 export * from './components/spinner';
 export * from './components/tokenCard';
 export * from './components/transferListItem';
