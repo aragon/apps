@@ -1,6 +1,6 @@
 import React from 'react';
-import { Meta, Story } from '@storybook/react';
-import { Radio, RadioGroup, RadioGroupProps } from '../src';
+import {Meta, Story} from '@storybook/react';
+import {Radio, RadioGroup, RadioGroupProps} from '../src';
 
 export default {
   title: 'Components/Radio Group',
@@ -20,5 +20,5 @@ const Template: Story<RadioGroupProps> = args => (
 export const Default = Template.bind({});
 Default.args = {
   defaultValue: 'Max',
-  onChange: (value) => console.log(value)
+  onChange: value => console.log(value),
 };

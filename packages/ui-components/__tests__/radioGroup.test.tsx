@@ -1,15 +1,15 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import {render, screen} from '@testing-library/react';
 
-import { RadioGroup, Radio } from '../src';
+import {RadioGroup, Radio} from '../src';
 
 describe('Radio Group', () => {
   function setup(args: any) {
     render(
-    <RadioGroup defaultValue="USD" {...args}>
-      <Radio value="USD">USD</Radio>
-      <Radio value="ETH">ETH</Radio>
-    </RadioGroup>
+      <RadioGroup defaultValue="USD" {...args}>
+        <Radio value="USD">USD</Radio>
+        <Radio value="ETH">ETH</Radio>
+      </RadioGroup>
     );
     return screen.getByTestId('radioGroup');
   }
