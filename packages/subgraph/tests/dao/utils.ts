@@ -1,35 +1,28 @@
-import {Address, ethereum} from '@graphprotocol/graph-ts';
-import {
-  assert,
-  createMockedFunction,
-  clearStore,
-  test,
-  newMockEvent,
-  newMockCall,
-} from 'matchstick-as/assembly/index';
-import {NewDAO} from '../../generated/Registry/Registry';
-import {Dao, ERC20Token} from '../../generated/schema';
+import { Address, ethereum } from "@graphprotocol/graph-ts";
+import { newMockEvent } from "matchstick-as/assembly/index";
+import { NewDAO } from "../../generated/Registry/Registry";
 
 export function createNewDaoEvent(
   name: string,
-  dao: Address,
-  creator: Address
+  dao: string,
+  creator: string
 ): NewDAO {
   let newDaoEvent = changetype<NewDAO>(newMockEvent());
+  // let newDaoEvent = newMockEvent() as NewDAO;
 
   newDaoEvent.parameters = new Array();
 
   let nameParam = new ethereum.EventParam(
-    'name',
+    "name",
     ethereum.Value.fromString(name)
   );
   let daoParam = new ethereum.EventParam(
-    'DAO',
-    ethereum.Value.fromAddress(dao)
+    "dao",
+    ethereum.Value.fromAddress(Address.fromString(dao))
   );
   let creatorParam = new ethereum.EventParam(
-    'creator',
-    ethereum.Value.fromAddress(creator)
+    "creator",
+    ethereum.Value.fromAddress(Address.fromString(creator))
   );
 
   newDaoEvent.parameters.push(nameParam);

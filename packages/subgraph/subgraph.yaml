@@ -17,13 +17,14 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - Dao
+        - CustomEntity
       abis:
         - name: Registry
           file: ./abis/Registry.json
       eventHandlers:
         - event: NewDAO(indexed string,indexed address,indexed address)
           handler: handleNewDAO
-      file: ./src/mapping.ts
+      file: ./src/dao.ts
 # templates
 templates:
   # DAO
@@ -36,7 +37,7 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      file: ./src/mapping.ts
+      file: ./src/dao.ts
       entities:
         - Proposal
       abis:
@@ -55,7 +56,7 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      file: ./src/mapping.ts
+      file: ./src/dao.ts
       entities:
         - Role
       abis:
@@ -74,7 +75,7 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      file: ./src/mapping.ts
+      file: ./src/dao.ts
       entities:
         - Process
       abis:
@@ -95,7 +96,7 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      file: ./src/mapping.ts
+      file: ./src/dao.ts
       entities:
         - VaultTransfer
         - VaultEthDeposit
@@ -120,7 +121,7 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      file: ./src/mapping.ts
+      file: ./src/dao.ts
       entities:
         - Execution
         - Vote

@@ -1,3 +1,8 @@
+type CustomEntity @entity {
+  id: ID!
+  name: String!
+}
+
 # Enums
 
 enum Operator {
