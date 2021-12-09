@@ -28,4 +28,5 @@ export const Default = Template.bind({});
 Default.args = {
   children: trigger,
   content: popoverContent,
+  title:'Test Modal'
 };

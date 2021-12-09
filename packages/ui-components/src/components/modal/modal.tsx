@@ -20,7 +20,7 @@ export interface ModalProps extends HTMLAttributes<HTMLElement> {
   /**
    * Content
    */
-  content: ReactNode;
+  children: ReactNode;
   /**
   * The `onClose` prop allows passing a function that will be called once the modal has been dismissed.
   */
@@ -32,7 +32,7 @@ export interface ModalProps extends HTMLAttributes<HTMLElement> {
  */
 export const Modal: React.FC<ModalProps> = ({
   title,
-  content,
+  children,
   open = true,
   onOpenChange,
   onClose,
@@ -48,11 +48,11 @@ export const Modal: React.FC<ModalProps> = ({
           >
           {title && <ModalHeader>
             <ModalTitle>{title}</ModalTitle>
-            <ModalClose>
+            <ModalClose onClick={onClose}>
               <IconClose height={14} width={14} />
             </ModalClose>
           </ModalHeader>}
-          {content}
+          {children}
         </ModalContent>
       </Root>
     </>
@@ -78,6 +78,8 @@ const ModalContent = styled(Content).attrs(
       maxWidth: '450px',
       maxHeight: '85vh',
       outline: 'none',
+      padding: '0px 24px 0px 24px',
+      overflow: 'auto',
     };
 
     return {style: currentStyle};
@@ -85,7 +87,7 @@ const ModalContent = styled(Content).attrs(
 )<StyledContentProps>``;
 
 const ModalTitle = styled(Title).attrs({
-  className: 'ft-text-lg font-semibold py-2 px-3',
+  className: 'text-lg font-semibold py-2',
 })``;
 
 const ModalHeader = styled.div.attrs({
