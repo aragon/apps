@@ -9,6 +9,7 @@ export type ButtonBaseProps = HTMLAttributes<HTMLButtonElement> & {
   iconOnly?: boolean;
   iconRight?: boolean;
   label?: string;
+  mode?: 'primary' | 'secondary' | 'ghost';
   size?: 'small' | 'medium' | 'large';
 };
 
@@ -24,7 +25,6 @@ export const ButtonBase: React.FC<ButtonBaseProps> = ({
   iconLeft = false,
   label,
   size = 'medium',
-
   onClick,
   ...props
 }) => {
