@@ -29,6 +29,8 @@
     "tokenSection": "Token Section",
     "transferSection": "Transfer Section",
     "unknownUSDValue": "Value unknown",
-    "tokens": "Tokens"
+    "tokens": "Tokens",
+    "allTransfers":"All Transfers",
+    "addTransfers":"Add Transfer"
   }
 }

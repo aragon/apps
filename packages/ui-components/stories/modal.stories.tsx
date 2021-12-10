@@ -1,7 +1,7 @@
 import React, {ReactNode} from 'react';
 import {Meta, Story} from '@storybook/react';
 
-import {Button, Modal, ModalProps} from '../src';
+import {Modal, ModalProps} from '../src';
 
 export default {
   title: 'Components/Modal',
@@ -10,7 +10,6 @@ export default {
 
 const Template: Story<ModalProps> = args => <Modal {...args} />;
 
-const trigger: ReactNode = <Button label="Trigger" />;
 const popoverContent: ReactNode = (
   <div>
     Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,
@@ -26,7 +25,7 @@ const popoverContent: ReactNode = (
 
 export const Default = Template.bind({});
 Default.args = {
-  children: trigger,
-  content: popoverContent,
-  title:'Test Modal'
+  children: popoverContent,
+  background: 'white',
+  title: 'Test Modal',
 };

@@ -6,11 +6,11 @@ import {IconClose} from '../icons'
 
 export interface ModalProps extends HTMLAttributes<HTMLElement> {
   /**
-   * The controlled open state of the popover. Must be used in conjunction with onOpenChange.
+   * The controlled open state of the Modal.
    */
   open?: boolean;
   /**
-   * Event handler called when the open state of the popover changes.
+   * Event handler called when the open state of the Modal changes.
    */
   onOpenChange?: (open: boolean) => void;
   /**
@@ -21,6 +21,14 @@ export interface ModalProps extends HTMLAttributes<HTMLElement> {
    * Content
    */
   children: ReactNode;
+  /**
+  * Background color
+  */
+  background?: string;
+  /**
+  * Styles
+  */
+  style?: CSSProperties | undefined;
   /**
   * The `onClose` prop allows passing a function that will be called once the modal has been dismissed.
   */
@@ -40,10 +48,11 @@ export const Modal: React.FC<ModalProps> = ({
 }) => {
   return (
     <>
-      <Backdrop visible={open} onClose={onClose}/>
       <Root {...{ open, onOpenChange }}>
+        <Backdrop visible={open}/>
         <ModalContent
           data-testid="modal-content"
+          onInteractOutside={onClose}
           {...props}
           >
           {title && <ModalHeader>
@@ -60,14 +69,12 @@ export const Modal: React.FC<ModalProps> = ({
 };
 
 
-type StyledContentProps = {
-  style?: CSSProperties | undefined;
-};
+type StyledContentProps = Pick<ModalProps, 'style' | 'background'>;
 
 const ModalContent = styled(Content).attrs(
-  ({style}: StyledContentProps) => {
+  ({ style, background }: StyledContentProps) => {
+    const className = `${background && `bg-${background}`}`;
     const currentStyle: CSSProperties = style || {
-      background: '#FFFFFF',
       position: 'fixed',
       top: '50%',
       left: '50%',
@@ -75,14 +82,14 @@ const ModalContent = styled(Content).attrs(
       boxShadow:'0px 24px 32px rgba(31, 41, 51, 0.04), 0px 16px 24px rgba(31, 41, 51, 0.04), 0px 4px 8px rgba(31, 41, 51, 0.04), 0px 0px 1px rgba(31, 41, 51, 0.04)',
       borderRadius: 12,
       width: '90vw',
-      maxWidth: '450px',
+      maxWidth: '437px',
       maxHeight: '85vh',
       outline: 'none',
       padding: '0px 24px 0px 24px',
       overflow: 'auto',
     };
 
-    return {style: currentStyle};
+    return {style: currentStyle,className};
   }
 )<StyledContentProps>``;
 
@@ -91,7 +98,7 @@ const ModalTitle = styled(Title).attrs({
 })``;
 
 const ModalHeader = styled.div.attrs({
-  className:'flex justify-between',
+  className:'flex justify-between pb-1.5',
 })``;
 
 const ModalClose = styled(Close).attrs({

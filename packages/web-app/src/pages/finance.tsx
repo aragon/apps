@@ -7,10 +7,12 @@ import {withTransaction} from '@elastic/apm-rum-react';
 import {
   TokenSectionWrapper,
   TransferSectionWrapper,
+  PageWrapper,
 } from 'components/sectionWrapper';
 import TokenList from 'components/tokenList';
 import usePollTokens from 'hooks/usePollTokens';
 import {DisplayToken} from 'utils/types';
+import {useTransferModalContext} from 'context/transfersModal';
 
 // Temporary, should be gotten from subgraph or as props
 const TEMP_TOKENS: DisplayToken[] = [
@@ -64,26 +66,33 @@ const POLL_TOKEN_LIST = TEMP_TOKENS.map(({address, decimals}) => ({
 const Finance: React.FC = () => {
   const {t} = useTranslation();
   const {prices} = usePollTokens(POLL_TOKEN_LIST);
+  const {open} = useTransferModalContext();
 
   return (
     <div className={'m-auto mt-4 w-8/12'}>
-      <h1 className={'text-2xl font-bold text-center'}>Finance Page</h1>
-      <div className={'h-4'} />
-      <TokenSectionWrapper title={t('finance.tokenSection')}>
-        <div className="py-2 space-y-2 border-solid">
-          <TokenList prices={prices} tokens={TEMP_TOKENS} />
-        </div>
-      </TokenSectionWrapper>
-      <div className={'h-4'} />
-      <TransferSectionWrapper title={t('finance.transferSection')}>
-        <div className="my-2 space-y-2 border-solid">
-          <ColoredDiv />
-          <ColoredDiv />
-          <ColoredDiv />
-          <ColoredDiv />
-          <ColoredDiv />
-        </div>
-      </TransferSectionWrapper>
+      <PageWrapper
+        title={t('finance.allTransfers')}
+        buttonLabel={t('finance.addTransfers')}
+        subtitle={'$1,002,200.00 Total Volume'}
+        onClick={open}
+      >
+        <div className={'h-4'} />
+        <TokenSectionWrapper title={t('finance.tokenSection')}>
+          <div className="py-2 space-y-2 border-solid">
+            <TokenList prices={prices} tokens={TEMP_TOKENS} />
+          </div>
+        </TokenSectionWrapper>
+        <div className={'h-4'} />
+        <TransferSectionWrapper title={t('finance.transferSection')}>
+          <div className="my-2 space-y-2 border-solid">
+            <ColoredDiv />
+            <ColoredDiv />
+            <ColoredDiv />
+            <ColoredDiv />
+            <ColoredDiv />
+          </div>
+        </TransferSectionWrapper>
+      </PageWrapper>
     </div>
   );
 };

@@ -21,6 +21,7 @@ Default.args = {
   title: 'Action List Item',
   subtitle: 'Action List Item Subtitle',
   icon: <IconChevronRight />,
+  bordered: true,
 };
 
 export const TitleOnly = Template.bind({});
@@ -28,6 +29,7 @@ TitleOnly.args = {
   title: 'Action List Item',
   icon: <IconTurnOff />,
   wide: true,
+  bordered: true,
 };
 
 export const Disabled = Template.bind({});
@@ -36,6 +38,7 @@ Disabled.args = {
   subtitle: 'Action List Item Subtitle',
   disabled: true,
   icon: <IconChevronRight />,
+  bordered: true,
 };
 
 export const Wide = Template.bind({});
@@ -44,4 +47,5 @@ Wide.args = {
   subtitle: 'Action List Item Subtitle',
   wide: true,
   icon: <IconChevronRight />,
+  bordered: true,
 };
