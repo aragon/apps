@@ -52,8 +52,14 @@ const Navbar: React.FC = () => {
   });
 
   const {open} = useWalletMenuContext();
-  const {connect, isConnected, account, ensName, ensAvatarUrl}: useWalletProps =
-    useWallet();
+  const {
+    connect,
+    isConnected,
+    account,
+    chainId,
+    ensName,
+    ensAvatarUrl,
+  }: useWalletProps = useWallet();
 
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showCrumbPopover, setShowCrumbPopover] = useState(false);
@@ -164,7 +170,9 @@ const Navbar: React.FC = () => {
             src={ensAvatarUrl || account}
           />
         </NavigationBar>
-        <TestNetworkIndicator>{t('testnetIndicator')}</TestNetworkIndicator>
+        {chainId === 4 && (
+          <TestNetworkIndicator>{t('testnetIndicator')}</TestNetworkIndicator>
+        )}
       </NavContainer>
 
       {/* ------- NavLinks (Mobile) ------- */}
