@@ -32,5 +32,8 @@
     "tokens": "Tokens",
     "allTransfers":"All Transfers",
     "addTransfers":"Add Transfer"
+  },
+  "TransferModal": {
+    "newTransfer": "New Transfer"
   }
 }

@@ -13,7 +13,7 @@ const TransferMenu: React.FC = () => {
     <Modal
       open={isOpen}
       onClose={close}
-      title={'New Transfer'}
+      title={t('newTransfer')}
       data-testid="walletCard"
       background="ui-50"
     >
