@@ -2,10 +2,10 @@ import React from 'react';
 import {TokenCard} from '@aragon/ui-components';
 import {useTranslation} from 'react-i18next';
 
-import {DisplayToken} from 'utils/types';
+import {BaseTokenInfo} from 'utils/types';
 
 type TokenListProps = {
-  tokens: DisplayToken[];
+  tokens: BaseTokenInfo[];
   prices: {[key: string]: string | undefined};
 };
 

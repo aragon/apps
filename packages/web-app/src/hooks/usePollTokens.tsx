@@ -2,13 +2,8 @@ import {useCallback, useState} from 'react';
 
 import useInterval from 'hooks/useInterval';
 import useIsMounted from 'hooks/useIsMounted';
-import {TokenPrices} from 'utils/types';
 import {fetchTokenUsdPrice} from 'services/prices';
-
-type Token = {
-  address: string;
-  decimals: number | undefined;
-};
+import {HookData, TokenPrices, BaseTokenInfo} from 'utils/types';
 
 /**
  * Hook for fetching token prices at specified intervals
@@ -21,13 +16,17 @@ type Token = {
  * const {prices, isLoading} = usePollTokens(tokenList, 1000);
  * console.log(prices) // { 0x123...34fd: '5.0045', 0x123...fa23: null};
  */
-const usePollTokens = (tokenList: Token[], interval?: number) => {
+const usePollTokens: HookData<TokenPrices> = (
+  tokenList: BaseTokenInfo[],
+  interval?: number
+) => {
   const isMounted = useIsMounted();
   const [prices, setPrices] = useState<TokenPrices>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState();
 
   const fetchPrices = useCallback(
-    async (tokens: Token[]) => {
+    async (tokens: BaseTokenInfo[]) => {
       const fetchedPrices: TokenPrices = {};
       setIsLoading(true);
 
@@ -53,7 +52,7 @@ const usePollTokens = (tokenList: Token[], interval?: number) => {
 
   useInterval(() => fetchPrices(tokenList), interval);
 
-  return {prices, isLoading};
+  return {data: prices, isLoading: isLoading};
 };
 
 export default usePollTokens;
