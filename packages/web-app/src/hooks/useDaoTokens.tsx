@@ -19,13 +19,14 @@ const TEMP_TOKEN_ADDR: Address[] = [
  * @param daoName Address of a DAO
  * @returns List of token addresses that the DAO as well as the hook state.
  */
-export const useDaoTokens: HookData<Address[]> = (daoAddress: Address) => {
+export const useDaoTokens = (daoAddress: Address) => {
   const [tokens, setTokens] = useState<Address[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error>();
 
   useEffect(() => {
     // TODO Fetch data from subgraph here
+    if (daoAddress) 42;
     setTokens(TEMP_TOKEN_ADDR);
   }, []);
 

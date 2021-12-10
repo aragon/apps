@@ -16,10 +16,7 @@ import {HookData, TokenPrices, BaseTokenInfo} from 'utils/types';
  * const {prices, isLoading} = usePollTokens(tokenList, 1000);
  * console.log(prices) // { 0x123...34fd: '5.0045', 0x123...fa23: null};
  */
-const usePollTokens: HookData<TokenPrices> = (
-  tokenList: BaseTokenInfo[],
-  interval?: number
-) => {
+const usePollTokens = (tokenList: BaseTokenInfo[], interval?: number) => {
   const isMounted = useIsMounted();
   const [prices, setPrices] = useState<TokenPrices>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);

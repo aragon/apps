@@ -14,9 +14,9 @@ import {useTokenInfo} from 'hooks/useTokenInformation';
 
 const Finance: React.FC = () => {
   const {t} = useTranslation();
-  const {tokens} = useDaoTokens('0xMyDaoAddress');
-  const {tokenInfos} = useTokenInfo(tokens.data);
-  const {tokenPrices} = usePollTokens(tokenInfos.data);
+  const {data: tokens} = useDaoTokens('0xMyDaoAddress');
+  const {data: tokenInfos} = useTokenInfo(tokens);
+  const {data: tokenPrices} = usePollTokens(tokenInfos);
 
   return (
     <div className={'m-auto mt-4 w-8/12'}>
@@ -24,7 +24,7 @@ const Finance: React.FC = () => {
       <div className={'h-4'} />
       <TokenSectionWrapper title={t('finance.tokenSection')}>
         <div className="py-2 space-y-2 border-solid">
-          <TokenList prices={prices} tokens={tokenPrices.data} />
+          <TokenList prices={tokenPrices} tokens={tokenInfos} />
         </div>
       </TokenSectionWrapper>
       <div className={'h-4'} />

@@ -1,4 +1,5 @@
 import {Address} from '@aragon/ui-components/dist/utils/addresses';
+import {constants} from 'ethers';
 import {useEffect, useState} from 'react';
 import {BaseTokenInfo, HookData} from 'utils/types';
 
@@ -46,19 +47,18 @@ const TEMP_TOKENS: BaseTokenInfo[] = [
   },
 ];
 
-export const useTokenInfo: HookData<BaseTokenInfo[]> = (
-  tokenAddresses: Address[]
-) => {
+export const useTokenInfo = (tokenAddresses: Address[]) => {
   const [tokenInfo, setTokenInfo] = useState<BaseTokenInfo[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error>();
 
   useEffect(() => {
     // TODO Fetch data for given token addresses from token API here
+    if (tokenAddresses) 42;
     setTokenInfo(TEMP_TOKENS);
   }, []);
 
-  const res: HookData<Address[]> = {
+  const res: HookData<BaseTokenInfo[]> = {
     data: tokenInfo,
     isLoading: false,
   };
