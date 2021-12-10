@@ -1,13 +1,13 @@
 import React, {HTMLAttributes} from 'react';
 import styled from 'styled-components';
+
 import {IconType} from '../icons';
 
 export type ButtonBaseProps = HTMLAttributes<HTMLButtonElement> & {
   disabled?: boolean;
-  icon?: React.FunctionComponentElement<IconType>;
-  iconLeft?: boolean;
-  iconOnly?: boolean;
-  iconRight?: boolean;
+  iconOnly?: boolean; // Guard against passing label to ButtonIcon
+  iconLeft?: React.FunctionComponentElement<IconType>;
+  iconRight?: React.FunctionComponentElement<IconType>;
   label?: string;
   mode?: 'primary' | 'secondary' | 'ghost';
   size?: 'small' | 'medium' | 'large';
@@ -16,47 +16,32 @@ export type ButtonBaseProps = HTMLAttributes<HTMLButtonElement> & {
 /**
  * Button to be used as base for other button components.
  * This button should not be exported with the library.
- * Size, font, margin, padding, and border-radius are included.
+ * Height, font, focus, and border-radius are included.
+ *
+ * Note: Even if both iconRight and iconLeft are passed,
+ * ONLY the iconLeft will be shown.
  */
 export const ButtonBase: React.FC<ButtonBaseProps> = ({
-  icon,
+  iconRight,
+  iconLeft,
   iconOnly = false,
-  iconRight = false,
-  iconLeft = false,
-  label,
   size = 'medium',
+  label,
   onClick,
   ...props
 }) => {
-  if (iconOnly) {
-    return (
-      <StyledButtonIcon {...props} size={size}>
-        {icon && <IconContainer size={size}>{icon}</IconContainer>}
-      </StyledButtonIcon>
-    );
-  }
-
-  if (iconLeft) {
-    return (
-      <StyledButtonText {...props} size={size}>
-        {icon && <IconContainer size={size}>{icon}</IconContainer>}
-        {label && <span>{label}</span>}
-      </StyledButtonText>
-    );
-  }
-
-  if (iconRight) {
-    return (
-      <StyledButtonText {...props} size={size}>
-        {label && <span>{label}</span>}
-        {icon && <IconContainer size={size}>{icon}</IconContainer>}
-      </StyledButtonText>
-    );
-  }
   return (
-    <StyledButtonText {...props} size={size}>
-      {label && <span>{label}</span>}
-    </StyledButtonText>
+    <BaseStyledButton {...props} size={size}>
+      {iconLeft && <IconContainer size={size}>{iconLeft}</IconContainer>}
+
+      {!iconOnly && (
+        <Label visible={label ? true : false}>{label && label}</Label>
+      )}
+
+      {!iconLeft && iconRight && (
+        <IconContainer size={size}>{iconRight}</IconContainer>
+      )}
+    </BaseStyledButton>
   );
 };
 
@@ -67,18 +52,6 @@ const sizeStyles = {
   small: 'h-4 space-x-1 rounded-lg',
   medium: 'h-5 space-x-1.5 rounded-lg', // FIXME: borderRadius 10px
   large: 'h-6 space-x-1.5 rounded-xl',
-};
-
-const paddingStyles = {
-  small: 'py-0.5 px-2',
-  medium: 'py-1.5 px-2',
-  large: 'py-1.5 px-2',
-};
-
-const iconOnlyPaddingStyles = {
-  small: 'p-1',
-  medium: 'p-1.5',
-  large: 'p-2',
 };
 
 const fontStyles = {
@@ -106,21 +79,15 @@ const BaseStyledButton = styled.button.attrs(({size = 'medium'}: SizeProps) => {
   return {className};
 })<SizeProps>``;
 
-const StyledButtonIcon = styled(BaseStyledButton).attrs(
-  ({size = 'medium'}: SizeProps) => {
-    let className: string | undefined;
-    className = `${iconOnlyPaddingStyles[size]}`;
-    return {className};
-  }
-)``;
+type LabelProps = {
+  visible: boolean;
+};
 
-const StyledButtonText = styled(BaseStyledButton).attrs(
-  ({size = 'medium'}: SizeProps) => {
-    let className: string | undefined;
-    className = `${paddingStyles[size]}`;
-    return {className};
-  }
-)``;
+const Label = styled.span.attrs(({visible}: LabelProps) => {
+  let className: string | undefined;
+  if (!visible) className = 'hidden';
+  return {className};
+})<LabelProps>``;
 
 const IconContainer = styled.span.attrs(({size = 'medium'}: SizeProps) => {
   let className: string | undefined;

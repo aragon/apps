@@ -20,7 +20,7 @@ Label.args = {
 export const WithIcon = Template.bind({});
 WithIcon.args = {
   label: 'Button Text',
-  disabled: false,
-  icon: <IconAdd />,
-  iconLeft: true,
+  disabled: true,
+  iconLeft: <IconAdd />,
+  iconRight: <IconAdd />,
 };

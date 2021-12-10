@@ -14,4 +14,5 @@ const Template: Story<ButtonIconProps> = args => <ButtonIcon {...args} />;
 export const Default = Template.bind({});
 Default.args = {
   icon: <IconAdd />,
+  label: 'abc',
 };

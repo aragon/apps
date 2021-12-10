@@ -1,8 +1,8 @@
 import React from 'react';
 import {Meta, Story} from '@storybook/react';
 
-import { IconAdd } from '../src';
-import { ButtonBase, ButtonBaseProps} from '../src/components/button/buttonBase';
+import {IconAdd} from '../src';
+import {ButtonBase, ButtonBaseProps} from '../src/components/button/buttonBase';
 
 export default {
   title: 'Components/Buttons/ButtonBase',
@@ -18,11 +18,10 @@ ButtonText.args = {
   onClick: () => null,
 };
 
-
 export const ButtonIcon = Template.bind({});
 ButtonIcon.args = {
   label: 'Button Text',
-  disabled: false,
-  icon:<IconAdd />,
+  disabled: true,
+  iconRight: <IconAdd />,
   onClick: () => null,
 };
