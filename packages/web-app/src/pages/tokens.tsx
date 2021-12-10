@@ -8,6 +8,7 @@ import TokenList from 'components/tokenList';
 import {useDaoTokens} from 'hooks/useDaoTokens';
 import usePollTokens from 'hooks/usePollTokens';
 import {useTokenInfo} from 'hooks/useTokenInformation';
+import {filterTokens, sortTokens} from 'utils/tokens';
 
 const Tokens: React.FC = () => {
   const {t} = useTranslation();
@@ -20,6 +21,8 @@ const Tokens: React.FC = () => {
   const handleChange = (event: BaseSyntheticEvent) => {
     setSearchTerm(event.target.value);
   };
+
+  const filteredInfo = filterTokens(tokenInfos, searchTerm);
 
   return (
     <Layout>
@@ -35,7 +38,7 @@ const Tokens: React.FC = () => {
         value={searchTerm}
         onChange={handleChange}
       />
-      <TokenList prices={tokenPrices} tokens={tokenInfos} />
+      <TokenList prices={tokenPrices} tokens={filteredInfo} />
     </Layout>
   );
 };
