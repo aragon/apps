@@ -10,16 +10,17 @@ import "../lib/governance-primitives/GovernancePrimitive.sol";
 import "./permissions/Permissions.sol";
 import "./processes/Processes.sol";
 import "./executor/Executor.sol";
-import "../src/proxy/Component.sol";
+import "../lib/component/UpgradableComponent.sol";
 import "../lib/acl/ACL.sol";
 
 /// @title The public interface of the Aragon DAO framework.
 /// @author Samuel Furter - Aragon Association - 2021
 /// @notice This contract is the entry point to the Aragon DAO framework and provides our users a simple and use to use public interface.
 /// @dev Public API of the Aragon DAO framework
-contract DAO is UpgradableComponent, ACL {
+contract DAO is ACL, UUPSUpgradeable, Initializable {
     
     bytes32 public constant DAO_CONFIG_ROLE = keccak256("DAO_CONFIG_ROLE");
+    bytes32 public constant UPGRADE_ROLE = keccak256("UPGRADE_ROLE");
 
     event NewProposal(GovernancePrimitive.Proposal indexed proposal, Processes.Process indexed process, address indexed submitter, uint256 executionId);
 
@@ -48,6 +49,10 @@ contract DAO is UpgradableComponent, ACL {
         executor = _executor;
 
         ACL.initACL(_aclRoot);
+    }
+
+    function _authorizeUpgrade(address /*_newImplementation*/) internal virtual override {
+        return willPerform(address(this), msg.sender, UPGRADE_ROLE, msg.data);
     }
 
     function hasPermission(address _where, address _who, bytes32 _role, bytes memory data) public returns(bool) {

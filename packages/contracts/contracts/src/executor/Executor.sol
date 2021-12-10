@@ -6,7 +6,7 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
-import "../proxy/Component.sol";
+import "../../lib/component/UpgradableComponent.sol";
 
 /// @title Implementation of the Executor
 /// @author Sarkawt Azad - Aragon Association - 2021

@@ -8,7 +8,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
 import "../../lib/permissions/PermissionValidator.sol";
 import "../DAO.sol";
-import "../proxy/Component.sol";
+import "../../lib/component/UpgradableComponent.sol";
 
 // TODO: Add update, remove etc. role
 /// @title The permissions contract responsible to handle all the governance process related permissions.

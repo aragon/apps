@@ -9,15 +9,9 @@ import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "../../lib/common/TimeHelpers.sol";
 
-import "../DAO.sol";
-
-
-/**
-*  Aragon's contracts extend from this for upgradability.
-*  This includes ACL as well for each contract.
- */
+import "./TimeHelpers.sol";
+import "../../src/DAO.sol";
 
 abstract contract Component is TimeHelpers {
     DAO internal dao;
@@ -30,14 +24,4 @@ abstract contract Component is TimeHelpers {
         require(dao.hasPermission(address(this), msg.sender, role, msg.data), "auth: check");
         _;
     }
-}
-
-abstract contract UpgradableComponent is Component, UUPSUpgradeable, Initializable {
-
-    bytes32 public constant UPGRADE_ROLE = keccak256("UPGRADE_ROLE");
-    
-    function _authorizeUpgrade(address /*_newImplementation*/) internal virtual override authP(UPGRADE_ROLE) {
-    
-    }
-
 }
