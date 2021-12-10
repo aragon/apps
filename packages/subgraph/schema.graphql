@@ -1,0 +1,135 @@
+# Enums
+enum Operator {
+  OR
+  AND
+  NAND
+  NOR
+}
+
+enum State {
+  RUNNING
+  STOPPED
+  HALTED
+  EXECUTED
+}
+
+enum VoterState {
+  Absent
+  Yea
+  Nay
+}
+
+# Types
+
+# Permisions
+type Permission @entity {
+  id: ID!
+  Operator: Operator
+  validators: [Bytes!]! # TODO ERC20Validator, NFTValidator
+  data: [Bytes!]!
+}
+
+type Role @entity {
+  id: ID!
+  role: String
+  permission: Permission!
+}
+
+# Processes
+type AllowedActions @entity {
+  id: ID!
+  to: Bytes! # address
+  methods: [Bytes!]!
+}
+
+type Action @entity {
+  id: ID!
+  to: Bytes! # Address to call.
+  value: BigInt! # Value to be sent with the call. for example (ETH)
+  data: Bytes!
+}
+
+type Proposal @entity {
+  id: ID!
+  processName: String! # The hash of the process that should get called
+  actions: [Action!]! # The actions that should get executed in the end
+  metadata: Bytes! # IPFS hash pointing to the metadata as description, title, image etc.
+  additionalArguments: Bytes # Optional additional arguments a process resp. governance primitive does need
+}
+
+type Process @entity {
+  id: ID!
+  name: String!
+  governancePrimitive: Bytes!
+  permissions: Permission!
+  allowedActions: [AllowedActions!]!
+  metadata: Bytes
+  executionId: BigInt
+}
+
+# Vault
+type VaultTransfer @entity {
+  id: ID!
+  token: Bytes
+  to: Bytes!
+  amount: BigInt!
+  reason: String!
+}
+
+type VaultEthDeposit @entity {
+  id: ID!
+  sender: Bytes!
+  amount: BigInt!
+}
+
+type ValutDeposit @entity {
+  id: ID!
+  token: Bytes!
+  sender: Bytes!
+  amount: BigInt!
+  reason: String!
+}
+
+# Voting
+type Voter @entity {
+  id: ID!
+  voter: Bytes!
+  state: VoterState!
+}
+
+type Vote @entity {
+  id: ID!
+  voteId: BigInt!
+  description: String!
+  creator: Bytes! # address
+  executed: Boolean!
+  startDate: BigInt!
+  snapshotBlock: BigInt!
+  supportRequiredPct: BigInt!
+  minAcceptQuorumPct: BigInt!
+  yea: BigInt!
+  nay: BigInt!
+  votingPower: BigInt!
+  voters: [Voter!]
+}
+
+# Executions
+type Execution @entity {
+  id: ID!
+  process: Process!
+  proposal: Proposal!
+  state: State!
+  executionId: BigInt!
+}
+
+# Daos
+type Dao @entity {
+  id: ID!
+  name: String!
+  daoAddress: Bytes!
+  creator: Bytes!
+  metadata: Bytes!
+  processes: Bytes!
+  permissions: Bytes!
+  executor: Bytes!
+}
