@@ -46,7 +46,9 @@ const TEMP_TOKENS: BaseTokenInfo[] = [
   },
 ];
 
-const useTokenInfo: HookData<BaseTokenInfo[]> = (tokenAddresses: Address[]) => {
+export const useTokenInfo: HookData<BaseTokenInfo[]> = (
+  tokenAddresses: Address[]
+) => {
   const [tokenInfo, setTokenInfo] = useState<BaseTokenInfo[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error>();
