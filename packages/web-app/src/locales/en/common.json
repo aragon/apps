@@ -29,11 +29,10 @@
     "tokenSection": "Token Section",
     "transferSection": "Transfer Section",
     "unknownUSDValue": "Value unknown",
-    "tokens": "Tokens",
-    "allTransfers":"All Transfers",
-    "addTransfers":"Add Transfer"
+    "tokens": "Tokens"
   },
   "TransferModal": {
+    "allTransfers":"All Transfers",
     "newTransfer": "New Transfer",
     "item1Title": "Deposit assets",
     "item1Subtitle": "Add assets to the DAO treasury",

@@ -15,7 +15,7 @@ const Template: Story<PopoverProps> = args => (
 );
 
 const trigger: ReactNode = <Button label="Trigger" />;
-const popoverContent: ReactNode = (
+const TestContent: ReactNode = (
   <div>
     Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,
     molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum
@@ -31,5 +31,5 @@ const popoverContent: ReactNode = (
 export const Default = Template.bind({});
 Default.args = {
   children: trigger,
-  content: popoverContent,
+  content: TestContent,
 };

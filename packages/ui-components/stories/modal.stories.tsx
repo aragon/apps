@@ -10,7 +10,7 @@ export default {
 
 const Template: Story<ModalProps> = args => <Modal {...args} />;
 
-const popoverContent: ReactNode = (
+const TestContent: ReactNode = (
   <div>
     Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,
     molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum
@@ -25,7 +25,7 @@ const popoverContent: ReactNode = (
 
 export const Default = Template.bind({});
 Default.args = {
-  children: popoverContent,
+  children: TestContent,
   background: 'white',
   title: 'Test Modal',
 };

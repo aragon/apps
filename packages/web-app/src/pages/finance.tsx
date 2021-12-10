@@ -71,10 +71,11 @@ const Finance: React.FC = () => {
   return (
     <div className={'m-auto mt-4 w-8/12'}>
       <PageWrapper
-        title={t('finance.allTransfers')}
-        buttonLabel={t('finance.addTransfers')}
-        subtitle={'$1,002,200.00 Total Volume'}
+        title={'$469,657.98'}
+        buttonLabel={t('TransferModal.newTransfer')}
+        subtitle={'+ $120,200'}
         onClick={open}
+        subtitleColor="primary-500"
       >
         <div className={'h-4'} />
         <TokenSectionWrapper title={t('finance.tokenSection')}>

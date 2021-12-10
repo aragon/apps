@@ -20,6 +20,7 @@ export type PageWrapperProps = SectionWrapperProps & {
   buttonLabel: string;
   subtitle: string;
   onClick?: () => void;
+  subtitleColor?: string;
 };
 
 // NOTE: It's possible to merge these two components. But I'm not sure it makes
@@ -36,13 +37,14 @@ export const PageWrapper = ({
   buttonLabel,
   subtitle,
   onClick,
+  subtitleColor = 'ui-600',
 }: PageWrapperProps) => {
   return (
     <>
       <HeaderContainer>
         <ContentWrapper>
           <PageTitle>{title}</PageTitle>
-          <PageSubtitle>{subtitle}</PageSubtitle>
+          <PageSubtitle {...{subtitleColor}}>{subtitle}</PageSubtitle>
         </ContentWrapper>
         <ActionWrapper>
           <IconButton
@@ -137,9 +139,11 @@ const PageTitle = styled.p.attrs({
   className: 'flex text-lg font-bold items-center text-3xl text-ui-800',
 })``;
 
-const PageSubtitle = styled.p.attrs({
-  className: 'flex text-lg items-center text-lg text-ui-600',
-})``;
+type PageSubtitleProps = Pick<PageWrapperProps, 'subtitleColor'>;
+
+const PageSubtitle = styled.p.attrs(({subtitleColor}: PageSubtitleProps) => ({
+  className: `flex text-lg items-center text-lg text-${subtitleColor}`,
+}))``;
 
 const ActionWrapper = styled.div.attrs({
   className: 'h-100', // Fix button relative height
