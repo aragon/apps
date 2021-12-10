@@ -9,14 +9,16 @@
     "create-local": "graph create --node http://localhost:8020/ sarkawttest",
     "remove-local": "graph remove --node http://localhost:8020/ sarkawttest",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sarkawttest",
-    "test": "graph test dao",
-    "coverage": "graph test -- -c"
+    "test": "graph test",
+    "coverage": "graph test -c",
+    "manifest-rinkeby": "scripts/build-manifest.sh rinkeby"
   },
   "dependencies": {
-    "@graphprotocol/graph-cli": "^0.23.1",
-    "@graphprotocol/graph-ts": "0.23.1"
+    "@graphprotocol/graph-cli": "^0.24.1",
+    "@graphprotocol/graph-ts": "^0.24.1",
+    "mustache": "^4.2.0"
   },
   "devDependencies": {
-    "matchstick-as": "^0.2.0"
+    "matchstick-as": "^0.2.1"
   }
 }

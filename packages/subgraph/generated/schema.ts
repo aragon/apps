@@ -11,50 +11,6 @@ import {
   BigDecimal
 } from "@graphprotocol/graph-ts";
 
-export class CustomEntity extends Entity {
-  constructor(id: string) {
-    super();
-    this.set("id", Value.fromString(id));
-
-    this.set("name", Value.fromString(""));
-  }
-
-  save(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot save CustomEntity entity without an ID");
-    if (id) {
-      assert(
-        id.kind == ValueKind.STRING,
-        "Cannot save CustomEntity entity with non-string ID. " +
-          'Considering using .toHex() to convert the "id" to a string.'
-      );
-      store.set("CustomEntity", id.toString(), this);
-    }
-  }
-
-  static load(id: string): CustomEntity | null {
-    return changetype<CustomEntity | null>(store.get("CustomEntity", id));
-  }
-
-  get id(): string {
-    let value = this.get("id");
-    return value!.toString();
-  }
-
-  set id(value: string) {
-    this.set("id", Value.fromString(value));
-  }
-
-  get name(): string {
-    let value = this.get("name");
-    return value!.toString();
-  }
-
-  set name(value: string) {
-    this.set("name", Value.fromString(value));
-  }
-}
-
 export class Permission extends Entity {
   constructor(id: string) {
     super();
@@ -998,8 +954,12 @@ export class Dao extends Entity {
     this.set("id", Value.fromString(id));
 
     this.set("name", Value.fromString(""));
-    this.set("dao", Value.fromBytes(Bytes.empty()));
+    this.set("daoAddress", Value.fromBytes(Bytes.empty()));
     this.set("creator", Value.fromBytes(Bytes.empty()));
+    this.set("metadata", Value.fromBytes(Bytes.empty()));
+    this.set("processes", Value.fromBytes(Bytes.empty()));
+    this.set("permissions", Value.fromBytes(Bytes.empty()));
+    this.set("executor", Value.fromBytes(Bytes.empty()));
   }
 
   save(): void {
@@ -1037,13 +997,13 @@ export class Dao extends Entity {
     this.set("name", Value.fromString(value));
   }
 
-  get dao(): Bytes {
-    let value = this.get("dao");
+  get daoAddress(): Bytes {
+    let value = this.get("daoAddress");
     return value!.toBytes();
   }
 
-  set dao(value: Bytes) {
-    this.set("dao", Value.fromBytes(value));
+  set daoAddress(value: Bytes) {
+    this.set("daoAddress", Value.fromBytes(value));
   }
 
   get creator(): Bytes {
@@ -1053,5 +1013,41 @@ export class Dao extends Entity {
 
   set creator(value: Bytes) {
     this.set("creator", Value.fromBytes(value));
+  }
+
+  get metadata(): Bytes {
+    let value = this.get("metadata");
+    return value!.toBytes();
+  }
+
+  set metadata(value: Bytes) {
+    this.set("metadata", Value.fromBytes(value));
+  }
+
+  get processes(): Bytes {
+    let value = this.get("processes");
+    return value!.toBytes();
+  }
+
+  set processes(value: Bytes) {
+    this.set("processes", Value.fromBytes(value));
+  }
+
+  get permissions(): Bytes {
+    let value = this.get("permissions");
+    return value!.toBytes();
+  }
+
+  set permissions(value: Bytes) {
+    this.set("permissions", Value.fromBytes(value));
+  }
+
+  get executor(): Bytes {
+    let value = this.get("executor");
+    return value!.toBytes();
+  }
+
+  set executor(value: Bytes) {
+    this.set("executor", Value.fromBytes(value));
   }
 }

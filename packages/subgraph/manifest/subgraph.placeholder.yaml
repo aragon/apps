@@ -1,5 +1,4 @@
-# Do not edit subgraph.yaml,this is a generated file. 
-# Instead, edit subgraph.placeholder.yaml and run: yarn manifest-[network-name]
+{{info}}
 specVersion: 0.0.2
 description: A template for Aragon subgraphs
 repository: https://github.com/zaragoza
@@ -8,11 +7,11 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: Registry
-    network: rinkeby
+    network: {{network}}
     source:
       abi: Registry
-      address: '0x1A5c73459E4F24e50bdF4d1c677A9Be2b7b7663f'
-      startBlock: 9727066
+      address: '{{dataSources.Registry.address}}'
+      startBlock: {{dataSources.Registry.startBlock}}
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5

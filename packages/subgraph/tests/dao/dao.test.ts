@@ -1,40 +1,67 @@
 import {
   assert,
-  createMockedFunction,
   clearStore,
   test,
   log,
-  logStore,
-  newMockEvent,
-} from 'matchstick-as/assembly/index';
-import {Address, Bytes, ethereum} from '@graphprotocol/graph-ts';
-import {NewDAO} from '../../generated/Registry/Registry';
-import {Dao} from '../../generated/schema';
-import {handleNewDAO} from '../../src/dao';
-import {createNewDaoEvent} from './utils';
+  createMockedFunction,
+} from "matchstick-as/assembly/index";
+import { Address, Bytes, ethereum } from "@graphprotocol/graph-ts";
+import { NewDAO } from "../../generated/Registry/Registry";
+import { Dao } from "../../generated/schema";
+import { handleNewDAO } from "../../src/dao";
+import { createNewDaoEvent } from "./utils";
+import { handleNewDAOMappingCalls } from "./utils";
+import { daoAddress, addressOne, processesAddress } from "../constants";
 
-export {handleNewDAO};
+test("Run dao mappings with mock event", () => {
+  // create event
+  let newDaoEvent = createNewDaoEvent("mock-Dao", daoAddress, addressOne);
 
-test('Can call mappings with mock events', () => {
-  let newDaoEvent = createNewDaoEvent(
-    'mockDao2',
-    '0xc8541aAE19C5069482239735AD64FAC3dCc52Ca2',
-    '0xA592E80E5E5D194ab635064e15EA35E883aB75dC'
-  );
+  let entityID = Address.fromString(daoAddress).toHexString();
 
-  // launch event
+  // create necesary mock calls
+  handleNewDAOMappingCalls(entityID);
+
+  // handle event
   handleNewDAO(newDaoEvent);
 
   // checks
+  assert.fieldEquals("Dao", entityID, "id", entityID);
+  assert.fieldEquals("Dao", entityID, "name", "mock-Dao");
+  assert.fieldEquals("Dao", entityID, "daoAddress", entityID);
+  let daoCreator = Address.fromString(addressOne).toHexString();
+  assert.fieldEquals("Dao", entityID, "creator", daoCreator);
 
-  let daoAddress = Address.fromString(
-    '0xc8541aAE19C5069482239735AD64FAC3dCc52Ca2'
-  ).toHexString();
-  assert.fieldEquals('Dao', daoAddress, 'daoAddress', daoAddress);
-  let daoCreator = Address.fromString(
-    '0xA592E80E5E5D194ab635064e15EA35E883aB75dC'
-  ).toHexString();
-  assert.fieldEquals('Dao', daoAddress, 'creator', daoCreator);
+  clearStore();
+});
+
+test("Run dao mappings with mock calls", () => {
+  // create event
+  let newDaoEvent = createNewDaoEvent("mock-Dao", daoAddress, addressOne);
+
+  let entityID = Address.fromString(daoAddress).toHexString();
+
+  // create necesary mock calls
+  handleNewDAOMappingCalls(entityID);
+
+  // handle event
+  handleNewDAO(newDaoEvent);
+
+  // checks
+  let call = ethereum.call(
+    new ethereum.SmartContractCall(
+      "Dao",
+      Address.fromString(daoAddress),
+      "processes",
+      "processes():(address)",
+      []
+    )
+  )![0];
+
+  assert.equals(
+    ethereum.Value.fromAddress(Address.fromString(processesAddress)),
+    call
+  );
 
   clearStore();
 });

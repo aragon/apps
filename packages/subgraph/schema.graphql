@@ -1,10 +1,4 @@
-type CustomEntity @entity {
-  id: ID!
-  name: String!
-}
-
 # Enums
-
 enum Operator {
   OR
   AND
@@ -42,7 +36,6 @@ type Role @entity {
 }
 
 # Processes
-
 type AllowedActions @entity {
   id: ID!
   to: Bytes! # address
@@ -75,7 +68,6 @@ type Process @entity {
 }
 
 # Vault
-
 type VaultTransfer @entity {
   id: ID!
   token: Bytes
@@ -122,7 +114,6 @@ type Vote @entity {
 }
 
 # Executions
-
 type Execution @entity {
   id: ID!
   process: Process!
@@ -132,14 +123,13 @@ type Execution @entity {
 }
 
 # Daos
-
 type Dao @entity {
-  id: ID! # DAO's address
+  id: ID!
   name: String!
-  dao: Bytes! # DAO's address
-  creator: Bytes! # address
-  # metadata: Bytes!
-  # processes: Bytes! # address
-  # permissions: Bytes! # address
-  # executor: Bytes! # address
+  daoAddress: Bytes!
+  creator: Bytes!
+  metadata: Bytes!
+  processes: Bytes!
+  permissions: Bytes!
+  executor: Bytes!
 }
