@@ -16,7 +16,7 @@ export interface ModalProps {
   /**
    * Modal title. if the title exists close button will appear
    */
-  title?: string | null;
+  title?: string;
   /**
    * Content
    */

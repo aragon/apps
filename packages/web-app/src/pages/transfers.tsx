@@ -12,8 +12,8 @@ const Transfers: React.FC = () => {
   return (
     <div className={'m-auto mt-4 w-8/12'}>
       <PageWrapper
-        title={t('TransferModal.allTransfers')}
-        buttonLabel={t('TransferModal.newTransfer')}
+        title={t('TransferModal.allTransfers') as string}
+        buttonLabel={t('TransferModal.newTransfer') as string}
         subtitle={'$1,002,200.00 Total Volume'}
         onClick={open}
       >

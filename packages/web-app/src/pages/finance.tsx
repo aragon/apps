@@ -72,7 +72,7 @@ const Finance: React.FC = () => {
     <div className={'m-auto mt-4 w-8/12'}>
       <PageWrapper
         title={'$469,657.98'}
-        buttonLabel={t('TransferModal.newTransfer')}
+        buttonLabel={t('TransferModal.newTransfer') as string}
         subtitle={'+ $120,200'}
         onClick={open}
         subtitleColor="primary-500"
