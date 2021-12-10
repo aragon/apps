@@ -16,3 +16,9 @@ export type DisplayToken = {
   name: string;
   symbol: string;
 };
+
+export type HookData<T> = {
+  data: T;
+  isLoading: boolean;
+  error?: Error;
+};
