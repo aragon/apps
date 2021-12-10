@@ -6,7 +6,7 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20VotesUpgradeable.sol";
 import "../../../lib/governance-primitives/voting/VotingGovernancePrimitive.sol";
-import "../../DAO.sol";
+import "../../../lib/component/IDAO.sol";
 import "../../executor/Executor.sol";
 import "../../../lib/component/UpgradableComponent.sol";
 
@@ -60,7 +60,7 @@ contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent {
 
     /// @dev Used for UUPS upgradability pattern
     /// @param _dao The DAO contract of the current DAO
-    function initialize(DAO _dao, ERC20VotesUpgradeable _token, uint64[3] calldata _voteSettings) public initializer { 
+    function initialize(IDAO _dao, ERC20VotesUpgradeable _token, uint64[3] calldata _voteSettings) public initializer { 
         token = _token;
 
         require(_voteSettings[0] <= _voteSettings[1], ERROR_INIT_PCTS);

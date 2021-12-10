@@ -11,13 +11,13 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 import "./TimeHelpers.sol";
-import "../../src/DAO.sol";
+import "./IDAO.sol";
 
 abstract contract Component is TimeHelpers {
-    DAO internal dao;
+    IDAO internal dao;
     
-    function initialize(DAO _dao) public virtual  {
-        dao = DAO(_dao);
+    function initialize(IDAO _dao) public virtual  {
+        dao = _dao;
     }
 
     modifier authP(bytes32 role)  {

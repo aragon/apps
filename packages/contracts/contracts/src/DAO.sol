@@ -12,12 +12,13 @@ import "./processes/Processes.sol";
 import "./executor/Executor.sol";
 import "../lib/component/UpgradableComponent.sol";
 import "../lib/acl/ACL.sol";
+import "../lib/component/IDAO.sol";
 
 /// @title The public interface of the Aragon DAO framework.
 /// @author Samuel Furter - Aragon Association - 2021
 /// @notice This contract is the entry point to the Aragon DAO framework and provides our users a simple and use to use public interface.
 /// @dev Public API of the Aragon DAO framework
-contract DAO is ACL, UUPSUpgradeable, Initializable {
+contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
     
     bytes32 public constant DAO_CONFIG_ROLE = keccak256("DAO_CONFIG_ROLE");
     bytes32 public constant UPGRADE_ROLE = keccak256("UPGRADE_ROLE");
@@ -52,11 +53,20 @@ contract DAO is ACL, UUPSUpgradeable, Initializable {
     }
 
     function _authorizeUpgrade(address /*_newImplementation*/) internal virtual override {
-        return willPerform(address(this), msg.sender, UPGRADE_ROLE, msg.data);
+        require(willPerform(address(this), msg.sender, UPGRADE_ROLE, msg.data), "auth:check");
     }
 
-    function hasPermission(address _where, address _who, bytes32 _role, bytes memory data) public returns(bool) {
+    modifier authP(bytes32 role)  {
+        require(willPerform(address(this), msg.sender, role, msg.data), "auth: check");
+        _;
+    }
+
+    function hasPermission(address _where, address _who, bytes32 _role, bytes memory data) public override returns(bool) {
         return willPerform(_where, _who, _role, data);
+    }
+
+    function checkPermission(string calldata _role) external view override returns(bool) {
+        return permissions.checkPermission(_role);
     }
 
     /// @notice If called a new governance process based on the submitted proposal does get kicked off
