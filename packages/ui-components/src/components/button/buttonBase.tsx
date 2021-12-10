@@ -1,9 +1,9 @@
-import React, {HTMLAttributes} from 'react';
+import React, {ButtonHTMLAttributes} from 'react';
 import styled from 'styled-components';
 
 import {IconType} from '../icons';
 
-export type ButtonBaseProps = HTMLAttributes<HTMLButtonElement> & {
+export type ButtonBaseProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   disabled?: boolean;
   iconOnly?: boolean; // Guard against passing label to ButtonIcon
   iconLeft?: React.FunctionComponentElement<IconType>;
@@ -11,6 +11,7 @@ export type ButtonBaseProps = HTMLAttributes<HTMLButtonElement> & {
   label?: string;
   mode?: 'primary' | 'secondary' | 'ghost';
   size?: 'small' | 'medium' | 'large';
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 };
 
 /**
@@ -31,7 +32,7 @@ export const ButtonBase: React.FC<ButtonBaseProps> = ({
   ...props
 }) => {
   return (
-    <BaseStyledButton {...props} size={size}>
+    <BaseStyledButton {...props} size={size} onClick={onClick}>
       {iconLeft && <IconContainer size={size}>{iconLeft}</IconContainer>}
 
       {!iconOnly && (

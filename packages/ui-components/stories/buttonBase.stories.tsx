@@ -15,7 +15,6 @@ export const ButtonText = Template.bind({});
 ButtonText.args = {
   label: 'Button Text',
   disabled: false,
-  onClick: () => null,
 };
 
 export const ButtonIcon = Template.bind({});
@@ -23,5 +22,4 @@ ButtonIcon.args = {
   label: 'Button Text',
   disabled: true,
   iconRight: <IconAdd />,
-  onClick: () => null,
 };

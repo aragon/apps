@@ -14,7 +14,7 @@ const Template: Story<ButtonTextProps> = args => <ButtonText {...args} />;
 export const Label = Template.bind({});
 Label.args = {
   label: 'Button with label',
-  onClick: () => null,
+  onClick: () => alert('clicked'),
 };
 
 export const WithIcon = Template.bind({});

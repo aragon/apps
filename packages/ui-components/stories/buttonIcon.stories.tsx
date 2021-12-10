@@ -15,4 +15,5 @@ export const Default = Template.bind({});
 Default.args = {
   icon: <IconAdd />,
   label: 'abc',
+  onClick: () => alert('clicked'),
 };
