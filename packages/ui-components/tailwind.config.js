@@ -1,8 +1,9 @@
 module.exports = {
   purge: ['./src/**/*.html', './src/**/*.tsx'],
-  darkMode: false, // or 'media' or 'class'
+  darkMode: false,
   theme: {
     extend: {
+      // extends colors accorging to design system
       colors: {
         primary: {
           50: '#F5F8FF',
@@ -40,6 +41,17 @@ module.exports = {
           800: '#467603',
           900: '#366101',
         },
+        warning: {
+          100: '#FFF3D6',
+          200: '#FFE4AD',
+          300: '#FFD083',
+          400: '#FFBE65',
+          500: '#FF9F32',
+          600: '#DB7D24',
+          700: '#B75E19',
+          800: '#93430F',
+          900: '#7A3009',
+        },
         critical: {
           100: '#FEE4D6',
           200: '#FEC3AE',
@@ -50,8 +62,9 @@ module.exports = {
           700: '#B31B35',
           800: '#901132',
           900: '#770A30',
-        }
+        },
       },
+      // extends spacing accorging to design system
       spacing: {
         0.5: '4px',
         1: '8px',
@@ -68,6 +81,11 @@ module.exports = {
         25: '200px',
       },
     },
+    fontWeight: {
+      normal: 500,
+      bold: 700,
+    },
+    // overwirtes screen breakpoints according to design system
     screens: {
       tablet: '768px',
       desktop: '1440px',
@@ -76,6 +94,45 @@ module.exports = {
     fontFamily: {
       sans: ['Manrope'],
     },
+    // overwirtes font sizes according to design system
+    // These are to be used on components (labels, etc.).
+    fontSize: {
+      xs: ['0.64rem', 1.5],
+      sm: ['0.8rem', 1.5],
+      base: ['1rem', 1.5],
+      lg: ['1.25rem', 1.5],
+      xl: ['1.563rem', 1.2],
+      '2xl': ['1.953rem', 1.2],
+      '3xl': ['2.441rem', 1.2],
+      '4xl': ['3.052rem', 1.2],
+      '5xl': ['3.185rem', 1.2],
+    },
+    fluidType: {
+      settings: {
+        fontSizeMin: 0.875, // 0.875rem === 14px
+        fontSizeMax: 1, // 1rem === 16px
+        ratioMin: 1.2, // Multiplicator Min: Minor Third
+        ratioMax: 1.25, // Multiplicator Max Major Third
+        screenMin: 20, // 20rem === 320px
+        screenMax: 96, // 96rem === 1536px
+        unit: 'rem',
+        prefix: 'ft',
+      },
+      // Creates the ft-text-xx classes. These are to be used for inline text
+      // and headings.
+      // 'lineHeight' is unitless.
+      values: {
+        xs: [-2, 1.5],
+        sm: [-1, 1.5],
+        base: [0, 1.5],
+        lg: [1, 1.5],
+        xl: [2, 1.2],
+        '2xl': [3, 1.2],
+        '3xl': [4, 1.2],
+        '4xl': [5, 1.2],
+        '5xl': [6, 1.2],
+      },
+    },
   },
   variants: {
     extend: {
@@ -83,6 +140,7 @@ module.exports = {
       textColor: ['active', 'disabled'],
       borderColor: ['active', 'disabled'],
     },
+    fluidType: ['responsive'],
   },
-  plugins: [],
+  plugins: [require('tailwindcss-fluid-type')],
 };

@@ -20,6 +20,15 @@
     "subtitle": "Find other DAOs to join"
   },
   "navButtons": {
-    "connectWallet": "Connect account"
+    "connectWallet": "Login"
+  },
+  "labels": {
+    "seeAll": "See all"
+  },
+  "finance": {
+    "tokenSection": "Token Section",
+    "transferSection": "Transfer Section",
+    "unknownUSDValue": "Value unknown",
+    "tokens": "Tokens"
   }
 }
