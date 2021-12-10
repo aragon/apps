@@ -1,10 +1,10 @@
-import React, {HTMLAttributes, ReactNode, CSSProperties} from 'react';
+import React, {ReactNode, CSSProperties} from 'react';
 import styled from 'styled-components';
 import {Root, Title, Content, Close} from '@radix-ui/react-dialog';
 import {Backdrop} from '../backdrop';
 import {IconClose} from '../icons'
 
-export interface ModalProps extends HTMLAttributes<HTMLElement> {
+export interface ModalProps {
   /**
    * The controlled open state of the Modal.
    */
@@ -16,7 +16,7 @@ export interface ModalProps extends HTMLAttributes<HTMLElement> {
   /**
    * Modal title. if the title exists close button will appear
    */
-  title: string;
+  title?: string | null;
   /**
    * Content
    */

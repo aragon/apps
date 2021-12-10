@@ -27,12 +27,8 @@ export type PageWrapperProps = SectionWrapperProps & {
 // are added in the future and all have similar style, feel free to merge them.
 
 /**
- * Section wrapper for tokens overview. Consists of a header with a title and a
- * button, as well as a footer with a button that takes the user to the token
- * overview. and a list of tokens (the children).
- *
- * NOTE: The wrapper imposes NO SPACING. It's entirely up to the children to
- * define this.
+ * finance Page wrapper. Consists of a header with a title and a
+ * icon button.
  */
 export const PageWrapper = ({
   title,
@@ -146,7 +142,7 @@ const PageSubtitle = styled.p.attrs({
 })``;
 
 const ActionWrapper = styled.div.attrs({
-  className: 'h-100',
+  className: 'h-100', // Fix button relative height
 })``;
 
 const HeaderContainer = styled.div.attrs({

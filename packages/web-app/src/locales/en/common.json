@@ -34,6 +34,10 @@
     "addTransfers":"Add Transfer"
   },
   "TransferModal": {
-    "newTransfer": "New Transfer"
+    "newTransfer": "New Transfer",
+    "item1Title": "Deposit assets",
+    "item1Subtitle": "Add assets to the DAO treasury",
+    "item2Title": "Withdraw assets",
+    "item2Subtitle": "Add assets to the DAO treasury",
   }
 }

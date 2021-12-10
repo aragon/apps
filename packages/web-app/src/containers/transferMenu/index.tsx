@@ -13,20 +13,20 @@ const TransferMenu: React.FC = () => {
     <Modal
       open={isOpen}
       onClose={close}
-      title={t('newTransfer')}
+      title={t('TransferModal.newTransfer')}
       data-testid="walletCard"
       background="ui-50"
     >
       <Container>
         <ActionListItem
-          title={'Deposit assets'}
-          subtitle={'Add assets to the DAO treasury'}
+          title={t('TransferModal.item1Title')}
+          subtitle={t('TransferModal.item1Subtitle')}
           icon={<IconChevronRight />}
           background="white"
         />
         <ActionListItem
-          title={'Withdraw assets'}
-          subtitle={'Add assets to the DAO treasury'}
+          title={t('TransferModal.item2Title')}
+          subtitle={t('TransferModal.item2Subtitle')}
           icon={<IconChevronRight />}
           background="white"
         />
