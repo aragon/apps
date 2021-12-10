@@ -27,7 +27,7 @@ const usePollTokens = (tokenList: BaseTokenInfo[], interval?: number) => {
   const isMounted = useIsMounted();
   const [prices, setPrices] = useState<TokenPrices>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState();
+  const [error, setError] = useState(); // eslint-disable-line
 
   const fetchPrices = useCallback(
     async (tokens: BaseTokenInfo[]) => {

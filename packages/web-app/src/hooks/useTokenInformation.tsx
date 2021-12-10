@@ -16,14 +16,14 @@ import {BaseTokenInfo, HookData} from 'utils/types';
  */
 export const useTokenInfo = (tokenAddresses: Address[]) => {
   const [tokenInfo, setTokenInfo] = useState<BaseTokenInfo[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error>();
+  const [loading, setLoading] = useState(false); // eslint-disable-line
+  const [error, setError] = useState<Error>(); // eslint-disable-line
 
   useEffect(() => {
     // TODO Fetch data for given token addresses from token API here
     if (tokenAddresses) 42;
     setTokenInfo(TEMP_TOKENS);
-  }, []);
+  }, []); // eslint-disable-line
 
   const res: HookData<BaseTokenInfo[]> = {
     data: tokenInfo,

@@ -13,15 +13,15 @@ import {HookData} from 'utils/types';
  * @returns List of token addresses that the DAO as well as the hook state.
  */
 export const useDaoTokens = (daoAddress: Address) => {
-  const [tokens, setTokens] = useState<Address[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error>();
+  const [tokens, setTokens] = useState<Address[]>([]); // eslint-disable-line
+  const [loading, setLoading] = useState(false); // eslint-disable-line
+  const [error, setError] = useState<Error>(); // eslint-disable-line
 
   useEffect(() => {
     // TODO Fetch data from subgraph here
     if (daoAddress) 42;
     setTokens(TEMP_TOKEN_ADDR);
-  }, []);
+  }, []); // eslint-disable-line
 
   const res: HookData<Address[]> = {
     data: TEMP_TOKEN_ADDR,

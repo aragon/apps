@@ -8,7 +8,7 @@ import TokenList from 'components/tokenList';
 import {useDaoTokens} from 'hooks/useDaoTokens';
 import usePollTokens from 'hooks/usePollTokens';
 import {useTokenInfo} from 'hooks/useTokenInformation';
-import {filterTokens, sortTokens} from 'utils/tokens';
+import {filterTokens} from 'utils/tokens';
 
 const Tokens: React.FC = () => {
   const {t} = useTranslation();
