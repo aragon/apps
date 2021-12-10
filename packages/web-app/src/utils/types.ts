@@ -8,7 +8,7 @@ export type TokenPrices = {
 /**
  * Token information to be displayed on tokenCard
  */
-export type DisplayToken = {
+export type BaseTokenInfo = {
   address: string;
   count: number;
   decimals: number;
