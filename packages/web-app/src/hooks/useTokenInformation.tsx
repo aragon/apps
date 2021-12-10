@@ -3,7 +3,36 @@ import {constants} from 'ethers';
 import {useEffect, useState} from 'react';
 import {BaseTokenInfo, HookData} from 'utils/types';
 
-// Temporary, should be gotten from subgraph or as props
+// TODO: Eventually, the idea is to pass HookData<Address[]> into this this hook
+// directly (Note that this hook depends on the ouput of useDaoTokens). This
+// would then allow to handle the loading and error state of the useDaoTokens
+// directly in here.
+
+/**
+ * Hook that fetches information for given list of tokens.
+ *
+ * @param tokenAddresses Address of a Token
+ * @returns List of token information as well as the hook state.
+ */
+export const useTokenInfo = (tokenAddresses: Address[]) => {
+  const [tokenInfo, setTokenInfo] = useState<BaseTokenInfo[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error>();
+
+  useEffect(() => {
+    // TODO Fetch data for given token addresses from token API here
+    if (tokenAddresses) 42;
+    setTokenInfo(TEMP_TOKENS);
+  }, []);
+
+  const res: HookData<BaseTokenInfo[]> = {
+    data: tokenInfo,
+    isLoading: false,
+  };
+  return res;
+};
+
+// Temporary, should be gotten from the respective API
 const TEMP_TOKENS: BaseTokenInfo[] = [
   {
     name: 'Ethereum',
@@ -46,21 +75,3 @@ const TEMP_TOKENS: BaseTokenInfo[] = [
     decimals: 6,
   },
 ];
-
-export const useTokenInfo = (tokenAddresses: Address[]) => {
-  const [tokenInfo, setTokenInfo] = useState<BaseTokenInfo[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error>();
-
-  useEffect(() => {
-    // TODO Fetch data for given token addresses from token API here
-    if (tokenAddresses) 42;
-    setTokenInfo(TEMP_TOKENS);
-  }, []);
-
-  const res: HookData<BaseTokenInfo[]> = {
-    data: tokenInfo,
-    isLoading: false,
-  };
-  return res;
-};

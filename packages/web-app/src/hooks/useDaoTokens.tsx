@@ -3,13 +3,6 @@ import {constants} from 'ethers';
 import {useEffect, useState} from 'react';
 import {HookData} from 'utils/types';
 
-const TEMP_TOKEN_ADDR: Address[] = [
-  constants.AddressZero,
-  '0xa117000000f279d81a1d3cc75430faa017fa5a2e',
-  '0x6b175474e89094c44da98b954eedeac495271d0f',
-  '0xdac17f958d2ee523a2206206994597c13d831ec7',
-];
-
 /**
  * Hook that fetches all the Tokens a DAO has available in their vault.
  *
@@ -36,3 +29,11 @@ export const useDaoTokens = (daoAddress: Address) => {
   };
   return res;
 };
+
+// TEMPORARY, should eventually be obtained from a subgraph
+const TEMP_TOKEN_ADDR: Address[] = [
+  constants.AddressZero,
+  '0xa117000000f279d81a1d3cc75430faa017fa5a2e',
+  '0x6b175474e89094c44da98b954eedeac495271d0f',
+  '0xdac17f958d2ee523a2206206994597c13d831ec7',
+];

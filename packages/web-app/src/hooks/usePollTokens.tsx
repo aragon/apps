@@ -5,6 +5,13 @@ import useIsMounted from 'hooks/useIsMounted';
 import {fetchTokenUsdPrice} from 'services/prices';
 import {HookData, TokenPrices, BaseTokenInfo} from 'utils/types';
 
+// TODO: unify the token price and info type.
+
+// TODO: Eventually, the idea is to pass HookData<BaseTokenInfo[]> into this
+// this hook directly (Note that this hook depends on the ouput of
+// useTokenInfo). This would then allow to handle the loading and error state of
+// the useTokenInfo directly in here.
+
 /**
  * Hook for fetching token prices at specified intervals
  * @param tokenList List of token symbols or addresses to fetch USD value for
@@ -49,7 +56,7 @@ const usePollTokens = (tokenList: BaseTokenInfo[], interval?: number) => {
 
   useInterval(() => fetchPrices(tokenList), interval);
 
-  return {data: prices, isLoading: isLoading};
+  return {data: prices, isLoading: isLoading} as HookData<TokenPrices>;
 };
 
 export default usePollTokens;
