@@ -30,4 +30,4 @@ yarn-error.log*
 
 # generated
 generated
-
+subgraph.yaml
