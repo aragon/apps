@@ -1,7 +1,13 @@
 import {getDateSections} from 'utils/date';
 
-export default function useCategorizedTransfers() {
-  const sections = getDateSections();
+export type TransferSectionsType = {
+  week: number[];
+  month: number[];
+  year: number[];
+};
+
+export default function useCategorizedTransfers(): TransferSectionsType {
+  const sections = getDateSections(); // Sections will dynamically set based on today date
 
   /**
    * Note: In this Hook we should split the transfer data
@@ -13,5 +19,9 @@ export default function useCategorizedTransfers() {
    *
    */
 
-  return null;
+  return {
+    week: [1, 2, 3],
+    month: [1, 2, 3],
+    year: [1, 2, 3],
+  };
 }
