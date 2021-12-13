@@ -1,4 +1,4 @@
-import {getDateSections} from 'utils/date';
+// import {getDateSections} from 'utils/date';
 
 export type TransferSectionsType = {
   week: number[];
