@@ -11,8 +11,8 @@ const transfers: Array<Transfers> = [
   {
     title: 'Deposit',
     tokenAmount: 300,
-    tokenSymbol: 'DAI',
     transferDate: 'Pending...',
+    tokenSymbol: 'DAI',
     transferType: 'Deposit',
     usdValue: '$200.00',
     isPending: true,
@@ -28,8 +28,8 @@ const transfers: Array<Transfers> = [
   {
     title: 'Withdraw',
     tokenAmount: 300,
-    tokenSymbol: 'DAI',
     transferDate: 'Yesterday',
+    tokenSymbol: 'DAI',
     transferType: 'Withdraw',
     usdValue: '$200.00',
   },
