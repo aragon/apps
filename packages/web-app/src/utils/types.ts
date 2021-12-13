@@ -15,6 +15,9 @@ export type BaseTokenInfo = {
   imgUrl: string;
   name: string;
   symbol: string;
+  changeDuringInterval?: number;
+  treasurySharePercentage?: number;
+  percentageChangeDuringInterval?: string;
 };
 
 export type HookData<T> = {

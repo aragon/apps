@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
-import {AddButton, SearchInput} from '@aragon/ui-components';
+import {ButtonText, IconAdd, SearchInput} from '@aragon/ui-components';
 
 import TokenList from 'components/tokenList';
 import {useDaoTokens} from 'hooks/useDaoTokens';
@@ -31,7 +31,11 @@ const Tokens: React.FC = () => {
           <Title>5 {t('finance.tokens')}</Title>
           <SubTitle>$469,657.98 Holdings</SubTitle>
         </div>
-        <AddButton label="New Transfer" />
+        <ButtonText
+          size="large"
+          label={t('finance.newTransfer')}
+          iconLeft={<IconAdd />}
+        />
       </CenteredFlex>
       <SearchInput
         placeholder="Type to filter"

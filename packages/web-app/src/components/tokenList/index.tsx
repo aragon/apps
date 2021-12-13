@@ -20,6 +20,7 @@ const numberFormatter = new Intl.NumberFormat('en-US', {
   maximumFractionDigits: 4,
 });
 
+// Note: Temporary until historical data can be fetched
 const TokenList: React.FC<TokenListProps> = ({prices, tokens}) => {
   const {t} = useTranslation();
 
@@ -59,3 +60,51 @@ const TokenList: React.FC<TokenListProps> = ({prices, tokens}) => {
 };
 
 export default TokenList;
+
+// NOTE this code was taken from the chore/update-button PR and replaced by the
+// above due to merge conflicts. I have tried to reconsile this incoming change
+// with the current (instead of replacing it), but was unsuccessful due to a
+// type conflict on TokenCard. Saveguarding it to avoid having to go and find it
+// in the depths of git braches.
+
+// @Fabrice: I would treat a list of tokens as a presentational component,
+// leaving it to a parent container to do any sorting or filtering. Wdyt?
+
+// {
+//   tokens
+//     .sort(
+//       (a, b) =>
+//         Number(b.treasurySharePercentage) - Number(a.treasurySharePercentage)
+//     )
+//     .map(token => {
+//       price = prices[token.address];
+//       return (
+//         <TokenCard
+//           key={token.name}
+//           tokenName={token.name}
+//           tokenCount={numberFormatter.format(Number(token.count))}
+//           tokenSymbol={token.symbol}
+//           tokenImageUrl={token.imgUrl}
+//           {...(price
+//             ? {
+//                 tokenUSDValue: usdFormatter.format(Number(price)),
+//                 treasurySharePercentage: `${token.treasurySharePercentage}%`,
+//                 percentageChangeDuringInterval:
+//                   token.percentageChangeDuringInterval,
+
+//                 treasuryShare: usdFormatter.format(Number(price) * token.count),
+//                 changeType:
+//                   Number(token.changeDuringInterval) > 0
+//                     ? 'Positive'
+//                     : 'Negative',
+//                 changeDuringInterval: token.changeDuringInterval
+//                   ? usdFormatter.format(token.changeDuringInterval)
+//                   : undefined,
+//               }
+//             : {
+//                 tokenUSDValue: t('finance.unknownUSDValue'),
+//                 treasuryShare: t('finance.unknownUSDValue'),
+//               })}
+//         />
+//       );
+//     });
