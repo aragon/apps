@@ -1,4 +1,4 @@
-import React, {BaseSyntheticEvent, useState} from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
@@ -18,7 +18,7 @@ const Tokens: React.FC = () => {
 
   const [searchTerm, setSearchTerm] = useState('');
 
-  const handleChange = (event: BaseSyntheticEvent) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
 

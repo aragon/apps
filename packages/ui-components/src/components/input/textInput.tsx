@@ -1,13 +1,9 @@
-import React, {BaseSyntheticEvent, ReactNode} from 'react';
+import React, {ReactNode} from 'react';
 import styled from 'styled-components';
 
-export type TextInputProps = {
+export type TextInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   /** Changes a input's color schema */
   mode?: 'default' | 'success' | 'warning' | 'critical';
-  /**
-   * Whether Input is disabled
-   */
-  disabled?: boolean;
   /**
    * adornment
    */
@@ -16,12 +12,6 @@ export type TextInputProps = {
    * Wheter the icon is left or right of the input
    */
   side: 'left' | 'right';
-  /**
-   * Placeholder
-   */
-  placeholder?: string;
-  value: string;
-  onChange: (event: BaseSyntheticEvent) => void;
 };
 
 /** Simple input with variable styling (depending on mode) */
@@ -34,7 +24,7 @@ export const TextInput: React.FC<TextInputProps> = ({
 }) => {
   return (
     <Container data-testid="input" {...{mode, disabled, side}}>
-      <StyledInput {...props} disabled={disabled} {...props} />
+      <StyledInput disabled={disabled} {...props} />
       {adornment}
     </Container>
   );
@@ -63,6 +53,8 @@ export const Container = styled.div.attrs(
   }
 )<StyledCotainerProps>``;
 
-export const StyledInput = styled.input.attrs({
-  className: 'w-full bg-transparent focus:outline-none',
-})``;
+export const StyledInput = styled.input.attrs(() => {
+  let myClassName: string | undefined =
+    'w-full bg-transparent focus:outline-none';
+  return {className: myClassName};
+})<React.InputHTMLAttributes<HTMLInputElement>>``;
