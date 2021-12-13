@@ -58,6 +58,7 @@ jobs:
           sudo chmod +x /usr/bin/echidna-test
 
       - name: Run Slither Static Analyzer
+        if: ${{ env.RUN_SLITHER == 'yes' }}
         run: slither .
 
       - name: Run echina tests
