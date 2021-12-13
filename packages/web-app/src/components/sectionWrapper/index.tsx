@@ -9,6 +9,7 @@ import {AllTokens, AllTransfers} from 'utils/paths';
 export type SectionWrapperProps = {
   title: string;
   children: React.ReactNode;
+  showButton?: boolean;
 };
 
 // NOTE: It's possible to merge these two components. But I'm not sure it makes
@@ -54,6 +55,7 @@ export const TokenSectionWrapper = ({title, children}: SectionWrapperProps) => {
 export const TransferSectionWrapper = ({
   title,
   children,
+  showButton = false,
 }: SectionWrapperProps) => {
   return (
     <>
@@ -61,7 +63,7 @@ export const TransferSectionWrapper = ({
         <Title>{title}</Title>
       </HeaderContainer>
       {children}
-      <SeeAllButton path={AllTransfers} />
+      {showButton && <SeeAllButton path={AllTransfers} />}
     </>
   );
 };
