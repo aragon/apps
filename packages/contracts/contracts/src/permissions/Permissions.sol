@@ -47,8 +47,6 @@ contract Permissions is UpgradableComponent {
 
     mapping(string => Permission) public permissions;
 
-    constructor() initializer {}
-
     /// @dev Used for UUPS upgradability pattern
     /// @param _dao The DAO contract of the current DAO
     function initialize(IDAO _dao) public override initializer {

@@ -30,8 +30,6 @@ contract Executor is UpgradableComponent {
     bytes data;
   }
 
-  constructor() initializer {}
-
   /// @dev Used for UUPS upgradability pattern
   /// @param _dao The DAO contract of the current DAO
   function initialize(IDAO _dao) public override initializer {

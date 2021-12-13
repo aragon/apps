@@ -37,8 +37,6 @@ contract Processes is UpgradableComponent {
     
     mapping(string => Process) public processes; // All existing governance processes in this DAO
 
-    constructor() initializer {}
-
     /// @dev Used for UUPS upgradability pattern
     /// @param _dao The DAO contract of the current DAO
     function initialize(IDAO _dao) public override initializer {
