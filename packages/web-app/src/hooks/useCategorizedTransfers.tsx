@@ -7,7 +7,7 @@ export type TransferSectionsType = {
 };
 
 export default function useCategorizedTransfers(): TransferSectionsType {
-  const sections = getDateSections(); // Sections will dynamically set based on today date
+  // const sections = getDateSections(); // Sections will dynamically set based on today date
 
   /**
    * Note: In this Hook we should split the transfer data
