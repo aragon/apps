@@ -7,12 +7,11 @@ pragma solidity 0.8.10;
 import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20VotesUpgradeable.sol";
 
 import "./../../../../core/processes/types/voting/VotingProcess.sol";
-import "./../../../../core/component/UpgradableComponent.sol";
 import "./../../../../core/executor/Executor.sol";
 import "./../../../../core/DAO.sol";
 import "./TimeHelpers.sol";
 
-contract SimpleVoting is VotingProcess, UpgradableComponent, TimeHelpers {
+contract SimpleVoting is VotingProcess, TimeHelpers {
     bytes32 public constant MODIFY_SUPPORT_ROLE = keccak256("MODIFY_SUPPORT_ROLE");
     bytes32 public constant MODIFY_QUORUM_ROLE = keccak256("MODIFY_QUORUM_ROLE");
 

@@ -4,16 +4,14 @@
 
 pragma solidity 0.8.10;
 
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
-import "./../component/UpgradableComponent.sol";
+import "./../component/Component.sol";
 import "./../DAO.sol";
 
 // TODO: Merge with Vault.. cause otherwise executor can't call contract methods that expect eth to be send.
 /// @title Implementation of the Executor
 /// @author Sarkawt Azad - Aragon Association - 2021
 /// @notice This contract represent the execution layer.
-contract Executor is UpgradableComponent {
+contract Executor is Component {
     event Executed(address indexed actor, Action[] indexed actions, bytes[] execResults);
     
     bytes32 public constant EXEC_ROLE = keccak256("EXEC_ROLE");

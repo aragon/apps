@@ -10,7 +10,9 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./../DAO.sol";
 
-abstract contract Component is Initializable {
+abstract contract Component is UUPSUpgradeable, Initializable {
+    bytes32 public constant UPGRADE_ROLE = keccak256("UPGRADE_ROLE");
+    
     DAO internal dao;
     
     modifier auth(bytes32 role)  {
@@ -21,4 +23,6 @@ abstract contract Component is Initializable {
     function initialize(DAO _dao) public virtual {
         dao = _dao;
     }
+
+    function _authorizeUpgrade(address) internal virtual override auth(UPGRADE_ROLE) { }
 }

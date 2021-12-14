@@ -5,16 +5,14 @@
 
 pragma solidity 0.8.10;
 
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 
-import "./../../core/component/UpgradableComponent.sol";
+import "./../../core/component/Component.sol";
 import "./../../core/DAO.sol";
 
-contract Vault is UpgradableComponent, ReentrancyGuardUpgradeable {
+contract Vault is Component, ReentrancyGuardUpgradeable {
     using SafeERC20 for IERC20;
 
     address internal constant ETH = address(0);

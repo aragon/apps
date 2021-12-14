@@ -4,8 +4,7 @@
 
 pragma solidity 0.8.10;
 
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
+import "./../component/Component.sol";
 import "./../executor/Executor.sol";
 import "./types/Process.sol";
 import "./../DAO.sol";
@@ -14,7 +13,7 @@ import "./../DAO.sol";
 /// @author Samuel Furter - Aragon Association - 2021
 /// @notice This contract is a central point of the Aragon DAO framework and handles all the processes and stores the different process types with his governance primitives a DAO can have.
 /// @dev A list of process types are stored here pluss it validates if the passed actions in a proposal are valid.
-contract Processes is UpgradableComponent { 
+contract Processes is Component { 
     event ProcessStarted(address indexed process, Process.Proposal indexed proposal, uint256 indexed executionId);
     event ProcessSet(string indexed name, Process indexed process);
 
