@@ -13,11 +13,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./Component.sol";
 
 abstract contract UpgradableComponent is Component, UUPSUpgradeable, Initializable {
-
     bytes32 public constant UPGRADE_ROLE = keccak256("UPGRADE_ROLE");
     
-    function _authorizeUpgrade(address /*_newImplementation*/) internal virtual override authP(UPGRADE_ROLE) {
-    
-    }
-
+    function _authorizeUpgrade(address /*_newImplementation*/) internal virtual override auth(UPGRADE_ROLE) { }
 }

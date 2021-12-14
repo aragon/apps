@@ -9,8 +9,9 @@ import "../../../lib/governance-primitives/voting/VotingGovernancePrimitive.sol"
 import "../../../lib/component/IDAO.sol";
 import "../../executor/Executor.sol";
 import "../../../lib/component/UpgradableComponent.sol";
+import "./TimeHelpers.sol";
 
-contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent {
+contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent, TimeHelpers {
     
     bytes32 public constant MODIFY_SUPPORT_ROLE = keccak256("MODIFY_SUPPORT_ROLE");
     bytes32 public constant MODIFY_QUORUM_ROLE = keccak256("MODIFY_QUORUM_ROLE");
