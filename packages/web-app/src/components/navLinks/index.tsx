@@ -1,6 +1,7 @@
 import {
   ActionItem,
   MenuItem,
+  ButtonText,
   IconFinance,
   IconCommunity,
   IconDashboard,
@@ -39,74 +40,65 @@ const NavLinks: React.FC<NavLinksProps> = ({
         to={Dashboard}
         onClick={onItemClick}
         selected={selected}
-        component={
-          isDropdown ? (
-            <ActionItem
-              wide
-              icon={<IconDashboard />}
-              label={t('navLinks.dashboard')}
-            />
-          ) : (
-            <MenuItem
-              icon={<IconDashboard />}
-              label={t('navLinks.dashboard')}
-            />
-          )
-        }
+        renderItem={(isActive, onClick) => (
+          <ButtonText
+            mode="ghost"
+            size="large"
+            label={t('navLinks.dashboard')}
+            bgWhite={isDropdown}
+            onClick={onClick}
+            isActive={isActive}
+            {...(isActive ? {iconLeft: <IconDashboard />} : {})}
+          />
+        )}
       />
       <NavLink
         to={Governance}
         onClick={onItemClick}
         selected={selected}
-        component={
-          isDropdown ? (
-            <ActionItem
-              wide
-              icon={<IconGovernance />}
-              label={t('navLinks.governance')}
-            />
-          ) : (
-            <MenuItem
-              icon={<IconGovernance />}
-              label={t('navLinks.governance')}
-            />
-          )
-        }
+        renderItem={(isActive, onClick) => (
+          <ButtonText
+            mode="ghost"
+            size="large"
+            label={t('navLinks.governance')}
+            bgWhite={isDropdown}
+            onClick={onClick}
+            isActive={isActive}
+            {...(isActive ? {iconLeft: <IconGovernance />} : {})}
+          />
+        )}
       />
       <NavLink
         to={Finance}
         onClick={onItemClick}
         selected={selected}
-        component={
-          isDropdown ? (
-            <ActionItem
-              wide
-              icon={<IconFinance />}
-              label={t('navLinks.finance')}
-            />
-          ) : (
-            <MenuItem icon={<IconFinance />} label={t('navLinks.finance')} />
-          )
-        }
+        renderItem={(isActive, onClick) => (
+          <ButtonText
+            mode="ghost"
+            size="large"
+            label={t('navLinks.finance')}
+            bgWhite={isDropdown}
+            onClick={onClick}
+            isActive={isActive}
+            {...(isActive ? {iconLeft: <IconFinance />} : {})}
+          />
+        )}
       />
       <NavLink
         to={Community}
         onClick={onItemClick}
         selected={selected}
-        component={
-          isDropdown ? (
-            <ActionItem
-              wide
-              icon={<IconCommunity />}
-              label={t('navLinks.community')}
-            />
-          ) : (
-            <MenuItem
-              icon={<IconCommunity />}
-              label={t('navLinks.community')}
-            />
-          )
-        }
+        renderItem={(isActive, onClick) => (
+          <ButtonText
+            mode="ghost"
+            size="large"
+            label={t('navLinks.community')}
+            bgWhite={isDropdown}
+            onClick={onClick}
+            isActive={isActive}
+            {...(isActive ? {iconLeft: <IconCommunity />} : {})}
+          />
+        )}
       />
     </div>
   );

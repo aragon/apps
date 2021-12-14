@@ -32,12 +32,7 @@ export const DaoSelector = ({
     >
       <Avatar src={src} size={'large'} mode="square" />
       <p>{label}</p>
-      <ButtonIcon
-        icon={<HoverIconSwitch />}
-        mode="ghost"
-        size="small"
-        bgWhite
-      />
+      <SwitchButton icon={<IconSwitch />} mode="ghost" size="small" bgWhite />
     </StyledButton>
   );
 };
@@ -63,7 +58,7 @@ const StyledButton = styled.button.attrs(({isSelected}: StyledButtonProps) => {
   return {className: combinedClasses};
 })<StyledButtonProps>``;
 
-const HoverIconSwitch = styled(IconSwitch).attrs(() => {
+const SwitchButton = styled(ButtonIcon).attrs(() => {
   return {
     className: 'hidden desktop:block group-hover:text-primary-500',
   };
