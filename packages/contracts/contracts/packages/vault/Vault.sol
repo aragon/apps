@@ -29,8 +29,6 @@ contract Vault is UpgradableComponent, ReentrancyGuardUpgradeable {
     event VaultTransfer(address indexed token, address indexed to, uint256 amount, string reason);
     event VaultETHDeposit(address indexed sender, uint256 amount);
     event VaultDeposit(address indexed token, address indexed sender, uint256 amount, string reason);
-    
-    constructor() initializer {}
 
     /// @dev Used for UUPS upgradability pattern
     /// @param _dao The DAO contract of the current DAO

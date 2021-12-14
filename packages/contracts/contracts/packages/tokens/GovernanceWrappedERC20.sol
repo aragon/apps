@@ -11,10 +11,6 @@ import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 contract GovernanceWrappedERC20 is ERC20VotesUpgradeable, ERC20WrapperUpgradeable {
-    
-    // solhint-disable-next-line no-empty-blocks
-    constructor() initializer {}
-
     function initialize(IERC20Upgradeable token, string calldata name, string calldata symbol) external initializer {
         __ERC20_init(name, symbol);
         __ERC20Permit_init(name);
