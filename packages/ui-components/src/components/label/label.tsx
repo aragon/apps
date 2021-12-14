@@ -14,7 +14,7 @@ export const Label: React.FC<LabelProps> = ({
   isOptional=false
 }) => {
   return (
-    <VStack>
+    <VStack data-testid="label">
       <LabelLine>
         <Heading>{label}</Heading>
         {isOptional && <Badge label='Optional' />}
