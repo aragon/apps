@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import {IconButton, IconAdd} from '@aragon/ui-components';
+import {ButtonText, IconAdd} from '@aragon/ui-components';
 
 import {SectionWrapperProps} from './sectionWrappers';
 
@@ -35,12 +35,11 @@ export const PageWrapper = ({
           <PageSubtitle {...{primary}}>{subtitle}</PageSubtitle>
         </ContentWrapper>
         <ActionWrapper>
-          <IconButton
+          <ButtonText
             mode="primary"
-            size="default"
-            side="left"
-            label={buttonLabel}
-            icon={<IconAdd />}
+            size="large"
+            label={buttonLabel as string}
+            iconLeft={<IconAdd />}
             onClick={onClick}
           />
         </ActionWrapper>

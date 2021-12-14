@@ -1,10 +1,10 @@
 import {
+  ButtonIcon,
+  ButtonText,
   DaoCard,
   DaoSelector,
   IconClose,
   IconMenu,
-  IconOnlyButton,
-  MenuButton,
   Popover,
   WalletButton,
 } from '@aragon/ui-components';
@@ -96,14 +96,24 @@ const Navbar: React.FC = () => {
     <>
       <NavContainer data-testid="navbar">
         <NavigationBar>
-          <div className="desktop:hidden">
-            <MenuButton
-              size="small"
+          <span className="hidden tablet:inline desktop:hidden">
+            <ButtonText
               label={t('menu')}
-              isOpen={showMobileMenu}
+              mode="secondary"
+              size="large"
               onClick={handleShowMobileMenu}
+              iconLeft={showMobileMenu ? <IconClose /> : <IconMenu />}
             />
-          </div>
+          </span>
+          <span className="tablet:hidden">
+            <ButtonIcon
+              mode="secondary"
+              size="large"
+              onClick={handleShowMobileMenu}
+              icon={showMobileMenu ? <IconClose /> : <IconMenu />}
+            />
+          </span>
+
           <Container>
             {/* ------- DAO SELECTOR ------- */}
             <DaoSelectorWrapper>
@@ -147,7 +157,9 @@ const Navbar: React.FC = () => {
                     }
                     onOpenChange={setShowCrumbPopover}
                   >
-                    <IconOnlyButton
+                    <ButtonIcon
+                      mode="secondary"
+                      size="large"
                       icon={showCrumbPopover ? <IconClose /> : <IconMenu />}
                       isActive={showCrumbPopover}
                     />
@@ -187,7 +199,6 @@ const Navbar: React.FC = () => {
             daoName="Bushido DAO"
             onClick={handleHideMobileMenu}
             src={TEMP_ICON}
-            switchLabel={t('daoCard.switchLabel')}
             wide
           />
           <NavLinks isDropdown onItemClick={handleHideMobileMenu} />
