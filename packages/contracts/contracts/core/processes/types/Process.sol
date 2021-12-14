@@ -88,7 +88,7 @@ abstract contract Process is Component {
     /// @notice If called the proposed actions do get executed.
     /// @dev The state of the container does get changed to EXECUTED, the pre-execute method _execute does get called, and the actions executed.
     /// @param executionId The id of the execution struct.
-    function execute(uint256 executionId) public executionExist(executionId) authP(PRIMITIVE_EXECUTE_ROLE) {
+    function execute(uint256 executionId) public authP(PRIMITIVE_EXECUTE_ROLE) {
         Execution storage execution = _getExecution(executionId);
         
         require(execution.state == State.RUNNING, ERROR_EXECUTION_STATE_WRONG);
@@ -106,6 +106,8 @@ abstract contract Process is Component {
     /// @param executionId The id of the execution struct.
     /// @return execution The execution struct with all his properties.
     function _getExecution(uint256 executionId) internal view returns (Execution storage execution) {
+        require(_id < executionsCounter, ERROR_NO_EXECUTION);
+
         return executions[executionId];
     }
 
