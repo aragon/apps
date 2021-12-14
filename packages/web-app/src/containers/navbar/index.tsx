@@ -1,10 +1,10 @@
 import {
+  ButtonIcon,
+  ButtonText,
   DaoCard,
   DaoSelector,
   IconClose,
   IconMenu,
-  IconOnlyButton,
-  MenuButton,
   Popover,
   WalletButton,
 } from '@aragon/ui-components';
@@ -18,7 +18,7 @@ import BottomSheet from 'components/bottomSheet';
 import Breadcrumbs from 'components/breadcrumbs';
 import {useWallet} from 'context/augmentedWallet';
 import DaoSwitcherMenu from 'components/daoSwitcherMenu';
-import {useMenuContext} from 'context/menu';
+import {useWalletMenuContext} from 'context/walletMenu';
 import {useWalletProps} from '../walletMenu';
 import BreadcrumbDropdown from 'components/breadcrumbMenuDropdown';
 import {Dashboard, NotFound} from 'utils/paths';
@@ -51,9 +51,15 @@ const Navbar: React.FC = () => {
     excludePaths: [Dashboard, NotFound],
   });
 
-  const {open} = useMenuContext();
-  const {connect, isConnected, account, ensName, ensAvatarUrl}: useWalletProps =
-    useWallet();
+  const {open} = useWalletMenuContext();
+  const {
+    connect,
+    isConnected,
+    account,
+    chainId,
+    ensName,
+    ensAvatarUrl,
+  }: useWalletProps = useWallet();
 
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showCrumbPopover, setShowCrumbPopover] = useState(false);
@@ -90,14 +96,24 @@ const Navbar: React.FC = () => {
     <>
       <NavContainer data-testid="navbar">
         <NavigationBar>
-          <div className="desktop:hidden">
-            <MenuButton
-              size="small"
+          <span className="hidden tablet:inline desktop:hidden">
+            <ButtonText
               label={t('menu')}
-              isOpen={showMobileMenu}
+              mode="secondary"
+              size="large"
               onClick={handleShowMobileMenu}
+              iconLeft={showMobileMenu ? <IconClose /> : <IconMenu />}
             />
-          </div>
+          </span>
+          <span className="tablet:hidden">
+            <ButtonIcon
+              mode="secondary"
+              size="large"
+              onClick={handleShowMobileMenu}
+              icon={showMobileMenu ? <IconClose /> : <IconMenu />}
+            />
+          </span>
+
           <Container>
             {/* ------- DAO SELECTOR ------- */}
             <DaoSelectorWrapper>
@@ -141,7 +157,9 @@ const Navbar: React.FC = () => {
                     }
                     onOpenChange={setShowCrumbPopover}
                   >
-                    <IconOnlyButton
+                    <ButtonIcon
+                      mode="secondary"
+                      size="large"
                       icon={showCrumbPopover ? <IconClose /> : <IconMenu />}
                       isActive={showCrumbPopover}
                     />
@@ -164,7 +182,9 @@ const Navbar: React.FC = () => {
             src={ensAvatarUrl || account}
           />
         </NavigationBar>
-        <TestNetworkIndicator>{t('testnetIndicator')}</TestNetworkIndicator>
+        {chainId === 4 && (
+          <TestNetworkIndicator>{t('testnetIndicator')}</TestNetworkIndicator>
+        )}
       </NavContainer>
 
       {/* ------- NavLinks (Mobile) ------- */}
@@ -179,7 +199,6 @@ const Navbar: React.FC = () => {
             daoName="Bushido DAO"
             onClick={handleHideMobileMenu}
             src={TEMP_ICON}
-            switchLabel={t('daoCard.switchLabel')}
             wide
           />
           <NavLinks isDropdown onItemClick={handleHideMobileMenu} />

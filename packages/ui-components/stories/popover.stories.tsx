@@ -1,6 +1,6 @@
 import React, {ReactNode} from 'react';
 import {Meta, Story} from '@storybook/react';
-import {Button, Popover, PopoverProps} from '../src';
+import {ButtonText, Popover, PopoverProps} from '../src';
 
 export default {
   title: 'Components/Popover',
@@ -14,8 +14,8 @@ const Template: Story<PopoverProps> = args => (
   <Popover {...args}>{args.children}</Popover>
 );
 
-const trigger: ReactNode = <Button label="Trigger" />;
-const popoverContent: ReactNode = (
+const trigger: ReactNode = <ButtonText label="Trigger" />;
+const TestContent: ReactNode = (
   <div>
     Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,
     molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum
@@ -31,5 +31,5 @@ const popoverContent: ReactNode = (
 export const Default = Template.bind({});
 Default.args = {
   children: trigger,
-  content: popoverContent,
+  content: TestContent,
 };

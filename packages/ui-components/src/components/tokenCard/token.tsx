@@ -8,15 +8,19 @@ export type TokenCardProps = {
   tokenName: string;
   tokenSymbol: string;
   tokenImageUrl: string;
-  treasurySharePercentage: string;
+  treasurySharePercentage?: string;
   tokenCount: string;
   tokenUSDValue: string;
   treasuryShare: string;
-  changeDuringInterval: string;
-  percentageChangeDuringInterval: string;
+  changeType?: 'Positive' | 'Negative';
+  changeDuringInterval?: string;
+  percentageChangeDuringInterval?: string;
 };
 
-export const TokenCard: React.FC<TokenCardProps> = props => {
+export const TokenCard: React.FC<TokenCardProps> = ({
+  changeType = 'Positive',
+  ...props
+}) => {
   return (
     <Card data-testid="tokenCard">
       <CoinDetailsWithImage>
@@ -30,7 +34,9 @@ export const TokenCard: React.FC<TokenCardProps> = props => {
           <CoinNameAndAllocation>
             <CoinName>{props.tokenName}</CoinName>
             <ToggleMobileVisibility visible={false}>
-              <Badge label={props.treasurySharePercentage} />
+              {props.treasurySharePercentage && (
+                <Badge label={props.treasurySharePercentage} />
+              )}
             </ToggleMobileVisibility>
           </CoinNameAndAllocation>
           <SecondaryCoinDetails>
@@ -47,13 +53,25 @@ export const TokenCard: React.FC<TokenCardProps> = props => {
       <MarketProperties>
         <FiatValue>{props.treasuryShare}</FiatValue>
         <SecondaryFiatDetails>
-          <ToggleMobileVisibility visible={false}>
-            <span>{props.changeDuringInterval}</span>
-          </ToggleMobileVisibility>
-          <Badge
-            label={props.percentageChangeDuringInterval}
-            colorScheme="success"
-          />
+          {props.changeDuringInterval && (
+            <ToggleMobileVisibility visible={false}>
+              <span
+                className={
+                  changeType === 'Positive'
+                    ? 'text-success-800'
+                    : 'text-critical-800'
+                }
+              >
+                {props.changeDuringInterval}
+              </span>
+            </ToggleMobileVisibility>
+          )}
+          {props.percentageChangeDuringInterval && (
+            <Badge
+              label={props.percentageChangeDuringInterval}
+              colorScheme={changeType === 'Positive' ? 'success' : 'critical'}
+            />
+          )}
         </SecondaryFiatDetails>
       </MarketProperties>
     </Card>
@@ -61,7 +79,8 @@ export const TokenCard: React.FC<TokenCardProps> = props => {
 };
 
 const Card = styled.div.attrs({
-  className: 'bg-ui-0 rounded-xl flex justify-between items-center py-2.5 px-3',
+  className:
+    'flex justify-between items-center py-2.5 px-3 bg-ui-0 rounded-xl font-normal',
 })``;
 
 const CoinDetailsWithImage = styled.div.attrs({
@@ -78,11 +97,11 @@ const CoinDetails = styled.div.attrs({
 })``;
 
 const CoinNameAndAllocation = styled.div.attrs({
-  className: 'flex items-center space-x-1',
+  className: 'flex items-start space-x-1',
 })``;
 
 const CoinName = styled.h1.attrs({
-  className: 'text-xl font-semibold text-ui-800 truncate',
+  className: 'font-bold text-ui-800 truncate',
 })``;
 
 const SecondaryCoinDetails = styled.div.attrs({
@@ -94,7 +113,7 @@ const MarketProperties = styled.div.attrs({
 })``;
 
 const FiatValue = styled.h1.attrs({
-  className: 'text-xl font-semibold text-ui-800 truncate',
+  className: 'font-bold text-ui-800 truncate',
 })``;
 
 const SecondaryFiatDetails = styled.div.attrs({
