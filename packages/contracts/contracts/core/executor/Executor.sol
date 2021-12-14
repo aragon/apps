@@ -14,14 +14,10 @@ import "./../DAO.sol";
 /// @author Sarkawt Azad - Aragon Association - 2021
 /// @notice This contract represent the execution layer.
 contract Executor is UpgradableComponent {
+    event Executed(address indexed actor, Action[] indexed actions, bytes[] execResults);
+    
     bytes32 public constant EXEC_ROLE = keccak256("EXEC_ROLE");
-
-    event Executed(
-        address indexed actor,
-        Action[] indexed actions,
-        bytes[] execResults
-    );
-
+    
     string private constant ERROR_ACTION_CALL_FAILED = "EXCECUTOR_ACTION_CALL_FAILED";
 
     struct Action {

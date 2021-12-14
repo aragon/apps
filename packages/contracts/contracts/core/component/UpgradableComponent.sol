@@ -15,5 +15,5 @@ import "./Component.sol";
 abstract contract UpgradableComponent is Component, UUPSUpgradeable, Initializable {
     bytes32 public constant UPGRADE_ROLE = keccak256("UPGRADE_ROLE");
     
-    function _authorizeUpgrade(address /*_newImplementation*/) internal virtual override auth(UPGRADE_ROLE) { }
+    function _authorizeUpgrade(address) internal virtual override auth(UPGRADE_ROLE) { }
 }

@@ -9,15 +9,14 @@ import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20VotesUpg
 import "@openzeppelin/contracts/proxy/Clones.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 
-import "./../../processes/votings/simple/SimpleVoting.sol";
+import "./../../packages/processes/votings/simple/SimpleVoting.sol";
 import "./../../packages/tokens/GovernanceWrappedERC20.sol";
 import "./../../packages/tokens/GovernanceERC20.sol";
-import "./../../core/permissions/Permissions.sol";
 import "./../../core/processes/Processes.sol";
 import "./../../core/executor/Executor.sol";
-import "./../../registry/Registry.sol";
-import "./../../vault/Vault.sol";
-import "./../../DAO.sol";
+import "./../../packages/vault/Vault.sol";
+import "./../registry/Registry.sol";
+import "./../../core/DAO.sol";
 
 contract DAOFactory {
     using Address for address;
@@ -28,7 +27,6 @@ contract DAOFactory {
     address private governanceERC20Base;
     address private governanceWrappedERC20Base;
     address private processesBase;
-    address private permissionsBase;
     address private executorBase;
 
     Registry private registry;
@@ -72,13 +70,11 @@ contract DAOFactory {
         address voting = createProxy(votingBase, abi.encodeWithSelector(SimpleVoting.initialize.selector, dao, token, _votingSettings));
         address vault = createProxy(vaultBase, abi.encodeWithSelector(Vault.initialize.selector, dao, _vaultSettings));
         address processes = createProxy(processesBase, abi.encodeWithSelector(Processes.initialize.selector, dao));
-        address permissions = createProxy(permissionsBase, abi.encodeWithSelector(Permissions.initialize.selector, dao));
         address executor = createProxy(executorBase, abi.encodeWithSelector(Executor.initialize.selector, dao));
         
         dao.initialize(
             _metadata,
             Processes(processes),
-            Permissions(permissions),
             Executor(executor),
             address(this) // initial ACL root on DAO itself.
         );
@@ -90,8 +86,6 @@ contract DAOFactory {
        
         // vault permissions
         dao.grant(vault, executor, Vault(payable(vault)).TRANSFER_ROLE()); // TODO: do we really need to cast it to payable ? 
-        // permissions permissions
-        dao.grant(permissions, address(dao), Permissions(permissions).PERMISSIONS_SET_ROLE());
         // processes permissions
         dao.grant(processes, address(dao), Processes(processes).PROCESSES_START_ROLE());
         dao.grant(processes, address(dao), Processes(processes).PROCESSES_SET_ROLE());
@@ -117,7 +111,6 @@ contract DAOFactory {
         governanceERC20Base = address(new GovernanceERC20());
         governanceWrappedERC20Base = address(new GovernanceWrappedERC20());
         processesBase = address(new Processes());
-        permissionsBase = address(new Permissions());
         executorBase = address(new Executor());
     }
 }

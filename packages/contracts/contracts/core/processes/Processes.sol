@@ -6,10 +6,9 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
-import "../permissions/Permissions.sol";
-import "../executor/Executor.sol";
+import "./../executor/Executor.sol";
 import "./types/Process.sol";
-import "../DAO.sol";
+import "./../DAO.sol";
 
 /// @title The processes contract defining the flow of every interaction with the DAO
 /// @author Samuel Furter - Aragon Association - 2021
@@ -25,7 +24,7 @@ contract Processes is UpgradableComponent {
 
     struct ProcessItem {
         Process process;
-        mapping(address => mapping(bytes4 = bool)) allowedActions;
+        mapping(address => mapping(bytes4 => bool)) allowedActions;
     }
 
     mapping(string => ProcessItem) public processes; // All existing governance processes in this DAO

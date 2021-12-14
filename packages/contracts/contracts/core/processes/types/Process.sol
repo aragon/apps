@@ -6,7 +6,6 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
-import "./../../permissions/Permissions.sol";
 import "./../../component/Component.sol";
 import "./../../executor/Executor.sol";
 import "./../Processes.sol";

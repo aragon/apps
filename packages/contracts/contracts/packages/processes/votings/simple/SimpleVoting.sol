@@ -6,10 +6,10 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20VotesUpgradeable.sol";
 
-import "./../../../core/processes/types/voting/VotingProcess.sol";
-import "./../../../core/component/UpgradableComponent.sol";
-import "./../../../core/executor/Executor.sol";
-import "./../../../core/DAO.sol";
+import "./../../../../core/processes/types/voting/VotingProcess.sol";
+import "./../../../../core/component/UpgradableComponent.sol";
+import "./../../../../core/executor/Executor.sol";
+import "./../../../../core/DAO.sol";
 import "./TimeHelpers.sol";
 
 contract SimpleVoting is VotingProcess, UpgradableComponent, TimeHelpers {
