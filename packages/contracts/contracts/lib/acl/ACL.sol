@@ -49,7 +49,7 @@ contract ACL is Initializable {
     }
 
     function initACL(address _who) internal initializer {
-        _initializeACL(address(this),  _who);
+        _initializeACL(ANY_ADDR, _who);
     }
     
     function grant(address _where, address _who, bytes32 _role) external auth(_where, ROOT_ROLE) {

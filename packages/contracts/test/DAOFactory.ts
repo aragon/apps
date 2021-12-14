@@ -1,7 +1,7 @@
 import {expect} from 'chai';
 import {ethers} from 'hardhat';
 
-describe.skip('DAOFactory', function () {
+describe('DAOFactory', function () {
   let registry: any;
   let daoFactory: any;
 
@@ -33,6 +33,21 @@ describe.skip('DAOFactory', function () {
       vaultSettings
     );
 
-    await tx.wait();
+    const receipt = await tx.wait();
+    const iface = new ethers.utils.Interface([
+      'event Granted(bytes32 indexed role, address indexed actor, address indexed who, address where, address oracle)',
+    ]);
+
+    const parsedEvents = receipt.events
+      .map((event: any) => {
+        try {
+          return iface.parseLog(event);
+        } catch (e: any) {
+          return null;
+        }
+      })
+      .filter(Boolean);
+
+    expect(parsedEvents).to.have.length.greaterThan(0);
   });
 });
