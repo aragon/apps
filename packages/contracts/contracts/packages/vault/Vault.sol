@@ -61,9 +61,7 @@ contract Vault is UpgradableComponent, ReentrancyGuardUpgradeable {
      */
     function deposit(address _token, uint256 _value, string calldata _description) external payable {
         _deposit(_token, _value, _description);
-    }
-    
-    
+    }  
     
     /**
     *  @notice allows to transfer ether or token from this vault.
@@ -74,7 +72,7 @@ contract Vault is UpgradableComponent, ReentrancyGuardUpgradeable {
     *  @param _value how much to transfer
     *  @param _description reason for the transfer
      */
-    function transfer(address _token, address _to, uint256 _value, string calldata _description) external nonReentrant authP(TRANSFER_ROLE) {
+    function transfer(address _token, address _to, uint256 _value, string calldata _description) external nonReentrant auth(TRANSFER_ROLE) {
         require(_value > 0, ERROR_TRANSFER_VALUE_ZERO);
 
         if (_token == ETH) {
