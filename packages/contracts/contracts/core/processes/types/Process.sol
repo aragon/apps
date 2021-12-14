@@ -16,7 +16,7 @@ import "../component/Component.sol";
 /// @author Samuel Furter - Aragon Association - 2021
 /// @notice This contract can be used to implement concrete stoppable governance primitives and being fully compatible with the DAO framework and UI of Aragon
 /// @dev You only have to define the specific custom logic for your needs in _start, _execute, and _stop
-abstract contract GovernancePrimitive is Component {
+abstract contract Process is Component {
 
     bytes32 public constant CREATE_PRIMITIVE_START_ROLE = keccak256("CREATE_PRIMITIVE_START_ROLE");
     bytes32 public constant PRIMITIVE_EXECUTE_ROLE = keccak256("PRIMITIVE_EXECUTE_ROLE");
@@ -43,7 +43,6 @@ abstract contract GovernancePrimitive is Component {
 
     struct Execution { // A execution contains the process to execute, the proposal passed by the user, and the state of the execution.
         uint256 id;
-        Processes.Process process;
         Proposal proposal;
         State state;
     }
@@ -61,10 +60,9 @@ abstract contract GovernancePrimitive is Component {
 
     /// @notice If called the governance primitive starts a new execution.
     /// @dev The state of the container does get changed to RUNNING, the execution struct gets created, and the concrete implementation in _start called.
-    /// @param process The process definition.
     /// @param proposal The proposal for execution submitted by the user.
     /// @return executionId The id of the newly created execution.
-    function start(Processes.Process calldata process, Proposal calldata proposal) 
+    function start(Proposal calldata proposal) 
         external 
         authP(CREATE_PRIMITIVE_START_ROLE) 
         returns (uint256 executionId) 
@@ -115,6 +113,7 @@ abstract contract GovernancePrimitive is Component {
 
     /// @dev Internal helper and abstraction to get a execution struct.
     /// @param executionId The id of the execution struct.
+    /// @return execution The execution struct with all his properties.
     function _getExecution(uint256 executionId) internal view returns (Execution storage execution) {
         return executions[executionId];
     }

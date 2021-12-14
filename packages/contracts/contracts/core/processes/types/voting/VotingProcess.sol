@@ -4,14 +4,14 @@
 
 pragma solidity ^0.8.0;
 
-import "./../GovernancePrimitive.sol";
+import "./../Process.sol";
 
-/// @title Abstract implementation of the voting governance primitive
+/// @title Abstract implementation of the voting governance process
 /// @author Samuel Furter - Aragon Association - 2021
 /// @notice This contract can be used to implement concrete voting governance primitives and being fully compatible with the DAO framework and UI of Aragon
 /// @dev You only have to define the specific custom logic of your needs in _vote, _start, and _execute
-abstract contract VotingGovernancePrimitive is GovernancePrimitive {
-    event VotedOnGovernancePrimitive(Execution indexed execution, bytes indexed data, uint256 executionId);
+abstract contract VotingProcess is Process {
+    event VotedOnProcess(Execution indexed execution, bytes indexed data, uint256 executionId);
 
     /// @notice If called a new vote does get added.
     /// @param executionId The identifier of the current execution
@@ -27,7 +27,7 @@ abstract contract VotingGovernancePrimitive is GovernancePrimitive {
 
         _vote(executionId, data);
 
-        emit VotedOnGovernancePrimitive(execution, data, executionId);
+        emit VotedOnProcess(execution, data, executionId);
     }
 
     /// @dev The concrete implementation of vote.

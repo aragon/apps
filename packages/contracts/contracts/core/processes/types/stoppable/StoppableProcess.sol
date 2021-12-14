@@ -4,14 +4,14 @@
 
 pragma solidity ^0.8.0;
 
-import "./../GovernancePrimitive.sol";
+import "./../Process.sol";
 
-/// @title Abstract implementation of the stoppable governance primitive
+/// @title Abstract implementation of the stoppable governance process
 /// @author Samuel Furter - Aragon Association - 2021
-/// @notice This contract can be used to implement concrete stoppable governance primitives and being fully compatible with the DAO framework and UI of Aragon
+/// @notice This contract can be used to implement concrete stoppable governance processes and being fully compatible with the DAO framework and UI of Aragon
 /// @dev You only have to define the specific custom logic for your needs in _start, _execute, and _stop
-abstract contract StoppableGovernancePrimitive is GovernancePrimitive {
-    event GovernancePrimitiveStopped(Execution indexed execution, uint256 indexed executionId);
+abstract contract StoppableProcess is Process {
+    event ProcessStopped(Execution indexed execution, uint256 indexed executionId);
 
     /// @notice If called the execution is stopped.
     /// @dev The state of the container does get changed to STOPPED and the concrete implementation in _stop called.
@@ -30,7 +30,7 @@ abstract contract StoppableGovernancePrimitive is GovernancePrimitive {
         
         _stop(data);
 
-        emit GovernancePrimitiveStopped(execution, executionId);
+        emit ProcessStopped(execution, executionId);
     }
 
     // @dev The concrete implementation of stop.

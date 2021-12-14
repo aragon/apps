@@ -4,15 +4,15 @@
  
 pragma solidity ^0.8.0;
 
-import "./../stoppable/StoppableGovernancePrimitive.sol";
+import "./../stoppable/StoppableProcess.sol";
 
-/// @title Abstract implementation of the disputable governance primitive
+/// @title Abstract implementation of the disputable governance process
 /// @author Samuel Furter - Aragon Association - 2021
-/// @notice This contract can be used to implement concrete disputable governance primitives and being fully compatible with the DAO framework and UI of Aragon
+/// @notice This contract can be used to implement concrete disputable governance processes and being fully compatible with the DAO framework and UI of Aragon
 /// @dev You only have to define the specific custom logic of your needs in _start, _execute, _halt, and _forward
-abstract contract DisputableGovernancePrimitive is StoppableGovernancePrimitive {
-    event GovernancePrimitiveHalted(Execution indexed execution, uint256 indexed executionId);
-    event GovernancePrimitiveForwarded(Execution indexed execution, uint256 indexed executionId);
+abstract contract DisputableProcess is StoppableProcess {
+    event ProcessHalted(Execution indexed execution, uint256 indexed executionId);
+    event ProcessForwarded(Execution indexed execution, uint256 indexed executionId);
 
     /// @notice If called the execution is halted.
     /// @dev The state of the container does get changed to HALTED and the concrete implementation in _halt called.
@@ -31,7 +31,7 @@ abstract contract DisputableGovernancePrimitive is StoppableGovernancePrimitive 
 
         _halt(data);
 
-        emit GovernancePrimitiveHalted(execution, executionId);
+        emit ProcessHalted(execution, executionId);
     }
 
     /// @notice If called the execution does get forwarded.
@@ -51,7 +51,7 @@ abstract contract DisputableGovernancePrimitive is StoppableGovernancePrimitive 
 
         _forward(data);
 
-        emit GovernancePrimitiveForwarded(execution, executionId);
+        emit ProcessForwarded(execution, executionId);
     }
 
     /// @dev The concrete implementation of halt.
