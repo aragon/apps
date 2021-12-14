@@ -14,8 +14,7 @@ import {useDaoTokens} from 'hooks/useDaoTokens';
 import {useTokenInfo} from 'hooks/useTokenInformation';
 import {Transfers} from 'utils/types';
 
-// Temporary, should be fetched from subgraph or as props
-const TEMP_TRANSFERS: Array<Transfers> = [
+const TEMP_TRANSFERS: Transfers[] = [
   {
     title: 'Deposit',
     tokenAmount: 300,
