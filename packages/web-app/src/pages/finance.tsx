@@ -12,6 +12,7 @@ import TransferList from 'components/transferList';
 import usePollTokens from 'hooks/usePollTokens';
 import {useDaoTokens} from 'hooks/useDaoTokens';
 import {useTokenInfo} from 'hooks/useTokenInformation';
+import {useTransferModalContext} from 'context/transfersModal';
 import {Transfers} from 'utils/types';
 
 const TEMP_TRANSFERS: Transfers[] = [
@@ -44,6 +45,7 @@ const TEMP_TRANSFERS: Transfers[] = [
 
 const Finance: React.FC = () => {
   const {t} = useTranslation();
+  const {open} = useTransferModalContext();
   const {data: tokens} = useDaoTokens('0xMyDaoAddress');
   const {data: tokenInfos} = useTokenInfo(tokens);
   const {data: tokenPrices} = usePollTokens(tokenInfos);
