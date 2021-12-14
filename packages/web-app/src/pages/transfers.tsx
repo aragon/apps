@@ -3,7 +3,7 @@ import {withTransaction} from '@elastic/apm-rum-react';
 import {useTranslation} from 'react-i18next';
 
 import {useTransferModalContext} from 'context/transfersModal';
-import {PageWrapper} from 'components/sectionWrapper';
+import {PageWrapper} from 'components/wrappers';
 
 const Transfers: React.FC = () => {
   const {t} = useTranslation();

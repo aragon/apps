@@ -8,7 +8,7 @@ import {
   TokenSectionWrapper,
   TransferSectionWrapper,
   PageWrapper,
-} from 'components/sectionWrapper';
+} from 'components/wrappers';
 import TokenList from 'components/tokenList';
 import usePollTokens from 'hooks/usePollTokens';
 import {DisplayToken} from 'utils/types';
@@ -75,7 +75,7 @@ const Finance: React.FC = () => {
         buttonLabel={t('TransferModal.newTransfer') as string}
         subtitle={'+ $120,200'}
         onClick={open}
-        subtitleColor="primary-500"
+        primary
       >
         <div className={'h-4'} />
         <TokenSectionWrapper title={t('finance.tokenSection')}>

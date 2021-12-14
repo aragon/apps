@@ -2,64 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import {Link} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
-import {
-  Button,
-  IconButton,
-  IconLinkExternal,
-  IconAdd,
-} from '@aragon/ui-components';
+import {Button, IconButton, IconLinkExternal} from '@aragon/ui-components';
 
 import {AllTokens, AllTransfers} from 'utils/paths';
 
 export type SectionWrapperProps = {
   title: string;
   children: React.ReactNode;
-};
-
-export type PageWrapperProps = SectionWrapperProps & {
-  buttonLabel: string;
-  subtitle: string;
-  onClick?: () => void;
-  subtitleColor?: string;
-};
-
-// NOTE: It's possible to merge these two components. But I'm not sure it makes
-// things any simpler right now. However, if other sections wrappers like these
-// are added in the future and all have similar style, feel free to merge them.
-
-/**
- * finance Page wrapper. Consists of a header with a title and a
- * icon button.
- */
-export const PageWrapper = ({
-  title,
-  children,
-  buttonLabel,
-  subtitle,
-  onClick,
-  subtitleColor = 'ui-600',
-}: PageWrapperProps) => {
-  return (
-    <>
-      <HeaderContainer>
-        <ContentWrapper>
-          <PageTitle>{title}</PageTitle>
-          <PageSubtitle {...{subtitleColor}}>{subtitle}</PageSubtitle>
-        </ContentWrapper>
-        <ActionWrapper>
-          <IconButton
-            mode="primary"
-            size="default"
-            side="left"
-            label={buttonLabel}
-            icon={<IconAdd />}
-            onClick={onClick}
-          />
-        </ActionWrapper>
-      </HeaderContainer>
-      {children}
-    </>
-  );
 };
 
 /**
@@ -127,26 +76,8 @@ const SeeAllButton = ({path}: SeeAllButtonProps) => {
   );
 };
 
-const ContentWrapper = styled.div.attrs({
-  className: 'flex flex-col',
-})``;
-
 const Title = styled.p.attrs({
   className: 'flex text-lg font-bold items-center',
-})``;
-
-const PageTitle = styled.p.attrs({
-  className: 'flex text-lg font-bold items-center text-3xl text-ui-800',
-})``;
-
-type PageSubtitleProps = Pick<PageWrapperProps, 'subtitleColor'>;
-
-const PageSubtitle = styled.p.attrs(({subtitleColor}: PageSubtitleProps) => ({
-  className: `flex text-lg items-center text-lg text-${subtitleColor}`,
-}))``;
-
-const ActionWrapper = styled.div.attrs({
-  className: 'h-100', // Fix button relative height
 })``;
 
 const HeaderContainer = styled.div.attrs({
