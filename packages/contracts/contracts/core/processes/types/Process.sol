@@ -14,7 +14,7 @@ import "./../../DAO.sol";
 /// @notice This contract can be used to implement concrete governance processes and being fully compatible with the DAO framework and UI of Aragon
 /// @dev You only have to define the specific custom logic for your needs in _start, _execute, and _stop
 abstract contract Process is Component {
-    event ProcessStarted(Execution indexed execution, uint256 indexed executionId);
+    event ProcessStarted(Execution indexed execution, uint256 indexed executionId, bytes indexed metadata);
     event ProcessExecuted(Execution indexed execution, uint256 indexed executionId);
 
     // Roles
@@ -44,7 +44,8 @@ abstract contract Process is Component {
 
     struct Execution { // A execution contains the process to execute, the proposal passed by the user, and the state of the execution.
         uint256 id;
-        Proposal proposal;
+        Executor.Action[] actions;
+        bytes additionalArguments;
         State state;
     }
 
@@ -65,15 +66,15 @@ abstract contract Process is Component {
         // the reason behind this - https://matrix.to/#/!poXqlbVpQfXKWGseLY:gitter.im/$6IhWbfjcTqmLoqAVMopWFuIhlQwsoaIRxmsXhhmsaSs?via=gitter.im&via=matrix.org&via=ekpyron.org
         Execution storage execution = executions[executionsCounter];
         execution.id = executionsCounter;
-        execution.process = process;
-        execution.proposal = proposal;
+        execution.actions = proposal.actions;
+        execution.additionalArguments = proposal.additionalArguments;
         execution.state = State.RUNNING;
 
         Execution memory _execution = execution;
 
         _start(_execution); // "Hook" to add logic in start of a concrete implementation.
 
-        emit ProcessStarted(execution, executionId);
+        emit ProcessStarted(execution, executionId, proposal.metdata);
 
         return executionsCounter;
     }

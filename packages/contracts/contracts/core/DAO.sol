@@ -30,14 +30,13 @@ contract DAO is Component, ACL {
     function initialize(
         bytes calldata _metadata,
         Processes _processes,
-        Executor _executor,
-        address _aclRoot
+        Executor _executor
     ) public initializer {
         metadata = _metadata;
         processes = _processes;
         executor = _executor;
 
-        ACL.initACL(_aclRoot);
+        ACL.initACL(_executor);
     }
 
     function _authorizeUpgrade(address) internal virtual override auth(address(this), UPGRADE_ROLE) { }
