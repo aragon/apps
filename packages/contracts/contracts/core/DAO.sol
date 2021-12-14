@@ -65,10 +65,6 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
         return willPerform(_where, _who, _role, data);
     }
 
-    function checkPermission(string calldata _role) external view override returns(bool) {
-        return permissions.checkPermission(_role);
-    }
-
     /// @notice If called a new governance process based on the submitted proposal does get kicked off
     /// @dev Validates the permissions, validates the actions passed, and start a new process execution based on the proposal.
     /// @param proposal The proposal submission of the user
@@ -91,14 +87,6 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
     /// @param _metadata The IPFS hash of the new metadata object
     function setMetadata(bytes calldata _metadata) external authP(DAO_CONFIG_ROLE) {
         metadata = _metadata;   
-    }
-
-    /// @notice Adds a new role to the permission management
-    /// @dev Based on the name and the passed Permission struct does a new entry get added in Permissions
-    /// @param role The name of the role as string
-    /// @param permission The struct defining the logical operator and validators set for this role
-    function addRole(string calldata role, Permissions.Permission calldata permission) external authP(DAO_CONFIG_ROLE) {
-        permissions.setRole(role, permission);
     }
 
     /// @notice Adds a new process to the DAO

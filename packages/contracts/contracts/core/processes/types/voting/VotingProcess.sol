@@ -20,10 +20,6 @@ abstract contract VotingProcess is Process {
         Execution memory execution = _getExecution(executionId);
         
         require(execution.state == State.RUNNING, ERROR_EXECUTION_STATE_WRONG);
-        require(
-            dao.checkPermission(execution.process.permissions.vote),
-            ERROR_EXECUTION_STATE_WRONG
-        );
 
         _vote(executionId, data);
 

@@ -67,11 +67,6 @@ abstract contract Process is Component {
         authP(CREATE_PRIMITIVE_START_ROLE) 
         returns (uint256 executionId) 
     {
-        require(
-            dao.checkPermission(process.permissions.start),
-            ERROR_NOT_ALLOWED_TO_START
-        );
-
         executionsCounter++;
 
         // the reason behind this - https://matrix.to/#/!poXqlbVpQfXKWGseLY:gitter.im/$6IhWbfjcTqmLoqAVMopWFuIhlQwsoaIRxmsXhhmsaSs?via=gitter.im&via=matrix.org&via=ekpyron.org
@@ -97,11 +92,7 @@ abstract contract Process is Component {
         Execution storage execution = _getExecution(executionId);
         
         require(execution.state == State.RUNNING, ERROR_EXECUTION_STATE_WRONG);
-        require(
-            dao.checkPermission(execution.process.permissions.execute),
-            ERROR_NOT_ALLOWED_TO_EXECUTE
-        );
-
+        
         execution.state = State.EXECUTED;
 
         _execute(execution); // "Hook" to add logic in execute of a concrete implementation

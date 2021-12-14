@@ -22,10 +22,6 @@ abstract contract DisputableProcess is StoppableProcess {
         Execution storage execution = _getExecution(executionId);
         
         require(execution.state == State.RUNNING, ERROR_EXECUTION_STATE_WRONG); 
-        require(
-            dao.checkPermission(execution.process.permissions.halt),
-            ERROR_EXECUTION_STATE_WRONG
-        );
         
         execution.state = State.HALTED;
 
@@ -42,10 +38,6 @@ abstract contract DisputableProcess is StoppableProcess {
         Execution storage execution = _getExecution(executionId);
 
         require(execution.state == State.RUNNING, ERROR_EXECUTION_STATE_WRONG);
-        require(
-            dao.checkPermission(execution.process.permissions.halt),
-            ERROR_EXECUTION_STATE_WRONG
-        );
         
         execution.state = State.RUNNING;
 

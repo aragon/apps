@@ -21,11 +21,7 @@ abstract contract StoppableProcess is Process {
         Execution storage execution = _getExecution(executionId);
 
         require(execution.state == State.RUNNING, ERROR_EXECUTION_STATE_WRONG);
-        require(
-            dao.checkPermission(execution.process.permissions.stop),
-            ERROR_EXECUTION_STATE_WRONG
-        );
-
+    
         execution.state = State.STOPPED;
         
         _stop(data);
