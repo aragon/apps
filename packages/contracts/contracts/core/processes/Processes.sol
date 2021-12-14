@@ -6,10 +6,10 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
-import "./types/Process.sol";
 import "../permissions/Permissions.sol";
 import "../executor/Executor.sol";
-import "../component/IDAO.sol";
+import "./types/Process.sol";
+import "../DAO.sol";
 
 /// @title The processes contract defining the flow of every interaction with the DAO
 /// @author Samuel Furter - Aragon Association - 2021
@@ -34,12 +34,12 @@ contract Processes is UpgradableComponent {
 
     /// @dev Used for UUPS upgradability pattern
     /// @param _dao The DAO contract of the current DAO
-    function initialize(IDAO _dao) public override initializer {
+    function initialize(DAO _dao) public override initializer {
         Component.initialize(_dao);
     }
 
     /// @notice Starts the given process resp. primitive by the given proposal
-    /// @dev Checks the passed actions, gets the governance primitive of this process, and starts it
+    /// @dev Checks the passed actions, gets the governance process, and starts it
     /// @param proposal The proposal for execution submitted by the user.
     /// @return process The Process struct stored
     /// @return executionId The id of the newly created execution.

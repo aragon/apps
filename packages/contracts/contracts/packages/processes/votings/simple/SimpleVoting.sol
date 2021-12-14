@@ -9,7 +9,7 @@ import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20VotesUpg
 import "./../../../core/processes/types/voting/VotingProcess.sol";
 import "./../../../core/component/UpgradableComponent.sol";
 import "./../../../core/executor/Executor.sol";
-import "./../../../core/component/IDAO.sol";
+import "./../../../core/DAO.sol";
 import "./TimeHelpers.sol";
 
 contract SimpleVoting is VotingProcess, UpgradableComponent, TimeHelpers {
@@ -61,7 +61,7 @@ contract SimpleVoting is VotingProcess, UpgradableComponent, TimeHelpers {
 
     /// @dev Used for UUPS upgradability pattern
     /// @param _dao The DAO contract of the current DAO
-    function initialize(IDAO _dao, ERC20VotesUpgradeable _token, uint64[3] calldata _voteSettings) public initializer { 
+    function initialize(DAO _dao, ERC20VotesUpgradeable _token, uint64[3] calldata _voteSettings) public initializer { 
         token = _token;
 
         require(_voteSettings[0] <= _voteSettings[1], ERROR_INIT_PCTS);
