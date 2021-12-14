@@ -12,9 +12,9 @@ import "./../../executor/Executor.sol";
 import "./../Processes.sol";
 import "./../../DAO.sol";
 
-/// @title Abstract implementation of the governance primitive
+/// @title Abstract implementation of the governance process
 /// @author Samuel Furter - Aragon Association - 2021
-/// @notice This contract can be used to implement concrete stoppable governance primitives and being fully compatible with the DAO framework and UI of Aragon
+/// @notice This contract can be used to implement concrete governance processes and being fully compatible with the DAO framework and UI of Aragon
 /// @dev You only have to define the specific custom logic for your needs in _start, _execute, and _stop
 abstract contract Process is Component {
     event ProcessStarted(Execution indexed execution, uint256 indexed executionId);
@@ -42,7 +42,7 @@ abstract contract Process is Component {
         string processName; // The hash of the process that should get called
         Executor.Action[] actions; // The actions that should get executed in the end
         bytes metadata; // IPFS hash pointing to the metadata as description, title, image etc. 
-        bytes additionalArguments; // Optional additional arguments a process resp. governance primitive does need
+        bytes additionalArguments; // Optional additional arguments a process resp. governance process does need
     }
 
     struct Execution { // A execution contains the process to execute, the proposal passed by the user, and the state of the execution.
@@ -54,7 +54,7 @@ abstract contract Process is Component {
     uint256 private executionsCounter;
     mapping(uint256 => Execution) private executions;
 
-    /// @notice If called the governance primitive starts a new execution.
+    /// @notice If called the governance process starts a new execution.
     /// @dev The state of the container does get changed to RUNNING, the execution struct gets created, and the concrete implementation in _start called.
     /// @param proposal The proposal for execution submitted by the user.
     /// @return executionId The id of the newly created execution.

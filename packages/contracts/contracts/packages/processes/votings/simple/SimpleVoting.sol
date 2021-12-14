@@ -12,7 +12,7 @@ import "./../../../core/executor/Executor.sol";
 import "./../../../core/component/IDAO.sol";
 import "./TimeHelpers.sol";
 
-contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent, TimeHelpers {
+contract SimpleVoting is VotingProcess, UpgradableComponent, TimeHelpers {
     bytes32 public constant MODIFY_SUPPORT_ROLE = keccak256("MODIFY_SUPPORT_ROLE");
     bytes32 public constant MODIFY_QUORUM_ROLE = keccak256("MODIFY_QUORUM_ROLE");
 
@@ -130,7 +130,7 @@ contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent, TimeHel
     }
 
     /**
-    * @dev Overriden function that actually gets called from the VotingGovernancePrimitive.
+    * @dev Overriden function that actually gets called from the VotingProcess.
     * @param data abi encoded data that includes necessary parameters to vote.
     */
     function _vote(uint256 _voteId, bytes calldata data) internal override {
@@ -181,8 +181,7 @@ contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent, TimeHel
     }
 
     /**
-    * @dev Internal override function hook to check if vote can be executed. 
-           Gets called from GovernancePrimitive
+    * @dev Internal override function hook to check if vote can be executed. Does gets called from VotingProcess.
     * @param execution current execution data 
     */
     function _execute(Execution memory execution) internal view override {
