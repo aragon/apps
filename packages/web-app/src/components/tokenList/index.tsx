@@ -29,6 +29,7 @@ const TokenList: React.FC<TokenListProps> = ({prices, tokens}) => {
     return <p data-testid="tokenList">No token information available.</p>;
 
   return (
+
     <div className="space-y-1.5" data-testid="tokenList">
       {tokens.map(token => {
         return (

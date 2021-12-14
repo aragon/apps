@@ -12,6 +12,7 @@ import usePollTokens from 'hooks/usePollTokens';
 import {useDaoTokens} from 'hooks/useDaoTokens';
 import {useTokenInfo} from 'hooks/useTokenInformation';
 
+
 const Finance: React.FC = () => {
   const {t} = useTranslation();
   const {data: tokens} = useDaoTokens('0xMyDaoAddress');
