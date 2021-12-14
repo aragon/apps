@@ -3,12 +3,20 @@ import {useMatch, useNavigate, useResolvedPath} from 'react-router-dom';
 
 type NavLinkProps = {
   to: string;
-  renderItem: (isActive: boolean, onClick: () => void) => JSX.Element;
+  component: React.FunctionComponentElement<{
+    isSelected: boolean;
+    onClick?: () => void;
+  }>;
   selected?: string;
   onClick?: () => void;
 };
 
-const NavLink = ({to, onClick, selected, renderItem}: NavLinkProps) => {
+const NavLink: React.FC<NavLinkProps> = ({
+  to,
+  onClick,
+  selected,
+  component,
+}) => {
   const resolved = useResolvedPath(to);
   const isMatch = useMatch({path: resolved.pathname, end: true});
   const navigate = useNavigate();
@@ -21,7 +29,14 @@ const NavLink = ({to, onClick, selected, renderItem}: NavLinkProps) => {
     if (onClick) onClick();
     navigate(to);
   };
-  return <>{renderItem(getSelected(), handleClick)}</>;
+  return (
+    <>
+      {React.cloneElement(component, {
+        isSelected: getSelected(),
+        onClick: handleClick,
+      })}
+    </>
+  );
 };
 
 export default NavLink;

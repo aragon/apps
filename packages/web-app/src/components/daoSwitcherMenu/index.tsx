@@ -34,9 +34,9 @@ const DaoSwitcherMenu: React.FC<DaoSwitcherMenuProps> = ({
           onClick={onClick}
         />
         {daos.map(({name, ens, icon}) => (
-          <>
+          <div key={name}>
             <AvatarDao label={name} domain={ens} src={icon} onClick={onClick} />
-          </>
+          </div>
         ))}
       </DaoListContainer>
       <ActionListItem
