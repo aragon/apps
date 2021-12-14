@@ -23,13 +23,11 @@ const numberFormatter = new Intl.NumberFormat('en-US', {
 // Note: Temporary until historical data can be fetched
 const TokenList: React.FC<TokenListProps> = ({prices, tokens}) => {
   const {t} = useTranslation();
-  let price;
 
   if (tokens.length === 0)
     return <p data-testid="tokenList">No token information available.</p>;
 
   return (
-
     <div className="space-y-1.5" data-testid="tokenList">
       {tokens.map(token => {
         return (
