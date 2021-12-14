@@ -22,10 +22,6 @@ export interface ModalProps {
    */
   children: ReactNode;
   /**
-  * Background color
-  */
-  background?: string;
-  /**
   * Styles
   */
   style?: CSSProperties | undefined;
@@ -50,7 +46,7 @@ export const Modal: React.FC<ModalProps> = ({
     <>
       <Root {...{ open, onOpenChange }}>
         <Backdrop visible={open}/>
-        <ModalContent
+        <ModalContainer
           data-testid="modal-content"
           onInteractOutside={onClose}
           {...props}
@@ -62,18 +58,18 @@ export const Modal: React.FC<ModalProps> = ({
             </ModalClose>
           </ModalHeader>}
           {children}
-        </ModalContent>
+        </ModalContainer>
       </Root>
     </>
   );
 };
 
 
-type StyledContentProps = Pick<ModalProps, 'style' | 'background'>;
+type StyledContentProps = Pick<ModalProps, 'style'>;
 
-const ModalContent = styled(Content).attrs(
-  ({ style, background }: StyledContentProps) => {
-    const className = `${background && `bg-${background}`}`;
+const ModalContainer = styled(Content).attrs(
+  ({ style }: StyledContentProps) => {
+    const className = 'bg-ui-50';
     const currentStyle: CSSProperties = style || {
       position: 'fixed',
       top: '50%',

@@ -26,6 +26,5 @@ const TestContent: ReactNode = (
 export const Default = Template.bind({});
 Default.args = {
   children: TestContent,
-  background: 'white',
   title: 'Test Modal',
 };

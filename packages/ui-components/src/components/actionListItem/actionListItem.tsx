@@ -39,7 +39,7 @@ export const ActionListItem: React.FC<ActionListItemProps> = ({
   title,
   onClick,
   background,
-  bordered,
+  bordered = true,
 }) => {
   return (
     <Container
