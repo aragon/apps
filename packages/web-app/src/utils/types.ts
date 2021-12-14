@@ -8,7 +8,7 @@ export type TokenPrices = {
 /**
  * Token information to be displayed on tokenCard
  */
-export type DisplayToken = {
+export type BaseTokenInfo = {
   address: string;
   count: number;
   decimals: number;
@@ -18,4 +18,20 @@ export type DisplayToken = {
   changeDuringInterval?: number;
   treasurySharePercentage?: number;
   percentageChangeDuringInterval?: string;
+};
+
+export type Transfers = {
+  title: string;
+  tokenAmount: number;
+  tokenSymbol: string;
+  transferDate: string;
+  transferType: 'Deposit' | 'Withdraw';
+  usdValue: string;
+  isPending?: boolean;
+};
+
+export type HookData<T> = {
+  data: T;
+  isLoading: boolean;
+  error?: Error;
 };

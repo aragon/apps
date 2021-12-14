@@ -30,6 +30,17 @@
     "transferSection": "Transfers",
     "unknownUSDValue": "Value unknown",
     "tokens": "Tokens",
-    "newTransfer": "New Transfer"
+    "newTransfer": "New Transfer",
+    "allTransfers": "All Transfers",
+    "noTransfers": "No transfer information available",
+    "totalVolume": "Total Volume"
+  },
+  "TransferModal": {
+    "allTransfers":"All Transfers",
+    "newTransfer": "New Transfer",
+    "item1Title": "Deposit assets",
+    "item1Subtitle": "Add assets to the DAO treasury",
+    "item2Title": "Withdraw assets",
+    "item2Subtitle": "Add assets to the DAO treasury"
   }
 }
