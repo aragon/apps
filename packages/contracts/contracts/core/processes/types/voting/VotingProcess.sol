@@ -16,7 +16,7 @@ abstract contract VotingProcess is Process {
     /// @notice If called a new vote does get added.
     /// @param executionId The identifier of the current execution
     /// @param data The arbitrary custom data used for the concrete implementation
-    function vote(uint256 executionId, bytes calldata data) external executionExist(executionId) {
+    function vote(uint256 executionId, bytes calldata data) external {
         Execution memory execution = _getExecution(executionId);
         
         require(execution.state == State.RUNNING, ERROR_EXECUTION_STATE_WRONG);

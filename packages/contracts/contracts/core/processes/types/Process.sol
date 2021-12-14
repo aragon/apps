@@ -53,11 +53,6 @@ abstract contract Process is Component {
     event GovernancePrimitiveStarted(Execution indexed execution, uint256 indexed executionId);
     event GovernancePrimitiveExecuted(Execution indexed execution, uint256 indexed executionId);
 
-    modifier executionExist(uint256 _id) {
-        require(_id < executionsCounter, ERROR_NO_EXECUTION);
-        _;
-    }
-
     /// @notice If called the governance primitive starts a new execution.
     /// @dev The state of the container does get changed to RUNNING, the execution struct gets created, and the concrete implementation in _start called.
     /// @param proposal The proposal for execution submitted by the user.

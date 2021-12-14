@@ -18,7 +18,7 @@ abstract contract DisputableProcess is StoppableProcess {
     /// @dev The state of the container does get changed to HALTED and the concrete implementation in _halt called.
     /// @param executionId The identifier of the current execution
     /// @param data The arbitrary custom data used for the concrete implementation
-    function halt(uint256 executionId, bytes calldata data) public executionExist(executionId) {
+    function halt(uint256 executionId, bytes calldata data) public {
         Execution storage execution = _getExecution(executionId);
         
         require(execution.state == State.RUNNING, ERROR_EXECUTION_STATE_WRONG); 
@@ -34,7 +34,7 @@ abstract contract DisputableProcess is StoppableProcess {
     /// @dev The state of the container does get changed to RUNNING and the concrete implementation in _forward called.
     /// @param executionId The identifier of the current execution
     /// @param data The arbitrary custom data used for the concrete implementation
-    function forward(uint256 executionId, bytes calldata data) public executionExist(executionId) {
+    function forward(uint256 executionId, bytes calldata data) public {
         Execution storage execution = _getExecution(executionId);
 
         require(execution.state == State.RUNNING, ERROR_EXECUTION_STATE_WRONG);

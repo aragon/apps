@@ -193,7 +193,7 @@ contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent {
     * @param _voteId Vote identifier
     * @return VoterState of the requested voter for a certain vote
     */
-    function getVoterState(uint256 _voteId, address _voter) public view executionExist(_voteId) returns (VoterState) {
+    function getVoterState(uint256 _voteId, address _voter) public view returns (VoterState) {
        return votes[_voteId].voters[_voter];
     }
 
@@ -203,7 +203,7 @@ contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent {
     * @param _voter the address of the voter to check
     * @return bool true if user is allowed to vote
     */
-    function canVote(uint256 _voteId, address _voter) public view executionExist(_voteId) returns (bool) {
+    function canVote(uint256 _voteId, address _voter) public view returns (bool) {
        return _canVote(_voteId, _voter);
     }
 
@@ -224,7 +224,6 @@ contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent {
     function getVote(uint256 _voteId)
         public
         view
-        executionExist(_voteId)
         returns (
             bool open,
             bool executed,
