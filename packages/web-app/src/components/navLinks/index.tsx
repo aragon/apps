@@ -1,6 +1,4 @@
 import {
-  ActionItem,
-  MenuItem,
   ButtonText,
   IconFinance,
   IconCommunity,
@@ -48,7 +46,7 @@ const NavLinks: React.FC<NavLinksProps> = ({
             bgWhite={isDropdown}
             onClick={onClick}
             isActive={isActive}
-            {...(isActive ? {iconLeft: <IconDashboard />} : {})}
+            {...(isActive || isDropdown ? {iconLeft: <IconDashboard />} : {})}
           />
         )}
       />
@@ -64,7 +62,7 @@ const NavLinks: React.FC<NavLinksProps> = ({
             bgWhite={isDropdown}
             onClick={onClick}
             isActive={isActive}
-            {...(isActive ? {iconLeft: <IconGovernance />} : {})}
+            {...(isActive || isDropdown ? {iconLeft: <IconGovernance />} : {})}
           />
         )}
       />
@@ -80,7 +78,7 @@ const NavLinks: React.FC<NavLinksProps> = ({
             bgWhite={isDropdown}
             onClick={onClick}
             isActive={isActive}
-            {...(isActive ? {iconLeft: <IconFinance />} : {})}
+            {...(isActive || isDropdown ? {iconLeft: <IconFinance />} : {})}
           />
         )}
       />
@@ -96,7 +94,7 @@ const NavLinks: React.FC<NavLinksProps> = ({
             bgWhite={isDropdown}
             onClick={onClick}
             isActive={isActive}
-            {...(isActive ? {iconLeft: <IconCommunity />} : {})}
+            {...(isActive || isDropdown ? {iconLeft: <IconCommunity />} : {})}
           />
         )}
       />

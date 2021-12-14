@@ -6,6 +6,7 @@ export type AvatarDaoProps = {
   domain?: string;
   label: string;
   src?: string;
+  onClick?: () => void;
 };
 
 export const AvatarDao: React.FC<AvatarDaoProps> = ({
@@ -13,6 +14,7 @@ export const AvatarDao: React.FC<AvatarDaoProps> = ({
   domain,
   label,
   src,
+  onClick,
 }) => {
   const [error, setError] = useState(false);
 
@@ -23,23 +25,23 @@ export const AvatarDao: React.FC<AvatarDaoProps> = ({
 
   const DaoAvatar = useMemo(() => {
     return error === true || !src ? (
-      <FallBackAvatar>{getDaoInitials()}</FallBackAvatar>
+      <FallBackAvatar>
+        <DaoInitials>{getDaoInitials()}</DaoInitials>
+      </FallBackAvatar>
     ) : (
       <Avatar src={src} alt="dao avatar" onError={() => setError(true)} />
     );
   }, [error, label, src]);
 
-  if (contentMode === 'none') {
-    return DaoAvatar;
-  }
-
   return (
-    <Container contentMode={contentMode}>
+    <Container contentMode={contentMode} onClick={onClick}>
       {DaoAvatar}
-      <Content>
-        <DaoName>{label}</DaoName>
-        {contentMode !== 'below' && <Ens>{domain}</Ens>}
-      </Content>
+      {contentMode !== 'none' && (
+        <Content>
+          <DaoName>{label}</DaoName>
+          {contentMode === 'right' && <Ens>{domain}</Ens>}
+        </Content>
+      )}
     </Container>
   );
 };
@@ -55,7 +57,7 @@ type ModeProps = {
 };
 
 const Container = styled.div.attrs(({contentMode = 'right'}: ModeProps) => ({
-  className: `${contentModeStyles[contentMode]}`,
+  className: `${contentModeStyles[contentMode]} cursor-pointer`,
 }))<ModeProps>``;
 
 const Avatar = styled.img.attrs({
@@ -65,6 +67,10 @@ const Avatar = styled.img.attrs({
 const FallBackAvatar = styled.div.attrs({
   className:
     'flex items-center justify-center font-bold text-ui-0 bg-gradient-to-r from-primary-500 to-primary-800 h-6 w-6 rounded-xl border',
+})``;
+
+const DaoInitials = styled.p.attrs({
+  className: 'w-4 h-4 flex items-center justify-center',
 })``;
 
 const Content = styled.div.attrs({

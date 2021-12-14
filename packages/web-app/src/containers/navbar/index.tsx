@@ -30,12 +30,10 @@ const TEMP_DAOS = [
   {
     name: 'Axolittle Dao',
     ens: 'axolittle-dao.eth',
-    icon: TEMP_ICON,
   },
   {
     name: 'Skullx Dao',
     ens: 'skullx-dao.eth',
-    icon: TEMP_ICON,
   },
 ];
 
