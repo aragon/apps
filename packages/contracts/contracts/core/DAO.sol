@@ -59,16 +59,8 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
     /// @param proposal The proposal submission of the user
     /// @return process The started process with his definition
     /// @return executionId The execution id
-    function start(GovernancePrimitive.Proposal calldata proposal) external returns (Processes.Process memory process, uint256 executionId) {
+    function submit(GovernancePrimitive.Proposal calldata proposal) external returns (Processes.Process memory process, uint256 executionId) {
         return processes.start(proposal);
-    }
-
-    /// @notice If called a executable proposal does get executed.
-    /// @dev Some governance primitives needed to be executed with a additional user based call.
-    /// @param executionID The executionId
-    /// @param governancePrimitive The primitive to call execute.
-    function execute(uint256 executionID, GovernancePrimitive governancePrimitive) external {
-        Process(governancePrimitive).execute(executionID);
     }
 
     /// @notice Update the DAO metadata

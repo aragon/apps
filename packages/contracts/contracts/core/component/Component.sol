@@ -2,7 +2,6 @@
  * SPDX-License-Identifier:    MIT
  */
 
-
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
@@ -11,12 +10,12 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 import "./TimeHelpers.sol";
-import "./IDAO.sol";
+import "./../DAO.sol";
 
 abstract contract Component is TimeHelpers {
-    IDAO internal dao;
+    DAO internal dao;
     
-    function initialize(IDAO _dao) public virtual  {
+    function initialize(DAO _dao) public virtual  {
         dao = _dao;
     }
 
