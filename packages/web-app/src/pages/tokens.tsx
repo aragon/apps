@@ -33,7 +33,7 @@ const Tokens: React.FC = () => {
         </div>
         <ButtonText
           size="large"
-          label={t('finance.newTransfer')}
+          label={t('allTransfer.newTransfer')}
           iconLeft={<IconAdd />}
         />
       </CenteredFlex>

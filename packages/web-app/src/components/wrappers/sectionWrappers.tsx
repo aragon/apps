@@ -80,7 +80,7 @@ const SeeAllButton = ({path}: SeeAllButtonProps) => {
           iconRight={<IconChevronRight />}
         />
       </Link>
-    </>
+    </div>
   );
 };
 

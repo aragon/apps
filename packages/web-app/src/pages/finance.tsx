@@ -35,7 +35,7 @@ const Finance: React.FC = () => {
           </div>
         </TokenSectionWrapper>
         <div className={'h-4'} />
-        <TransferSectionWrapper title={t('finance.transferSection')}>
+        <TransferSectionWrapper title={t('finance.transferSection')} showButton>
           <div className="my-2 space-y-2 border-solid">
             <ColoredDiv />
             <ColoredDiv />
