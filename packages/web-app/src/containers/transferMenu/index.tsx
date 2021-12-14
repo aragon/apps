@@ -15,7 +15,6 @@ const TransferMenu: React.FC = () => {
       onClose={close}
       title={t('TransferModal.newTransfer') as string}
       data-testid="walletCard"
-      background="ui-50"
     >
       <Container>
         <ActionListItem
@@ -23,12 +22,14 @@ const TransferMenu: React.FC = () => {
           subtitle={t('TransferModal.item1Subtitle') as string}
           icon={<IconChevronRight />}
           background="white"
+          bordered={false}
         />
         <ActionListItem
           title={t('TransferModal.item2Title') as string}
           subtitle={t('TransferModal.item2Subtitle') as string}
           icon={<IconChevronRight />}
           background="white"
+          bordered={false}
         />
       </Container>
     </Modal>
