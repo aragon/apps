@@ -2,7 +2,7 @@
  * SPDX-License-Identifier:    MIT
  */
 
-pragma solidity ^0.8.0;
+pragma solidity 0.8.10;
 
 library Uint256Helpers {
     uint256 private constant MAX_UINT64 = type(uint64).max;
