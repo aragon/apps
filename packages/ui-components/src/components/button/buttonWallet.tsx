@@ -10,11 +10,11 @@ export type ButtonWalletProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   /**
    * set wallet Address/Ens
    */
-  label: string;
+  label: string | null;
   /**
    * Avatar Image source
    */
-  src: string;
+  src: string | null;
   /**
    * Loading mode
    */
@@ -34,7 +34,11 @@ export const ButtonWallet = ({
 }: ButtonWalletProps) => {
   const Avatar = useMemo(() => {
     if (isConnected)
-      return isLoading ? <Spinner size="small" /> : <AvatarWallet src={src} />;
+      return isLoading ? (
+        <Spinner size="small" />
+      ) : (
+        <AvatarWallet src={src || ''} />
+      );
     else return <IconPerson className="h-2.5 w-2.5" />;
   }, [isConnected, isLoading, src]);
 
