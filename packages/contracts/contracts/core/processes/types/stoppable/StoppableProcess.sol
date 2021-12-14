@@ -13,11 +13,14 @@ import "./../Process.sol";
 abstract contract StoppableProcess is Process {
     event ProcessStopped(Execution indexed execution, uint256 indexed executionId);
 
+    // Roles
+    bytes32 public constant PROCESS_STOP_ROLE = keccak256("PROCESS_STOP_ROLE");
+
     /// @notice If called the execution is stopped.
     /// @dev The state of the container does get changed to STOPPED and the concrete implementation in _stop called.
     /// @param executionId The identifier of the current execution
     /// @param data The arbitrary custom data used for the concrete implementation
-    function stop(uint256 executionId, bytes calldata data) public {
+    function stop(uint256 executionId, bytes calldata data) public auth(PROCESS_STOP_ROLE) {
         Execution storage execution = _getExecution(executionId);
 
         require(execution.state == State.RUNNING, ERROR_EXECUTION_STATE_WRONG);

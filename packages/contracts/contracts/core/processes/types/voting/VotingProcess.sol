@@ -13,10 +13,13 @@ import "./../Process.sol";
 abstract contract VotingProcess is Process {
     event VotedOnProcess(Execution indexed execution, bytes indexed data, uint256 executionId);
 
+    // Roles
+    bytes32 public constant PROCESS_VOTE_ROLE = keccak256("PROCESS_VOTE_ROLE");
+
     /// @notice If called a new vote does get added.
     /// @param executionId The identifier of the current execution
     /// @param data The arbitrary custom data used for the concrete implementation
-    function vote(uint256 executionId, bytes calldata data) external {
+    function vote(uint256 executionId, bytes calldata data) external auth(PROCESS_VOTE_ROLE) {
         Execution memory execution = _getExecution(executionId);
         
         require(execution.state == State.RUNNING, ERROR_EXECUTION_STATE_WRONG);

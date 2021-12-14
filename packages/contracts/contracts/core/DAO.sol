@@ -19,11 +19,11 @@ import "../lib/component/IDAO.sol";
 /// @notice This contract is the entry point to the Aragon DAO framework and provides our users a simple and use to use public interface.
 /// @dev Public API of the Aragon DAO framework
 contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
-    
+    event NewProposal(GovernancePrimitive.Proposal indexed proposal, Processes.Process indexed process, address indexed submitter, uint256 executionId);
+
+    // Roles
     bytes32 public constant DAO_CONFIG_ROLE = keccak256("DAO_CONFIG_ROLE");
     bytes32 public constant UPGRADE_ROLE = keccak256("UPGRADE_ROLE");
-
-    event NewProposal(GovernancePrimitive.Proposal indexed proposal, Processes.Process indexed process, address indexed submitter, uint256 executionId);
 
     bytes public metadata;
     Processes public processes;
@@ -52,19 +52,8 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
         ACL.initACL(_aclRoot);
     }
 
-    function _authorizeUpgrade(address /*_newImplementation*/) internal virtual override {
-        require(willPerform(address(this), msg.sender, UPGRADE_ROLE, msg.data), "auth:check");
-    }
-
-    modifier authP(bytes32 role)  {
-        require(willPerform(address(this), msg.sender, role, msg.data), "auth: check");
-        _;
-    }
-
-    function hasPermission(address _where, address _who, bytes32 _role, bytes memory data) public override returns(bool) {
-        return willPerform(_where, _who, _role, data);
-    }
-
+    function _authorizeUpgrade(address) internal virtual override auth(address(this), UPGRADE_ROLE) { }
+    
     /// @notice If called a new governance process based on the submitted proposal does get kicked off
     /// @dev Validates the permissions, validates the actions passed, and start a new process execution based on the proposal.
     /// @param proposal The proposal submission of the user
@@ -79,13 +68,13 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
     /// @param executionID The executionId
     /// @param governancePrimitive The primitive to call execute.
     function execute(uint256 executionID, GovernancePrimitive governancePrimitive) external {
-        GovernancePrimitive(governancePrimitive).execute(executionID);
+        Process(governancePrimitive).execute(executionID);
     }
 
     /// @notice Update the DAO metadata
     /// @dev Sets a new IPFS hash
     /// @param _metadata The IPFS hash of the new metadata object
-    function setMetadata(bytes calldata _metadata) external authP(DAO_CONFIG_ROLE) {
+    function setMetadata(bytes calldata _metadata) external auth(address(this), DAO_CONFIG_ROLE) {
         metadata = _metadata;   
     }
 
@@ -93,14 +82,14 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
     /// @dev Based on the name and the passed Process struct does a new entry get added in Processes
     /// @param name The name of the process as string
     /// @param process The struct defining the governance primitive, allowed actions, permissions, and metadata IPFS hash to describe the process 
-    function setProcess(string calldata name, Processes.Process calldata process) external authP(DAO_CONFIG_ROLE) {
+    function setProcess(string calldata name, Processes.Process calldata process) external auth(address(this), DAO_CONFIG_ROLE) {
         processes.setProcess(name, process);
     }
 
     /// @notice Sets a new executor address in case it needs to get replaced at all
     /// @dev Updates the executor contract property
     /// @param _executor The address of the new executor
-    function setExecutor(Executor _executor) external authP(DAO_CONFIG_ROLE) {
+    function setExecutor(Executor _executor) external auth(address(this), DAO_CONFIG_ROLE) {
         executor = _executor;
     }
 } 

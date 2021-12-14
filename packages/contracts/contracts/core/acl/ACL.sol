@@ -78,7 +78,7 @@ contract ACL is Initializable {
         }
     }
 
-    function willPerform(address _where, address _who, bytes32 _role, bytes memory _data) internal returns (bool) {
+    function willPerform(address _where, address _who, bytes32 _role, bytes memory _data) public returns (bool) {
         return _checkRole(_where, _who, _role, _data) // check if _who is eligible for _role on _where
             || _checkRole(_where, ANY_ADDR, _role, _data) // check if anyone is eligible for _role on _where
             || _checkRole(ANY_ADDR, _who, _role, _data); // check if _who is eligible for _role on any contract.

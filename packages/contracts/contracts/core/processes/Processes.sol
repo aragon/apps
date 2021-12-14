@@ -16,11 +16,11 @@ import "../component/IDAO.sol";
 /// @notice This contract is a central point of the Aragon DAO framework and handles all the processes and stores the different process types with his governance primitives a DAO can have.
 /// @dev A list of process types are stored here pluss it validates if the passed actions in a proposal are valid.
 contract Processes is UpgradableComponent { 
-    bytes32 public constant PROCESSES_START_ROLE = keccak256("PROCESSES_START_ROLE");
-    bytes32 public constant PROCESSES_SET_ROLE = keccak256("PROCESSES_SET_ROLE");
-
     event ProcessStarted(address indexed process, Process.Proposal indexed proposal, uint256 indexed executionId);
     event ProcessSet(string indexed name, Process indexed process);
+    
+    bytes32 public constant PROCESSES_START_ROLE = keccak256("PROCESSES_START_ROLE");
+    bytes32 public constant PROCESSES_SET_ROLE = keccak256("PROCESSES_SET_ROLE");
 
     mapping(string => Process) public processes; // All existing governance processes in this DAO
 
@@ -39,7 +39,7 @@ contract Processes is UpgradableComponent {
     /// @return executionId The id of the newly created execution.
     function start(Process.Proposal calldata proposal) 
         external 
-        authP(PROCESSES_START_ROLE) 
+        auth(PROCESSES_START_ROLE) 
         returns (Process memory process, uint256 executionId) 
     {
         process = processes[proposal.processName];
@@ -55,7 +55,7 @@ contract Processes is UpgradableComponent {
     /// @param process The process struct defining the new DAO process
     function setProcess(string calldata name, Process calldata process) 
         public 
-        authP(PROCESSES_SET_ROLE) 
+        auth(PROCESSES_SET_ROLE) 
     {
         processes[name] = process;
 

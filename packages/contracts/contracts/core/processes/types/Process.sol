@@ -17,10 +17,14 @@ import "../component/Component.sol";
 /// @notice This contract can be used to implement concrete stoppable governance primitives and being fully compatible with the DAO framework and UI of Aragon
 /// @dev You only have to define the specific custom logic for your needs in _start, _execute, and _stop
 abstract contract Process is Component {
+    event ProcessStarted(Execution indexed execution, uint256 indexed executionId);
+    event ProcessExecuted(Execution indexed execution, uint256 indexed executionId);
 
-    bytes32 public constant CREATE_PRIMITIVE_START_ROLE = keccak256("CREATE_PRIMITIVE_START_ROLE");
-    bytes32 public constant PRIMITIVE_EXECUTE_ROLE = keccak256("PRIMITIVE_EXECUTE_ROLE");
+    // Roles
+    bytes32 public constant PROCESS_START_ROLE = keccak256("PROCESS_START_ROLE");
+    bytes32 public constant PROCESS_EXECUTE_ROLE = keccak256("PROCESS_EXECUTE_ROLE");
 
+    // Error MSG's
     string internal constant ERROR_EXECUTION_STATE_WRONG = "ERROR_EXECUTION_STATE_WRONG";
     string internal constant ERROR_NOT_ALLOWED_TO_EXECUTE = "ERROR_NOT_ALLOWED_TO_EXECUTE";
     string internal constant ERROR_NOT_ALLOWED_TO_START = "ERROR_NOT_ALLOWED_TO_START";
@@ -50,16 +54,13 @@ abstract contract Process is Component {
     uint256 private executionsCounter;
     mapping(uint256 => Execution) private executions;
 
-    event GovernancePrimitiveStarted(Execution indexed execution, uint256 indexed executionId);
-    event GovernancePrimitiveExecuted(Execution indexed execution, uint256 indexed executionId);
-
     /// @notice If called the governance primitive starts a new execution.
     /// @dev The state of the container does get changed to RUNNING, the execution struct gets created, and the concrete implementation in _start called.
     /// @param proposal The proposal for execution submitted by the user.
     /// @return executionId The id of the newly created execution.
     function start(Proposal calldata proposal) 
         external 
-        authP(CREATE_PRIMITIVE_START_ROLE) 
+        auth(PROCESS_START_ROLE) 
         returns (uint256 executionId) 
     {
         executionsCounter++;
@@ -75,7 +76,7 @@ abstract contract Process is Component {
 
         _start(_execution); // "Hook" to add logic in start of a concrete implementation.
 
-        emit GovernancePrimitiveStarted(execution, executionId);
+        emit ProcessStarted(execution, executionId);
 
         return executionsCounter;
     }
@@ -83,7 +84,7 @@ abstract contract Process is Component {
     /// @notice If called the proposed actions do get executed.
     /// @dev The state of the container does get changed to EXECUTED, the pre-execute method _execute does get called, and the actions executed.
     /// @param executionId The id of the execution struct.
-    function execute(uint256 executionId) public authP(PRIMITIVE_EXECUTE_ROLE) {
+    function execute(uint256 executionId) public auth(PROCESS_EXECUTE_ROLE) {
         Execution storage execution = _getExecution(executionId);
         
         require(execution.state == State.RUNNING, ERROR_EXECUTION_STATE_WRONG);
@@ -94,7 +95,7 @@ abstract contract Process is Component {
 
         // Executor(dao.executor.address).execute(execution.proposal.actions);
 
-        emit GovernancePrimitiveExecuted(execution, executionId);
+        emit ProcessExecuted(execution, executionId);
     }
 
     /// @dev Internal helper and abstraction to get a execution struct.

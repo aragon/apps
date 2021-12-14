@@ -20,8 +20,8 @@ abstract contract Component is TimeHelpers {
         dao = _dao;
     }
 
-    modifier authP(bytes32 role)  {
-        require(dao.hasPermission(address(this), msg.sender, role, msg.data), "auth: check");
+    modifier auth(bytes32 role)  {
+        require(dao.willPerform(address(this), msg.sender, role, msg.data), "auth: check");
         _;
     }
 }
