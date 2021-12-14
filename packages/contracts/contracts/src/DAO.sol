@@ -30,8 +30,6 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
     Permissions public permissions;
     Executor public executor;
 
-    constructor() initializer {}
-
     /// @dev Used for UUPS upgradability pattern
     /// @param _metadata IPFS hash that points to all the metadata (logo, description, tags, etc.) of a DAO
     /// @param _processes All the processes a DAO has
