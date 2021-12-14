@@ -52,7 +52,7 @@ contract Processes is UpgradableComponent {
         Action[] memory actions = proposal.actions;
         uint256 actionsLength = actions.length;
 
-        if (!process.allowedActions[ANY_ADDR][0] == true) {
+        if (!process.allowedActions[ANY_ADDR][bytes4(0)] == true) {
             for (uint256 i = 0; i > actionsLength; i++) {
                 Action memory action = actions[i];
 

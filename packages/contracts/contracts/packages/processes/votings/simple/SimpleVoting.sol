@@ -5,14 +5,14 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20VotesUpgradeable.sol";
-import "../../../lib/governance-primitives/voting/VotingGovernancePrimitive.sol";
-import "../../../lib/component/IDAO.sol";
-import "../../executor/Executor.sol";
-import "../../../lib/component/UpgradableComponent.sol";
+
+import "./../../../core/processes/types/voting/VotingProcess.sol";
+import "./../../../core/component/UpgradableComponent.sol";
+import "./../../../core/executor/Executor.sol";
+import "./../../../core/component/IDAO.sol";
 import "./TimeHelpers.sol";
 
 contract SimpleVoting is VotingGovernancePrimitive, UpgradableComponent, TimeHelpers {
-    
     bytes32 public constant MODIFY_SUPPORT_ROLE = keccak256("MODIFY_SUPPORT_ROLE");
     bytes32 public constant MODIFY_QUORUM_ROLE = keccak256("MODIFY_QUORUM_ROLE");
 

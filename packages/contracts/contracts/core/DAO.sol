@@ -6,19 +6,18 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
-import "../lib/governance-primitives/GovernancePrimitive.sol";
+import "./component/UpgradableComponent.sol";
 import "./permissions/Permissions.sol";
 import "./processes/Processes.sol";
+import "./processes/Process.sol";
 import "./executor/Executor.sol";
-import "../lib/component/UpgradableComponent.sol";
-import "../lib/acl/ACL.sol";
-import "../lib/component/IDAO.sol";
+import "./acl/ACL.sol";
 
 /// @title The public interface of the Aragon DAO framework.
 /// @author Samuel Furter - Aragon Association - 2021
 /// @notice This contract is the entry point to the Aragon DAO framework and provides our users a simple and use to use public interface.
 /// @dev Public API of the Aragon DAO framework
-contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
+contract DAO is Initializable, UUPSUpgradeable, ACL {
     event NewProposal(GovernancePrimitive.Proposal indexed proposal, Processes.Process indexed process, address indexed submitter, uint256 executionId);
 
     // Roles
@@ -59,7 +58,7 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
     /// @param proposal The proposal submission of the user
     /// @return process The started process with his definition
     /// @return executionId The execution id
-    function submit(GovernancePrimitive.Proposal calldata proposal) external returns (Processes.Process memory process, uint256 executionId) {
+    function submit(Process.Proposal calldata proposal) external returns (Processes.Process memory process, uint256 executionId) {
         return processes.start(proposal);
     }
 

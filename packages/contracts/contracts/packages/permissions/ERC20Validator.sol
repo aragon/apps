@@ -4,8 +4,8 @@
 
 pragma solidity ^0.8.0;
 
-import "../../core/acl/IACLOracle.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "../../core/acl/IACLOracle.sol";
 
 contract ERC20ACLOracle is IACLOracle {
     IERC20 public token;

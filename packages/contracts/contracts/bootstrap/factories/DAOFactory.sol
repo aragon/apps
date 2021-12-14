@@ -8,18 +8,18 @@ import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20VotesUpgradeable.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
-import "../DAO.sol";
-import "../vault/Vault.sol";
-import "../governance-primitives/voting/SimpleVoting.sol";
-import "../tokens/GovernanceERC20.sol";
-import "../tokens/GovernanceWrappedERC20.sol";
-import "../registry/Registry.sol";
-import "../processes/Processes.sol";
-import "../permissions/Permissions.sol";
-import "../executor/Executor.sol";
+
+import "./../../processes/votings/simple/SimpleVoting.sol";
+import "./../../packages/tokens/GovernanceWrappedERC20.sol";
+import "./../../packages/tokens/GovernanceERC20.sol";
+import "./../../core/permissions/Permissions.sol";
+import "./../../core/processes/Processes.sol";
+import "./../../core/executor/Executor.sol";
+import "./../../registry/Registry.sol";
+import "./../../vault/Vault.sol";
+import "./../../DAO.sol";
 
 contract DAOFactory {
-
     using Address for address;
     
     address private votingBase;

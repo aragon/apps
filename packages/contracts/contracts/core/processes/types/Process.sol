@@ -6,11 +6,11 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
-import "../../src/permissions/Permissions.sol";
-import "../../src/processes/Processes.sol";
-import "../../src/executor/Executor.sol";
-import "../../src/DAO.sol";
-import "../component/Component.sol";
+import "./../../permissions/Permissions.sol";
+import "./../../component/Component.sol";
+import "./../../executor/Executor.sol";
+import "./../Processes.sol";
+import "./../../DAO.sol";
 
 /// @title Abstract implementation of the governance primitive
 /// @author Samuel Furter - Aragon Association - 2021

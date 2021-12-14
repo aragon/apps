@@ -11,8 +11,8 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 
-import "../../lib/component/IDAO.sol";
-import "../../lib/component/UpgradableComponent.sol";
+import "./../core/component/UpgradableComponent.sol";
+import "./../core/DAO.sol";
 
 contract Vault is UpgradableComponent, ReentrancyGuardUpgradeable {
     using SafeERC20 for IERC20;
@@ -34,7 +34,7 @@ contract Vault is UpgradableComponent, ReentrancyGuardUpgradeable {
 
     /// @dev Used for UUPS upgradability pattern
     /// @param _dao The DAO contract of the current DAO
-    function initialize(IDAO _dao) public override initializer {
+    function initialize(DAO _dao) public override initializer {
         Component.initialize(_dao);
         __ReentrancyGuard_init();
     }

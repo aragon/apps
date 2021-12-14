@@ -4,7 +4,7 @@
 
 pragma solidity ^0.8.0;
 
-import "../DAO.sol";
+import "../../core/DAO.sol";
 
 /// @title Register your unique DAO name
 /// @author Samuel Furter - Aragon Association - 2021

@@ -6,9 +6,10 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
-import "../../lib/component/UpgradableComponent.sol";
-import "../../lib/component/IDAO.sol";
+import "./../component/UpgradableComponent.sol";
+import "./../DAO.sol";
 
+// TODO: Merge with Vault.. cause otherwise executor can't call contract methods that expect eth to be send.
 /// @title Implementation of the Executor
 /// @author Sarkawt Azad - Aragon Association - 2021
 /// @notice This contract represent the execution layer.
@@ -34,7 +35,7 @@ contract Executor is UpgradableComponent {
 
   /// @dev Used for UUPS upgradability pattern
   /// @param _dao The DAO contract of the current DAO
-  function initialize(IDAO _dao) public override initializer {
+  function initialize(DAO _dao) public override initializer {
     Component.initialize(_dao);
   } 
 
