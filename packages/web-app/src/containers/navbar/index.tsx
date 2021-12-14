@@ -1,12 +1,12 @@
 import {
   ButtonIcon,
   ButtonText,
+  ButtonWallet,
   DaoCard,
   DaoSelector,
   IconClose,
   IconMenu,
   Popover,
-  WalletButton,
 } from '@aragon/ui-components';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
@@ -167,7 +167,7 @@ const Navbar: React.FC = () => {
           </Container>
 
           {/* ------- Wallet Button (Desktop) ------- */}
-          <WalletButton
+          <ButtonWallet
             onClick={handleWalletButtonClick}
             isConnected={isConnected()}
             label={
