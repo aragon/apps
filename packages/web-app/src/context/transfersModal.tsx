@@ -11,27 +11,50 @@ const TransferModalContext = createContext<TransferModalContextType | null>(
 );
 
 type TransferModalContextType = {
-  isOpen: boolean;
-  open: () => void;
-  close: () => void;
+  isTransferOpen: boolean;
+  isTokenOpen: boolean;
+  open: (arg?: string) => void;
+  close: (arg?: string) => void;
 };
 
 type Props = Record<'children', ReactNode>;
 
 const TransferModalsProvider: React.FC<Props> = ({children}) => {
-  const [isOpen, setIsOpen] =
-    useState<TransferModalContextType['isOpen']>(false);
+  const [isTransferOpen, setIsTransferOpen] =
+    useState<TransferModalContextType['isTransferOpen']>(false);
+  const [isTokenOpen, setIsTokenOpen] =
+    useState<TransferModalContextType['isTokenOpen']>(false);
 
-  const open = () => setIsOpen(true);
-  const close = () => setIsOpen(false);
+  const open = (type?: string) => {
+    switch (type) {
+      case 'token':
+        setIsTokenOpen(true);
+        break;
+      default:
+        setIsTransferOpen(true);
+        break;
+    }
+  };
+
+  const close = (type?: string) => {
+    switch (type) {
+      case 'token':
+        setIsTransferOpen(false);
+        break;
+      default:
+        setIsTransferOpen(false);
+        break;
+    }
+  };
 
   const value = useMemo(
     (): TransferModalContextType => ({
-      isOpen,
+      isTransferOpen,
+      isTokenOpen,
       open,
       close,
     }),
-    [isOpen]
+    [isTransferOpen, isTokenOpen]
   );
 
   return (

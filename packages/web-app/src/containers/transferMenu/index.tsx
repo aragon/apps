@@ -6,12 +6,12 @@ import {useTranslation} from 'react-i18next';
 import {useTransferModalContext} from 'context/transfersModal';
 
 const TransferMenu: React.FC = () => {
-  const {isOpen, close} = useTransferModalContext();
+  const {isTransferOpen, close} = useTransferModalContext();
   const {t} = useTranslation();
 
   return (
     <Modal
-      open={isOpen}
+      open={isTransferOpen}
       onClose={close}
       title={t('TransferModal.newTransfer') as string}
       data-testid="walletCard"
