@@ -56,7 +56,7 @@ const Finance: React.FC = () => {
         title={'$469,657.98'}
         buttonLabel={t('TransferModal.newTransfer') as string}
         subtitle={'+ $120,200'}
-        onClick={open}
+        onClick={() => open('token')}
         primary
       >
         <div className={'h-4'} />

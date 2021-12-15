@@ -1,4 +1,6 @@
 import {BaseTokenInfo} from './types';
+import {ethers} from 'ethers';
+import {erc20TokenABI} from './abis';
 
 /**
  * This method sorts a list of array information. It is applicable to any field
@@ -53,4 +55,42 @@ export function filterTokens(tokens: BaseTokenInfo[], searchTerm: string) {
   if (!searchTerm) return tokens;
 
   return tokens.filter(t => tokenInfoMatches(t, searchTerm));
+}
+
+export async function isTokenERC20(address: string, provider: any) {
+  const contract = new ethers.Contract(address, erc20TokenABI, provider);
+  try {
+    await Promise.all([contract.balanceOf(address), contract.totalSupply()]);
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
+
+export async function getTokenInfo(address: string, provider: any) {
+  const contract = new ethers.Contract(address, erc20TokenABI, provider);
+  let decimals = null,
+    name = null,
+    symbol = null;
+
+  try {
+    decimals = await contract.decimals();
+    // eslint-disable-next-line no-empty
+  } catch (err) {}
+
+  try {
+    name = await contract.name();
+    // eslint-disable-next-line no-empty
+  } catch (err) {}
+
+  try {
+    symbol = await contract.symbol();
+    // eslint-disable-next-line no-empty
+  } catch (err) {}
+
+  return {
+    decimals,
+    name,
+    symbol,
+  };
 }

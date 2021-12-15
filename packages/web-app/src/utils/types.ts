@@ -35,3 +35,17 @@ export type HookData<T> = {
   isLoading: boolean;
   error?: Error;
 };
+
+export type ChainId = 1 | 4;
+export type TokenSymbol = 'DAI' | 'USDT' | 'USDC';
+
+export interface EnvironmentConfig {
+  chainId: ChainId;
+  networkName: string;
+  curatedTokens: Record<TokenSymbol, string>;
+}
+
+export type Account = {
+  signer: any | undefined;
+  address: string | null;
+};

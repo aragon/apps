@@ -1,5 +1,7 @@
-import {Contract, BigNumber, providers} from 'ethers';
+import {Contract, providers as EthersProviders} from 'ethers';
 import {erc20TokenABI} from 'utils/abis';
+import {formatUnits} from 'utils/library';
+import {getTokenInfo} from 'utils/tokens';
 /**
  * validate that the asset balance of the owner is greater or equal to the amount
  * @param address address to be verified
@@ -8,13 +10,13 @@ import {erc20TokenABI} from 'utils/abis';
  * @returns  <ValidateResult> true if valid, error message if invalid
  */
 export const FetchBalance = async (
-  address: string,
+  tokenAddress: string,
   ownerAddress: string,
-  provider: providers.Web3Provider
+  provider: EthersProviders.Provider
 ) => {
-  let balance = BigNumber.from(0);
-  const contract = new Contract(address, erc20TokenABI, provider);
-  balance = await contract.balanceOf(ownerAddress);
+  const contract = new Contract(tokenAddress, erc20TokenABI, provider);
+  const balance = await contract.balanceOf(ownerAddress);
+  const {decimals} = await getTokenInfo(tokenAddress, provider);
 
-  return balance;
+  return formatUnits(balance, decimals);
 };

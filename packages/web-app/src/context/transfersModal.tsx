@@ -39,7 +39,7 @@ const TransferModalsProvider: React.FC<Props> = ({children}) => {
   const close = (type?: string) => {
     switch (type) {
       case 'token':
-        setIsTransferOpen(false);
+        setIsTokenOpen(false);
         break;
       default:
         setIsTransferOpen(false);

@@ -1,23 +1,36 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // Workarounds are used that necessitate the any escape hatch
 
-import React, {useContext, useEffect, useMemo} from 'react';
+import React, {useContext, useEffect, useMemo, useState} from 'react';
 import {identifyUser} from 'services/analytics';
 import {UseWalletProvider, useWallet} from 'use-wallet';
 import {Wallet} from 'use-wallet/dist/cjs/types';
 import {providers as EthersProviders} from 'ethers';
 import {updateAPMContext, useAPM} from './elasticAPM';
+import {INFURA_PROJECT_ID} from 'utils/constants';
+import {Account} from 'utils/types';
+
+type WalletAugmented = Wallet & {
+  isConnected: boolean;
+  provider: EthersProviders.Provider;
+  account: Account | undefined;
+};
 
 // Any is a workaround so TS doesn't ask for a filled out default
-const WalletAugmentedContext = React.createContext<Wallet | any>({});
+const WalletAugmentedContext = React.createContext<WalletAugmented | any>({});
 
-const useWalletAugmented = (): Wallet => {
+function useWalletAugmented(): WalletAugmented {
   return useContext(WalletAugmentedContext);
-};
+}
 
 const WalletAugmented: React.FC<unknown> = ({children}) => {
   const wallet = useWallet();
   const ethereum: any = wallet.ethereum;
+  const fallbackProvider = new EthersProviders.InfuraProvider(
+    wallet.chainId,
+    INFURA_PROJECT_ID
+  );
+  const [provider, updateProvider] = useState<EthersProviders.Provider>(fallbackProvider);
 
   const injectedProvider: any = useMemo(
     () => (ethereum ? new EthersProviders.Web3Provider(ethereum) : null),
@@ -42,12 +55,17 @@ const WalletAugmented: React.FC<unknown> = ({children}) => {
     }
   }, [wallet.networkName, wallet.connector, wallet.status, wallet.account]);
 
+  useEffect(() => {
+    if (injectedProvider) updateProvider(injectedProvider);
+  }, [injectedProvider]);
+
   const contextValue = useMemo(() => {
     return {
+      provider,
       ...wallet,
       ...getEnsData,
     };
-  }, [getEnsData, wallet]);
+  }, [getEnsData, provider, wallet]);
 
   const {apm} = useAPM();
   useEffect(() => {
