@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import {Link} from 'react-router-dom';
-import {useTranslation} from 'react-i18next';
 import {ButtonText, IconChevronRight} from '@aragon/ui-components';
 
 import {AllTokens, AllTransfers} from 'utils/paths';
@@ -21,8 +20,6 @@ export type SectionWrapperProps = {
  * define this.
  */
 export const TokenSectionWrapper = ({title, children}: SectionWrapperProps) => {
-  const {t} = useTranslation();
-
   return (
     <>
       <HeaderContainer>
@@ -53,8 +50,6 @@ export const TransferSectionWrapper = ({
   children,
   showButton = false,
 }: SectionWrapperProps) => {
-  const {t} = useTranslation();
-
   return (
     <>
       <HeaderContainer>
@@ -70,10 +65,9 @@ type SeeAllButtonProps = {
   path: string;
 };
 const SeeAllButton = ({path}: SeeAllButtonProps) => {
-  const {t} = useTranslation();
   return (
     <div>
-      <Link to={AllTransfers}>
+      <Link to={path}>
         <ButtonText
           mode="secondary"
           label={t('labels.seeAllTransfers')}
