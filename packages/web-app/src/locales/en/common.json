@@ -34,7 +34,10 @@
   "allTransfer": {
     "thisWeek": "This Week",
     "tokens": "Tokens",
-    "newTransfer": "New Transfer"
+    "newTransfer": "New Transfer",
+    "allTransfers": "All Transfers",
+    "noTransfers": "No transfer information available",
+    "totalVolume": "Total Volume"
   },
   "TransferModal": {
     "allTransfers":"All Transfers",
