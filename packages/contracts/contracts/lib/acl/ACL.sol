@@ -49,26 +49,26 @@ contract ACL is Initializable {
     }
 
     function initACL(address _who) internal initializer {
-        _initializeACL(ANY_ADDR, _who);
+        _initializeACL(address(this), _who);
     }
     
-    function grant(address _where, address _who, bytes32 _role) external auth(_where, ROOT_ROLE) {
+    function grant(address _where, address _who, bytes32 _role) external auth(address(this), ROOT_ROLE) {
         _grant(_where, _who, _role);
     }
 
-    function grantWithOracle(address _where, address _who, bytes32 _role, IACLOracle _oracle) external auth(_where, ROOT_ROLE) {
+    function grantWithOracle(address _where, address _who, bytes32 _role, IACLOracle _oracle) external auth(address(this), ROOT_ROLE) {
         _grantWithOracle(_where, _who, _role, _oracle);
     }
 
-    function revoke(address _where, address _who, bytes32 _role) external auth(_where, ROOT_ROLE) {
+    function revoke(address _where, address _who, bytes32 _role) external auth(address(this), ROOT_ROLE) {
         _revoke(_where, _who, _role);
     }
 
-    function freeze(address _where, bytes32 _role) external auth(_where, ROOT_ROLE) {
+    function freeze(address _where, bytes32 _role) external auth(address(this), ROOT_ROLE) {
         _freeze(_where, _role);
     }
 
-    function bulk(address _where, ACLData.BulkItem[] calldata items) external auth(_where, ROOT_ROLE) {
+    function bulk(address _where, ACLData.BulkItem[] calldata items) external auth(address(this), ROOT_ROLE) {
         for (uint256 i = 0; i < items.length; i++) {
             ACLData.BulkItem memory item = items[i];
 
