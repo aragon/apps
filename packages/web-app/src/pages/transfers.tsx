@@ -2,6 +2,7 @@ import {SearchInput} from '@aragon/ui-components';
 import React from 'react';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
+import {withTransaction} from '@elastic/apm-rum-react';
 
 import {TransferSectionWrapper} from 'components/wrappers';
 import useCategorizedTransfers, {
@@ -62,7 +63,7 @@ const Transfers: React.FC = () => {
           <TransferSectionWrapper title={t('allTransfer.thisWeek') as string}>
             <div className="my-2 space-y-2 border-solid">
               {transfersList.week.map((data, index) => (
-                <TransferList transfers={transfers} />
+                <TransferList transfers={transfers} key={index} />
               ))}
             </div>
           </TransferSectionWrapper>
@@ -71,7 +72,7 @@ const Transfers: React.FC = () => {
           <TransferSectionWrapper title={'December'}>
             <div className="my-2 space-y-2 border-solid">
               {transfersList.month.map((data, index) => (
-                <TransferList transfers={transfers} />
+                <TransferList transfers={transfers} key={index} />
               ))}
             </div>
           </TransferSectionWrapper>
@@ -80,7 +81,7 @@ const Transfers: React.FC = () => {
           <TransferSectionWrapper title={'2021'}>
             <div className="my-2 space-y-2 border-solid">
               {transfersList.year.map((data, index) => (
-                <TransferList transfers={transfers} />
+                <TransferList transfers={transfers} key={index} />
               ))}
             </div>
           </TransferSectionWrapper>
