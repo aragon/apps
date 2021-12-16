@@ -41,7 +41,6 @@ type StyledButtonProps = {
   isSelected: DaoSelectorProps['isSelected'];
 };
 
-// TODO: Switch font from bold to the appropriate weight (700)
 const StyledButton = styled.div.attrs(({isSelected}: StyledButtonProps) => {
   const dimensions = 'inline-flex flex-col items-center rounded-2xl font-bold';
   const baseStyle = 'text-ui-800 font-bold text-sm';
