@@ -8,12 +8,11 @@ import {Wallet} from 'use-wallet/dist/cjs/types';
 import {providers as EthersProviders} from 'ethers';
 import {updateAPMContext, useAPM} from './elasticAPM';
 import {INFURA_PROJECT_ID} from 'utils/constants';
-import {Account} from 'utils/types';
 
 type WalletAugmented = Wallet & {
   isConnected: boolean;
   provider: EthersProviders.Provider;
-  account: Account | undefined;
+  account: string;
 };
 
 // Any is a workaround so TS doesn't ask for a filled out default
@@ -30,7 +29,8 @@ const WalletAugmented: React.FC<unknown> = ({children}) => {
     wallet.chainId, // set provider based on wallet chain id
     INFURA_PROJECT_ID
   );
-  const [provider, updateProvider] = useState<EthersProviders.Provider>(fallbackProvider);
+  const [provider, updateProvider] =
+    useState<EthersProviders.Provider>(fallbackProvider);
 
   const injectedProvider: any = useMemo(
     () => (ethereum ? new EthersProviders.Web3Provider(ethereum) : null),
