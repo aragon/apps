@@ -15,8 +15,8 @@ export default function TokenBox({
   tokenName,
   tokenLogo,
 }: TokenProps) {
-  const [balance, setBalance] = useState<string>();
-  const [symbol, setSymbol] = useState<string>();
+  const [balance, setBalance] = useState<string | null>(null);
+  const [symbol, setSymbol] = useState<string>('');
   const {account, provider} = useWallet();
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export default function TokenBox({
     });
   }, [account, provider, tokenAddress]);
 
-  return (
+  return balance && balance !== '0.0' ? (
     <Box>
       <TokenNameWrapper>
         <Avatar size="small" src={tokenLogo} />
@@ -35,11 +35,13 @@ export default function TokenBox({
       </TokenNameWrapper>
       <Price>{balance ? `${balance} ${symbol}` : '-'}</Price>
     </Box>
-  );
+  ) : null;
 }
 
 const Box = styled.div.attrs({
-  className: 'flex justify-between py-1.5 px-2 bg-white rounded-xl',
+  className: `flex justify-between py-1.5 px-2 
+    bg-white rounded-xl cursor-pointer
+    hover:text-ui-800 hover:bg-ui-100`,
 })``;
 
 const TokenNameWrapper = styled.div.attrs({
