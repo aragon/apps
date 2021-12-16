@@ -7,30 +7,33 @@ import {FetchBalance} from 'services/amount';
 export type TokenProps = {
   tokenAddress: string;
   tokenName: string;
+  tokenLogo: string;
 };
 
-export default function TokenBox({tokenAddress, tokenName}: TokenProps) {
+export default function TokenBox({
+  tokenAddress,
+  tokenName,
+  tokenLogo,
+}: TokenProps) {
   const [balance, setBalance] = useState<string>();
+  const [symbol, setSymbol] = useState<string>();
   const {account, provider} = useWallet();
 
   useEffect(() => {
-    FetchBalance(tokenAddress, account, provider).then((amount: string) => {
-      setBalance(amount);
+    // Fetch balance amount for each token
+    FetchBalance(tokenAddress, account, provider).then(balanceRes => {
+      setBalance(balanceRes.amount);
+      setSymbol(balanceRes.symbol);
     });
   }, [account, provider, tokenAddress]);
 
   return (
     <Box>
       <TokenNameWrapper>
-        <Avatar
-          size="small"
-          src="https://assets.coingecko.com/coins/images/681/small/JelZ58cv_400x400.png?1601449653"
-        />
+        <Avatar size="small" src={tokenLogo} />
         <Name>{tokenName}</Name>
       </TokenNameWrapper>
-      <Price>
-        {balance} {tokenName}
-      </Price>
+      <Price>{balance ? `${balance} ${symbol}` : '-'}</Price>
     </Box>
   );
 }

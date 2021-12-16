@@ -27,7 +27,7 @@ const WalletAugmented: React.FC<unknown> = ({children}) => {
   const wallet = useWallet();
   const ethereum: any = wallet.ethereum;
   const fallbackProvider = new EthersProviders.InfuraProvider(
-    wallet.chainId,
+    wallet.chainId, // set provider based on wallet chain id
     INFURA_PROJECT_ID
   );
   const [provider, updateProvider] = useState<EthersProviders.Provider>(fallbackProvider);

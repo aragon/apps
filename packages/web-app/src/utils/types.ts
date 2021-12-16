@@ -49,3 +49,14 @@ export type Account = {
   signer: any | undefined;
   address: string | null;
 };
+
+export type networksType = {
+  [key: number]: {
+    networkName: string;
+    curatedTokens: {
+      DAI: string;
+      USDT: string;
+      USDC: string;
+    };
+  };
+};

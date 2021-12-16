@@ -1,4 +1,9 @@
-export const networks = {
+import {networksType} from './types';
+
+/**
+ * A token list added to network config (needed for fetching token balances)
+ */
+export const networks: networksType = {
   1: {
     networkName: 'mainnet',
     curatedTokens: {

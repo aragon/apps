@@ -1,4 +1,4 @@
-// Library utils
+// Library utils / Ethers for now
 import {BigNumberish, ethers} from 'ethers';
 
 export function formatUnits(amount: BigNumberish, decimals: number) {

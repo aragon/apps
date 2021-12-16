@@ -1,13 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
 import {Modal, SearchInput, ButtonText, IconAdd} from '@aragon/ui-components';
+import {Wallet} from 'use-wallet/dist/cjs/types';
 
+import {useWallet} from 'context/augmentedWallet';
 import {useTransferModalContext} from 'context/transfersModal';
 import {networks} from 'utils/network';
 import TokenBox from './tokenBox';
 
 const TokenMenu: React.FC = () => {
   const {isTokenOpen, close} = useTransferModalContext();
+  const {chainId}: Wallet = useWallet();
 
   return (
     <Modal
@@ -19,12 +22,17 @@ const TokenMenu: React.FC = () => {
         <SearchInput placeholder="Type to filter ..." />
         <TokensWrapper>
           <TokensTitle>Your Tokens</TokensTitle>
-          {Object.entries(networks[1].curatedTokens).map(token => {
+          {Object.entries(networks[chainId || 4].curatedTokens).map(token => {
+            // Build Token box based on each token address
             return (
               <TokenBox
-                tokenName={token[0]}
-                tokenAddress={token[1]}
-                key={token[1]}
+                tokenName={token[0] as string}
+                tokenAddress={token[1] as string}
+                //TODO: This one should be automate using coinkego api
+                tokenLogo={
+                  'https://assets.coingecko.com/coins/images/681/small/JelZ58cv_400x400.png?1601449653'
+                }
+                key={token[1] as string}
               />
             );
           })}
