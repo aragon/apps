@@ -22,7 +22,7 @@ const Transfers: React.FC = () => {
     setFilterValue(val);
   };
 
-  var displayedTransfers = {
+  const displayedTransfers = {
     week: categorizedTransfers.week,
     month: categorizedTransfers.month,
     year: categorizedTransfers.year,
@@ -50,30 +50,32 @@ const Transfers: React.FC = () => {
         subtitle={'$1,002,200.00 Total Volume'}
         onClick={open}
       >
-        <SearchInput placeholder="Type to filter" />
-        <RadioGroup defaultValue="All" onChange={handleButtonGroupChange}>
-          <Radio value="All">All</Radio>
-          <Radio value="Deposit">Deposit</Radio>
-          <Radio value="Withdraw">Withdraw</Radio>
-          <Radio value="External Contract">External Contract</Radio>
-        </RadioGroup>
+        <div className="space-y-1.5">
+          <SearchInput placeholder="Type to filter" />
+          <RadioGroup defaultValue="All" onChange={handleButtonGroupChange}>
+            <Radio value="All">All</Radio>
+            <Radio value="Deposit">Deposit</Radio>
+            <Radio value="Withdraw">Withdraw</Radio>
+            <Radio value="External Contract">External Contract</Radio>
+          </RadioGroup>
+        </div>
         <SectionContainer>
           <TransferSectionWrapper title={t('allTransfer.thisWeek') as string}>
-            <div className="my-2 space-y-2 border-solid">
+            <div className="my-2 space-y-1.5 border-solid">
               <TransferList transfers={displayedTransfers.week} />
             </div>
           </TransferSectionWrapper>
         </SectionContainer>
         <SectionContainer>
           <TransferSectionWrapper title={'December'}>
-            <div className="my-2 space-y-2 border-solid">
+            <div className="my-2 space-y-1.5 border-solid">
               <TransferList transfers={displayedTransfers.month} />
             </div>
           </TransferSectionWrapper>
         </SectionContainer>
         <SectionContainer>
           <TransferSectionWrapper title={'2021'}>
-            <div className="my-2 space-y-2 border-solid">
+            <div className="my-2 space-y-1.5 border-solid">
               <TransferList transfers={displayedTransfers.year} />
             </div>
           </TransferSectionWrapper>
