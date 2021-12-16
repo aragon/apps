@@ -46,6 +46,12 @@ const TransferModalsProvider: React.FC<Props> = ({children}) => {
         break;
     }
   };
+  /**
+   * TODO: ==============================================
+   * I used this context for managing all modals but we should
+   * categories the modal pages and organize it in a better way
+   *====================================================
+   */
 
   const value = useMemo(
     (): TransferModalContextType => ({
