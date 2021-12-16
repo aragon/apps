@@ -27,6 +27,7 @@ export default function TokenBox({
     });
   }, [account, provider, tokenAddress]);
 
+  // This condition will change later with skeleton loading integration
   return balance && balance !== '0.0' ? (
     <Box>
       <TokenNameWrapper>
