@@ -5,39 +5,51 @@ export type TextInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   /** Changes a input's color schema */
   mode?: 'default' | 'success' | 'warning' | 'critical';
   /**
-   * adornment
+   * adornments
    */
-  adornment?: ReactNode;
+  rightAdornment?: ReactNode;
+  leftAdornment?: ReactNode;
   /**
-   * Wheter the icon is left or right of the input
-   */
-  side: 'left' | 'right';
+  * adornments click events
+  */
+  rightAdornmentOnClick?: () => void;
+  leftAdornmentOnClick?: () => void;
 };
 
 /** Simple input with variable styling (depending on mode) */
 export const TextInput: React.FC<TextInputProps> = ({
   mode = 'default',
-  side = 'right',
   disabled,
-  adornment,
+  rightAdornment,
+  leftAdornment,
+  rightAdornmentOnClick,
+  leftAdornmentOnClick,
   ...props
 }) => {
   return (
-    <Container data-testid="input" {...{mode, disabled, side}}>
+    <Container data-testid="input" {...{mode, disabled}}>
+      {leftAdornment && 
+        <AdornmentContainer onClick={leftAdornmentOnClick}>
+          {leftAdornment}
+        </AdornmentContainer>
+      }
       <StyledInput disabled={disabled} {...props} />
-      {adornment}
+      {rightAdornment && 
+        <AdornmentContainer onClick={rightAdornmentOnClick}>
+          {rightAdornment}
+        </AdornmentContainer>
+      }
     </Container>
   );
 };
 
-type StyledCotainerProps = Pick<TextInputProps, 'mode' | 'disabled' | 'side'>;
+type StyledCotainerProps = Pick<TextInputProps, 'mode' | 'disabled'>;
 
 export const Container = styled.div.attrs(
-  ({mode, disabled, side}: StyledCotainerProps) => {
+  ({mode, disabled}: StyledCotainerProps) => {
     let className = `${!disabled && 'bg-ui-0'} flex space-x-1.5 space-x-1.5
     focus:outline-none focus-within:ring-2 focus-within:ring-primary-500 py-1.5 px-2
-    rounded-xl hover:border-ui-300 border-2 active:border-primary-500
-    ${side === 'left' && 'flex-row-reverse space-x-reverse'} items-center `;
+    rounded-xl hover:border-ui-300 border-2 active:border-primary-500 items-center `;
 
     if (mode === 'default') {
       className += 'border-ui-100';
@@ -58,3 +70,7 @@ export const StyledInput = styled.input.attrs(() => {
     'w-full bg-transparent focus:outline-none';
   return {className: myClassName};
 })<React.InputHTMLAttributes<HTMLInputElement>>``;
+
+export const AdornmentContainer = styled.div.attrs({
+  className: 'cursor-pointer'
+})``;

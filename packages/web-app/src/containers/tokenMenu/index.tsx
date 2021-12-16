@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import styled from 'styled-components';
 import {Modal, SearchInput, ButtonText, IconAdd} from '@aragon/ui-components';
 import {Wallet} from 'use-wallet/dist/cjs/types';
@@ -7,11 +7,34 @@ import {useWallet} from 'context/augmentedWallet';
 import {useTransferModalContext} from 'context/transfersModal';
 import {networks} from 'utils/network';
 import TokenBox from './tokenBox';
+import {useForm, Controller} from 'react-hook-form';
 
 const TokenMenu: React.FC = () => {
   const {isTokenOpen, close} = useTransferModalContext();
   const {chainId}: Wallet = useWallet();
+  const {control, watch, resetField} = useForm({
+    defaultValues: {
+      searchToken: '',
+    },
+  });
 
+  const filterValidator = useCallback(
+    (token: string[]) => {
+      const searchValue = watch('searchToken');
+      if (searchValue !== '') {
+        const re = new RegExp(searchValue, 'i');
+        return token[0].match(re);
+      }
+      return true;
+    },
+    [watch]
+  );
+
+  const ResetSearchBox = () => {
+    resetField('searchToken');
+  };
+
+  //TODO: tokenLogo should be automate using coinkego api
   return (
     <Modal
       open={isTokenOpen}
@@ -19,23 +42,34 @@ const TokenMenu: React.FC = () => {
       data-testid="TokenMenu"
     >
       <Container>
-        <SearchInput placeholder="Type to filter ..." />
+        <Controller
+          render={({field: {onChange, value}}) => (
+            <SearchInput
+              {...{value, onChange}}
+              placeholder="Type to filter ..."
+              rightAdornmentOnClick={ResetSearchBox}
+            />
+          )}
+          name="searchToken"
+          control={control}
+          defaultValue=""
+        />
         <TokensWrapper>
           <TokensTitle>Your Tokens</TokensTitle>
-          {Object.entries(networks[chainId || 4].curatedTokens).map(token => {
-            // Build Token box based on each token address
-            return (
-              <TokenBox
-                tokenName={token[0] as string}
-                tokenAddress={token[1] as string}
-                //TODO: This one should be automate using coinkego api
-                tokenLogo={
-                  'https://assets.coingecko.com/coins/images/681/small/JelZ58cv_400x400.png?1601449653'
-                }
-                key={token[1] as string}
-              />
-            );
-          })}
+          {Object.entries(networks[chainId || 4].curatedTokens)
+            .filter(filterValidator)
+            .map(token => {
+              return (
+                <TokenBox
+                  tokenName={token[0] as string}
+                  tokenAddress={token[1] as string}
+                  tokenLogo={
+                    'https://assets.coingecko.com/coins/images/681/small/JelZ58cv_400x400.png?1601449653'
+                  }
+                  key={token[1] as string}
+                />
+              );
+            })}
         </TokensWrapper>
         <WideButton
           mode="secondary"
