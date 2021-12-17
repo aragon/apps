@@ -41,7 +41,7 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
         Permissions _permissions,
         Executor _executor,
         address _aclRoot
-    ) public initializer {
+    ) public {
         metadata = _metadata;
         processes = _processes;
         permissions = _permissions;
