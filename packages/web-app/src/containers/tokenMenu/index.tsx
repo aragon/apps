@@ -12,11 +12,7 @@ import {useForm, Controller} from 'react-hook-form';
 const TokenMenu: React.FC = () => {
   const {isTokenOpen, close} = useTransferModalContext();
   const {chainId}: Wallet = useWallet();
-  const {control, watch, resetField} = useForm({
-    defaultValues: {
-      searchToken: '',
-    },
-  });
+  const {control, watch, reset} = useForm();
 
   const filterValidator = useCallback(
     (token: string[]) => {
@@ -31,7 +27,9 @@ const TokenMenu: React.FC = () => {
   );
 
   const ResetSearchBox = () => {
-    resetField('searchToken');
+    reset({
+      searchToken: '',
+    });
   };
 
   //TODO: tokenLogo should be automate using coinkego api
@@ -51,8 +49,8 @@ const TokenMenu: React.FC = () => {
             />
           )}
           name="searchToken"
+          defaultValue={''}
           control={control}
-          defaultValue=""
         />
         <TokensWrapper>
           <TokensTitle>Your Tokens</TokensTitle>
