@@ -24,7 +24,7 @@ export default function useCategorizedTransfers(): HookData<CategorizedTransfer>
   // Instead of using hard-coded data, this hook should eventually  get its data
   // from a graphQL client.
 
-  const init = {
+  const init: CategorizedTransfer = {
     week: [],
     month: [],
     year: [],
@@ -54,9 +54,9 @@ export default function useCategorizedTransfers(): HookData<CategorizedTransfer>
       }
     });
     setCategorizedTransfers({
-      week: week,
-      month: month,
-      year: year,
+      week,
+      month,
+      year,
     });
   }, []);
 
