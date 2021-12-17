@@ -5,21 +5,19 @@ import {Badge} from '../badge';
 export type LabelProps = {
   label: string;
   helpText?: string;
-  isOptional?: boolean;
-  badgeLabel?: string;
+  badge?: string;
 };
 
 export const Label: React.FC<LabelProps> = ({
   label,
   helpText,
-  isOptional = false,
-  badgeLabel
+  badge
 }) => {
   return (
     <VStack data-testid="label">
       <LabelLine>
         <Heading>{label}</Heading>
-        {isOptional && <Badge label={badgeLabel || 'Optional'} />}
+        {badge && <Badge label={badge} />}
       </LabelLine>
       {helpText && <HelpText>{helpText}</HelpText>}
     </VStack>
