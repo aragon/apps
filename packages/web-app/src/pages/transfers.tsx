@@ -1,14 +1,16 @@
-import {SearchInput} from '@aragon/ui-components';
 import React from 'react';
-import {withTransaction} from '@elastic/apm-rum-react';
-import {useTranslation} from 'react-i18next';
 import styled from 'styled-components';
-import {useTransferModalContext} from 'context/transfersModal';
-import {PageWrapper} from 'components/wrappers';
-import TransferList from 'components/transferList';
-import {Transfers} from 'utils/types';
+import {SearchInput} from '@aragon/ui-components';
+import {useTranslation} from 'react-i18next';
+import {withTransaction} from '@elastic/apm-rum-react';
 
-const transfers: Array<Transfers> = [
+import TransferList from 'components/transferList';
+import {PageWrapper} from 'components/wrappers';
+import {useTransferModalContext} from 'context/transfersModal';
+
+import type {Transfer} from 'utils/types';
+
+const allTransfers: Array<Transfer> = [
   {
     title: 'Deposit',
     tokenAmount: 300,
@@ -49,7 +51,7 @@ const Transfers: React.FC = () => {
         onClick={open}
       >
         <SearchInput placeholder="Type to filter" />
-        <TransferList transfers={transfers} />
+        <TransferList transfers={allTransfers} />
       </PageWrapper>
     </Layout>
   );
