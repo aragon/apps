@@ -2,10 +2,11 @@
 // Workarounds are used that necessitate the any escape hatch
 
 import React, {useContext, useEffect, useMemo, useState} from 'react';
-import {identifyUser} from 'services/analytics';
 import {UseWalletProvider, useWallet} from 'use-wallet';
 import {Wallet} from 'use-wallet/dist/cjs/types';
 import {providers as EthersProviders} from 'ethers';
+
+import {identifyUser} from 'services/analytics';
 import {updateAPMContext, useAPM} from './elasticAPM';
 import {INFURA_PROJECT_ID} from 'utils/constants';
 
@@ -14,7 +15,6 @@ type WalletAugmented = Wallet & {
   provider: EthersProviders.Provider;
   account: string;
 };
-
 // Any is a workaround so TS doesn't ask for a filled out default
 const WalletAugmentedContext = React.createContext<WalletAugmented | any>({});
 
