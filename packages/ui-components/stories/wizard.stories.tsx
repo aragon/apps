@@ -13,8 +13,7 @@ export const Default = Template.bind({});
 Default.args = {
   processName: 'Deposit Assets',
   currentStep: 1,
-  totalSteps: 2,
-  progressPercentage: 50,
+  totalSteps: 3,
   title: 'Configure Deposit',
   description: 'Enter the desired token and its number for transmission. Furthermore, a reception address is necessary.'
 };

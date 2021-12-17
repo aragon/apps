@@ -11,6 +11,6 @@ const Template: Story = args => <LinearProgress {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {
-  max: 100,
-  value: 20
+  max: 3,
+  value: 2
 };

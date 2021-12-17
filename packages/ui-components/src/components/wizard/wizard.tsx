@@ -6,21 +6,21 @@ export type WizardProps = {
   processName: string;
   currentStep: number;
   totalSteps: number;
-  progressPercentage: number;
   title: string;
-  description?: string;
+  description: string;
 }
 
-export const Wizard: React.FC<WizardProps> = ({processName, currentStep, totalSteps, progressPercentage, title, description}) => {
+export const Wizard: React.FC<WizardProps> = ({processName, currentStep, totalSteps, title, description}) => {
   return (
     <StepCard data-testid="wizard">
       <CenteredFlex>
         <p className="font-bold text-primary-500">
           {processName}
         </p>
+        {/* TODO: Check how to do i18n for the Step x of y format */}
         <p className="text-ui-400">Step {currentStep} of {totalSteps}</p>
       </CenteredFlex>
-      <LinearProgress max={100} value={progressPercentage} />
+      <LinearProgress max={totalSteps} value={currentStep} />
       <StepTitle>{title}</StepTitle>
       <StepSubTitle>
         {description}
