@@ -22,6 +22,7 @@ const NotFoundPage = lazy(() => import('pages/notFound'));
 const CommunityPage = lazy(() => import('pages/community'));
 const TransfersPage = lazy(() => import('pages/transfers'));
 const GovernancePage = lazy(() => import('pages/governance'));
+const NewTransferPage = lazy(() => import('pages/newTransfer'));
 
 function App() {
   const {pathname} = useLocation();
@@ -43,6 +44,7 @@ function App() {
             <Route path={paths.Governance} element={<GovernancePage />} />
             <Route path={paths.AllTokens} element={<TokensPage />} />
             <Route path={paths.AllTransfers} element={<TransfersPage />} />
+            <Route path={paths.NewTransfer} element={<NewTransferPage />} />
             <Route path={paths.NotFound} element={<NotFoundPage />} />
             <Route path="*" element={<Navigate to={paths.NotFound} />} />
           </Routes>

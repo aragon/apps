@@ -1,13 +1,22 @@
 import React from 'react';
 import styled from 'styled-components';
-import {Modal, ActionListItem, IconChevronRight} from '@aragon/ui-components';
+import {useNavigate} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
+import {Modal, ActionListItem, IconChevronRight} from '@aragon/ui-components';
 
+import {Transfers} from 'utils/constants';
 import {useTransferModalContext} from 'context/transfersModal';
 
 const TransferMenu: React.FC = () => {
-  const {isOpen, close} = useTransferModalContext();
   const {t} = useTranslation();
+  const navigate = useNavigate();
+  const {isOpen, close} = useTransferModalContext();
+
+  const handleNewDepositClick = () => {
+    navigate('/finance/new-transfer', {
+      state: {transferType: Transfers.Deposit},
+    });
+  };
 
   return (
     <Modal
@@ -23,6 +32,7 @@ const TransferMenu: React.FC = () => {
           icon={<IconChevronRight />}
           background="white"
           bordered={false}
+          onClick={handleNewDepositClick}
         />
         <ActionListItem
           title={t('TransferModal.item2Title') as string}
