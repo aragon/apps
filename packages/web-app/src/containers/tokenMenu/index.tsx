@@ -3,12 +3,12 @@ import styled from 'styled-components';
 import {Modal, SearchInput, ButtonText, IconAdd} from '@aragon/ui-components';
 import {Wallet} from 'use-wallet/dist/cjs/types';
 import {useTranslation} from 'react-i18next';
+import {useForm, Controller} from 'react-hook-form';
 
 import {useWallet} from 'context/augmentedWallet';
 import {useTransferModalContext} from 'context/transfersModal';
 import {networks} from 'utils/network';
 import TokenBox from './tokenBox';
-import {useForm, Controller} from 'react-hook-form';
 
 const TokenMenu: React.FC = () => {
   const {isTokenOpen, close} = useTransferModalContext();
@@ -36,14 +36,14 @@ const TokenMenu: React.FC = () => {
     return tokenList.length !== 0 ? (
       <>
         <TokenTitle>{t('TokenModal.yourToken')}</TokenTitle>
-        {tokenList.map(token => (
+        {tokenList.map(([name, address]) => (
           <TokenBox
-            tokenName={token[0] as string}
-            tokenAddress={token[1] as string}
+            tokenName={name}
+            tokenAddress={address}
             tokenLogo={
               'https://assets.coingecko.com/coins/images/681/small/JelZ58cv_400x400.png?1601449653'
             }
-            key={token[1] as string}
+            key={address}
           />
         ))}
       </>

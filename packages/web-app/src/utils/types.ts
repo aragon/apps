@@ -37,13 +37,6 @@ export type HookData<T> = {
 };
 
 export type SupportedChainId = 1 | 4;
-export type TokenSymbol = 'DAI' | 'USDT' | 'USDC';
-
-export interface EnvironmentConfig {
-  chainId: SupportedChainId;
-  networkName: string;
-  curatedTokens: Record<TokenSymbol, string>;
-}
 
 export type networksType = {
   [key: number]: {

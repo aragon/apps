@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import {Avatar} from '@aragon/ui-components';
-import {BigNumber} from 'ethers';
 
 import {useWallet} from 'context/augmentedWallet';
 import {fetchBalance} from 'services/amount';
