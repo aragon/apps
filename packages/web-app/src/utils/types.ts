@@ -1,3 +1,5 @@
+import {TransferTypes} from './constants';
+
 /**
  * Response object from fetching token USD values
  */
@@ -20,12 +22,12 @@ export type BaseTokenInfo = {
   percentageChangeDuringInterval?: string;
 };
 
-export type Transfers = {
+export type Transfer = {
   title: string;
   tokenAmount: number;
   tokenSymbol: string;
   transferDate: string;
-  transferType: 'Deposit' | 'Withdraw';
+  transferType: TransferTypes;
   usdValue: string;
   isPending?: boolean;
 };

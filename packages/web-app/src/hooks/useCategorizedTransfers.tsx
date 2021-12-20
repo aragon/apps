@@ -1,12 +1,13 @@
 // import {getDateSections} from 'utils/date';
 
 import {useEffect, useState} from 'react';
-import {HookData, Transfers} from 'utils/types';
+import {TransferTypes} from 'utils/constants';
+import {HookData, Transfer} from 'utils/types';
 
 export type CategorizedTransfer = {
-  week: Transfers[];
-  month: Transfers[];
-  year: Transfers[];
+  week: Transfer[];
+  month: Transfer[];
+  year: Transfer[];
 };
 
 /**
@@ -33,9 +34,9 @@ export default function useCategorizedTransfers(): HookData<CategorizedTransfer>
     useState<CategorizedTransfer>(init);
 
   useEffect(() => {
-    const week: Transfers[] = [];
-    const month: Transfers[] = [];
-    const year: Transfers[] = [];
+    const week: Transfer[] = [];
+    const month: Transfer[] = [];
+    const year: Transfer[] = [];
 
     transfers.forEach(t => {
       switch (t.transferDate) {
@@ -63,14 +64,14 @@ export default function useCategorizedTransfers(): HookData<CategorizedTransfer>
   return {data: categorizedTransfers, isLoading: false};
 }
 
-const transfers: Array<Transfers> = [
+const transfers: Array<Transfer> = [
   //this week -> today
   {
     title: 'Deposit',
     tokenAmount: 42,
     transferDate: 'Pending...',
     tokenSymbol: 'DAI',
-    transferType: 'Deposit',
+    transferType: TransferTypes.Deposit,
     usdValue: '$200.00',
     isPending: true,
   },
@@ -79,7 +80,7 @@ const transfers: Array<Transfers> = [
     tokenAmount: 300,
     tokenSymbol: 'DAI',
     transferDate: 'Yesterday',
-    transferType: 'Deposit',
+    transferType: TransferTypes.Deposit,
     usdValue: '$200.00',
   },
   {
@@ -87,7 +88,7 @@ const transfers: Array<Transfers> = [
     tokenAmount: 1337,
     transferDate: 'Yesterday',
     tokenSymbol: 'DAI',
-    transferType: 'Withdraw',
+    transferType: TransferTypes.Withdraw,
     usdValue: '$200.00',
     isPending: true,
   },
@@ -97,7 +98,7 @@ const transfers: Array<Transfers> = [
     tokenAmount: 1,
     transferDate: 'Last Week',
     tokenSymbol: 'DAI',
-    transferType: 'Deposit',
+    transferType: TransferTypes.Deposit,
     usdValue: '$200.00',
   },
   {
@@ -105,7 +106,7 @@ const transfers: Array<Transfers> = [
     tokenAmount: 2,
     tokenSymbol: 'DAI',
     transferDate: 'Last Week',
-    transferType: 'Deposit',
+    transferType: TransferTypes.Deposit,
     usdValue: '$200.00',
   },
   {
@@ -113,7 +114,7 @@ const transfers: Array<Transfers> = [
     tokenAmount: 3,
     transferDate: 'Last Week',
     tokenSymbol: 'DAI',
-    transferType: 'Withdraw',
+    transferType: TransferTypes.Withdraw,
     usdValue: '$200.00',
   },
   //this year -> this month
@@ -122,7 +123,7 @@ const transfers: Array<Transfers> = [
     tokenAmount: 1,
     transferDate: 'Last Month',
     tokenSymbol: 'DAI',
-    transferType: 'Deposit',
+    transferType: TransferTypes.Deposit,
     usdValue: '$200.00',
   },
   {
@@ -130,7 +131,7 @@ const transfers: Array<Transfers> = [
     tokenAmount: 2,
     tokenSymbol: 'DAI',
     transferDate: 'Last Month',
-    transferType: 'Deposit',
+    transferType: TransferTypes.Deposit,
     usdValue: '$200.00',
   },
   {
@@ -138,7 +139,7 @@ const transfers: Array<Transfers> = [
     tokenAmount: 3,
     transferDate: 'Last Month',
     tokenSymbol: 'DAI',
-    transferType: 'Withdraw',
+    transferType: TransferTypes.Withdraw,
     usdValue: '$200.00',
   },
 ];

@@ -20,7 +20,8 @@ type FormInputs = {
   amount: number;
   reference?: string;
   type: TransferTypes;
-  to: Address | null; // null because of useWallet props types
+  from: Address | null; // null because of useWallet props types
+  to: Address;
   tokenSymbol: string;
   tokenAddress: Address;
 };
@@ -32,6 +33,9 @@ const defaultValues = {
   tokenSymbol: '',
 };
 
+// TODO: consider making this a protected route?
+// Because type isn't set on here, navigating to /new-transfer automatically set to deposit?
+// Or, separate routes new-deposit & new-withdraw that render same component?
 const NewTransfer = () => {
   const {state} = useLocation();
   const {account}: useWalletProps = useWallet();
@@ -39,7 +43,7 @@ const NewTransfer = () => {
   const {control, watch, setValue} = useForm<FormInputs>({defaultValues});
 
   useEffect(() => {
-    setValue('to', account);
+    setValue('from', account);
     setValue('type', state.transferType);
   }, [account, setValue, state.transferType]);
 

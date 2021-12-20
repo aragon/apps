@@ -3,25 +3,27 @@ import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
 
 import {
+  PageWrapper,
   TokenSectionWrapper,
   TransferSectionWrapper,
-  PageWrapper,
 } from 'components/wrappers';
 import TokenList from 'components/tokenList';
 import TransferList from 'components/transferList';
 import usePollTokens from 'hooks/usePollTokens';
 import {useDaoTokens} from 'hooks/useDaoTokens';
 import {useTokenInfo} from 'hooks/useTokenInformation';
+import {TransferTypes} from 'utils/constants';
 import {useTransferModalContext} from 'context/transfersModal';
-import {Transfers} from 'utils/types';
 
-const TEMP_TRANSFERS: Transfers[] = [
+import type {Transfer} from 'utils/types';
+
+const TEMP_TRANSFERS: Transfer[] = [
   {
     title: 'Deposit',
     tokenAmount: 300,
     tokenSymbol: 'DAI',
     transferDate: 'Pending...',
-    transferType: 'Deposit',
+    transferType: TransferTypes.Deposit,
     usdValue: '$200.00',
     isPending: true,
   },
@@ -30,7 +32,7 @@ const TEMP_TRANSFERS: Transfers[] = [
     tokenAmount: 300,
     tokenSymbol: 'DAI',
     transferDate: 'Yesterday',
-    transferType: 'Deposit',
+    transferType: TransferTypes.Deposit,
     usdValue: '$200.00',
   },
   {
@@ -38,7 +40,7 @@ const TEMP_TRANSFERS: Transfers[] = [
     tokenAmount: 300,
     tokenSymbol: 'DAI',
     transferDate: 'Yesterday',
-    transferType: 'Withdraw',
+    transferType: TransferTypes.Withdraw,
     usdValue: '$200.00',
   },
 ];

@@ -11,5 +11,5 @@ export const NAV_LINKS = [
 
 export enum TransferTypes {
   Deposit = 'Deposit',
-  WithDraw = 'Withdraw',
+  Withdraw = 'Withdraw',
 }
