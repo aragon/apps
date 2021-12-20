@@ -5,51 +5,39 @@ export type TextInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   /** Changes a input's color schema */
   mode?: 'default' | 'success' | 'warning' | 'critical';
   /**
-   * adornments
+   * adornment
    */
-  rightAdornment?: ReactNode;
-  leftAdornment?: ReactNode;
+  adornment?: ReactNode;
   /**
-  * adornments click events
-  */
-  rightAdornmentOnClick?: () => void;
-  leftAdornmentOnClick?: () => void;
+   * Wheter the icon is left or right of the input
+   */
+  side: 'left' | 'right';
 };
 
 /** Simple input with variable styling (depending on mode) */
 export const TextInput: React.FC<TextInputProps> = ({
   mode = 'default',
+  side = 'right',
   disabled,
-  rightAdornment,
-  leftAdornment,
-  rightAdornmentOnClick,
-  leftAdornmentOnClick,
+  adornment,
   ...props
 }) => {
   return (
-    <Container data-testid="input" {...{mode, disabled}}>
-      {leftAdornment && 
-        <AdornmentContainer onClick={leftAdornmentOnClick}>
-          {leftAdornment}
-        </AdornmentContainer>
-      }
+    <Container data-testid="input" {...{mode, disabled, side}}>
       <StyledInput disabled={disabled} {...props} />
-      {rightAdornment && 
-        <AdornmentContainer onClick={rightAdornmentOnClick}>
-          {rightAdornment}
-        </AdornmentContainer>
-      }
+      {adornment}
     </Container>
   );
 };
 
-type StyledCotainerProps = Pick<TextInputProps, 'mode' | 'disabled'>;
+type StyledCotainerProps = Pick<TextInputProps, 'mode' | 'disabled' | 'side'>;
 
 export const Container = styled.div.attrs(
-  ({mode, disabled}: StyledCotainerProps) => {
+  ({mode, disabled, side}: StyledCotainerProps) => {
     let className = `${!disabled && 'bg-ui-0'} flex space-x-1.5 space-x-1.5
     focus:outline-none focus-within:ring-2 focus-within:ring-primary-500 py-1.5 px-2
-    rounded-xl hover:border-ui-300 border-2 active:border-primary-500 items-center `;
+    rounded-xl hover:border-ui-300 border-2 active:border-primary-500
+    ${side === 'left' && 'flex-row-reverse space-x-reverse'} items-center `;
 
     if (mode === 'default') {
       className += 'border-ui-100';
@@ -70,7 +58,3 @@ export const StyledInput = styled.input.attrs(() => {
     'w-full bg-transparent focus:outline-none';
   return {className: myClassName};
 })<React.InputHTMLAttributes<HTMLInputElement>>``;
-
-export const AdornmentContainer = styled.div.attrs({
-  className: 'cursor-pointer'
-})``;
