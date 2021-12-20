@@ -11,9 +11,7 @@ import {updateAPMContext, useAPM} from './elasticAPM';
 import {INFURA_PROJECT_ID} from 'utils/constants';
 
 type WalletAugmented = Wallet & {
-  isConnected: boolean;
   provider: EthersProviders.Provider;
-  account: string;
 };
 // Any is a workaround so TS doesn't ask for a filled out default
 const WalletAugmentedContext = React.createContext<WalletAugmented | any>({});
@@ -29,7 +27,7 @@ const WalletAugmented: React.FC<unknown> = ({children}) => {
     wallet.chainId, // set provider based on wallet chain id
     INFURA_PROJECT_ID
   );
-  const [provider, updateProvider] =
+  const [provider, setProvider] =
     useState<EthersProviders.Provider>(fallbackProvider);
 
   const injectedProvider: any = useMemo(
@@ -56,7 +54,7 @@ const WalletAugmented: React.FC<unknown> = ({children}) => {
   }, [wallet.networkName, wallet.connector, wallet.status, wallet.account]);
 
   useEffect(() => {
-    if (injectedProvider) updateProvider(injectedProvider);
+    if (injectedProvider) setProvider(injectedProvider);
   }, [injectedProvider]);
 
   const contextValue = useMemo(() => {

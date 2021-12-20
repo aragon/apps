@@ -5,5 +5,6 @@ export const erc20TokenABI = [
   'function balanceOf(address who) public view returns (uint256)',
   'function totalSupply() public view returns (uint256)',
   'function decimals() view returns (uint8)',
+  'function name() view returns (string)',
   'function symbol() public view returns (string)',
 ];

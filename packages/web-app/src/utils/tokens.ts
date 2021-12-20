@@ -1,6 +1,6 @@
 import {BaseTokenInfo} from './types';
 import {ethers} from 'ethers';
-import {erc20TokenABI} from './abis';
+import {erc20TokenABI} from 'abis/erc20TokenABI';
 import {providers as EthersProviders} from 'ethers';
 
 /**
@@ -58,6 +58,15 @@ export function filterTokens(tokens: BaseTokenInfo[], searchTerm: string) {
   return tokens.filter(t => tokenInfoMatches(t, searchTerm));
 }
 
+/**
+ * This Validation function prevents sending broken
+ * addresses that may cause subgraph crash
+ *
+ * @param address Wallet Address
+ * @param provider Eth provider
+ * @returns boolean determines whether it is erc20 compatible or not
+ */
+
 export async function isTokenERC20(
   address: string,
   provider: EthersProviders.Provider
@@ -70,34 +79,18 @@ export async function isTokenERC20(
     return false;
   }
 }
-
-export async function getTokenInfo(
+/**
+ * This Function is necessary because
+ * you can't fetch decimals from the api
+ *
+ * @param address token contract address
+ * @param provider Eth provider
+ * @returns number for decimals for each token
+ */
+export async function getTokenDecimals(
   address: string,
   provider: EthersProviders.Provider
 ) {
   const contract = new ethers.Contract(address, erc20TokenABI, provider);
-  let decimals = null,
-    name = null,
-    symbol = null;
-
-  try {
-    decimals = await contract.decimals();
-    // eslint-disable-next-line no-empty
-  } catch (err) {}
-
-  try {
-    name = await contract.name();
-    // eslint-disable-next-line no-empty
-  } catch (err) {}
-
-  try {
-    symbol = await contract.symbol();
-    // eslint-disable-next-line no-empty
-  } catch (err) {}
-
-  return {
-    decimals,
-    name,
-    symbol,
-  };
+  return await contract.decimals();
 }

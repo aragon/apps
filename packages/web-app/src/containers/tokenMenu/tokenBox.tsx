@@ -1,8 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import {Avatar} from '@aragon/ui-components';
+import {BigNumber} from 'ethers';
+
 import {useWallet} from 'context/augmentedWallet';
-import {FetchBalance} from 'services/amount';
+import {fetchBalance} from 'services/amount';
 
 export type TokenProps = {
   tokenAddress: string;
@@ -16,25 +18,25 @@ export default function TokenBox({
   tokenLogo,
 }: TokenProps) {
   const [balance, setBalance] = useState<string | null>(null);
-  const [symbol, setSymbol] = useState<string>('');
   const {account, provider} = useWallet();
 
   useEffect(() => {
     // Fetch balance amount for each token
-    FetchBalance(tokenAddress, account, provider).then(balanceRes => {
-      setBalance(balanceRes.amount);
-      setSymbol(balanceRes.symbol);
+    fetchBalance(tokenAddress, account as string, provider).then(amount => {
+      setBalance(amount);
     });
   }, [account, provider, tokenAddress]);
 
   // This condition will change later with skeleton loading integration
-  return balance && balance !== '0.0' ? (
+  // TODO: We should hide the 0 balance tokens later (it depends on
+  // if we can fetch user token list or not)
+  return balance ? (
     <Box>
       <TokenNameWrapper>
         <Avatar size="small" src={tokenLogo} />
         <Name>{tokenName}</Name>
       </TokenNameWrapper>
-      <Price>{balance ? `${balance} ${symbol}` : '-'}</Price>
+      <Price>{balance ? `${balance}` : '-'}</Price>
     </Box>
   ) : null;
 }
