@@ -9,7 +9,7 @@ export const NAV_LINKS = [
   {label: 'Community', path: Community},
 ];
 
-export enum Transfers {
+export enum TransferTypes {
   Deposit = 'Deposit',
   WithDraw = 'Withdraw',
 }

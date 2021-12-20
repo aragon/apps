@@ -4,18 +4,26 @@ import {useNavigate} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
 import {Modal, ActionListItem, IconChevronRight} from '@aragon/ui-components';
 
-import {Transfers} from 'utils/constants';
+import {TransferTypes} from 'utils/constants';
+import {useWallet} from 'context/augmentedWallet';
+import {NewTransfer} from 'utils/paths';
 import {useTransferModalContext} from 'context/transfersModal';
 
 const TransferMenu: React.FC = () => {
   const {t} = useTranslation();
   const navigate = useNavigate();
+  const {isConnected} = useWallet();
   const {isOpen, close} = useTransferModalContext();
 
   const handleNewDepositClick = () => {
-    navigate('/finance/new-transfer', {
-      state: {transferType: Transfers.Deposit},
-    });
+    // TODO: change alert to proper error reporting mechanism,
+    // Move to proper placing
+    if (isConnected()) {
+      navigate(NewTransfer, {
+        state: {transferType: TransferTypes.Deposit},
+      });
+      close();
+    } else alert('Please connect your wallet');
   };
 
   return (
