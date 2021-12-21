@@ -12,7 +12,6 @@
     "finance": "Finance",
     "community": "Community"
   },
-
   "daoSwitcher": {
     "title": "Explore",
     "subtitle": "Find other DAOs to join"
@@ -40,11 +39,15 @@
     "totalVolume": "Total Volume"
   },
   "TransferModal": {
-    "allTransfers":"All Transfers",
+    "allTransfers": "All Transfers",
     "newTransfer": "New Transfer",
     "item1Title": "Deposit assets",
     "item1Subtitle": "Add assets to the DAO treasury",
     "item2Title": "Withdraw assets",
     "item2Subtitle": "Add assets to the DAO treasury"
+  },
+  "TransferCard": {
+    "toLabel": "to",
+    "fromLabel": "from"
   }
 }
