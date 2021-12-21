@@ -16,3 +16,6 @@ export * from './components/tokenCard';
 export * from './components/transferListItem';
 export * from './components/walletCard';
 export * from './components/modal';
+export * from './components/label';
+export * from './components/wizard';
+export * from './components/progress';

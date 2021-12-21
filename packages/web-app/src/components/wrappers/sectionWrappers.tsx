@@ -1,14 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
 import {Link} from 'react-router-dom';
-import {useTranslation} from 'react-i18next';
 import {ButtonText, IconChevronRight} from '@aragon/ui-components';
 
 import {AllTokens, AllTransfers} from 'utils/paths';
+import {useTranslation} from 'react-i18next';
 
 export type SectionWrapperProps = {
   title: string;
   children: React.ReactNode;
+  showButton?: boolean;
 };
 
 /**
@@ -50,23 +51,35 @@ export const TokenSectionWrapper = ({title, children}: SectionWrapperProps) => {
 export const TransferSectionWrapper = ({
   title,
   children,
+  showButton = false,
 }: SectionWrapperProps) => {
-  const {t} = useTranslation();
-
   return (
     <>
       <HeaderContainer>
         <Title>{title}</Title>
       </HeaderContainer>
       {children}
-      <Link to={AllTransfers}>
+      {showButton && <SeeAllButton path={AllTransfers} />}
+    </>
+  );
+};
+
+type SeeAllButtonProps = {
+  path: string;
+};
+
+const SeeAllButton = ({path}: SeeAllButtonProps) => {
+  const {t} = useTranslation();
+  return (
+    <div>
+      <Link to={path}>
         <ButtonText
           mode="secondary"
           label={t('labels.seeAllTransfers')}
           iconRight={<IconChevronRight />}
         />
       </Link>
-    </>
+    </div>
   );
 };
 
