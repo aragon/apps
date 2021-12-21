@@ -3,13 +3,14 @@ import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
 import {
-  IconButton,
+  ButtonWallet,
   IconChevronLeft,
   IconChevronRight,
-  IconClose,
-  IconOnlyButton,
-  SearchInput,
-  WalletButton,
+  IconMenuVertical,
+  Label,
+  Wizard,
+  ButtonText,
+  ButtonIcon,
 } from '@aragon/ui-components';
 import {useWalletProps} from 'containers/walletMenu';
 import {useWallet} from 'context/augmentedWallet';
@@ -28,9 +29,22 @@ const NewDeposit: React.FC = () => {
   return (
     <>
       <NavigationBar>
-        {/* Icon only button paddings should be changed - the button is rectangular and in this page it needs to be a square */}
-        <IconOnlyButton icon={<IconClose />} />
-        <WalletButton
+        <HStack>
+          <InsetButton>
+            <InsetIconContainer>
+              <IconChevronLeft />
+            </InsetIconContainer>
+            <InsetButtonText>New Transfer</InsetButtonText>
+          </InsetButton>
+
+          <ButtonIcon
+            mode="secondary"
+            size="large"
+            icon={<IconMenuVertical />}
+          />
+        </HStack>
+
+        <ButtonWallet
           onClick={handleWalletButtonClick}
           isConnected={isConnected()}
           label={
@@ -41,54 +55,59 @@ const NewDeposit: React.FC = () => {
       </NavigationBar>
 
       <Layout>
-        <StepCard>
-          <CenteredFlex>
-            <p className="font-bold text-primary-500">
-              {t('finance.newDeposit.depositAssets')}
-            </p>
-            <p className="text-ui-400">Step 1 of 2</p>
-          </CenteredFlex>
-          <ProgressBar max="100" value="50" />
-          <StepTitle>{t('finance.newDeposit.configureDeposit')}</StepTitle>
-          <StepSubTitle>
-            {t('finance.newDeposit.configureDepositSubtitle')}
-          </StepSubTitle>
-        </StepCard>
+        <Wizard
+          processName={t('newDeposit.depositAssets')}
+          currentStep={1}
+          totalSteps={2}
+          title={t('newDeposit.configureDeposit')}
+          description={t('newDeposit.configureDepositSubtitle')}
+        />
 
         <FormLayout>
-          <FormItem
-            label={t('labels.to') as string}
-            helpText={t('finance.newDeposit.toSubtitle') as string}
-          />
-          <FormItem
-            label={t('labels.token') as string}
-            helpText={t('finance.newDeposit.tokenSubtitle') as string}
-          >
-            {/* The one below is not the current input, just a mock one */}
-            <SearchInput />
+          <FormItem>
+            <Label
+              label={t('labels.to')}
+              helpText={t('newDeposit.toSubtitle')}
+            ></Label>
+            <ButtonWallet label="patito.dao.eth" src={null} />
           </FormItem>
-          <FormItem
-            label={t('labels.amount') as string}
-            helpText={t('finance.newDeposit.amountSubtitle') as string}
-          />
-          <FormItem
-            label={t('labels.reference') as string}
-            helpText={t('finance.newDeposit.referenceSubtitle') as string}
-          />
+
+          <FormItem>
+            <Label
+              label={t('labels.token')}
+              helpText={t('newDeposit.tokenSubtitle')}
+            />
+          </FormItem>
+
+          <FormItem>
+            <Label
+              label={t('labels.amount')}
+              helpText={t('newDeposit.amountSubtitle')}
+            />
+          </FormItem>
+
+          <FormItem>
+            <Label
+              label={t('labels.reference')}
+              helpText={t('newDeposit.referenceSubtitle')}
+              isOptional={true}
+            />
+          </FormItem>
 
           <div className="flex justify-between mt-8">
             {/* Should change this to secondary on gray which is unsupported now */}
-            <IconButton
+            <ButtonText
               label="Back"
-              side="left"
-              icon={<IconChevronLeft />}
-              mode="tertiary"
+              iconLeft={<IconChevronLeft />}
+              mode="ghost"
+              bgWhite={true}
+              size="large"
             />
-            <IconButton
+            <ButtonText
               label="Continue"
-              side="right"
-              icon={<IconChevronRight />}
+              iconRight={<IconChevronRight />}
               mode="secondary"
+              size="large"
             />
           </div>
         </FormLayout>
@@ -103,48 +122,26 @@ const Layout = styled.div.attrs({
   className: 'm-auto mt-3 w-8/12 font-medium text-ui-600',
 })``;
 
-const StepCard = styled.div.attrs({
-  className: 'py-4 px-3 rounded-xl bg-ui-0',
-})``;
-
 const FormLayout = styled.div.attrs({
   className: 'my-8 mx-auto space-y-5 w-3/4',
 })``;
 
-const StepTitle = styled.h1.attrs({
-  className: 'mt-4 text-2xl font-bold text-ui-800',
+const FormItem = styled.div.attrs({
+  className: 'space-y-1.5',
 })``;
 
-const StepSubTitle = styled.p.attrs({
-  className: 'mt-2 text-lg',
+const HStack = styled.div.attrs({
+  className: 'flex space-x-1.5',
 })``;
 
-const CenteredFlex = styled.div.attrs({
-  className: 'flex justify-between items-baseline',
+const InsetButton = styled.div.attrs({
+  className: 'flex items-center p-0.5 rounded-xl bg-ui-0',
 })``;
 
-const ProgressBar = styled.progress.attrs({
-  className: 'h-1 w-full',
-})`
-  ::-webkit-progress-bar {
-    border-radius: 4px;
-    background-color: #e4e7eb;
-  }
-  ::-webkit-progress-value {
-    border-radius: 4px;
-    background: linear-gradient(90deg, #0031ad 0%, #003bf5 100.32%);
-  }
-`;
+const InsetIconContainer = styled.div.attrs({
+  className: 'p-1.5 rounded-lg bg-ui-50',
+})``;
 
-type FormItemProps = {
-  label: string;
-  helpText?: string;
-};
-
-const FormItem: React.FC<FormItemProps> = ({label, helpText, children}) => (
-  <div>
-    <h2 className="text-ui-800">{label}</h2>
-    <p className="mt-0.5 mb-1.5 text-sm">{helpText}</p>
-    {children}
-  </div>
-);
+const InsetButtonText = styled.div.attrs({
+  className: 'pr-2 pl-1.5 font-bold text-ui-700',
+})``;
