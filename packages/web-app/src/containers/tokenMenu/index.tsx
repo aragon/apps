@@ -7,7 +7,7 @@ import {useForm, Controller} from 'react-hook-form';
 
 import {useWallet} from 'context/augmentedWallet';
 import {useTransferModalContext} from 'context/transfersModal';
-import {networks} from 'utils/network';
+import {curatedTokens} from 'utils/network';
 import TokenBox from './tokenBox';
 
 const TokenMenu: React.FC = () => {
@@ -30,7 +30,7 @@ const TokenMenu: React.FC = () => {
 
   const renderResult = () => {
     const tokenList = Object.entries(
-      networks[chainId || 4].curatedTokens
+      curatedTokens[chainId || 4].curatedTokens
     ).filter(filterValidator);
 
     return tokenList.length !== 0 ? (
