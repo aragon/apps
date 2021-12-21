@@ -38,8 +38,6 @@ function App() {
         <Suspense fallback={null}>
           <Routes>
             <Route path={paths.NewDeposit} element={<NewDepositPage />} />
-            <Route path={paths.NotFound} element={<NotFoundPage />} />
-            <Route path="*" element={<Navigate to={paths.NotFound} />} />
 
             <Route element={<Layout />}>
               <Route path={paths.Dashboard} element={<HomePage />} />
@@ -48,6 +46,8 @@ function App() {
               <Route path={paths.Governance} element={<GovernancePage />} />
               <Route path={paths.AllTokens} element={<TokensPage />} />
               <Route path={paths.AllTransfers} element={<TransfersPage />} />
+              <Route path={paths.NotFound} element={<NotFoundPage />} />
+              <Route path="*" element={<Navigate to={paths.NotFound} />} />
             </Route>
           </Routes>
         </Suspense>
