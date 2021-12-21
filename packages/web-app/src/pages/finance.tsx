@@ -13,9 +13,9 @@ import usePollTokens from 'hooks/usePollTokens';
 import {useDaoTokens} from 'hooks/useDaoTokens';
 import {useTokenInfo} from 'hooks/useTokenInformation';
 import {useTransferModalContext} from 'context/transfersModal';
-import {Transfers} from 'utils/types';
+import {Transfer} from 'utils/types';
 
-const TEMP_TRANSFERS: Transfers[] = [
+const TEMP_TRANSFERS: Transfer[] = [
   {
     title: 'Deposit',
     tokenAmount: 300,

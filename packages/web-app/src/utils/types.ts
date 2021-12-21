@@ -20,7 +20,7 @@ export type BaseTokenInfo = {
   percentageChangeDuringInterval?: string;
 };
 
-export type Transfers = {
+export type Transfer = {
   title: string;
   tokenAmount: number;
   tokenSymbol: string;

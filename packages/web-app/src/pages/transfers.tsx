@@ -9,7 +9,6 @@ import useCategorizedTransfers from 'hooks/useCategorizedTransfers';
 import {useTransferModalContext} from 'context/transfersModal';
 import {PageWrapper} from 'components/wrappers';
 import TransferList from 'components/transferList';
-import {Transfers} from 'utils/types';
 
 const Transfers: React.FC = () => {
   const {t} = useTranslation();
