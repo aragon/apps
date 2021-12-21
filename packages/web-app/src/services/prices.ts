@@ -2,9 +2,7 @@ import {Address} from '@aragon/ui-components/dist/utils/addresses';
 import {constants} from 'ethers';
 
 import {TokenPricePercentages} from 'utils/types';
-
-const BASE_URL = 'https://api.coingecko.com/api/v3';
-const DEFAULT_CURRENCY = 'usd';
+import {BASE_URL, DEFAULT_CURRENCY} from 'utils/constants';
 
 type TokenPrices = {
   [key: string]: {
