@@ -13,7 +13,7 @@ import {TimeFilter} from 'utils/constants';
 import {useDaoTreasury} from 'hooks/useDaoTreasury';
 import {useTransferModalContext} from 'context/transfersModal';
 
-import type {Transfer} from 'utils/types';
+import type {Transfer, TreasuryToken} from 'utils/types';
 import {sortTokens} from 'utils/tokens';
 
 // TODO remove this. Instead use first x transfers returned by categorized
@@ -52,9 +52,8 @@ const Finance: React.FC = () => {
   const {open} = useTransferModalContext();
   const {data: treasury} = useDaoTreasury('0xMyDaoAddress', TimeFilter.day);
 
-  sortTokens(treasury.tokens, 'treasurySharePercentage');
-  treasury.tokens.reverse();
-  const diplayedTokens = treasury.tokens.slice(0, 5);
+  sortTokens(treasury.tokens, 'treasurySharePercentage', true);
+  const diplayedTokens: TreasuryToken[] = treasury.tokens.slice(0, 5);
 
   return (
     <div className={'m-auto mt-4 w-8/12'}>
