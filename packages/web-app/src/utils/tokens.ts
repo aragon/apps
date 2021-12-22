@@ -1,4 +1,4 @@
-import {BaseTokenInfo} from './types';
+import {BaseTokenInfo, TreasuryToken} from './types';
 
 /**
  * This method sorts a list of array information. It is applicable to any field
@@ -11,11 +11,11 @@ import {BaseTokenInfo} from './types';
  * @example sortTokens(baseTokenInfos[], 'name');
  * @example sortTokens(baseTokenInfos[], 'count');
  */
-export function sortTokens<K extends keyof BaseTokenInfo>(
-  tokens: BaseTokenInfo[],
+export function sortTokens<K extends keyof TreasuryToken>(
+  tokens: TreasuryToken[],
   criteria: K
 ) {
-  function sorter(a: BaseTokenInfo, b: BaseTokenInfo) {
+  function sorter(a: TreasuryToken, b: TreasuryToken) {
     if (a[criteria] < b[criteria]) {
       return -1;
     }
