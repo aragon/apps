@@ -4,9 +4,9 @@ import {useNavigate} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
 import {Modal, ActionListItem, IconChevronRight} from '@aragon/ui-components';
 
-import {TransferTypes} from 'utils/constants';
 import {useWallet} from 'context/augmentedWallet';
 import {NewTransfer} from 'utils/paths';
+import {TransferTypes} from 'utils/constants';
 import {useTransferModalContext} from 'context/transfersModal';
 
 const TransferMenu: React.FC = () => {
