@@ -14,7 +14,10 @@ import {useDaoTreasury} from 'hooks/useDaoTreasury';
 import {useTransferModalContext} from 'context/transfersModal';
 
 import type {Transfer} from 'utils/types';
+import {sortTokens} from 'utils/tokens';
 
+// TODO remove this. Instead use first x transfers returned by categorized
+// transfers hook.
 const TEMP_TRANSFERS: Transfer[] = [
   {
     title: 'Deposit',
@@ -49,6 +52,10 @@ const Finance: React.FC = () => {
   const {open} = useTransferModalContext();
   const {data: treasury} = useDaoTreasury('0xMyDaoAddress', TimeFilter.day);
 
+  sortTokens(treasury.tokens, 'treasurySharePercentage');
+  treasury.tokens.reverse();
+  const diplayedTokens = treasury.tokens.slice(0, 5);
+
   return (
     <div className={'m-auto mt-4 w-8/12'}>
       <PageWrapper
@@ -68,7 +75,7 @@ const Finance: React.FC = () => {
         <div className={'h-4'} />
         <TokenSectionWrapper title={t('finance.tokenSection')}>
           <div className="py-2 space-y-2 border-solid">
-            <TokenList tokens={treasury.tokens} />
+            <TokenList tokens={diplayedTokens} />
           </div>
         </TokenSectionWrapper>
         <div className={'h-4'} />
