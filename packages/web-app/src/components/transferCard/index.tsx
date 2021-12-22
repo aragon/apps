@@ -17,12 +17,16 @@ const TransferCard: React.FC<TransferCardProps> = ({to, from}) => {
     <Container>
       <Card>
         <Label>{t('finance.labels.from')}</Label>
-        <Address>{isAddress(from) ? shortenAddress(from) : from}</Address>
+        <Value isAddress={isAddress(from)}>
+          {isAddress(from) ? shortenAddress(from) : from}
+        </Value>
       </Card>
       <IconChevronRight className="text-ui-600" />
       <Card>
         <Label>{t('finance.labels.to')}</Label>
-        <Address>{isAddress(to) ? shortenAddress(to) : to}</Address>
+        <Value isAddress={isAddress(to)}>
+          {isAddress(to) ? shortenAddress(to) : to}
+        </Value>
       </Card>
     </Container>
   );
@@ -42,7 +46,12 @@ const Label = styled.p.attrs({
   className: 'text-sm text-ui-500 capitalize',
 })``;
 
-const Address = styled.p.attrs({
-  className:
-    'overflow-hidden font-bold text-ui-800 overflow-ellipsis whitespace-nowrap',
-})``;
+// TODO: Revisit address shortening
+type ValueProps = {isAddress: boolean};
+const Value = styled.p.attrs(({isAddress}: ValueProps) => {
+  const className = isAddress
+    ? 'font-bold text-ui-800'
+    : 'overflow-hidden font-bold text-ui-800 overflow-ellipsis whitespace-nowrap';
+
+  return {className};
+})<ValueProps>``;
