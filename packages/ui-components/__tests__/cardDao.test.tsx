@@ -1,12 +1,12 @@
 import React from 'react';
 import {render, screen} from '@testing-library/react';
 
-import {Default as DaoCard} from '../stories/daoCard.stories';
+import {Default as CardDao} from '../stories/cardDao.stories';
 
-describe('DaoSelector', () => {
+describe('CardDao', () => {
   function setup(args: any) {
-    render(<DaoCard {...args} />);
-    return screen.getByTestId('daoCard');
+    render(<CardDao {...args} />);
+    return screen.getByTestId('cardDao');
   }
 
   test('should render without crashing', () => {
