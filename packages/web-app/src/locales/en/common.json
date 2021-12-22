@@ -48,7 +48,7 @@
     "item2Subtitle": "Add assets to the DAO treasury"
   },
   "TokenModal": {
-    "yourToken": "Your Token",
+    "yourTokens": "Your Token",
     "tokenNotFoundTitle": "Token not found",
     "tokenNotFoundSubtitle": "Add custom token to deposit"
   }

@@ -87,10 +87,19 @@ export async function isTokenERC20(
  * @param provider Eth provider
  * @returns number for decimals for each token
  */
-export async function getTokenDecimals(
+export async function getTokenInfo(
   address: string,
   provider: EthersProviders.Provider
 ) {
   const contract = new ethers.Contract(address, erc20TokenABI, provider);
-  return await contract.decimals();
+  const [decimals, name, symbol] = await Promise.all([
+    contract.decimals(),
+    contract.name(),
+    contract.symbol(),
+  ]);
+  return {
+    decimals,
+    name,
+    symbol,
+  };
 }

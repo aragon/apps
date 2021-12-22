@@ -35,7 +35,7 @@ const TokenMenu: React.FC = () => {
 
     return tokenList.length !== 0 ? (
       <>
-        <TokenTitle>{t('TokenModal.yourToken')}</TokenTitle>
+        <TokenTitle>{t('TokenModal.yourTokens')}</TokenTitle>
         {tokenList.map(([name, address]) => (
           <TokenBox
             tokenName={name}

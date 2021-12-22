@@ -1,7 +1,7 @@
 import {Contract, providers as EthersProviders} from 'ethers';
 import {erc20TokenABI} from 'abis/erc20TokenABI';
 import {formatUnits} from 'utils/library';
-import {getTokenDecimals} from 'utils/tokens';
+import {getTokenInfo} from 'utils/tokens';
 
 /**
  * @param tokenAddress address of token contract
@@ -16,7 +16,7 @@ export const fetchBalance = async (
 ) => {
   const contract = new Contract(tokenAddress, erc20TokenABI, provider);
   const balance = await contract.balanceOf(ownerAddress);
-  const decimals = await getTokenDecimals(tokenAddress, provider);
+  const {decimals} = await getTokenInfo(tokenAddress, provider);
 
   return formatUnits(balance, decimals);
 };
