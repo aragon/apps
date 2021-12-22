@@ -1,13 +1,13 @@
 import React from 'react';
 import {Meta, Story} from '@storybook/react';
-import {TokenCard, TokenCardProps} from '../src';
+import {CardToken, CardTokenProps} from '../src';
 
 export default {
-  title: 'Components/Token',
-  component: TokenCard,
+  title: 'Components/Card/Token',
+  component: CardToken,
 } as Meta;
 
-const Template: Story<TokenCardProps> = args => <TokenCard {...args} />;
+const Template: Story<CardTokenProps> = args => <CardToken {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {

@@ -4,7 +4,7 @@ import React, {SyntheticEvent} from 'react';
 import {Badge} from '../badge';
 import FallbackImg from '../../assets/avatar-token.svg';
 
-export type TokenCardProps = {
+export type CardTokenProps = {
   tokenName: string;
   tokenSymbol: string;
   tokenImageUrl: string;
@@ -17,12 +17,12 @@ export type TokenCardProps = {
   percentageChangeDuringInterval?: string;
 };
 
-export const TokenCard: React.FC<TokenCardProps> = ({
+export const CardToken: React.FC<CardTokenProps> = ({
   changeType = 'Positive',
   ...props
 }) => {
   return (
-    <Card data-testid="tokenCard">
+    <Card data-testid="cardToken">
       <CoinDetailsWithImage>
         <CoinImage
           src={props.tokenImageUrl}
