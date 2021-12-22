@@ -34,7 +34,7 @@ const NewDeposit: React.FC = () => {
             <InsetIconContainer>
               <IconChevronLeft />
             </InsetIconContainer>
-            <InsetButtonText>New Transfer</InsetButtonText>
+            <InsetButtonText>{t('allTransfer.newTransfer')}</InsetButtonText>
           </InsetButton>
 
           <ButtonIcon
@@ -99,9 +99,9 @@ const NewDeposit: React.FC = () => {
             <ButtonText
               label="Back"
               iconLeft={<IconChevronLeft />}
-              mode="ghost"
-              bgWhite={true}
+              mode="secondary"
               size="large"
+              disabled
             />
             <ButtonText
               label="Continue"
