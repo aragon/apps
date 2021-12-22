@@ -16,7 +16,7 @@ export const fetchBalance = async (
 ) => {
   const contract = new Contract(tokenAddress, erc20TokenABI, provider);
   const balance = await contract.balanceOf(ownerAddress);
-  const {decimals} = await getTokenInfo(tokenAddress, provider);
+  const {decimals, symbol} = await getTokenInfo(tokenAddress, provider);
 
-  return formatUnits(balance, decimals);
+  return {amount: formatUnits(balance, decimals), symbol};
 };

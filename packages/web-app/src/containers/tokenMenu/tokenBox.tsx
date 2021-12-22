@@ -17,13 +17,17 @@ export default function TokenBox({
   tokenLogo,
 }: TokenProps) {
   const [balance, setBalance] = useState<string | null>(null);
+  const [symbol, setSymbol] = useState<string | null>(null);
   const {account, provider} = useWallet();
 
   useEffect(() => {
     // Fetch balance amount for each token
-    fetchBalance(tokenAddress, account as string, provider).then(amount => {
-      setBalance(amount);
-    });
+    fetchBalance(tokenAddress, account as string, provider).then(
+      tokenBalance => {
+        setBalance(tokenBalance.amount);
+        setSymbol(tokenBalance.symbol);
+      }
+    );
   }, [account, provider, tokenAddress]);
 
   // This condition will change later with skeleton loading integration
@@ -35,7 +39,7 @@ export default function TokenBox({
         <Avatar size="small" src={tokenLogo} />
         <Name>{tokenName}</Name>
       </TokenNameWrapper>
-      <Price>{balance ? `${balance}` : '-'}</Price>
+      <Price>{balance ? `${balance} ${symbol}` : '-'}</Price>
     </Box>
   ) : null;
 }
