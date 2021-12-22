@@ -1,28 +1,28 @@
 import React from 'react';
 import styled from 'styled-components';
+import {isAddress} from 'ethers/lib/utils';
 import {useTranslation} from 'react-i18next';
+import {shortenAddress} from '@aragon/ui-components/src/utils/addresses';
 import {IconChevronRight} from '@aragon/ui-components';
-
-import {capitalize} from 'utils/strings';
 
 // TODO: If moved to ui-components, add separate label props for to and from
 type TransferCardProps = {
   from: string;
   to: string;
 };
-const TransferCard: React.FC<TransferCardProps> = ({to, from, ...props}) => {
+const TransferCard: React.FC<TransferCardProps> = ({to, from}) => {
   const {t} = useTranslation();
 
   return (
-    <Container {...props}>
+    <Container>
       <Card>
-        <Label>{capitalize(t('TransferCard.fromLabel'))}</Label>
-        <Address>{from}</Address>
+        <Label>{t('finance.labels.from')}</Label>
+        <Address>{isAddress(from) ? shortenAddress(from) : from}</Address>
       </Card>
       <IconChevronRight className="text-ui-600" />
       <Card>
-        <Label>{capitalize(t('TransferCard.toLabel'))}</Label>
-        <Address>{to}</Address>
+        <Label>{t('finance.labels.to')}</Label>
+        <Address>{isAddress(to) ? shortenAddress(to) : to}</Address>
       </Card>
     </Container>
   );
@@ -39,7 +39,7 @@ const Card = styled.div.attrs({
 })``;
 
 const Label = styled.p.attrs({
-  className: 'text-sm text-ui-500',
+  className: 'text-sm text-ui-500 capitalize',
 })``;
 
 const Address = styled.p.attrs({
