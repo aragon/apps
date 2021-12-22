@@ -1,7 +1,7 @@
 // import {getDateSections} from 'utils/date';
 
-import {useEffect, useState} from 'react';
 import {HookData, Transfer} from 'utils/types';
+import {useEffect, useState} from 'react';
 
 export type CategorizedTransfer = {
   week: Transfer[];
