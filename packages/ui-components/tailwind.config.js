@@ -83,6 +83,7 @@ module.exports = {
     },
     fontWeight: {
       normal: 500,
+      semibold: 600,
       bold: 700,
     },
     // overwirtes screen breakpoints according to design system
