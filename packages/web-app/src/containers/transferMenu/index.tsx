@@ -5,8 +5,7 @@ import {useTranslation} from 'react-i18next';
 import {Modal, ActionListItem, IconChevronRight} from '@aragon/ui-components';
 
 import {useWallet} from 'context/augmentedWallet';
-import {NewTransfer} from 'utils/paths';
-import {TransferTypes} from 'utils/constants';
+import {NewDeposit} from 'utils/paths';
 import {useTransferModalContext} from 'context/transfersModal';
 
 const TransferMenu: React.FC = () => {
@@ -19,9 +18,7 @@ const TransferMenu: React.FC = () => {
     // TODO: change alert to proper error reporting mechanism,
     // Move to proper placing
     if (isConnected()) {
-      navigate(NewTransfer, {
-        state: {transferType: TransferTypes.Deposit},
-      });
+      navigate(NewDeposit);
       close();
     } else alert('Please connect your wallet');
   };
