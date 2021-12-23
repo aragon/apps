@@ -11,13 +11,17 @@ import {
   Wizard,
   ButtonText,
   ButtonIcon,
+  TextInput,
 } from '@aragon/ui-components';
+
 import {useWalletProps} from 'containers/walletMenu';
 import {useWallet} from 'context/augmentedWallet';
 import {NavigationBar} from 'containers/navbar';
+import {useTransferModalContext} from 'context/transfersModal';
 
 const NewDeposit: React.FC = () => {
   const {t} = useTranslation();
+  const {open} = useTransferModalContext();
   const {connect, isConnected, account, ensName, ensAvatarUrl}: useWalletProps =
     useWallet();
 
@@ -25,6 +29,11 @@ const NewDeposit: React.FC = () => {
     console.log('trigger');
     isConnected() ? open() : connect('injected');
   };
+
+  /**
+   * TODO: The text input should replace with a
+   * drop down input
+   */
 
   return (
     <>
@@ -77,6 +86,7 @@ const NewDeposit: React.FC = () => {
               label={t('labels.token')}
               helpText={t('newDeposit.tokenSubtitle')}
             />
+            <TextInput onClick={() => open('token')} side={'left'} />
           </FormItem>
 
           <FormItem>
