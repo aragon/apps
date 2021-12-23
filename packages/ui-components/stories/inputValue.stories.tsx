@@ -11,8 +11,8 @@ const Template: Story<ValueInputProps> = args => <ValueInput {...args} />;
 
 export const Value = Template.bind({});
 Value.args = {
-  buttonText: 'Max',
-  onButtonClick: () => alert('Button clicked'),
+  adornmentText: 'Max',
+  onAdornmentClick: () => alert('Button clicked'),
   mode: 'default',
   disabled: false,
   placeholder: 'Placeholder',
