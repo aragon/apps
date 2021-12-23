@@ -1,7 +1,7 @@
-import {BaseTokenInfo} from './types';
 import {ethers} from 'ethers';
 import {erc20TokenABI} from 'abis/erc20TokenABI';
 import {providers as EthersProviders} from 'ethers';
+import {BaseTokenInfo, TreasuryToken} from './types';
 
 /**
  * This method sorts a list of array information. It is applicable to any field
@@ -9,16 +9,21 @@ import {providers as EthersProviders} from 'ethers';
  *
  * @param tokens List of token (basic) token information
  * @param criteria Field of the information object that determines the sort
- * order. Must be a key of BaseTokenInfo
+ * order. Must be a key of BaseTokenInfo.
+ * @param reverse reverses the order in which the token are sorted. Note that in
+ * either cases, any objects with undefined fields will moved to the end of the
+ * array.
  *
  * @example sortTokens(baseTokenInfos[], 'name');
  * @example sortTokens(baseTokenInfos[], 'count');
  */
-export function sortTokens<K extends keyof BaseTokenInfo>(
-  tokens: BaseTokenInfo[],
-  criteria: K
+export function sortTokens<K extends keyof TreasuryToken>(
+  tokens: TreasuryToken[],
+  criteria: K,
+  reverse = false
 ) {
-  function sorter(a: BaseTokenInfo, b: BaseTokenInfo) {
+  function sorter(a: TreasuryToken, b: TreasuryToken) {
+    if (!a[criteria]) return 1; // ensure that undefined fields are placed last.
     if (a[criteria] < b[criteria]) {
       return -1;
     }
@@ -27,8 +32,18 @@ export function sortTokens<K extends keyof BaseTokenInfo>(
     }
     return 0;
   }
+  function reverseSorter(a: TreasuryToken, b: TreasuryToken) {
+    if (!a[criteria]) return 1; // ensure that undefined fields are placed last.
+    if (a[criteria] > b[criteria]) {
+      return -1;
+    }
+    if (a[criteria] < b[criteria]) {
+      return 1;
+    }
+    return 0;
+  }
 
-  tokens.sort(sorter);
+  tokens.sort(reverse ? reverseSorter : sorter);
 }
 
 /**

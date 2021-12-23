@@ -3,19 +3,22 @@ import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
 
 import {
+  PageWrapper,
   TokenSectionWrapper,
   TransferSectionWrapper,
-  PageWrapper,
 } from 'components/wrappers';
 import TokenList from 'components/tokenList';
 import TransferList from 'components/transferList';
-import usePollTokens from 'hooks/usePollTokens';
-import {useDaoTokens} from 'hooks/useDaoTokens';
-import {useTokenInfo} from 'hooks/useTokenInformation';
+import {TimeFilter} from 'utils/constants';
+import {useDaoTreasury} from 'hooks/useDaoTreasury';
 import {useTransferModalContext} from 'context/transfersModal';
-import {Transfers} from 'utils/types';
 
-const TEMP_TRANSFERS: Transfers[] = [
+import type {Transfer, TreasuryToken} from 'utils/types';
+import {sortTokens} from 'utils/tokens';
+
+// TODO remove this. Instead use first x transfers returned by categorized
+// transfers hook.
+const TEMP_TRANSFERS: Transfer[] = [
   {
     title: 'Deposit',
     tokenAmount: 300,
@@ -26,7 +29,8 @@ const TEMP_TRANSFERS: Transfers[] = [
     isPending: true,
   },
   {
-    title: 'Deposit DAI so I can do whatever I want whenever I want',
+    title:
+      'Deposit DAI so I can do whatever I want whenever I want and I really want this reference to be long',
     tokenAmount: 300,
     tokenSymbol: 'DAI',
     transferDate: 'Yesterday',
@@ -46,23 +50,31 @@ const TEMP_TRANSFERS: Transfers[] = [
 const Finance: React.FC = () => {
   const {t} = useTranslation();
   const {open} = useTransferModalContext();
-  const {data: tokens} = useDaoTokens('0xMyDaoAddress');
-  const {data: tokenInfos} = useTokenInfo(tokens);
-  const {data: tokenPrices} = usePollTokens(tokenInfos);
+  const {data: treasury} = useDaoTreasury('0xMyDaoAddress', TimeFilter.day);
+
+  sortTokens(treasury.tokens, 'treasurySharePercentage', true);
+  const diplayedTokens: TreasuryToken[] = treasury.tokens.slice(0, 5);
 
   return (
     <div className={'m-auto mt-4 w-8/12'}>
       <PageWrapper
-        title={'$469,657.98'}
-        buttonLabel={t('TransferModal.newTransfer') as string}
-        subtitle={'+ $120,200'}
-        onClick={() => open('token')}
+        title={new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'USD',
+        }).format(treasury.totalAssetValue)}
+        buttonLabel={t('TransferModal.newTransfer')}
+        subtitle={new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'USD',
+          signDisplay: 'always',
+        }).format(treasury.totalAssetChange)}
+        onClick={open}
         primary
       >
         <div className={'h-4'} />
         <TokenSectionWrapper title={t('finance.tokenSection')}>
           <div className="py-2 space-y-2 border-solid">
-            <TokenList prices={tokenPrices} tokens={tokenInfos} />
+            <TokenList tokens={diplayedTokens} />
           </div>
         </TokenSectionWrapper>
         <div className={'h-4'} />

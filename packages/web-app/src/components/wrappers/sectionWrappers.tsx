@@ -5,6 +5,7 @@ import {useTranslation} from 'react-i18next';
 import {ButtonText, IconChevronRight} from '@aragon/ui-components';
 
 import {AllTokens, AllTransfers} from 'utils/paths';
+import {useTranslation} from 'react-i18next';
 
 export type SectionWrapperProps = {
   title: string;
@@ -67,6 +68,7 @@ export const TransferSectionWrapper = ({
 type SeeAllButtonProps = {
   path: string;
 };
+
 const SeeAllButton = ({path}: SeeAllButtonProps) => {
   const {t} = useTranslation();
   return (
