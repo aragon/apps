@@ -68,7 +68,7 @@ const Container = styled.button.attrs(({bgWhite}: StyledContentProps)=> ({
 }))``;
 
 const AmountWrapper = styled.h3.attrs({
-  className:'font-semibold text-base',
+  className:'font-normal text-base',
 })``;
 
 const TextWrapper = styled.div.attrs({
