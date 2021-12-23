@@ -20,3 +20,4 @@ export * from './components/label';
 export * from './components/wizard';
 export * from './components/progress';
 export * from './components/textarea';
+export * from './components/cards';

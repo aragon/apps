@@ -141,8 +141,5 @@ module.exports = {
     },
     fluidType: ['responsive'],
   },
-  plugins: [
-    require('tailwindcss-fluid-type'),
-    require('@tailwindcss/line-clamp'),
-  ],
+  plugins: [require('tailwindcss-fluid-type')],
 };
