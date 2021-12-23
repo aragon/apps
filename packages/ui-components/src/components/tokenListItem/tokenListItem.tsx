@@ -19,6 +19,10 @@ export type TokenListItemProps = {
    * src of token logo
    */
   tokenLogo: string;
+  /**
+   * Whether list item is disabled
+   */
+  disabled?: boolean;
   onClick?: () => void;
 };
 
@@ -27,11 +31,12 @@ export const TokenListItem: React.FC<TokenListItemProps> = ({
   tokenSymbol,
   tokenAmount,
   tokenLogo,
+  disabled,
   onClick,
 }) => {
   return (
     <Container
-      {...{onClick}}
+      {...{onClick,disabled}}
        data-testid="tokenListItem"
     >
       <TextWrapper>
@@ -47,11 +52,14 @@ export const TokenListItem: React.FC<TokenListItemProps> = ({
   );
 };
 
-const Container = styled.button.attrs({
+type StyledContentProps = Pick<TokenListItemProps, 'disabled'>;
+
+const Container = styled.button.attrs(({disabled}: StyledContentProps)=> ({
   className:`w-full flex justify-between items-center py-1.5
   px-2 hover:text-ui-800 hover:bg-ui-100 active:text-ui-800 
-  active:bg-ui-200 disabled:text-ui-300 bg-white rounded-xl`,
-})``;
+  active:bg-ui-200 disabled:text-ui-300 rounded-xl
+  ${disabled ? 'bg-ui-100' : 'bg-white'}`,
+}))``;
 
 const AmountWrapper = styled.h3.attrs({
   className:'font-semibold text-ui-600 text-base',
