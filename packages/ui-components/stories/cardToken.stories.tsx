@@ -31,3 +31,12 @@ WithFallback.args = {
   tokenUSDValue: 'Value unknown',
   treasuryShare: 'Value unknown',
 };
+
+export const Transfer = Template.bind({});
+Transfer.args = {
+  tokenName: 'DAI',
+  tokenImageUrl: 'https://s2.coinmarketcap.com/static/img/coins/64x64/4943.png',
+  tokenSymbol: 'DAI',
+  tokenCount: '15,000,230.2323',
+  treasuryShare: '$15,000,230.23',
+};
