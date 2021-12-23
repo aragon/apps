@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import {Avatar} from '@aragon/ui-components';
 
 import {useWallet} from 'context/augmentedWallet';
-import {fetchBalance} from 'services/amount';
+import {fetchBalance} from 'utils/tokens';
 
 export type TokenProps = {
   tokenAddress: string;

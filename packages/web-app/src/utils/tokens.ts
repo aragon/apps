@@ -1,7 +1,7 @@
-import {ethers} from 'ethers';
+import {ethers, providers as EthersProviders} from 'ethers';
 import {erc20TokenABI} from 'abis/erc20TokenABI';
-import {providers as EthersProviders} from 'ethers';
 import {BaseTokenInfo, TreasuryToken} from './types';
+import {formatUnits} from 'utils/library';
 
 /**
  * This method sorts a list of array information. It is applicable to any field
@@ -118,3 +118,21 @@ export async function getTokenInfo(
     symbol,
   };
 }
+
+/**
+ * @param tokenAddress address of token contract
+ * @param ownerAddress owner address / wallet address
+ * @param provider interface to node
+ * @returns a promise that will return a balance amount
+ */
+export const fetchBalance = async (
+  tokenAddress: string,
+  ownerAddress: string,
+  provider: EthersProviders.Provider
+) => {
+  const contract = new ethers.Contract(tokenAddress, erc20TokenABI, provider);
+  const balance = await contract.balanceOf(ownerAddress);
+  const {decimals, symbol} = await getTokenInfo(tokenAddress, provider);
+
+  return {amount: formatUnits(balance, decimals), symbol};
+};
