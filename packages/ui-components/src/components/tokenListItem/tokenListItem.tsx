@@ -23,6 +23,10 @@ export type TokenListItemProps = {
    * Whether list item is disabled
    */
   disabled?: boolean;
+  /**
+  *  change the background
+  */
+  bgWhite?: boolean;
   onClick?: () => void;
 };
 
@@ -32,11 +36,12 @@ export const TokenListItem: React.FC<TokenListItemProps> = ({
   tokenAmount,
   tokenLogo,
   disabled,
+  bgWhite,
   onClick,
 }) => {
   return (
     <Container
-      {...{onClick,disabled}}
+      {...{onClick,disabled,bgWhite}}
        data-testid="tokenListItem"
     >
       <TextWrapper>
@@ -52,17 +57,18 @@ export const TokenListItem: React.FC<TokenListItemProps> = ({
   );
 };
 
-type StyledContentProps = Pick<TokenListItemProps, 'disabled'>;
+type StyledContentProps = Pick<TokenListItemProps, 'bgWhite'>;
 
-const Container = styled.button.attrs(({disabled}: StyledContentProps)=> ({
+const Container = styled.button.attrs(({bgWhite}: StyledContentProps)=> ({
   className:`w-full flex justify-between items-center py-1.5
-  px-2 hover:text-ui-800 hover:bg-ui-100 active:text-ui-800 
-  active:bg-ui-200 disabled:text-ui-300 rounded-xl
-  ${disabled ? 'bg-ui-100' : 'bg-white'}`,
+  px-2 hover:text-ui-800 hover:bg-ui-100 active:text-ui-800
+  text-ui-600 active:bg-ui-200 disabled:text-ui-300 
+  disabled:text-ui-300 disabled:bg-ui-100 rounded-xl
+  ${bgWhite ? 'bg-ui-50' : 'bg-ui-0'}`,
 }))``;
 
 const AmountWrapper = styled.h3.attrs({
-  className:'font-semibold text-ui-600 text-base',
+  className:'font-semibold text-base',
 })``;
 
 const TextWrapper = styled.div.attrs({
@@ -70,5 +76,5 @@ const TextWrapper = styled.div.attrs({
 })``;
 
 const Name = styled.h2.attrs({
-  className:'font-bold text-ui-600 text-base',
+  className:'font-bold text-base',
 })``;
