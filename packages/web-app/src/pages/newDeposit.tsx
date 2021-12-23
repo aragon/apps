@@ -8,14 +8,15 @@ import {
   Wizard,
 } from '@aragon/ui-components';
 import styled from 'styled-components';
-import React, {useCallback, useEffect, useState} from 'react';
 import {Address} from '@aragon/ui-components/dist/utils/addresses';
 import {useForm} from 'react-hook-form';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
+import React, {useCallback, useEffect} from 'react';
 
 import {useWallet} from 'context/augmentedWallet';
 import DepositForm from 'containers/depositForm';
+import {useStepper} from 'hooks/useStepper';
 import {NavigationBar} from 'containers/navbar';
 import {TransferTypes} from 'utils/constants';
 import {useWalletProps} from 'containers/walletMenu';
@@ -31,12 +32,12 @@ export type FormData = {
   tokenAddress: Address;
 };
 
-enum Steps {
-  'Configure Deposit' = 1,
-  'Review Transfer' = 2,
-}
+const steps = {
+  configure: 1,
+  review: 2,
+};
 
-const TOTAL_STEPS = Object.keys(Steps).length / 2;
+const TOTAL_STEPS = Object.keys(steps).length;
 
 const defaultValues = {
   amount: 0,
@@ -48,15 +49,11 @@ const defaultValues = {
 const NewDeposit: React.FC = () => {
   const {t} = useTranslation();
   const {open} = useWalletMenuContext();
-  const [currentStep, setStep] = useState<Steps>(Steps['Configure Deposit']);
+  const {currentStep, prev, next} = useStepper(TOTAL_STEPS);
   const {control, watch, setValue} = useForm<FormData>({defaultValues});
-
   const {connect, isConnected, account, ensName, ensAvatarUrl}: useWalletProps =
     useWallet();
 
-  /**************************************************
-   *                      Hooks                     *
-   **************************************************/
   useEffect(() => {
     if (account) {
       setValue('from', account);
@@ -64,32 +61,12 @@ const NewDeposit: React.FC = () => {
     }
   }, [account, setValue]);
 
-  /**************************************************
-   *            Functions and Callbacks             *
-   **************************************************/
-  /** Function used for navigating to the next step in the process */
-  const gotoNextStep = useCallback(() => {
-    if (currentStep !== TOTAL_STEPS) {
-      setStep(current => current + 1);
-    }
-  }, [currentStep]);
-
-  /** Function used for navigating to the previous step in the process */
-  const gotoPreviousStep = useCallback(() => {
-    if (currentStep !== 1) {
-      setStep(current => current - 1);
-    }
-  }, [currentStep]);
-
   /** Toggle wallet */
   const handleWalletButtonClick = useCallback(() => {
     console.log('trigger');
     isConnected() ? open() : connect('injected');
   }, [connect, isConnected, open]);
 
-  /**************************************************
-   *                     Render                     *
-   **************************************************/
   return (
     <>
       <NavigationBar>
@@ -120,14 +97,14 @@ const NewDeposit: React.FC = () => {
 
       <Layout>
         <Wizard
-          processName={t('newDeposit.depositAssets')}
-          currentStep={currentStep}
-          totalSteps={TOTAL_STEPS}
           title={t('newDeposit.configureDeposit')}
+          processName={t('newDeposit.depositAssets')}
           description={t('newDeposit.configureDepositSubtitle')}
+          totalSteps={TOTAL_STEPS}
+          currentStep={currentStep}
         />
         <FormLayout>
-          {currentStep === Steps['Configure Deposit'] ? (
+          {currentStep === steps.configure ? (
             <DepositForm control={control} />
           ) : (
             <h1>Review Deposit</h1>
@@ -138,14 +115,14 @@ const NewDeposit: React.FC = () => {
               label="Back"
               mode="secondary"
               size="large"
-              onClick={gotoPreviousStep}
+              onClick={prev}
               disabled={currentStep === 1}
               iconLeft={<IconChevronLeft />}
             />
             <ButtonText
               label="Continue"
               size="large"
-              onClick={gotoNextStep}
+              onClick={next}
               iconRight={<IconChevronRight />}
             />
           </FormFooter>
