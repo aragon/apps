@@ -21,6 +21,7 @@ import {NavigationBar} from 'containers/navbar';
 import {TransferTypes} from 'utils/constants';
 import {useWalletProps} from 'containers/walletMenu';
 import {useWalletMenuContext} from 'context/walletMenu';
+import CardText from 'components/cardText';
 
 export type FormData = {
   amount: number;
@@ -128,6 +129,10 @@ const NewDeposit: React.FC = () => {
           </FormFooter>
         </FormLayout>
         {/* View form values; to be removed later */}
+        <CardText
+          title="Reference"
+          content="New funding for this superb DAO team. So we can move forward with the development."
+        />
         <pre className="mt-2">
           Form values: {JSON.stringify(watch(), null, 2)}
         </pre>
