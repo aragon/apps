@@ -21,19 +21,14 @@ contract Processes is Component {
     bytes32 public constant PROCESSES_SET_ROLE = keccak256("PROCESSES_SET_ROLE");
     address internal constant ANY_ADDR = address(type(uint160).max);
 
+    // TODO: Better naming for ProcessItem
     struct ProcessItem {
         Process process;
         mapping(address => mapping(bytes4 => bool)) allowedActions;
     }
 
     mapping(string => ProcessItem) public processes; // All existing governance processes in this DAO
-
-    /// @dev Used for UUPS upgradability pattern
-    /// @param _dao The DAO contract of the current DAO
-    function initialize(DAO _dao) public override initializer {
-        Component.initialize(_dao);
-    }
-
+    
     /// @notice Starts the given process resp. primitive by the given proposal
     /// @dev Checks the passed actions, gets the governance process, and starts it
     /// @param proposal The proposal for execution submitted by the user.
@@ -42,15 +37,15 @@ contract Processes is Component {
     function start(Process.Proposal calldata proposal) 
         external 
         auth(PROCESSES_START_ROLE) 
-        returns (Process memory process, uint256 executionId) 
+        returns (ProcessItem memory process, uint256 executionId) 
     {
         process = processes[proposal.processName];
-        Action[] memory actions = proposal.actions;
+        Executor.Action[] memory actions = proposal.actions;
         uint256 actionsLength = actions.length;
 
         if (!process.allowedActions[ANY_ADDR][bytes4(0)] == true) {
             for (uint256 i = 0; i > actionsLength; i++) {
-                Action memory action = actions[i];
+                Executor.Action memory action = actions[i];
 
                 if (process.allowedActions[action.to][bytes4(action.data[:4])] == false) {
                     revert("Not allowed action passed!");
@@ -68,7 +63,7 @@ contract Processes is Component {
     /// @notice Adds a new process to the DAO
     /// @param name The name of the new process
     /// @param process The process struct defining the new DAO process
-    function setProcess(string calldata name, Process calldata process) 
+    function setProcess(string calldata name, ProcessItem calldata process) 
         public 
         auth(PROCESSES_SET_ROLE) 
     {

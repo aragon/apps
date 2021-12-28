@@ -4,9 +4,11 @@
 
 pragma solidity 0.8.10;
 
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
+import "./processes/types/Process.sol";
 import "./component/Component.sol";
 import "./processes/Processes.sol";
-import "./processes/types/Process.sol";
 import "./executor/Executor.sol";
 import "./acl/ACL.sol";
 
@@ -14,10 +16,9 @@ import "./acl/ACL.sol";
 /// @author Samuel Furter - Aragon Association - 2021
 /// @notice This contract is the entry point to the Aragon DAO framework and provides our users a simple and use to use public interface.
 /// @dev Public API of the Aragon DAO framework
-contract DAO is Component, ACL {
+contract DAO is UUPSUpgradeable, Initializable, ACL {
     // Roles
     bytes32 public constant DAO_CONFIG_ROLE = keccak256("DAO_CONFIG_ROLE");
-    bytes32 public constant UPGRADE_ROLE = keccak256("UPGRADE_ROLE");
 
     bytes public metadata;
     Processes public processes;
@@ -46,7 +47,7 @@ contract DAO is Component, ACL {
     /// @param proposal The proposal submission of the user
     /// @return process The started process with his definition
     /// @return executionId The execution id
-    function submit(Process.Proposal calldata proposal) external returns (Processes.Process memory process, uint256 executionId) {
+    function submit(Process.Proposal calldata proposal) external returns (Processes.ProcessItem memory process, uint256 executionId) {
         return processes.start(proposal);
     }
 
@@ -61,7 +62,7 @@ contract DAO is Component, ACL {
     /// @dev Based on the name and the passed Process struct does a new entry get added in Processes
     /// @param name The name of the process as string
     /// @param process The struct defining the governance primitive, allowed actions, permissions, and metadata IPFS hash to describe the process 
-    function setProcess(string calldata name, Processes.Process calldata process) external auth(address(this), DAO_CONFIG_ROLE) {
+    function setProcess(string calldata name, Processes.ProcessItem calldata process) external auth(address(this), DAO_CONFIG_ROLE) {
         processes.setProcess(name, process);
     }
 

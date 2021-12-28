@@ -75,7 +75,7 @@ contract SimpleVoting is VotingProcess, TimeHelpers {
     * @notice Change required support to `@formatPct(_supportRequiredPct)`%
     * @param _supportRequiredPct New required support
     */
-    function changeSupportRequiredPct(uint64 _supportRequiredPct) external authP(MODIFY_SUPPORT_ROLE) {
+    function changeSupportRequiredPct(uint64 _supportRequiredPct) external auth(MODIFY_SUPPORT_ROLE) {
         require(minAcceptQuorumPct <= _supportRequiredPct, ERROR_CHANGE_SUPPORT_PCTS);
         require(_supportRequiredPct < PCT_BASE, ERROR_CHANGE_SUPPORT_TOO_BIG);
         supportRequiredPct = _supportRequiredPct;
@@ -87,7 +87,7 @@ contract SimpleVoting is VotingProcess, TimeHelpers {
     * @notice Change minimum acceptance quorum to `@formatPct(_minAcceptQuorumPct)`%
     * @param _minAcceptQuorumPct New acceptance quorum
     */
-    function changeMinAcceptQuorumPct(uint64 _minAcceptQuorumPct) external authP(MODIFY_QUORUM_ROLE) {
+    function changeMinAcceptQuorumPct(uint64 _minAcceptQuorumPct) external auth(MODIFY_QUORUM_ROLE) {
         require(_minAcceptQuorumPct <= supportRequiredPct, ERROR_CHANGE_QUORUM_PCTS);
         minAcceptQuorumPct = _minAcceptQuorumPct;
 

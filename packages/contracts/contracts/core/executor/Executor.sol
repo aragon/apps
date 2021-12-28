@@ -5,7 +5,6 @@
 pragma solidity 0.8.10;
 
 import "./../component/Component.sol";
-import "./../DAO.sol";
 
 // TODO: Merge with Vault.. cause otherwise executor can't call contract methods that expect eth to be send.
 /// @title Implementation of the Executor
@@ -23,12 +22,6 @@ contract Executor is Component {
         uint256 value; // Value to be sent with the call. for example (ETH)
         bytes data;
     }
-
-    /// @dev Used for UUPS upgradability pattern
-    /// @param _dao The DAO contract of the current DAO
-    function initialize(DAO _dao) public override initializer {
-        Component.initialize(_dao);
-    } 
 
     /// @notice If called, the list of provided actions will be executed.
     /// @dev It run a loop through the array of acctions and execute one by one.

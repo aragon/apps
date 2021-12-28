@@ -63,6 +63,7 @@ abstract contract Process is Component {
     {
         executionsCounter++;
 
+        // TODO: Overthink the executions data structure and improve it.
         // the reason behind this - https://matrix.to/#/!poXqlbVpQfXKWGseLY:gitter.im/$6IhWbfjcTqmLoqAVMopWFuIhlQwsoaIRxmsXhhmsaSs?via=gitter.im&via=matrix.org&via=ekpyron.org
         Execution storage execution = executions[executionsCounter];
         execution.id = executionsCounter;
@@ -100,9 +101,11 @@ abstract contract Process is Component {
     /// @param executionId The id of the execution struct.
     /// @return execution The execution struct with all his properties.
     function _getExecution(uint256 executionId) internal view returns (Execution storage execution) {
-        require(_id < executionsCounter, ERROR_NO_EXECUTION);
+        execution = executions[executionId];
 
-        return executions[executionId];
+        require(execution.id > 0, ERROR_NO_EXECUTION);
+
+        return execution;
     }
 
     /// @dev The concrete implementation of stop.
