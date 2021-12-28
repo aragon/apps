@@ -63,17 +63,14 @@ abstract contract Process is Component {
     {
         executionsCounter++;
 
-        // TODO: Overthink the executions data structure and improve it.
         // the reason behind this - https://matrix.to/#/!poXqlbVpQfXKWGseLY:gitter.im/$6IhWbfjcTqmLoqAVMopWFuIhlQwsoaIRxmsXhhmsaSs?via=gitter.im&via=matrix.org&via=ekpyron.org
-        Execution storage execution = executions[executionsCounter];
+        Execution memory execution = executions[executionsCounter];
         execution.id = executionsCounter;
         execution.actions = proposal.actions;
         execution.additionalArguments = proposal.additionalArguments;
         execution.state = State.RUNNING;
 
-        Execution memory _execution = execution;
-
-        _start(_execution); // "Hook" to add logic in start of a concrete implementation.
+        _start(execution); // "Hook" to add logic in start of a concrete implementation.
 
         emit ProcessStarted(execution, executionId, proposal.metadata);
 
@@ -90,10 +87,8 @@ abstract contract Process is Component {
         
         execution.state = State.EXECUTED;
 
-        _execute(execution); // "Hook" to add logic in execute of a concrete implementation
-
-        // Executor(dao.executor.address).execute(execution.proposal.actions);
-
+        _execute(execution); 
+        
         emit ProcessExecuted(execution, executionId);
     }
 
@@ -112,7 +107,7 @@ abstract contract Process is Component {
     /// @param execution The execution struct with all the informations needed.
     function _start(Execution memory execution) internal virtual;
 
-    /// @dev The concrete pre-execution call.
+    /// @dev The concrete execution call.
     /// @param execution The execution struct with all the informations needed.
     function _execute(Execution memory execution) internal virtual;
 }

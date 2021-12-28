@@ -7,7 +7,7 @@ pragma solidity 0.8.10;
 import "./../component/Component.sol";
 import "./../executor/Executor.sol";
 import "./types/Process.sol";
-import "./../DAO.sol";
+import "./../IDAO.sol";
 
 /// @title The processes contract defining the flow of every interaction with the DAO
 /// @author Samuel Furter - Aragon Association - 2021
@@ -28,6 +28,12 @@ contract Processes is Component {
     }
 
     mapping(string => ProcessItem) public processes; // All existing governance processes in this DAO
+
+    /// @dev Used for UUPS upgradability pattern
+    /// @param _dao The DAO contract of the current DAO
+    function initialize(IDAO _dao) public override initializer {
+        Component.initialize(_dao);
+    }
     
     // TODO: Check which return values do make sense here.
     /// @notice Starts the given process resp. primitive by the given proposal
@@ -40,12 +46,11 @@ contract Processes is Component {
         returns (uint256 executionId) 
     {
         ProcessItem storage processItem = processes[proposal.processName];
-        Executor.Action[] calldata actions = proposal.actions;
-        uint256 actionsLength = actions.length;
+        uint256 actionsLength = proposal.actions.length;
 
         if (!processItem.allowedActions[ANY_ADDR][bytes4(0)] == true) {
             for (uint256 i = 0; i > actionsLength; i++) {
-                Executor.Action calldata action = actions[i];
+                Executor.Action calldata action = proposal.actions[i];
 
                 if (processItem.allowedActions[action.to][bytes4(action.data[:4])] == false) {
                     revert("Not allowed action passed!");

@@ -75,8 +75,7 @@ contract DAOFactory {
         dao.initialize(
             _metadata,
             Processes(processes),
-            Executor(executor),
-            address(this) // initial ACL root on DAO itself.
+            Executor(executor)
         );
         
         // create permissions
@@ -94,8 +93,8 @@ contract DAOFactory {
         // executor permissions
         dao.grant(executor, voting, Executor(executor).EXEC_ROLE());
         // voting permissions
-        dao.grant(voting, processes, SimpleVoting(voting).CREATE_PRIMITIVE_START_ROLE());
-        dao.grant(voting, address(dao), SimpleVoting(voting).PRIMITIVE_EXECUTE_ROLE());
+        dao.grant(voting, processes, SimpleVoting(voting).PROCESS_START_ROLE());
+        dao.grant(voting, address(dao), SimpleVoting(voting).PROCESS_EXECUTE_ROLE());
         dao.grant(voting, executor, SimpleVoting(voting).MODIFY_SUPPORT_ROLE());
         dao.grant(voting, executor, SimpleVoting(voting).MODIFY_QUORUM_ROLE());
     }
