@@ -75,7 +75,7 @@ abstract contract Process is Component {
 
         _start(_execution); // "Hook" to add logic in start of a concrete implementation.
 
-        emit ProcessStarted(execution, executionId, proposal.metdata);
+        emit ProcessStarted(execution, executionId, proposal.metadata);
 
         return executionsCounter;
     }

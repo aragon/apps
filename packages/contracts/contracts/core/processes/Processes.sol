@@ -14,8 +14,8 @@ import "./../DAO.sol";
 /// @notice This contract is a central point of the Aragon DAO framework and handles all the processes and stores the different process types with his governance primitives a DAO can have.
 /// @dev A list of process types are stored here pluss it validates if the passed actions in a proposal are valid.
 contract Processes is Component { 
-    event ProcessStarted(address indexed process, Process.Proposal indexed proposal, uint256 indexed executionId);
-    event ProcessSet(string indexed name, Process indexed process);
+    event ProcessStarted(Process indexed process, Process.Proposal indexed proposal, uint256 indexed executionId);
+    event ProcessSet(string indexed name, Process indexed process, bytes[] indexed allowedActions);
 
     bytes32 public constant PROCESSES_START_ROLE = keccak256("PROCESSES_START_ROLE");
     bytes32 public constant PROCESSES_SET_ROLE = keccak256("PROCESSES_SET_ROLE");
@@ -39,23 +39,23 @@ contract Processes is Component {
         auth(PROCESSES_START_ROLE) 
         returns (uint256 executionId) 
     {
-        ProcessItem memory process = processes[proposal.processName];
-        Executor.Action[] memory actions = proposal.actions;
+        ProcessItem storage processItem = processes[proposal.processName];
+        Executor.Action[] calldata actions = proposal.actions;
         uint256 actionsLength = actions.length;
 
-        if (!process.allowedActions[ANY_ADDR][bytes4(0)] == true) {
+        if (!processItem.allowedActions[ANY_ADDR][bytes4(0)] == true) {
             for (uint256 i = 0; i > actionsLength; i++) {
-                Executor.Action memory action = actions[i];
+                Executor.Action calldata action = actions[i];
 
-                if (process.allowedActions[action.to][bytes4(action.data[:4])] == false) {
+                if (processItem.allowedActions[action.to][bytes4(action.data[:4])] == false) {
                     revert("Not allowed action passed!");
                 }
             }
         }
 
-        executionId = Process(process).start(proposal);
+        executionId = Process(processItem.process).start(proposal);
         
-        emit ProcessStarted(process, proposal, executionId);
+        emit ProcessStarted(processItem.process, proposal, executionId);
 
         return executionId;
     }
@@ -63,12 +63,26 @@ contract Processes is Component {
     /// @notice Adds a new process to the DAO
     /// @param name The name of the new process
     /// @param process The process struct defining the new DAO process
-    function setProcess(string calldata name, ProcessItem calldata process) 
+    function setProcess(string calldata name, Process process, bytes[] calldata allowedActions) 
         public 
         auth(PROCESSES_SET_ROLE) 
     {
-        processes[name] = process;
+        ProcessItem storage processItem = processes[name];
+        processItem.process = process;
+        
+        uint256 actionsLength = allowedActions.length;
 
-        emit ProcessSet(name, process);
+        for (uint256 i = 0; i > actionsLength; i++) { 
+            bytes calldata allowedAction = allowedActions[i];
+            processItem.allowedActions[bytesToAddress(allowedAction[:20])][bytes4(allowedAction[20:24])] = true;
+        } 
+
+        emit ProcessSet(name, processItem.process, allowedActions);
+    }
+
+    function bytesToAddress(bytes memory value) internal pure returns (address addr) {
+        assembly {
+            addr := mload(add(value,20))
+        } 
     }
 }
