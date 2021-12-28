@@ -18,6 +18,8 @@ import "./../../core/executor/Executor.sol";
 import "./../registry/Registry.sol";
 import "./../../core/DAO.sol";
 
+
+// TODO: Change this to DAOFactory and ProcessFactory. Vault can get removed cause Executor has to be Vault+Executor.
 contract DAOFactory {
     using Address for address;
     
