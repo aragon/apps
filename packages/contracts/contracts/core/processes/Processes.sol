@@ -29,17 +29,17 @@ contract Processes is Component {
 
     mapping(string => ProcessItem) public processes; // All existing governance processes in this DAO
     
+    // TODO: Check which return values do make sense here.
     /// @notice Starts the given process resp. primitive by the given proposal
     /// @dev Checks the passed actions, gets the governance process, and starts it
     /// @param proposal The proposal for execution submitted by the user.
-    /// @return process The Process struct stored
     /// @return executionId The id of the newly created execution.
     function start(Process.Proposal calldata proposal) 
         external 
         auth(PROCESSES_START_ROLE) 
-        returns (ProcessItem memory process, uint256 executionId) 
+        returns (uint256 executionId) 
     {
-        process = processes[proposal.processName];
+        ProcessItem memory process = processes[proposal.processName];
         Executor.Action[] memory actions = proposal.actions;
         uint256 actionsLength = actions.length;
 
@@ -57,7 +57,7 @@ contract Processes is Component {
         
         emit ProcessStarted(process, proposal, executionId);
 
-        return (process, executionId);
+        return executionId;
     }
 
     /// @notice Adds a new process to the DAO
