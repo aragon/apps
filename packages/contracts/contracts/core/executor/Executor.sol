@@ -24,12 +24,6 @@ contract Executor is Component {
         bytes data;
     }
 
-    /// @dev Used for UUPS upgradability pattern
-    /// @param _dao The DAO contract of the current DAO
-    function initialize(IDAO _dao) public override initializer {
-        Component.initialize(_dao);
-    }
-
     /// @notice If called, the list of provided actions will be executed.
     /// @dev It run a loop through the array of acctions and execute one by one.
     /// @dev If one acction fails, all will be reverted.

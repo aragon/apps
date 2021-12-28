@@ -29,12 +29,6 @@ contract Processes is Component {
 
     mapping(string => ProcessItem) public processes; // All existing governance processes in this DAO
 
-    /// @dev Used for UUPS upgradability pattern
-    /// @param _dao The DAO contract of the current DAO
-    function initialize(IDAO _dao) public override initializer {
-        Component.initialize(_dao);
-    }
-    
     // TODO: Check which return values do make sense here.
     /// @notice Starts the given process resp. primitive by the given proposal
     /// @dev Checks the passed actions, gets the governance process, and starts it

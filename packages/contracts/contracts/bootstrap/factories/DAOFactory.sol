@@ -47,7 +47,7 @@ contract DAOFactory {
         TokenConfig calldata _tokenConfig,
         uint256[3] calldata _votingSettings,
         uint256[3] calldata _vaultSettings
-    ) external {
+    ) external returns (DAO dao, Processes processes, Executor executor) {
         // setup Token
         // TODO: Do we wanna leave the option not to use any proxy pattern in such case ? 
         // delegateCall is costly if so many calls are needed for a contract after the deployment.
@@ -69,8 +69,8 @@ contract DAOFactory {
         DAO dao = DAO(createProxy(daoBase, bytes("")));
         address voting = createProxy(votingBase, abi.encodeWithSelector(SimpleVoting.initialize.selector, dao, token, _votingSettings));
         //address vault = createProxy(vaultBase, abi.encodeWithSelector(Vault.initialize.selector, dao, _vaultSettings));
-        address processes = createProxy(processesBase, abi.encodeWithSelector(Processes.initialize.selector, dao));
-        address executor = createProxy(executorBase, abi.encodeWithSelector(Executor.initialize.selector, dao));
+        address processes = createProxy(processesBase, abi.encodeWithSelector(processes.initialize.selector, dao));
+        address executor = createProxy(executorBase, abi.encodeWithSelector(executor.initialize.selector, dao));
         
         dao.initialize(
             _metadata,
