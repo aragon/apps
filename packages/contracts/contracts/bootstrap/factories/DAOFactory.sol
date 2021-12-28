@@ -14,7 +14,7 @@ import "./../../packages/tokens/GovernanceWrappedERC20.sol";
 import "./../../packages/tokens/GovernanceERC20.sol";
 import "./../../core/processes/Processes.sol";
 import "./../../core/executor/Executor.sol";
-import "./../../packages/vault/Vault.sol";
+//import "./../../packages/vault/Vault.sol";
 import "./../registry/Registry.sol";
 import "./../../core/DAO.sol";
 
@@ -68,7 +68,7 @@ contract DAOFactory {
         // that haven't been deployed yet.
         DAO dao = DAO(createProxy(daoBase, bytes("")));
         address voting = createProxy(votingBase, abi.encodeWithSelector(SimpleVoting.initialize.selector, dao, token, _votingSettings));
-        address vault = createProxy(vaultBase, abi.encodeWithSelector(Vault.initialize.selector, dao, _vaultSettings));
+        //address vault = createProxy(vaultBase, abi.encodeWithSelector(Vault.initialize.selector, dao, _vaultSettings));
         address processes = createProxy(processesBase, abi.encodeWithSelector(Processes.initialize.selector, dao));
         address executor = createProxy(executorBase, abi.encodeWithSelector(Executor.initialize.selector, dao));
         
@@ -85,7 +85,7 @@ contract DAOFactory {
         dao.grant(address(type(uint160).max), executor, Executor(executor).UPGRADE_ROLE()); // TODO: we can bring address(type(uint160).max) from ACL for consistency.
        
         // vault permissions
-        dao.grant(vault, executor, Vault(payable(vault)).TRANSFER_ROLE()); // TODO: do we really need to cast it to payable ? 
+        //dao.grant(vault, executor, Vault(payable(vault)).TRANSFER_ROLE()); // TODO: do we really need to cast it to payable ? 
         // processes permissions
         dao.grant(processes, address(dao), Processes(processes).PROCESSES_START_ROLE());
         dao.grant(processes, address(dao), Processes(processes).PROCESSES_SET_ROLE());
@@ -106,7 +106,7 @@ contract DAOFactory {
 
     function setupBases() private {
         votingBase = address(new SimpleVoting());
-        vaultBase = address(new Vault());
+        //vaultBase = address(new Vault());
         daoBase = address(new DAO());
         governanceERC20Base = address(new GovernanceERC20());
         governanceWrappedERC20Base = address(new GovernanceWrappedERC20());

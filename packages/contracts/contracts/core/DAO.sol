@@ -11,13 +11,15 @@ import "./component/Component.sol";
 import "./processes/Processes.sol";
 import "./executor/Executor.sol";
 import "./acl/ACL.sol";
+import "./IDAO.sol";
 
 /// @title The public interface of the Aragon DAO framework.
 /// @author Samuel Furter - Aragon Association - 2021
 /// @notice This contract is the entry point to the Aragon DAO framework and provides our users a simple and use to use public interface.
 /// @dev Public API of the Aragon DAO framework
-contract DAO is UUPSUpgradeable, Initializable, ACL {
+contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
     // Roles
+    bytes32 public constant UPGRADE_ROLE = keccak256("UPGRADE_ROLE");
     bytes32 public constant DAO_CONFIG_ROLE = keccak256("DAO_CONFIG_ROLE");
 
     bytes public metadata;
@@ -37,17 +39,20 @@ contract DAO is UUPSUpgradeable, Initializable, ACL {
         processes = _processes;
         executor = _executor;
 
-        ACL.initACL(_executor);
+        ACL.initACL(address(_executor));
     }
 
     function _authorizeUpgrade(address) internal virtual override auth(address(this), UPGRADE_ROLE) { }
+
+    function hasPermission(address _where, address _who, bytes32 _role, bytes memory data) public override returns(bool) {
+        return willPerform(_where, _who, _role, data);
+    }
     
     /// @notice If called a new governance process based on the submitted proposal does get kicked off
     /// @dev Validates the permissions, validates the actions passed, and start a new process execution based on the proposal.
     /// @param proposal The proposal submission of the user
-    /// @return process The started process with his definition
     /// @return executionId The execution id
-    function submit(Process.Proposal calldata proposal) external returns (Processes.ProcessItem memory process, uint256 executionId) {
+    function submit(Process.Proposal calldata proposal) external returns (uint256 executionId) {
         return processes.start(proposal);
     }
 

@@ -4,9 +4,8 @@
 
 pragma solidity 0.8.10;
 
-// import "../initializable/Initializable.sol";
-import "./IACLOracle.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "./IACLOracle.sol";
 
 library ACLData {
     enum BulkOp { Grant, Revoke, Freeze }
