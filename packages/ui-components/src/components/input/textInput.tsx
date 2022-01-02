@@ -12,6 +12,10 @@ export type TextInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
    * Wheter the icon is left or right of the input
    */
   side?: 'left' | 'right';
+  /**
+   * make input disabled and whole form clickable
+   */
+  clickable?: boolean;
 };
 
 /** Simple input with variable styling (depending on mode) */
@@ -20,24 +24,26 @@ export const TextInput: React.FC<TextInputProps> = ({
   side = 'right',
   disabled,
   adornment,
+  clickable,
   ...props
 }) => {
   return (
     <Container data-testid="input" {...{mode, disabled, side}}>
-      <StyledInput disabled={disabled} {...props} />
+      <StyledInput disabled={clickable || disabled} clickable={clickable} {...props} />
       {adornment}
     </Container>
   );
 };
 
-type StyledCotainerProps = Pick<TextInputProps, 'mode' | 'disabled' | 'side'>;
+type StyledCotainerProps = Pick<TextInputProps, 'mode' | 'disabled' | 'side' | 'clickable'>;
+type StyledInputProps = Pick<TextInputProps, 'clickable'>;
 
 export const Container = styled.div.attrs(
   ({mode, disabled, side}: StyledCotainerProps) => {
-    let className = `${!disabled && 'bg-ui-0'} flex space-x-1.5 space-x-1.5
+    let className = `${disabled ? 'bg-ui-100' : 'bg-ui-0'} flex space-x-1.5 space-x-1.5
     focus:outline-none focus-within:ring-2 focus-within:ring-primary-500 py-1.5 px-2
-    rounded-xl hover:border-ui-300 border-2 active:border-primary-500
-    ${side === 'left' && 'flex-row-reverse space-x-reverse'} items-center `;
+    rounded-xl hover:border-ui-300 border-2 active:border-primary-500 items-center 
+    ${side === 'left' && 'flex-row-reverse space-x-reverse'} `;
 
     if (mode === 'default') {
       className += 'border-ui-100';
@@ -53,8 +59,8 @@ export const Container = styled.div.attrs(
   }
 )<StyledCotainerProps>``;
 
-export const StyledInput = styled.input.attrs(() => {
+export const StyledInput = styled.input.attrs(({clickable}: StyledInputProps) => {
   let myClassName: string | undefined =
-    'w-full bg-transparent focus:outline-none';
+    `w-full bg-transparent focus:outline-none ${clickable && 'cursor-pointer'}`;
   return {className: myClassName};
-})<React.InputHTMLAttributes<HTMLInputElement>>``;
+})<React.InputHTMLAttributes<HTMLInputElement> & StyledInputProps>``;
