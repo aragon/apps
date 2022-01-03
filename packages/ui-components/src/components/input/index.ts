@@ -1,3 +1,3 @@
 export {TextInputProps, TextInput} from './textInput';
-export {SearchInput, SearchInputProps} from './searchInput';
 export {DropdownInput} from './dropdownInput';
+export {SearchInput, SearchInputProps} from './searchInput';
