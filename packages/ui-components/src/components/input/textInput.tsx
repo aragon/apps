@@ -13,7 +13,7 @@ export type TextInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
    */
   side?: 'left' | 'right';
   /**
-   * make input disabled and whole form clickable
+   * make input disabled and the whole form clickable
    */
   clickable?: boolean;
 };
