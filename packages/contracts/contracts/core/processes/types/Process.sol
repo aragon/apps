@@ -27,8 +27,6 @@ abstract contract Process is Component {
 
     // Error MSG's
     string internal constant ERROR_EXECUTION_STATE_WRONG = "ERROR_EXECUTION_STATE_WRONG";
-    string internal constant ERROR_NOT_ALLOWED_TO_EXECUTE = "ERROR_NOT_ALLOWED_TO_EXECUTE";
-    string internal constant ERROR_NOT_ALLOWED_TO_START = "ERROR_NOT_ALLOWED_TO_START";
     string internal constant ERROR_NO_EXECUTION = "ERROR_NO_EXECUTION";
     
     // The states a execution can have
@@ -71,6 +69,8 @@ abstract contract Process is Component {
             bytes calldata allowedAction = allowedActions[i];
             allowedActions[bytesToAddress(allowedAction[:20])][bytes4(allowedAction[20:24])] = true;
         } 
+
+        emit AllowedActionsAdded(_allowedActions);
     }
 
     /// @dev Used to convert a bytes to type address
@@ -87,13 +87,12 @@ abstract contract Process is Component {
     /// @param _allowedActions A dynamic bytes array to define the allowed actions. addr + funcSig bytes string is used to save a loop.
     function addAllowedActions(bytes[] calldata _allowedActions) external auth(PROCESS_ADD_ALLOWED_ACTIONS) {
         _setAllowedActions(_allowedActions);
-        emit AllowedActionsAdded(_allowedActions);
     }
 
     /// @notice Remove allowed actions from this process
     /// @dev Deletes entries from the allowedActions mapping based on the passed array
     /// @param actionsToRemove A dynamic bytes array to define the allowed actions. addr + funcSig bytes string is used to save a loop.
-    function removeAllowedActions(bytes[] calldata actionsToRemove) external auth(PROCESS_REMOVE_ALLOWED_ACTIONS) { // TODO: Remove code duplication.. see _setAllowedActions
+    function removeAllowedActions(bytes[] calldata actionsToRemove) external auth(PROCESS_REMOVE_ALLOWED_ACTIONS) {
         uint256 actionsLength = allowedActions.length;
 
         for (uint256 i = 0; i > actionsLength; i++) { 
