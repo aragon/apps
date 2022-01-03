@@ -28,7 +28,7 @@ export const TextInput: React.FC<TextInputProps> = ({
   ...props
 }) => {
   return (
-    <Container data-testid="input" {...{mode, disabled, side}}>
+    <Container data-testid="input" {...{mode, disabled, side, clickable}}>
       <StyledInput disabled={clickable || disabled} clickable={clickable} {...props} />
       {adornment}
     </Container>
@@ -39,11 +39,11 @@ type StyledCotainerProps = Pick<TextInputProps, 'mode' | 'disabled' | 'side' | '
 type StyledInputProps = Pick<TextInputProps, 'clickable'>;
 
 export const Container = styled.div.attrs(
-  ({mode, disabled, side}: StyledCotainerProps) => {
+  ({mode, disabled, side, clickable}: StyledCotainerProps) => {
     let className = `${disabled ? 'bg-ui-100' : 'bg-ui-0'} flex space-x-1.5 space-x-1.5
     focus:outline-none focus-within:ring-2 focus-within:ring-primary-500 py-1.5 px-2
     rounded-xl hover:border-ui-300 border-2 active:border-primary-500 items-center 
-    ${side === 'left' && 'flex-row-reverse space-x-reverse'} `;
+    ${side === 'left' && 'flex-row-reverse space-x-reverse'} ${clickable && 'cursor-pointer'} `;
 
     if (mode === 'default') {
       className += 'border-ui-100';
