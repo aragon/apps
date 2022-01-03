@@ -36,14 +36,18 @@ export const TextInput: React.FC<TextInputProps> = ({
 };
 
 type StyledCotainerProps = Pick<TextInputProps, 'mode' | 'disabled' | 'side' | 'clickable'>;
-type StyledInputProps = Pick<TextInputProps, 'clickable'>;
+type StyledInputProps = Pick<TextInputProps, 'clickable' | 'disabled'>;
 
 export const Container = styled.div.attrs(
   ({mode, disabled, side, clickable}: StyledCotainerProps) => {
     let className = `${disabled ? 'bg-ui-100' : 'bg-ui-0'} flex space-x-1.5 space-x-1.5
     focus:outline-none focus-within:ring-2 focus-within:ring-primary-500 py-1.5 px-2
     rounded-xl hover:border-ui-300 border-2 active:border-primary-500 items-center 
-    ${side === 'left' && 'flex-row-reverse space-x-reverse'} ${clickable && 'cursor-pointer'} `;
+    ${side === 'left' && 'flex-row-reverse space-x-reverse'} ${
+      (clickable && !disabled) 
+      && 
+      'cursor-pointer'
+    }  `;
 
     if (mode === 'default') {
       className += 'border-ui-100';
@@ -59,8 +63,8 @@ export const Container = styled.div.attrs(
   }
 )<StyledCotainerProps>``;
 
-export const StyledInput = styled.input.attrs(({clickable}: StyledInputProps) => {
+export const StyledInput = styled.input.attrs(({clickable, disabled}: StyledInputProps) => {
   let myClassName: string | undefined =
-    `w-full bg-transparent focus:outline-none ${clickable && 'cursor-pointer'}`;
+    `w-full bg-transparent focus:outline-none ${(clickable && !disabled) && 'cursor-pointer'}`;
   return {className: myClassName};
 })<React.InputHTMLAttributes<HTMLInputElement> & StyledInputProps>``;
