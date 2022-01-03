@@ -4,23 +4,12 @@
 
 pragma solidity 0.8.10;
 
-import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20VotesUpgradeable.sol";
-import "@openzeppelin/contracts/proxy/Clones.sol";
-import "@openzeppelin/contracts/utils/Address.sol";
-
-import "./../../packages/processes/votings/simple/SimpleVoting.sol";
-import "./../../packages/tokens/GovernanceWrappedERC20.sol";
-import "./../../packages/tokens/GovernanceERC20.sol";
 import "./../../core/processes/Processes.sol";
 import "./../../core/executor/Executor.sol";
-//import "./../../packages/vault/Vault.sol";
 import "./../registry/Registry.sol";
 import "./../../core/DAO.sol";
 
-
-// TODO: Change this to DAOFactory and ProcessFactory. Vault can get removed cause Executor has to be Vault+Executor.
-contract DAOFactory {
+contract DAOFactory is AbstractFactory {
     using Address for address;
     
     address private daoBase;
@@ -63,7 +52,7 @@ contract DAOFactory {
 
         // Set up base DAO contracts permissions
         // The below line means that on any contract's function that has UPGRADE_ROLE, executor will be able to call it.
-        dao.grant(address(type(uint160).max), executor, Executor(executor).UPGRADE_ROLE()); // TODO: we can bring address(type(uint160).max) from ACL for consistency.
+        dao.grant(address(type(uint160).max), executor, Executor(executor).UPGRADE_ROLE());
         // processes permissions
         dao.grant(processes, address(dao), Processes(processes).PROCESSES_START_ROLE());
         dao.grant(processes, address(dao), Processes(processes).PROCESSES_SET_ROLE());
@@ -78,8 +67,6 @@ contract DAOFactory {
         // Process permissions
         dao.grant(process, processes, Process(voting).PROCESS_START_ROLE());
         dao.grant(process, address(dao), Process(voting).PROCESS_EXECUTE_ROLE());
-        dao.grant(process, executor, Process(voting).MODIFY_SUPPORT_ROLE());
-        dao.grant(process, executor, Process(voting).MODIFY_QUORUM_ROLE());
     }
 
     function setupBases() internal override {

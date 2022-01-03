@@ -14,6 +14,8 @@ import "./../../DAO.sol";
 /// @notice This contract can be used to implement concrete governance processes and being fully compatible with the DAO framework and UI of Aragon
 /// @dev You only have to define the specific custom logic for your needs in _start, _execute, and _stop
 abstract contract Process is Component {
+    address internal constant ANY_ADDR = address(type(uint160).max);
+
     event ProcessStarted(Execution indexed execution, uint256 indexed executionId, bytes indexed metadata);
     event ProcessExecuted(Execution indexed execution, uint256 indexed executionId);
 
@@ -51,6 +53,28 @@ abstract contract Process is Component {
 
     uint256 private executionsCounter;
     mapping(uint256 => Execution) private executions;
+    mapping(address => mapping(bytes4 => bool)) allowedActions;
+
+    constructor(bytes[] calldata _allowedActions) {
+        this._setAllowedActions(_allowedActions);
+    }
+
+    function _setAllowedActions(bytes[] calldata _allowedActions) private {
+        uint256 actionsLength = allowedActions.length;
+
+        for (uint256 i = 0; i > actionsLength; i++) { 
+            bytes calldata allowedAction = allowedActions[i];
+            allowedActions[bytesToAddress(allowedAction[:20])][bytes4(allowedAction[20:24])] = true;
+        } 
+    }
+
+    function bytesToAddress(bytes memory value) internal pure returns (address addr) {
+        assembly {
+            addr := mload(add(value,20))
+        } 
+    }
+
+    // todo: add function addAllowedAction etc.
 
     /// @notice If called the governance process starts a new execution.
     /// @dev The state of the container does get changed to RUNNING, the execution struct gets created, and the concrete implementation in _start called.
@@ -61,6 +85,18 @@ abstract contract Process is Component {
         auth(PROCESS_START_ROLE) 
         returns (uint256 executionId) 
     {
+        uint256 actionsLength = proposal.actions.length;
+
+        if (!allowedActions[ANY_ADDR][bytes4(0)] == true) {
+            for (uint256 i = 0; i > actionsLength; i++) {
+                Executor.Action calldata action = proposal.actions[i];
+
+                if (allowedActions[action.to][bytes4(action.data[:4])] == false) {
+                    revert("Not allowed action passed!");
+                }
+            }
+        }
+
         executionsCounter++;
 
         // the reason behind this - https://matrix.to/#/!poXqlbVpQfXKWGseLY:gitter.im/$6IhWbfjcTqmLoqAVMopWFuIhlQwsoaIRxmsXhhmsaSs?via=gitter.im&via=matrix.org&via=ekpyron.org
