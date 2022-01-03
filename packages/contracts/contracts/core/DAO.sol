@@ -8,8 +8,6 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
 import "./processes/types/Process.sol";
 import "./component/Component.sol";
-import "./processes/Processes.sol";
-import "./executor/Executor.sol";
 import "./acl/ACL.sol";
 import "./IDAO.sol";
 
@@ -21,10 +19,21 @@ import "./IDAO.sol";
 /// @dev Public API of the Aragon DAO framework
 contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
     event SetMetadata(bytes indexed metadata);
-
+    event Executed(address indexed actor, Action[] indexed actions, bytes[] execResults);
+    
     // Roles
     bytes32 public constant UPGRADE_ROLE = keccak256("UPGRADE_ROLE");
     bytes32 public constant DAO_CONFIG_ROLE = keccak256("DAO_CONFIG_ROLE");
+    bytes32 public constant EXEC_ROLE = keccak256("EXEC_ROLE");
+
+    // Error msg's
+    string private constant ERROR_ACTION_CALL_FAILED = "EXCECUTOR_ACTION_CALL_FAILED";
+
+    struct Action {
+        address to; // Address to call.
+        uint256 value; // Value to be sent with the call. for example (ETH)
+        bytes data;
+    }
 
     /// @dev Used for UUPS upgradability pattern
     /// @param _metadata IPFS hash that points to all the metadata (logo, description, tags, etc.) of a DAO
@@ -46,5 +55,23 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
     /// @param _metadata The IPFS hash of the new metadata object
     function setMetadata(bytes calldata _metadata) external auth(address(this), DAO_CONFIG_ROLE) {
         emit SetMetadata(_metadata);
+    }
+
+    /// @notice If called, the list of provided actions will be executed.
+    /// @dev It run a loop through the array of acctions and execute one by one.
+    /// @dev If one acction fails, all will be reverted.
+    /// @param actions The aray of actions
+    function execute(Action[] memory actions) external auth(EXEC_ROLE) {
+        bytes[] memory execResults = new bytes[](actions.length);
+
+        for (uint256 i = 0; i < actions.length; i++) {
+          (bool success, bytes memory response) = actions[i].to.call{ value: actions[i].value }(actions[i].data);
+
+          require(success, ERROR_ACTION_CALL_FAILED);
+
+          execResults[i] = response;
+        }
+
+        emit Executed(msg.sender, actions, execResults);
     }
 } 

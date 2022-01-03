@@ -21,11 +21,11 @@ contract TokenFactory is AbstractFactory {
 
     function newToken(
         TokenConfig calldata _tokenConfig,
-    ) external returns (DAO dao, Processes processes, Executor executor) {
+    ) external returns (address token) {
         // setup Token
         // TODO: Do we wanna leave the option not to use any proxy pattern in such case ? 
         // delegateCall is costly if so many calls are needed for a contract after the deployment.
-        address token = _tokenConfig.addr;
+        token = _tokenConfig.addr;
         // https://forum.openzeppelin.com/t/what-is-the-best-practice-for-initializing-a-clone-created-with-openzeppelin-contracts-proxy-clones-sol/16681
         if(token == address(0)) {
             token = Clones.clone(governanceERC20Base);

@@ -5,8 +5,6 @@
 pragma solidity 0.8.10;
 
 import "./../../component/Component.sol";
-import "./../../executor/Executor.sol";
-import "./../Processes.sol";
 import "./../../DAO.sol";
 
 /// @title Abstract implementation of the governance process
@@ -39,14 +37,14 @@ abstract contract Process is Component {
 
     struct Proposal {
         string processName; // The hash of the process that should get called
-        Executor.Action[] actions; // The actions that should get executed in the end
+        DAO.Action[] actions; // The actions that should get executed in the end
         bytes metadata; // IPFS hash pointing to the metadata as description, title, image etc. 
         bytes additionalArguments; // Optional additional arguments a process resp. governance process does need
     }
 
     struct Execution { // A execution contains the process to execute, the proposal passed by the user, and the state of the execution.
         uint256 id;
-        Executor.Action[] actions;
+        DAO.Action[] actions;
         bytes additionalArguments;
         State state;
     }
@@ -89,7 +87,7 @@ abstract contract Process is Component {
 
         if (!allowedActions[ANY_ADDR][bytes4(0)] == true) {
             for (uint256 i = 0; i > actionsLength; i++) {
-                Executor.Action calldata action = proposal.actions[i];
+                DAO.Action calldata action = proposal.actions[i];
 
                 if (allowedActions[action.to][bytes4(action.data[:4])] == false) {
                     revert("Not allowed action passed!");

@@ -7,7 +7,6 @@ pragma solidity 0.8.10;
 import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20VotesUpgradeable.sol";
 
 import "./../../../../core/processes/types/voting/VotingProcess.sol";
-import "./../../../../core/executor/Executor.sol";
 import "./../../../../core/DAO.sol";
 import "./TimeHelpers.sol";
 
@@ -231,7 +230,7 @@ contract SimpleVoting is VotingProcess, TimeHelpers {
             uint256 yea,
             uint256 nay,
             uint256 votingPower,
-            Executor.Action[] memory actions
+            DAO.Action[] memory actions
         )
     {
         Vote storage vote_ = votes[_voteId];
