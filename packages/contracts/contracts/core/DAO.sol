@@ -13,7 +13,6 @@ import "./executor/Executor.sol";
 import "./acl/ACL.sol";
 import "./IDAO.sol";
 
-
 // TODO: VAULT+EXECUTOR+DAO can be ONE CONTRACT!
 
 /// @title The public interface of the Aragon DAO framework.
@@ -21,22 +20,19 @@ import "./IDAO.sol";
 /// @notice This contract is the entry point to the Aragon DAO framework and provides our users a simple and use to use public interface.
 /// @dev Public API of the Aragon DAO framework
 contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
+    event SetMetadata(bytes indexed metadata);
+
     // Roles
     bytes32 public constant UPGRADE_ROLE = keccak256("UPGRADE_ROLE");
     bytes32 public constant DAO_CONFIG_ROLE = keccak256("DAO_CONFIG_ROLE");
 
-    bytes public metadata;
-    Executor public executor;
-
     /// @dev Used for UUPS upgradability pattern
     /// @param _metadata IPFS hash that points to all the metadata (logo, description, tags, etc.) of a DAO
-    /// @param _processes All the processes a DAO has
-    /// @param _executor The executor to interact with any internal or third party contract
     function initialize(
         bytes calldata _metadata,
     ) public initializer {
-        metadata = _metadata;
-        ACL.initACL(address(_executor));
+        setMetadata(_metadata);
+        //ACL.initACL(address(this));
     }
 
     function _authorizeUpgrade(address) internal virtual override auth(address(this), UPGRADE_ROLE) { }
@@ -49,6 +45,6 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
     /// @dev Sets a new IPFS hash
     /// @param _metadata The IPFS hash of the new metadata object
     function setMetadata(bytes calldata _metadata) external auth(address(this), DAO_CONFIG_ROLE) {
-        metadata = _metadata;   
+        emit SetMetadata(_metadata);
     }
 } 
