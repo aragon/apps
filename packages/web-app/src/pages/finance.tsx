@@ -1,42 +1,91 @@
 import React from 'react';
-import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
+import {withTransaction} from '@elastic/apm-rum-react';
 
 import {
+  PageWrapper,
   TokenSectionWrapper,
   TransferSectionWrapper,
-} from 'components/sectionWrapper';
+} from 'components/wrappers';
+import TokenList from 'components/tokenList';
+import TransferList from 'components/transferList';
+import {useDaoTreasury} from 'hooks/useDaoTreasury';
+import {useTransferModalContext} from 'context/transfersModal';
+import {TimeFilter, TransferTypes} from 'utils/constants';
+
+import type {Transfer, TreasuryToken} from 'utils/types';
+import {sortTokens} from 'utils/tokens';
+
+// TODO remove this. Instead use first x transfers returned by categorized
+// transfers hook.
+const TEMP_TRANSFERS: Transfer[] = [
+  {
+    title: 'Deposit',
+    tokenAmount: 300,
+    tokenSymbol: 'DAI',
+    transferDate: 'Pending...',
+    transferType: TransferTypes.Deposit,
+    usdValue: '$200.00',
+    isPending: true,
+  },
+  {
+    title:
+      'Deposit DAI so I can do whatever I want whenever I want and I really want this reference to be long',
+    tokenAmount: 300,
+    tokenSymbol: 'DAI',
+    transferDate: 'Yesterday',
+    transferType: TransferTypes.Deposit,
+    usdValue: '$200.00',
+  },
+  {
+    title: 'Withdraw',
+    tokenAmount: 300,
+    tokenSymbol: 'DAI',
+    transferDate: 'Yesterday',
+    transferType: TransferTypes.Withdraw,
+    usdValue: '$200.00',
+  },
+];
 
 const Finance: React.FC = () => {
   const {t} = useTranslation();
+  const {open} = useTransferModalContext();
+  const {data: treasury} = useDaoTreasury('0xMyDaoAddress', TimeFilter.day);
+
+  sortTokens(treasury.tokens, 'treasurySharePercentage', true);
+  const diplayedTokens: TreasuryToken[] = treasury.tokens.slice(0, 5);
 
   return (
     <div className={'m-auto mt-4 w-8/12'}>
-      <h1 className={'text-2xl font-bold text-center '}>Finance Page</h1>
-      <div className={'h-4'} />
-      <TokenSectionWrapper title={t('finance.tokenSection')}>
-        <div className="py-2 space-y-2 border-solid">
-          <ColoredDiv />
-          <ColoredDiv />
-          <ColoredDiv />
-          <ColoredDiv />
-          <ColoredDiv />
-        </div>
-      </TokenSectionWrapper>
-      <div className={'h-4'} />
-      <TransferSectionWrapper title={t('finance.transferSection')}>
-        <div className="my-2 space-y-2 border-solid">
-          <ColoredDiv />
-          <ColoredDiv />
-          <ColoredDiv />
-          <ColoredDiv />
-          <ColoredDiv />
-        </div>
-      </TransferSectionWrapper>
+      <PageWrapper
+        title={new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'USD',
+        }).format(treasury.totalAssetValue)}
+        buttonLabel={t('TransferModal.newTransfer')}
+        subtitle={new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'USD',
+          signDisplay: 'always',
+        }).format(treasury.totalAssetChange)}
+        onClick={open}
+        primary
+      >
+        <div className={'h-4'} />
+        <TokenSectionWrapper title={t('finance.tokenSection')}>
+          <div className="py-2 space-y-2 border-solid">
+            <TokenList tokens={diplayedTokens} />
+          </div>
+        </TokenSectionWrapper>
+        <div className={'h-4'} />
+        <TransferSectionWrapper title={t('finance.transferSection')} showButton>
+          <div className="py-2 space-y-2">
+            <TransferList transfers={TEMP_TRANSFERS} />
+          </div>
+        </TransferSectionWrapper>
+      </PageWrapper>
     </div>
   );
 };
 
-export default Finance;
-
-const ColoredDiv = styled.div.attrs({className: 'h-6 w-full bg-blue-100'})``;
+export default withTransaction('Finance', 'component')(Finance);

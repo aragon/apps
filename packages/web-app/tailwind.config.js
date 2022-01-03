@@ -1,8 +1,9 @@
 module.exports = {
-  purge: ['./src/**/*.{js,ts,jsx,tsx}'],
+  purge: false, // purge: ['./src/**/*.html', './src/**/*.tsx'], TODO: investigate
   darkMode: false,
   theme: {
     extend: {
+      // extends colors according to design system
       colors: {
         primary: {
           50: '#F5F8FF',
@@ -40,6 +41,17 @@ module.exports = {
           800: '#467603',
           900: '#366101',
         },
+        warning: {
+          100: '#FFF3D6',
+          200: '#FFE4AD',
+          300: '#FFD083',
+          400: '#FFBE65',
+          500: '#FF9F32',
+          600: '#DB7D24',
+          700: '#B75E19',
+          800: '#93430F',
+          900: '#7A3009',
+        },
         critical: {
           100: '#FEE4D6',
           200: '#FEC3AE',
@@ -52,8 +64,7 @@ module.exports = {
           900: '#770A30',
         },
       },
-      // extends spacing accorging to design system
-
+      // extends spacing according to design system
       spacing: {
         0.5: '4px',
         1: '8px',
@@ -71,17 +82,16 @@ module.exports = {
         25: '200px',
       },
     },
-    // overwirtes screen breakpoints according to design system
+    // overrides screen breakpoints according to design system
     screens: {
       tablet: '768px',
-      desktop: '1280px',
-      // desktop: '1440px',
+      desktop: '1440px',
       wide: '1920px',
     },
     fontFamily: {
       sans: ['Manrope'],
     },
-    // overwirtes font sizes according to design system
+    // overrides font sizes according to design system
     // These are to be used on components (labels, etc.).
     fontSize: {
       xs: ['0.64rem', 1.5],
@@ -128,6 +138,7 @@ module.exports = {
       textColor: ['active', 'disabled'],
       borderColor: ['active', 'disabled'],
     },
+    fluidType: ['responsive'],
   },
-  plugins: [],
+  plugins: [require('tailwindcss-fluid-type')],
 };

@@ -1,36 +1,51 @@
-import React from 'react';
 import styled from 'styled-components';
-import { Badge } from '../badge';
+import React, {SyntheticEvent} from 'react';
 
-// TODO: change types accordingly
+import {Badge} from '../badge';
+import FallbackImg from '../../assets/avatar-token.svg';
+
 export type TokenCardProps = {
   tokenName: string;
-  tokenSymbolURL: string;
-  treasurySharePercentage: string;
+  tokenSymbol: string;
+  tokenImageUrl: string;
+  treasurySharePercentage?: string;
   tokenCount: string;
   tokenUSDValue: string;
   treasuryShare: string;
-  changeDuringInterval: string;
-  percentageChangeDuringInterval: string;
+  changeType?: 'Positive' | 'Negative';
+  changeDuringInterval?: string;
+  percentageChangeDuringInterval?: string;
 };
 
-export const TokenCard: React.FC<TokenCardProps> = (props) => {
+export const TokenCard: React.FC<TokenCardProps> = ({
+  changeType = 'Positive',
+  ...props
+}) => {
   return (
     <Card data-testid="tokenCard">
       <CoinDetailsWithImage>
-        <CoinImage src={props.tokenSymbolURL} />
+        <CoinImage
+          src={props.tokenImageUrl}
+          onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
+            e.currentTarget.src = FallbackImg;
+          }}
+        />
         <CoinDetails>
           <CoinNameAndAllocation>
             <CoinName>{props.tokenName}</CoinName>
             <ToggleMobileVisibility visible={false}>
-              <Badge label={props.treasurySharePercentage} />
+              {props.treasurySharePercentage && (
+                <Badge label={props.treasurySharePercentage} />
+              )}
             </ToggleMobileVisibility>
           </CoinNameAndAllocation>
           <SecondaryCoinDetails>
-            <span>{props.tokenCount}</span>
+            <span>
+              {props.tokenCount} {props.tokenSymbol}
+            </span>
             <ToggleMobileVisibility visible={false}>
               <span>•</span>
-              <span>{props.tokenUSDValue}</span>
+              <span>{` ${props.tokenUSDValue}`}</span>
             </ToggleMobileVisibility>
           </SecondaryCoinDetails>
         </CoinDetails>
@@ -38,10 +53,25 @@ export const TokenCard: React.FC<TokenCardProps> = (props) => {
       <MarketProperties>
         <FiatValue>{props.treasuryShare}</FiatValue>
         <SecondaryFiatDetails>
-          <ToggleMobileVisibility visible={false}>
-            <span>{props.changeDuringInterval}</span>
-          </ToggleMobileVisibility>
-          <Badge label={props.percentageChangeDuringInterval} colorScheme="green" />
+          {props.changeDuringInterval && (
+            <ToggleMobileVisibility visible={false}>
+              <span
+                className={
+                  changeType === 'Positive'
+                    ? 'text-success-800'
+                    : 'text-critical-800'
+                }
+              >
+                {props.changeDuringInterval}
+              </span>
+            </ToggleMobileVisibility>
+          )}
+          {props.percentageChangeDuringInterval && (
+            <Badge
+              label={props.percentageChangeDuringInterval}
+              colorScheme={changeType === 'Positive' ? 'success' : 'critical'}
+            />
+          )}
         </SecondaryFiatDetails>
       </MarketProperties>
     </Card>
@@ -49,15 +79,16 @@ export const TokenCard: React.FC<TokenCardProps> = (props) => {
 };
 
 const Card = styled.div.attrs({
-  className: 'bg-ui-0 rounded-xl flex justify-between items-center py-2.5 px-3',
+  className:
+    'flex justify-between items-center py-2.5 px-3 bg-ui-0 rounded-xl font-normal',
 })``;
 
 const CoinDetailsWithImage = styled.div.attrs({
   className: 'flex items-center',
 })``;
 
-const CoinImage = styled.img.attrs(({ src }) => ({
-  className: 'w-3 h-3 lg:h-5 lg:w-5 rounded-full',
+const CoinImage = styled.img.attrs(({src}) => ({
+  className: 'w-3 h-3 tablet:h-5 tablet:w-5 rounded-full',
   src,
 }))``;
 
@@ -65,15 +96,15 @@ const CoinDetails = styled.div.attrs({
   className: 'ml-2 space-y-1 overflow-hidden',
 })``;
 
-const CoinNameAndAllocation = styled.p.attrs({
-  className: 'flex items-center space-x-1',
+const CoinNameAndAllocation = styled.div.attrs({
+  className: 'flex items-start space-x-1',
 })``;
 
 const CoinName = styled.h1.attrs({
-  className: 'text-xl font-semibold text-ui-800 truncate',
+  className: 'font-bold text-ui-800 truncate',
 })``;
 
-const SecondaryCoinDetails = styled.p.attrs({
+const SecondaryCoinDetails = styled.div.attrs({
   className: 'text-sm text-ui-500 space-x-0.5',
 })``;
 
@@ -82,21 +113,29 @@ const MarketProperties = styled.div.attrs({
 })``;
 
 const FiatValue = styled.h1.attrs({
-  className: 'text-xl font-semibold text-ui-800 truncate',
+  className: 'font-bold text-ui-800 truncate',
 })``;
 
-const SecondaryFiatDetails = styled.p.attrs({
-  className: 'text-sm text-ui-500 space-x-1 flex justify-end items-center truncate',
+const SecondaryFiatDetails = styled.div.attrs({
+  className:
+    'text-sm text-ui-500 space-x-1 flex justify-end items-center truncate',
 })``;
 
 type ToggleMobileVisibilityProps = {
   visible: boolean;
 };
 
-const ToggleMobileVisibility: React.FC<ToggleMobileVisibilityProps> = ({ visible, children }) => {
+const ToggleMobileVisibility: React.FC<ToggleMobileVisibilityProps> = ({
+  visible,
+  children,
+}) => {
   return (
-    <div className={visible ? 'inline-block tablet:hidden' : 'hidden tablet:inline-block'}>
+    <div
+      className={
+        visible ? 'inline-block tablet:hidden' : 'hidden tablet:inline-block'
+      }
+    >
       {children}
     </div>
-  )
+  );
 };

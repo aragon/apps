@@ -6,26 +6,26 @@ export type ActionListItemProps = {
    * Whether list item is disabled
    */
   disabled?: boolean;
-
   /**
    * Icon to display to the right of the item text
    */
   icon: any; // TODO: Set proper type
-
   /**
    * Action subtitle
    */
   subtitle?: string;
-
   /**
    * Action label
    */
   title: string;
-
   /**
-   * Whether item fits its container
-   */
-  wide?: boolean;
+  * Background color
+  */
+  background?: string;
+  /**
+  * Define if the border show or hide
+  */
+  bordered?: boolean;
   onClick?: () => void;
 };
 
@@ -37,14 +37,13 @@ export const ActionListItem: React.FC<ActionListItemProps> = ({
   icon,
   subtitle,
   title,
-  wide = false,
   onClick,
+  background,
+  bordered = true,
 }) => {
   return (
     <Container
-      wide={wide}
-      onClick={onClick}
-      disabled={disabled}
+      {...{onClick, disabled, background, bordered}}
       data-testid="actionListItem"
     >
       <TextContainer>
@@ -58,18 +57,22 @@ export const ActionListItem: React.FC<ActionListItemProps> = ({
 
 // TODO: Investigate group flexibility when children have different styles based
 // on parent state
-type ContainerProps = {wide: boolean};
-const Container = styled.button.attrs(({wide}: ContainerProps) => ({
-  className: `${
-    wide && 'w-full'
-  } flex justify-between items-center py-1.5 px-2 space-x-1.5 focus:outline-none focus:ring-2 focus:ring-primary-500 box-border border-2 border-ui-100 active:border-ui-800 hover:border-ui-300 disabled:border-ui-200 disabled:bg-ui-100 rounded-xl`,
-}))<ContainerProps>``;
+type ContainerProps = Pick<ActionListItemProps, 'background' | 'bordered'>;
+const Container = styled.button.attrs(({background, bordered}: ContainerProps) => ({
+  className: `w-full flex justify-between items-center py-1.5 
+  px-2 space-x-1.5 focus:outline-none focus:ring-2 focus:ring-primary-500 
+  box-border border-ui-100 active:border-ui-800 hover:border-ui-300 
+  disabled:border-ui-200 disabled:bg-ui-100 rounded-xl
+  ${background && `bg-${background}`} ${bordered && 'border-2'} `,
+}))``;
 
 const TextContainer = styled.div.attrs({
   className: 'text-left',
 })``;
 
-const Title = styled.p.attrs({})`
+const Title = styled.p.attrs({
+  className:'font-bold'
+})`
   color: #52606d; //UI-600
 
   ${Container}:active & {
@@ -82,7 +85,7 @@ const Title = styled.p.attrs({})`
 `;
 
 const Subtitle = styled.p.attrs({
-  className: 'text-sm',
+  className: 'text-sm font-medium',
 })`
   color: #7b8794; //UI-400
 

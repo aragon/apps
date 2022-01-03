@@ -1,6 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
+import {withTransaction} from '@elastic/apm-rum-react';
+
+import {constants} from 'ethers';
+import TransferCard from 'components/transferCard';
 
 const Home: React.FC = () => {
   const {t} = useTranslation();
@@ -12,6 +16,8 @@ const Home: React.FC = () => {
           <WelcomeMessage>{t('subtitle')}</WelcomeMessage>
           <Title>{t('title.part1')}</Title>
           <Subtitle>{t('title.part2')}</Subtitle>
+
+          <TransferCard from={constants.AddressZero} to="DAO Name" />
         </div>
       </div>
     </>
@@ -30,4 +36,4 @@ const Subtitle = styled.p.attrs({
     'my-3 text-4xl sm:text-5xl desktop:text-6xl font-bold sm:tracking-tight text-gray-900',
 })``;
 
-export default Home;
+export default withTransaction('Dashboard', 'component')(Home);

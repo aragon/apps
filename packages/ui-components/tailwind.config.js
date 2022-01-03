@@ -67,6 +67,7 @@ module.exports = {
       // extends spacing accorging to design system
       spacing: {
         0.5: '4px',
+        0.75: '6px',
         1: '8px',
         1.5: '12px',
         2: '16px',
@@ -81,9 +82,14 @@ module.exports = {
         25: '200px',
       },
     },
+    fontWeight: {
+      normal: 500,
+      bold: 700,
+    },
     // overwirtes screen breakpoints according to design system
     screens: {
       tablet: '768px',
+      lg: '1280px',
       desktop: '1440px',
       wide: '1920px',
     },

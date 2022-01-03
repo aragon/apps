@@ -3,8 +3,7 @@ import styled from 'styled-components';
 
 import {Address, shortenAddress} from '../../utils/addresses';
 import {Avatar, AvatarProps} from '../avatar';
-import {StyledButton} from '../button/button';
-import {FlexDiv} from '../button/iconButton';
+import {ButtonIcon} from '../button/buttonIcon';
 import {IconSwitch} from '../icons';
 
 export type DaoCardProps = {
@@ -18,8 +17,6 @@ export type DaoCardProps = {
    * button right.
    * */
   wide?: boolean;
-  /** Label for switch button */
-  switchLabel?: string;
   /** Handler for the switch button. Will be called when the button is clicked.
    * */
   onClick: () => void;
@@ -42,7 +39,6 @@ export const DaoCard: React.FC<DaoCardProps> = ({
   onClick,
   wide = false,
   src,
-  switchLabel,
 }: DaoCardProps) => {
   return (
     <Card
@@ -59,12 +55,13 @@ export const DaoCard: React.FC<DaoCardProps> = ({
         </TextContainer>
       </LeftContent>
       {includeSwitch && (
-        <StyledButton mode={'ghost'} size={'small'} onClick={onClick}>
-          <FlexDiv side={'right'}>
-            <IconSwitch />
-            <p>{switchLabel}</p>
-          </FlexDiv>
-        </StyledButton>
+        <ButtonIcon
+          icon={<IconSwitch />}
+          mode="ghost"
+          bgWhite
+          size="small"
+          onClick={onClick}
+        />
       )}
     </Card>
   );
@@ -78,7 +75,7 @@ type CardProps = {
 const Card = styled.div.attrs(({includeSwitch, wide}: CardProps) => ({
   className: `${!includeSwitch && 'cursor-pointer'} ${
     wide ? 'flex justify-between' : 'inline-flex'
-  }`,
+  } items-center`,
 }))<CardProps>``;
 
 const LeftContent = styled.div.attrs({

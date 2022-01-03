@@ -1,5 +1,8 @@
-export const Community = '/Community';
+export const Community = '/community';
 export const Dashboard = '/';
-export const Finance = '/Finance';
-export const Governance = '/Governance';
-export const NotFound = '/NotFound';
+export const Finance = '/finance';
+export const Governance = '/governance';
+export const NotFound = '/notfound';
+export const AllTokens = '/finance/tokens';
+export const AllTransfers = '/finance/transfers';
+export const NewDeposit = 'finance/new-deposit';
