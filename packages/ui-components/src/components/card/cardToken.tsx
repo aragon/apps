@@ -51,10 +51,12 @@ export const CardToken: React.FC<CardTokenProps> = ({
               <span>
                 {props.tokenCount} {props.tokenSymbol}
               </span>
-              <ToggleMobileVisibility visible={false}>
-                <span>•</span>
-                <span> {props.tokenUSDValue}</span>
-              </ToggleMobileVisibility>
+              {props.tokenUSDValue && (
+                <ToggleMobileVisibility visible={false}>
+                  <span>•</span>
+                  <span> {props.tokenUSDValue}</span>
+                </ToggleMobileVisibility>
+              )}
             </SecondaryCoinDetails>
           )}
         </CoinDetails>
