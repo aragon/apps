@@ -14,12 +14,16 @@ import "./../../DAO.sol";
 abstract contract Process is Component {
     address internal constant ANY_ADDR = address(type(uint160).max);
 
+    // Events
     event ProcessStarted(Execution indexed execution, uint256 indexed executionId, bytes indexed metadata);
     event ProcessExecuted(Execution indexed execution, uint256 indexed executionId);
+    event AllowedActionsAdded(bytes[] indexed allowedActions);
 
     // Roles
     bytes32 public constant PROCESS_START_ROLE = keccak256("PROCESS_START_ROLE");
     bytes32 public constant PROCESS_EXECUTE_ROLE = keccak256("PROCESS_EXECUTE_ROLE");
+    bytes32 public constant PROCESS_ADD_ALLOWED_ACTIONS = keccak256("PROCESS_ADD_ALLOWED_ACTIONS");
+    bytes32 public constant PROCESS_REMOVE_ALLOWED_ACTIONS = keccak256("PROCESS_REMOVE_ALLOWED_ACTIONS");
 
     // Error MSG's
     string internal constant ERROR_EXECUTION_STATE_WRONG = "ERROR_EXECUTION_STATE_WRONG";
@@ -49,13 +53,17 @@ abstract contract Process is Component {
     }
 
     uint256 private executionsCounter;
-    mapping(uint256 => Execution) private executions;
-    mapping(address => mapping(bytes4 => bool)) allowedActions;
+    mapping(uint256 => Execution) private executions; // All executions of this process
+    mapping(address => mapping(bytes4 => bool)) allowedActions; // The actions allowed for this process 
 
-    constructor(bytes[] calldata _allowedActions) {
+    /// @dev Used for UUPS upgradability pattern
+    /// @param _allowedActions A dynamic bytes array to define the allowed actions. Addr + funcSig byte strings.
+    function initialize(bytes[] calldata _allowedActions) initializer {
         _setAllowedActions(_allowedActions);
     }
 
+    /// @dev Used to set the allowed actions of this process on deployment of it.
+    /// @param _allowedActions A dynamic bytes array to define the allowed actions. addr + funcSig bytes string is used to save a loop.
     function _setAllowedActions(bytes[] calldata _allowedActions) private {
         uint256 actionsLength = allowedActions.length;
 
@@ -65,13 +73,34 @@ abstract contract Process is Component {
         } 
     }
 
-    function bytesToAddress(bytes memory value) internal pure returns (address addr) {
+    /// @dev Used to convert a bytes to type address
+    /// @param value The bytes to convert to a address
+    /// @returns addr The converted address
+    function bytesToAddress(bytes memory value) private pure returns (address addr) {
         assembly {
             addr := mload(add(value,20))
         } 
     }
 
-    // todo: add function addAllowedAction etc.
+    /// @notice Add more allowed actions this process has
+    /// @dev Adds additional allowed actions to the allowedActions mapping of this process
+    /// @param _allowedActions A dynamic bytes array to define the allowed actions. addr + funcSig bytes string is used to save a loop.
+    function addAllowedActions(bytes[] calldata _allowedActions) external auth(PROCESS_ADD_ALLOWED_ACTIONS) {
+        _setAllowedActions(_allowedActions);
+        emit AllowedActionsAdded(_allowedActions);
+    }
+
+    /// @notice Remove allowed actions from this process
+    /// @dev Deletes entries from the allowedActions mapping based on the passed array
+    /// @param actionsToRemove A dynamic bytes array to define the allowed actions. addr + funcSig bytes string is used to save a loop.
+    function removeAllowedActions(bytes[] calldata actionsToRemove) external auth(PROCESS_REMOVE_ALLOWED_ACTIONS) { // TODO: Remove code duplication.. see _setAllowedActions
+        uint256 actionsLength = allowedActions.length;
+
+        for (uint256 i = 0; i > actionsLength; i++) { 
+            bytes calldata allowedAction = allowedActions[i];
+            delete allowedActions[bytesToAddress(allowedAction[:20])][bytes4(allowedAction[20:24])];
+        } 
+    }
 
     /// @notice If called the governance process starts a new execution.
     /// @dev The state of the container does get changed to RUNNING, the execution struct gets created, and the concrete implementation in _start called.
