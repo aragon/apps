@@ -11,15 +11,16 @@ import "./component/Component.sol";
 import "./acl/ACL.sol";
 import "./IDAO.sol";
 
-// TODO: VAULT+EXECUTOR+DAO can be ONE CONTRACT!
-
 /// @title The public interface of the Aragon DAO framework.
 /// @author Samuel Furter - Aragon Association - 2021
 /// @notice This contract is the entry point to the Aragon DAO framework and provides our users a simple and use to use public interface.
 /// @dev Public API of the Aragon DAO framework
 contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
+    // Events
     event SetMetadata(bytes indexed metadata);
     event Executed(address indexed actor, Action[] indexed actions, bytes[] execResults);
+    event AddProcess(Process indexed process);
+    event RemoveProcess(Process indexed process);
     
     // Roles
     bytes32 public constant UPGRADE_ROLE = keccak256("UPGRADE_ROLE");
@@ -32,7 +33,7 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
     struct Action {
         address to; // Address to call.
         uint256 value; // Value to be sent with the call. for example (ETH)
-        bytes data;
+        bytes data; // FuncSig + arguments
     }
 
     /// @dev Used for UUPS upgradability pattern
@@ -41,11 +42,18 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
         bytes calldata _metadata,
     ) public initializer {
         setMetadata(_metadata);
-        //ACL.initACL(address(this));
+        ACL.initACL(address(this));
     }
 
+    /// @dev Used to check the permissions within the upgradability pattern implementation of OZ
     function _authorizeUpgrade(address) internal virtual override auth(address(this), UPGRADE_ROLE) { }
 
+    /// @notice Checks if the current callee has the permissions for.
+    /// @dev Wrapper for the willPerform method of ACL to later on be able to use it in the sub components of this DAO.
+    /// @param _where Which contract does get called
+    /// @param _who Who is calling this method
+    /// @param _role Which role is required to call this
+    /// @param data Additional data used in the ACLOracle
     function hasPermission(address _where, address _who, bytes32 _role, bytes memory data) public override returns(bool) {
         return willPerform(_where, _who, _role, data);
     }
@@ -55,6 +63,22 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
     /// @param _metadata The IPFS hash of the new metadata object
     function setMetadata(bytes calldata _metadata) external auth(address(this), DAO_CONFIG_ROLE) {
         emit SetMetadata(_metadata);
+    }
+
+    /// @notice Add new process to DAO
+    /// @dev Grants the new process execution rights and amits the related event.
+    /// @param process The address of the new process
+    function addProcess(Process process) external auth(address(this), DAO_CONFIG_ROLE) {
+        grant(address(this), process, EXEC_ROLE);
+        emit ProcessAdded(process);
+    }
+
+    /// @notice Remove process from DAO
+    /// @dev Revokes the execution rights from the process and emits the related event.
+    /// @param process The address of the new process
+    function removeProcess(Process process) external auth(address(this), DAO_CONFIG_ROLE) {
+        revoke(address(this), process, EXEC_ROLE);
+        emit ProcessRemoved(process);
     }
 
     /// @notice If called, the list of provided actions will be executed.

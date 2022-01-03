@@ -36,7 +36,6 @@ abstract contract Process is Component {
     }
 
     struct Proposal {
-        string processName; // The hash of the process that should get called
         DAO.Action[] actions; // The actions that should get executed in the end
         bytes metadata; // IPFS hash pointing to the metadata as description, title, image etc. 
         bytes additionalArguments; // Optional additional arguments a process resp. governance process does need
@@ -54,7 +53,7 @@ abstract contract Process is Component {
     mapping(address => mapping(bytes4 => bool)) allowedActions;
 
     constructor(bytes[] calldata _allowedActions) {
-        this._setAllowedActions(_allowedActions);
+        _setAllowedActions(_allowedActions);
     }
 
     function _setAllowedActions(bytes[] calldata _allowedActions) private {

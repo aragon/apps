@@ -41,7 +41,7 @@ contract DAOFactory is AbstractFactory {
 
         // Create process and give permissions to call execute on DAO
         address process = processFactory.newProcess(_processSettings);
-        dao.grant(dao, process, DAO(dao).EXEC_ROLE());
+        dao.addProcess(process);
     }
 
     function setupBases() internal override {
