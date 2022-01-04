@@ -6,10 +6,11 @@ import {IconChevronDown} from '../icons';
 /** Dropdown input with variable styling (depending on mode) */
 
 export const DropdownInput: React.FC<SearchInputProps> = ({...props}) => {
+
   return (
     <TextInput
       data-testid="search-input"
-      adornment={<IconChevronDown className="text-ui-600" />}
+      rightAdornment={<IconChevronDown className="text-ui-600" />}
       side={'right'}
       clickable
       {...props}
