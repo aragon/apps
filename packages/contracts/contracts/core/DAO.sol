@@ -37,6 +37,12 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
 
     // Error msg's
     string private constant ERROR_ACTION_CALL_FAILED = "ACTION_CALL_FAILED";
+    string private constant ERROR_DEPOSIT_AMOUNT_ZERO = "DEPOSIT_AMOUNT_ZERO";
+    string private constant ERROR_ETH_DEPOSIT_AMOUNT_MISMATCH = "ETH_DEPOSIT_AMOUNT_MISMATCH";
+    string private constant ERROR_TOKEN_NOT_CONTRACT = "TOKEN_NOT_CONTRACT";
+    string private constant ERROR_TOKEN_DEPOSIT_FAILED = "TOKEN_DEPOSIT_FAILED";
+    string private constant ERROR_TOKEN_WITHDRAW_FAILED = "TOKEN_WITHDRAW_FAILED";
+    string private constant ERROR_ETH_WITHDRAW_FAILED = "ETH_WITHDRAW_FAILED";
 
     struct Action {
         address to; // Address to call.
