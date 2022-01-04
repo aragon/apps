@@ -2,9 +2,6 @@ import {
   ButtonIcon,
   ButtonText,
   ButtonWallet,
-  CardText,
-  CardToken,
-  CardTransfer,
   IconChevronLeft,
   IconChevronRight,
   IconMenuVertical,
@@ -12,7 +9,7 @@ import {
 } from '@aragon/ui-components';
 import styled from 'styled-components';
 import {Address} from '@aragon/ui-components/dist/utils/addresses';
-import {useForm} from 'react-hook-form';
+import {useForm, FormProvider} from 'react-hook-form';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
 import React, {useCallback, useEffect} from 'react';
@@ -25,6 +22,8 @@ import {NavigationBar} from 'containers/navbar';
 import {TransferTypes} from 'utils/constants';
 import {useWalletProps} from 'containers/walletMenu';
 import {useWalletMenuContext} from 'context/walletMenu';
+import TokenMenu from 'containers/tokenMenu';
+import {BaseTokenInfo} from 'utils/types';
 
 export type FormData = {
   amount: number;
@@ -59,25 +58,30 @@ const defaultValues = {
 const NewDeposit: React.FC = () => {
   const {t} = useTranslation();
   const {open} = useWalletMenuContext();
+  const formMethods = useForm<FormData>({defaultValues});
   const {currentStep, prev, next} = useStepper(TOTAL_STEPS);
-  const {control, watch, getValues, setValue} = useForm<FormData>({
-    defaultValues,
-  });
   const {connect, isConnected, account, ensName, ensAvatarUrl}: useWalletProps =
     useWallet();
 
   useEffect(() => {
     if (account) {
-      setValue('from', account);
-      setValue('type', TransferTypes.Deposit);
+      formMethods.setValue('from', account);
+      formMethods.setValue('type', TransferTypes.Deposit);
     }
-  }, [account, setValue]);
+  }, [account, formMethods]);
 
   /** Toggle wallet */
   const handleWalletButtonClick = useCallback(() => {
     isConnected() ? open() : connect('injected');
   }, [connect, isConnected, open]);
 
+  const handleTokenSelect = (token: BaseTokenInfo) => {
+    formMethods.setValue('tokenName', token.name);
+    formMethods.setValue('tokenImgUrl', token.imgUrl);
+    formMethods.setValue('tokenSymbol', token.symbol);
+    formMethods.setValue('tokenAddress', token.address);
+    formMethods.setValue('isCustomToken', false);
+  };
   /**
    * TODO: The text input should replace with a
    * drop down input
@@ -119,33 +123,37 @@ const NewDeposit: React.FC = () => {
           totalSteps={TOTAL_STEPS}
           currentStep={currentStep}
         />
-        <FormLayout>
-          {currentStep === steps.configure ? (
-            <DepositForm control={control} />
-          ) : (
-            <ReviewDeposit getValues={getValues} />
-          )}
-          <FormFooter>
-            {/* Should change this to secondary on gray which is unsupported now */}
-            <ButtonText
-              label="Back"
-              mode="secondary"
-              size="large"
-              onClick={prev}
-              disabled={currentStep === 1}
-              iconLeft={<IconChevronLeft />}
-            />
-            <ButtonText
-              label="Continue"
-              size="large"
-              onClick={next}
-              iconRight={<IconChevronRight />}
-            />
-          </FormFooter>
-        </FormLayout>
+        <FormProvider {...formMethods}>
+          <FormLayout>
+            {currentStep === steps.configure ? (
+              <DepositForm />
+            ) : (
+              <ReviewDeposit />
+            )}
+            <FormFooter>
+              {/* Should change this to secondary on gray which is unsupported now */}
+              <ButtonText
+                label="Back"
+                mode="secondary"
+                size="large"
+                onClick={prev}
+                disabled={currentStep === 1}
+                iconLeft={<IconChevronLeft />}
+              />
+              <ButtonText
+                label="Continue"
+                size="large"
+                onClick={next}
+                iconRight={<IconChevronRight />}
+              />
+            </FormFooter>
+          </FormLayout>
+        </FormProvider>
+        <TokenMenu onTokenSelect={handleTokenSelect} />
+
         {/* View form values; to be removed later */}
         <pre className="mt-2">
-          Form values: {JSON.stringify(watch(), null, 2)}
+          Form values: {JSON.stringify(formMethods.watch(), null, 2)}
         </pre>
       </Layout>
     </>

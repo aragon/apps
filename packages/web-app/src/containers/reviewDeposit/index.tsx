@@ -1,14 +1,24 @@
-import React from 'react';
 import {useTranslation} from 'react-i18next';
-import {UseFormGetValues} from 'react-hook-form';
+import {useFormContext} from 'react-hook-form';
+import React, {useEffect, useState} from 'react';
 import {CardText, CardToken, CardTransfer} from '@aragon/ui-components';
 
-import {FormData} from 'pages/newDeposit';
+import {fetchTokenPrice} from 'services/prices';
 
-type ReviewDepositProps = {getValues: UseFormGetValues<FormData>};
-const ReviewDeposit: React.FC<ReviewDepositProps> = ({getValues}) => {
+const ReviewDeposit: React.FC = () => {
   const {t} = useTranslation();
+  const {getValues} = useFormContext();
+  const [price, setPrice] = useState('$0.0');
   const values = getValues();
+
+  useEffect(() => {
+    async function getPrice() {
+      const tokenPrice = await fetchTokenPrice(values.tokenAddress);
+      setPrice(tokenPrice);
+    }
+
+    getPrice();
+  }, [values.tokenAddress]);
 
   return (
     <div className="flex flex-col space-y-1.5 desktop:space-y-3">
@@ -24,7 +34,7 @@ const ReviewDeposit: React.FC<ReviewDepositProps> = ({getValues}) => {
         tokenCount={values.amount.toString()}
         tokenSymbol={values.tokenSymbol}
         tokenImageUrl={values.tokenImgUrl}
-        treasuryShare="$10.00"
+        treasuryShare={price}
       />
       <CardText
         type="label"

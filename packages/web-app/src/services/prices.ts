@@ -96,4 +96,8 @@ async function fetchTokenData(address: Address): FetchedTokenData {
   }
 }
 
-export {fetchTokenMarketData, fetchTokenData};
+async function fetchTokenPrice(id: string) {
+  return '$$$$$$$$';
+}
+
+export {fetchTokenMarketData, fetchTokenData, fetchTokenPrice};

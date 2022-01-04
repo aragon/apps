@@ -27,7 +27,8 @@
     "from": "From",
     "token": "Token",
     "amount": "Amount",
-    "reference": "Reference"
+    "reference": "Reference",
+    "address": "Token Contract Address"
   },
   "finance": {
     "tokenSection": "Tokens",
@@ -66,6 +67,7 @@
     "configureDepositSubtitle": "Enter the desired token and its number for transmission. Furthermore, a reception address is necessary.",
     "toSubtitle": "The recipient of the tokens is the DAO in which you are currently operating.",
     "tokenSubtitle": "Select Token to deposit in DAO",
+    "contractAddressSubtitle": "You have selected a custom token. Enter the contract address of this token to interact with it.",
     "amountSubtitle": "Define amount to deposit",
     "referenceSubtitle": "Add a reference copy to identify this transaction later on"
   }

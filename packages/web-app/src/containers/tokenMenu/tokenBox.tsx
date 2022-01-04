@@ -9,15 +9,16 @@ export type TokenProps = {
   tokenAddress: string;
   tokenName: string;
   tokenLogo: string;
+  tokenSymbol: string;
 };
 
 export default function TokenBox({
   tokenAddress,
   tokenName,
   tokenLogo,
+  tokenSymbol,
 }: TokenProps) {
   const [balance, setBalance] = useState<string | null>(null);
-  const [symbol, setSymbol] = useState<string | null>(null);
   const {account, provider} = useWallet();
 
   useEffect(() => {
@@ -25,7 +26,6 @@ export default function TokenBox({
     fetchBalance(tokenAddress, account as string, provider).then(
       tokenBalance => {
         setBalance(tokenBalance.amount);
-        setSymbol(tokenBalance.symbol);
       }
     );
   }, [account, provider, tokenAddress]);
@@ -39,7 +39,7 @@ export default function TokenBox({
         <Avatar size="small" src={tokenLogo} />
         <Name>{tokenName}</Name>
       </TokenNameWrapper>
-      <Price>{balance ? `${balance} ${symbol}` : '-'}</Price>
+      <Price>{balance ? `${balance} ${tokenSymbol}` : '-'}</Price>
     </Box>
   ) : null;
 }

@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import styled from 'styled-components';
 import {Modal, SearchInput, ButtonText, IconAdd} from '@aragon/ui-components';
 import {Wallet} from 'use-wallet/dist/cjs/types';
@@ -9,42 +9,70 @@ import {useWallet} from 'context/augmentedWallet';
 import {useTransferModalContext} from 'context/transfersModal';
 import {curatedTokens} from 'utils/network';
 import TokenBox from './tokenBox';
+import {useTokenInfo} from 'hooks/useTokenInformation';
+import {BaseTokenInfo} from 'utils/types';
 
-const TokenMenu: React.FC = () => {
+type TokenMenuProps = {
+  onTokenSelect: (token: BaseTokenInfo) => void;
+};
+
+const TokenMenu: React.FC<TokenMenuProps> = ({onTokenSelect}) => {
   const {isTokenOpen, close} = useTransferModalContext();
+  const [searchValue, setSearchValue] = useState('');
   const {chainId}: Wallet = useWallet();
-  const {control, watch} = useForm();
   const {t} = useTranslation();
 
-  const filterValidator = useCallback(
-    (token: string[]) => {
-      const searchValue = watch('searchToken');
-      if (searchValue !== '') {
-        const re = new RegExp(searchValue, 'i');
-        return token[0].match(re);
-      }
-      return true;
-    },
-    [watch]
+  const curatedTokenAddresses = useMemo(
+    () => Object.entries(curatedTokens[chainId || 4].curatedTokens),
+    [chainId]
   );
 
+  const tokenBalances = useMemo(
+    () =>
+      curatedTokenAddresses.map(value => ({
+        address: value[1],
+        count: BigInt(0),
+      })),
+    [curatedTokenAddresses]
+  );
+
+  const {data: tokens} = useTokenInfo(tokenBalances);
+
+  const handleTokenClick = (token: BaseTokenInfo) => {
+    onTokenSelect(token);
+    close('token');
+  };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
+  // console.log(info);
+
+  // const filterValidator = useCallback(
+  //   (token: any) => {
+  //     console.log(token);
+  //     if (searchValue !== '') {
+  //       const re = new RegExp(searchValue, 'i');
+  //       // return token[0].match(re);
+  //     }
+  //     return true;
+  //   },
+  //   [searchValue]
+  // );
+
   const renderResult = () => {
-    const tokenList = Object.entries(
-      curatedTokens[chainId || 4].curatedTokens
-    ).filter(filterValidator);
+    const tokenList = tokens;
 
     return tokenList.length !== 0 ? (
       <>
         <TokenTitle>{t('TokenModal.yourTokens')}</TokenTitle>
-        {tokenList.map(([name, address]) => (
-          <TokenBox
-            tokenName={name}
-            tokenAddress={address}
-            tokenLogo={
-              'https://assets.coingecko.com/coins/images/681/small/JelZ58cv_400x400.png?1601449653'
-            }
-            key={address}
-          />
+        {tokenList.map(token => (
+          <div key={token.address} onClick={() => handleTokenClick(token)}>
+            <TokenBox
+              tokenName={token.name}
+              tokenLogo={token.imgUrl}
+              tokenSymbol={token.symbol}
+              tokenAddress={token.address}
+            />
+          </div>
         ))}
       </>
     ) : (
@@ -55,7 +83,7 @@ const TokenMenu: React.FC = () => {
     );
   };
 
-  //TODO: tokenLogo should be automate using coinkego api
+  //TODO: tokenLogo should be automate using coingeko api
   //TODO: Cross Icon should added in the next released
   return (
     <Modal
@@ -64,17 +92,7 @@ const TokenMenu: React.FC = () => {
       data-testid="TokenMenu"
     >
       <Container>
-        <Controller
-          render={({field: {onChange, value}}) => (
-            <SearchInput
-              {...{value, onChange}}
-              placeholder="Type to filter ..."
-            />
-          )}
-          name="searchToken"
-          defaultValue={''}
-          control={control}
-        />
+        <SearchInput />
         <TokensWrapper>{renderResult()}</TokensWrapper>
         <WideButton
           mode="secondary"

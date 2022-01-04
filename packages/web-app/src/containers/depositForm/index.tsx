@@ -2,16 +2,21 @@ import React from 'react';
 import styled from 'styled-components';
 import {constants} from 'ethers';
 import {useTranslation} from 'react-i18next';
-import {Control, Controller} from 'react-hook-form';
-import {ButtonWallet, Label, TextInput} from '@aragon/ui-components';
+import {Controller, useFormContext, useWatch} from 'react-hook-form';
+import {
+  ButtonWallet,
+  DropdownInput,
+  Label,
+  ValueInput,
+} from '@aragon/ui-components';
 
-import {FormData} from 'pages/newDeposit';
 import {useTransferModalContext} from 'context/transfersModal';
 
-type DepositFormProps = {control: Control<FormData>};
-const DepositForm: React.FC<DepositFormProps> = ({control}) => {
+const DepositForm: React.FC = () => {
   const {t} = useTranslation();
   const {open} = useTransferModalContext();
+  const {control} = useFormContext();
+  const isCustomToken = useWatch({name: 'isCustomToken'});
 
   return (
     <>
@@ -27,15 +32,52 @@ const DepositForm: React.FC<DepositFormProps> = ({control}) => {
         />
       </FormItem>
 
+      {/* Select token */}
       <FormItem>
         <Label
           label={t('labels.token')}
           helpText={t('newDeposit.tokenSubtitle')}
         />
-        {/* TODO: Should change to dropdown input*/}
-        <TextInput side="left" onClick={() => open('token')} />
+        {/* TODO: Translation for placeholder */}
+        <Controller
+          name="tokenSymbol"
+          control={control}
+          render={({field: {name, value}}) => (
+            <DropdownInput
+              name={name}
+              value={value}
+              onClick={() => open('token')}
+              placeholder="Select a Token..."
+            />
+          )}
+        />
       </FormItem>
 
+      {/* Custom token address */}
+      {isCustomToken && (
+        <FormItem>
+          <Label
+            label={t('labels.address')}
+            helpText={t('newDeposit.contractAddressSubtitle')}
+          />
+          <Controller
+            name="tokenAddress"
+            control={control}
+            render={({field: {name, onBlur, onChange, value}}) => (
+              <ValueInput
+                adornmentText="Paste"
+                onAdornmentClick={() => alert('Paste clicked')}
+                name={name}
+                value={value}
+                onBlur={onBlur}
+                onChange={onChange}
+              />
+            )}
+          />
+        </FormItem>
+      )}
+
+      {/* Token amount */}
       <FormItem>
         <Label
           label={t('labels.amount')}
@@ -45,8 +87,9 @@ const DepositForm: React.FC<DepositFormProps> = ({control}) => {
           name="amount"
           control={control}
           render={({field: {name, onBlur, onChange, value}}) => (
-            <TextInput
-              side="left"
+            <ValueInput
+              adornmentText="Max"
+              onAdornmentClick={() => alert('Max clicked')}
               name={name}
               value={value}
               onBlur={onBlur}
@@ -56,6 +99,7 @@ const DepositForm: React.FC<DepositFormProps> = ({control}) => {
         />
       </FormItem>
 
+      {/* Token reference */}
       <FormItem>
         <Label
           label={t('labels.reference')}
