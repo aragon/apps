@@ -2,6 +2,9 @@ import {
   ButtonIcon,
   ButtonText,
   ButtonWallet,
+  CardText,
+  CardToken,
+  CardTransfer,
   IconChevronLeft,
   IconChevronRight,
   IconMenuVertical,
@@ -17,6 +20,7 @@ import React, {useCallback, useEffect} from 'react';
 import {useWallet} from 'context/augmentedWallet';
 import DepositForm from 'containers/depositForm';
 import {useStepper} from 'hooks/useStepper';
+import ReviewDeposit from 'containers/reviewDeposit';
 import {NavigationBar} from 'containers/navbar';
 import {TransferTypes} from 'utils/constants';
 import {useWalletProps} from 'containers/walletMenu';
@@ -24,12 +28,15 @@ import {useWalletMenuContext} from 'context/walletMenu';
 
 export type FormData = {
   amount: number;
+  isCustomToken: boolean;
   reference?: string;
   type: TransferTypes;
-  from: Address | null; // null because of useWallet props types
+  from: Address;
   to: Address;
   tokenSymbol: string;
   tokenAddress: Address;
+  tokenName: string;
+  tokenImgUrl: string;
 };
 
 const steps = {
@@ -42,15 +49,20 @@ const TOTAL_STEPS = Object.keys(steps).length;
 const defaultValues = {
   amount: 0,
   reference: '',
+  tokenName: '',
+  tokenImgUrl: '',
   tokenAddress: '',
   tokenSymbol: '',
+  isCustomToken: false,
 };
 
 const NewDeposit: React.FC = () => {
   const {t} = useTranslation();
   const {open} = useWalletMenuContext();
   const {currentStep, prev, next} = useStepper(TOTAL_STEPS);
-  const {control, watch, setValue} = useForm<FormData>({defaultValues});
+  const {control, watch, getValues, setValue} = useForm<FormData>({
+    defaultValues,
+  });
   const {connect, isConnected, account, ensName, ensAvatarUrl}: useWalletProps =
     useWallet();
 
@@ -63,7 +75,6 @@ const NewDeposit: React.FC = () => {
 
   /** Toggle wallet */
   const handleWalletButtonClick = useCallback(() => {
-    console.log('trigger');
     isConnected() ? open() : connect('injected');
   }, [connect, isConnected, open]);
 
@@ -112,7 +123,7 @@ const NewDeposit: React.FC = () => {
           {currentStep === steps.configure ? (
             <DepositForm control={control} />
           ) : (
-            <h1>Review Deposit</h1>
+            <ReviewDeposit getValues={getValues} />
           )}
           <FormFooter>
             {/* Should change this to secondary on gray which is unsupported now */}

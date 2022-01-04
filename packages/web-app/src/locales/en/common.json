@@ -24,6 +24,7 @@
     "seeAllTokens": "See All Tokens",
     "seeAllTransfers": "See All Transfers",
     "to": "To",
+    "from": "From",
     "token": "Token",
     "amount": "Amount",
     "reference": "Reference"

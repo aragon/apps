@@ -10,7 +10,7 @@ export type CardTokenProps = {
   tokenImageUrl: string;
   treasurySharePercentage?: string;
   tokenCount: string;
-  tokenUSDValue: string;
+  tokenUSDValue?: string;
   treasuryShare: string;
   type?: 'vault' | 'transfer';
   bgWhite?: boolean;
