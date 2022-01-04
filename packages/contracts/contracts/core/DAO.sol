@@ -11,6 +11,7 @@ import "./component/Component.sol";
 import "./acl/ACL.sol";
 import "./IDAO.sol";
 
+// TODO: Add ERC1271
 /// @title The public interface of the Aragon DAO framework.
 /// @author Samuel Furter - Aragon Association - 2021
 /// @notice This contract is the entry point to the Aragon DAO framework and provides our users a simple and use to use public interface.
@@ -21,6 +22,13 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
     event Executed(address indexed actor, Action[] indexed actions, bytes[] execResults);
     event AddProcess(Process indexed process);
     event RemoveProcess(Process indexed process);
+    // ETHDeposited and Deposited are both needed. ETHDeposited makes sure that whoever sends funds
+    // with `send/transfer`, receive function can still be executed without reverting due to gas cost
+    // increases in EIP-2929. To still use `send/transfer`, access list is needed that has the address
+    // of the contract(base contract) that is behind the proxy.
+    event ETHDeposited(address sender, uint256 amount);
+    event Deposited(address indexed sender, address indexed token, uint256 amount, string _reference);
+    event Withdrawn(address indexed token, address indexed to, address from, uint256 amount, string _reference);
     
     // Roles
     bytes32 public constant UPGRADE_ROLE = keccak256("UPGRADE_ROLE");
@@ -28,7 +36,7 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
     bytes32 public constant EXEC_ROLE = keccak256("EXEC_ROLE");
 
     // Error msg's
-    string private constant ERROR_ACTION_CALL_FAILED = "EXCECUTOR_ACTION_CALL_FAILED";
+    string private constant ERROR_ACTION_CALL_FAILED = "ACTION_CALL_FAILED";
 
     struct Action {
         address to; // Address to call.
@@ -49,7 +57,7 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
     function _authorizeUpgrade(address) internal virtual override auth(address(this), UPGRADE_ROLE) { }
 
     /// @notice Checks if the current callee has the permissions for.
-    /// @dev Wrapper for the willPerform method of ACL to later on be able to use it in the sub components of this DAO.
+    /// @dev Wrapper for the willPerform method of ACL to later on be able to use it in the modifier of the sub components of this DAO.
     /// @param _where Which contract does get called
     /// @param _who Who is calling this method
     /// @param _role Which role is required to call this
@@ -97,5 +105,44 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
         }
 
         emit Executed(msg.sender, actions, execResults);
+    }
+
+    // @dev Emit ETHDeposited event to track ETH deposits that weren't done over the deposit method.
+    receive () external payable {
+        emit ETHDeposited(msg.sender, msg.value);
+    }
+
+    // @notice Deposit ETH or any token to this contract with a reference string
+    // @dev Deposit ETH (token address == 0) or any token with a reference
+    // @param _token The address of the token and in case of ETH address(0)
+    // @param _amount The amount of tokens to deposit
+    // @param _reference The deposit reference describing the reason of it
+    function deposit(address _token, uint256 _amount, string calldata _reference) external payable {
+        require(_amount > 0, ERROR_DEPOSIT_AMOUNT_ZERO);
+
+        if (_token == address(0)) {
+            require(msg.value == _amount, ERROR_ETH_DEPOSIT_AMOUNT_MISMATCH);
+        } else {
+            require(_token.isContract(), ERROR_TOKEN_NOT_CONTRACT);
+            require(ERC20(_token).safeTransferFrom(msg.sender, address(this), _amount), ERROR_TOKEN_DEPOSIT_FAILED);
+        }
+
+        emit Deposited(msg.sender, _token, _amount, _reference);
+    }
+
+    // @notice Withdraw tokens or ETH from the DAO with a withdraw reference string
+    // @param _token The address of the token and in case of ETH address(0)
+    // @param _to The target address to send tokens or ETH
+    // @param _amount The amount of tokens to deposit
+    // @param _reference The deposit reference describing the reason of it
+    function withdraw(address _token, address _to, uint256 _amount, string memory _reference) public auth(WITHDRAW_ROLE) {
+        if (_token == address(0)) {
+            (bool ok, ) = _to.call{value: _amount}("");
+            require(ok, ERROR_ETH_WITHDRAW_FAILED);
+        } else {
+            require(ERC20(_token).safeTransfer(_to, _amount), ERROR_TOKEN_WITHDRAW_FAILED);
+        }
+        
+        emit Withdrawn(_token, _to, _amount, _reference);
     }
 } 

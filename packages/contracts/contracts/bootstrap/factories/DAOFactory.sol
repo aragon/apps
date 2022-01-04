@@ -16,6 +16,14 @@ contract DAOFactory is AbstractFactory {
     TokenFactory private tokenFactory;
     ProcessFactory private processFactory;
 
+    struct DAOConfig {
+        string name,
+        bytes metadata,
+        vaultConfig,
+        processConfig,
+        tokenConfig,
+    }
+
     constructor(
         Registry _registry, 
         TokenFactory _tokenFactory, 
@@ -26,22 +34,19 @@ contract DAOFactory is AbstractFactory {
         processFactory = _processFactory;
     }
 
-    function newDAO(
-        bytes calldata _metadata,
-        TokenConfig calldata _tokenConfig,
-        uint256[3] calldata _processSettings,
-        uint256[3] calldata _vaultSettings
-    ) external returns (DAO dao) {
+    function newDAO(DAOConfig daoConfig) external returns (DAO dao) {
         // Create token or wrap token
         address token = tokenFactory.newToken(_tokenConfig);
 
-        // Creates necessary contracts for dao.
+        // Creates the DAO contract.
         DAO dao = DAO(createProxy(daoBase, bytes("")));
         dao.initialize(_metadata);
 
         // Create process and give permissions to call execute on DAO
         address process = processFactory.newProcess(_processSettings);
         dao.addProcess(process);
+
+        registry.register(daoConfig.name, dao, msg.sender)
     }
 
     function setupBases() internal override {

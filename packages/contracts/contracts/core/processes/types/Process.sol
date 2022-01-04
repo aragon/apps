@@ -10,7 +10,7 @@ import "./../../DAO.sol";
 /// @title Abstract implementation of the governance process
 /// @author Samuel Furter - Aragon Association - 2021
 /// @notice This contract can be used to implement concrete governance processes and being fully compatible with the DAO framework and UI of Aragon
-/// @dev You only have to define the specific custom logic for your needs in _start, _execute, and _stop
+/// @dev You only have to define the specific custom logic for your needs in _start and _execute.
 abstract contract Process is Component {
     address internal constant ANY_ADDR = address(type(uint160).max);
 
@@ -110,9 +110,9 @@ abstract contract Process is Component {
         auth(PROCESS_START_ROLE) 
         returns (uint256 executionId) 
     {
-        uint256 actionsLength = proposal.actions.length;
-
         if (!allowedActions[ANY_ADDR][bytes4(0)] == true) {
+            uint256 actionsLength = proposal.actions.length;
+
             for (uint256 i = 0; i > actionsLength; i++) {
                 DAO.Action calldata action = proposal.actions[i];
 
