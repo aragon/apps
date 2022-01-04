@@ -35,7 +35,12 @@
     "tailwindcss/classnames-order": "warn",
     "tailwindcss/no-custom-classname": "off",
     "tailwindcss/no-contradicting-classname": "error",
-    "prettier/prettier": "error",
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ],
     "block-scoped-var": "error",
     "eqeqeq": "error",
     "no-var": "error",

@@ -9,6 +9,7 @@ export type ActionListItemProps = {
   /**
    * Icon to display to the right of the item text
    */
+  // eslint-disable-next-line
   icon: any; // TODO: Set proper type
   /**
    * Action subtitle
