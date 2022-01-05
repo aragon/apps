@@ -39,14 +39,14 @@ export const TextInput: React.FC<TextInputProps> = ({
   );
 };
 
-type StyledCotainerProps = Pick<
+type StyledContainerProps = Pick<
   TextInputProps,
   'mode' | 'disabled' | 'side' | 'clickable'
 >;
 type StyledInputProps = Pick<TextInputProps, 'clickable' | 'disabled'>;
 
 export const Container = styled.div.attrs(
-  ({mode, disabled, side, clickable}: StyledCotainerProps) => {
+  ({mode, disabled, side, clickable}: StyledContainerProps) => {
     let className = `${
       disabled ? 'bg-ui-100' : 'bg-ui-0'
     } flex space-x-1.5 space-x-1.5
@@ -68,7 +68,7 @@ export const Container = styled.div.attrs(
 
     return {className};
   }
-)<StyledCotainerProps>``;
+)<StyledContainerProps>``;
 
 export const StyledInput = styled.input.attrs(
   ({clickable, disabled}: StyledInputProps) => {
