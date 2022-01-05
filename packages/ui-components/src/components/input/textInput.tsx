@@ -1,7 +1,7 @@
 import React, {ReactNode} from 'react';
 import styled from 'styled-components';
 
-export type TextInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
+export type TextInputProps = {
   /** Changes a input's color schema */
   mode?: 'default' | 'success' | 'warning' | 'critical';
   /**
@@ -12,10 +12,7 @@ export type TextInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
    * Wheter the icon is left or right of the input
    */
   side?: 'left' | 'right';
-  /**
-   * make input disabled and the whole form clickable
-   */
-  clickable?: boolean;
+  disabled?: boolean;
 };
 
 /** Simple input with variable styling (depending on mode) */
@@ -24,37 +21,26 @@ export const TextInput: React.FC<TextInputProps> = ({
   side = 'right',
   disabled,
   adornment,
-  clickable,
   ...props
 }) => {
   return (
-    <Container data-testid="input" {...{mode, disabled, side, clickable}}>
-      <StyledInput
-        disabled={clickable || disabled}
-        clickable={clickable}
-        {...props}
-      />
+    <Container data-testid="input" {...{mode, disabled, side}}>
+      <StyledInput disabled={disabled} {...props} />
       {adornment}
     </Container>
   );
 };
 
-type StyledContainerProps = Pick<
-  TextInputProps,
-  'mode' | 'disabled' | 'side' | 'clickable'
->;
-type StyledInputProps = Pick<TextInputProps, 'clickable' | 'disabled'>;
+type StyledContainerProps = Pick<TextInputProps, 'mode' | 'side' | 'disabled'>;
 
 export const Container = styled.div.attrs(
-  ({mode, disabled, side, clickable}: StyledContainerProps) => {
+  ({mode, disabled, side}: StyledContainerProps) => {
     let className = `${
       disabled ? 'bg-ui-100' : 'bg-ui-0'
     } flex space-x-1.5 space-x-1.5
     focus:outline-none focus-within:ring-2 focus-within:ring-primary-500 py-1.5 px-2
     rounded-xl hover:border-ui-300 border-2 active:border-primary-500 items-center 
-    ${side === 'left' && 'flex-row-reverse space-x-reverse'} ${
-      clickable && !disabled && 'cursor-pointer'
-    }  `;
+    ${side === 'left' && 'flex-row-reverse space-x-reverse'} `;
 
     if (mode === 'default') {
       className += 'border-ui-100';
@@ -70,13 +56,6 @@ export const Container = styled.div.attrs(
   }
 )<StyledContainerProps>``;
 
-export const StyledInput = styled.input.attrs(
-  ({clickable, disabled}: StyledInputProps) => {
-    const myClassName:
-      | string
-      | undefined = `w-full bg-transparent focus:outline-none ${
-      clickable && !disabled && 'cursor-pointer'
-    }`;
-    return {className: myClassName};
-  }
-)<React.InputHTMLAttributes<HTMLInputElement> & StyledInputProps>``;
+export const StyledInput = styled.input.attrs({
+  className: 'w-full bg-transparent focus:outline-none',
+})<React.InputHTMLAttributes<HTMLInputElement>>``;

@@ -1,13 +1,13 @@
 import React from 'react';
 import {Meta, Story} from '@storybook/react';
-import {NumericInput, NumericInputProps} from '../src';
+import {NumberInput, NumberInputProps} from '../src';
 
 export default {
   title: 'Components/Input/Number',
-  component: NumericInput,
+  component: NumberInput,
 } as Meta;
 
-const Template: Story<NumericInputProps> = args => <NumericInput {...args} />;
+const Template: Story<NumberInputProps> = args => <NumberInput {...args} />;
 
 export const Number = Template.bind({});
 Number.args = {

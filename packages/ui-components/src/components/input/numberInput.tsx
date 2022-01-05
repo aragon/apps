@@ -1,74 +1,46 @@
-import React, {useState} from 'react';
+import React, {useRef} from 'react';
 import styled from 'styled-components';
 import {ButtonIcon} from '../button';
 import {IconAdd, IconRemove} from '../icons';
 
-export type NumericInputProps = {
+export type NumberInputProps = {
   /** Changes a input's color schema */
   mode?: 'default' | 'success' | 'warning' | 'critical';
-  /**
-   * minimum number
-   */
-  min?: string;
-  /**
-   * maximum number
-   */
-  max?: string;
-  /**
-   * Default Value
-   */
-  defaultValue?: string;
-  onChange: (value: string) => void;
+  disabled?: boolean;
 };
 
-export const NumericInput: React.FC<NumericInputProps> = ({
+export const NumberInput: React.FC<NumberInputProps> = ({
   mode = 'default',
-  min,
-  max,
-  onChange: onChangeCallback,
-  defaultValue = '0',
+  disabled,
   ...props
 }) => {
-  const [value, setValue] = useState<string>(defaultValue);
-
-  const onChange = (nextValue: string) => {
-    setValue(nextValue);
-    if (onChangeCallback) {
-      onChangeCallback(nextValue);
-    }
-  };
+  const inputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <Container {...{mode}}>
+    <Container data-testid="number-input" {...{mode, disabled}}>
       <ButtonIcon
         mode="ghost"
         size="medium"
         icon={<IconAdd />}
-        onClick={() =>
-          value === max && max ? max : onChange(`${Number(value) + 1}`)
-        }
+        disabled={disabled}
+        onClick={() => inputRef.current?.stepUp()}
       />
-      <StyledNumberInput
-        {...props}
-        value={value}
-        onChange={e => onChange(e.target.value)}
-      />
+      <StyledNumberInput {...props} ref={inputRef} disabled={disabled} />
       <ButtonIcon
         mode="ghost"
         size="medium"
         icon={<IconRemove />}
-        onClick={() =>
-          value === min && min ? min : onChange(`${Number(value) - 1}`)
-        }
+        disabled={disabled}
+        onClick={() => inputRef.current?.stepDown()}
       />
     </Container>
   );
 };
 
-type StyledContainerProps = Pick<NumericInputProps, 'mode'>;
+export type StyledContainerProps = Pick<NumberInputProps, 'mode' | 'disabled'>;
 
-const Container = styled.div.attrs(({mode}: StyledContainerProps) => {
-  let className = `flex p-1 bg-ui-0 w-18
+const Container = styled.div.attrs(({mode, disabled}: StyledContainerProps) => {
+  let className = `${disabled ? 'bg-ui-100' : 'bg-ui-0'} flex p-1 bg-ui-0 w-18
     focus:outline-none focus-within:ring-2 focus-within:ring-primary-500
     rounded-xl hover:border-ui-300 border-2 active:border-primary-500 items-center
   `;
