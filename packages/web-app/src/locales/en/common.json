@@ -28,7 +28,8 @@
     "token": "Token",
     "amount": "Amount",
     "reference": "Reference",
-    "address": "Token Contract Address"
+    "address": "Token Contract Address",
+    "selectToken": "Select a token..."
   },
   "finance": {
     "tokenSection": "Tokens",

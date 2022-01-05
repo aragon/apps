@@ -1,27 +1,30 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import styled from 'styled-components';
-import {Modal, SearchInput, ButtonText, IconAdd} from '@aragon/ui-components';
-import {Wallet} from 'use-wallet/dist/cjs/types';
 import {useTranslation} from 'react-i18next';
-import {useForm, Controller} from 'react-hook-form';
+import {Modal, SearchInput, ButtonText, IconAdd} from '@aragon/ui-components';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 
-import {useWallet} from 'context/augmentedWallet';
-import {useTransferModalContext} from 'context/transfersModal';
-import {curatedTokens} from 'utils/network';
 import TokenBox from './tokenBox';
+import {useWallet} from 'context/augmentedWallet';
+import {WalletToken} from 'pages/newDeposit';
 import {useTokenInfo} from 'hooks/useTokenInformation';
-import {BaseTokenInfo} from 'utils/types';
+import {fetchBalance} from 'utils/tokens';
+import {curatedTokens} from 'utils/network';
+import {useTransferModalContext} from 'context/transfersModal';
 
 type TokenMenuProps = {
-  onTokenSelect: (token: BaseTokenInfo) => void;
+  onTokenSelect: (token: WalletToken) => void;
 };
 
 const TokenMenu: React.FC<TokenMenuProps> = ({onTokenSelect}) => {
-  const {isTokenOpen, close} = useTransferModalContext();
-  const [searchValue, setSearchValue] = useState('');
-  const {chainId}: Wallet = useWallet();
   const {t} = useTranslation();
+  const [tokens, setTokens] = useState<WalletToken[]>([]);
+  const {isTokenOpen, close} = useTransferModalContext();
+  const {chainId, account, provider} = useWallet();
+  const [searchValue, setSearchValue] = useState('');
 
+  /*************************************************
+   *                     Hooks                     *
+   *************************************************/
   const curatedTokenAddresses = useMemo(
     () => Object.entries(curatedTokens[chainId || 4].curatedTokens),
     [chainId]
@@ -36,30 +39,51 @@ const TokenMenu: React.FC<TokenMenuProps> = ({onTokenSelect}) => {
     [curatedTokenAddresses]
   );
 
-  const {data: tokens} = useTokenInfo(tokenBalances);
+  const {data} = useTokenInfo(tokenBalances);
 
-  const handleTokenClick = (token: BaseTokenInfo) => {
+  useEffect(() => {
+    // fetch token balances
+    async function fetchBalances() {
+      if (account) {
+        const allPromise = Promise.all(
+          tokenBalances.map(({address}) => {
+            return fetchBalance(address, account, provider);
+          })
+        );
+
+        const balances = await allPromise;
+        setTokens(
+          data.map((token, index) => {
+            return {...token, balance: balances[index]} as WalletToken;
+          })
+        );
+      }
+    }
+
+    fetchBalances();
+  }, [account, data, provider, tokenBalances]);
+
+  /*************************************************
+   *             Functions and Handlers            *
+   *************************************************/
+  const handleTokenClick = (token: WalletToken) => {
     onTokenSelect(token);
     close('token');
   };
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
-  // console.log(info);
+  const filterValidator = useCallback(
+    (token: WalletToken) => {
+      if (searchValue !== '') {
+        const re = new RegExp(searchValue, 'i');
+        return token.name.match(re) || token.symbol.match(re);
+      }
+      return true;
+    },
+    [searchValue]
+  );
 
-  // const filterValidator = useCallback(
-  //   (token: any) => {
-  //     console.log(token);
-  //     if (searchValue !== '') {
-  //       const re = new RegExp(searchValue, 'i');
-  //       // return token[0].match(re);
-  //     }
-  //     return true;
-  //   },
-  //   [searchValue]
-  // );
-
-  const renderResult = () => {
-    const tokenList = tokens;
+  const renderTokens = () => {
+    const tokenList = tokens.filter(filterValidator);
 
     return tokenList.length !== 0 ? (
       <>
@@ -70,7 +94,7 @@ const TokenMenu: React.FC<TokenMenuProps> = ({onTokenSelect}) => {
               tokenName={token.name}
               tokenLogo={token.imgUrl}
               tokenSymbol={token.symbol}
-              tokenAddress={token.address}
+              tokenBalance={token.balance}
             />
           </div>
         ))}
@@ -83,7 +107,9 @@ const TokenMenu: React.FC<TokenMenuProps> = ({onTokenSelect}) => {
     );
   };
 
-  //TODO: tokenLogo should be automate using coingeko api
+  /*************************************************
+   *                    Render                     *
+   *************************************************/
   //TODO: Cross Icon should added in the next released
   return (
     <Modal
@@ -92,13 +118,27 @@ const TokenMenu: React.FC<TokenMenuProps> = ({onTokenSelect}) => {
       data-testid="TokenMenu"
     >
       <Container>
-        <SearchInput />
-        <TokensWrapper>{renderResult()}</TokensWrapper>
+        <SearchInput
+          value={searchValue}
+          onChange={e => setSearchValue(e.target.value)}
+        />
+        <TokensWrapper>{renderTokens()}</TokensWrapper>
         <WideButton
           mode="secondary"
           size="large"
           label="Add Custom Token"
           iconLeft={<IconAdd />}
+          onClick={() =>
+            handleTokenClick({
+              address: '',
+              count: BigInt(0),
+              decimals: 18,
+              imgUrl: '',
+              symbol: searchValue,
+              name: '',
+              balance: '',
+            })
+          }
         />
       </Container>
     </Modal>

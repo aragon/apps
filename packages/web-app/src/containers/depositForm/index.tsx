@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import styled from 'styled-components';
 import {constants} from 'ethers';
 import {useTranslation} from 'react-i18next';
@@ -7,16 +7,36 @@ import {
   ButtonWallet,
   DropdownInput,
   Label,
+  TextareaSimple,
   ValueInput,
 } from '@aragon/ui-components';
 
 import {useTransferModalContext} from 'context/transfersModal';
 
+// TODO: Form validation for enabling continue button
+// TODO: Trigger get balance on contract address copy validating, token metadata fetch
 const DepositForm: React.FC = () => {
   const {t} = useTranslation();
   const {open} = useTransferModalContext();
   const {control} = useFormContext();
-  const isCustomToken = useWatch({name: 'isCustomToken'});
+  const [isCustomToken, tokenBalance, tokenSymbol] = useWatch({
+    name: ['isCustomToken', 'tokenBalance', 'tokenSymbol'],
+  });
+
+  const handleClipboardActions = useCallback(
+    async (currentValue: string, onChange: (value: string) => void) => {
+      if (currentValue) {
+        await navigator.clipboard.writeText(currentValue);
+
+        // TODO: change to proper mechanism
+        alert('Copied');
+      } else {
+        const textFromClipboard = await navigator.clipboard.readText();
+        onChange(textFromClipboard);
+      }
+    },
+    []
+  );
 
   return (
     <>
@@ -38,16 +58,16 @@ const DepositForm: React.FC = () => {
           label={t('labels.token')}
           helpText={t('newDeposit.tokenSubtitle')}
         />
-        {/* TODO: Translation for placeholder */}
         <Controller
           name="tokenSymbol"
           control={control}
-          render={({field: {name, value}}) => (
+          render={({field: {name, value}, fieldState: {error}}) => (
             <DropdownInput
               name={name}
+              mode={error ? 'critical' : 'default'}
               value={value}
               onClick={() => open('token')}
-              placeholder="Select a Token..."
+              placeholder={t('labels.selectToken')}
             />
           )}
         />
@@ -63,14 +83,18 @@ const DepositForm: React.FC = () => {
           <Controller
             name="tokenAddress"
             control={control}
-            render={({field: {name, onBlur, onChange, value}}) => (
+            render={({
+              field: {name, onBlur, onChange, value},
+              fieldState: {error},
+            }) => (
               <ValueInput
-                adornmentText="Paste"
-                onAdornmentClick={() => alert('Paste clicked')}
+                mode={error ? 'critical' : 'default'}
                 name={name}
                 value={value}
                 onBlur={onBlur}
                 onChange={onChange}
+                adornmentText={value ? 'Copy' : 'Paste'}
+                onAdornmentClick={() => handleClipboardActions(value, onChange)}
               />
             )}
           />
@@ -86,17 +110,26 @@ const DepositForm: React.FC = () => {
         <Controller
           name="amount"
           control={control}
-          render={({field: {name, onBlur, onChange, value}}) => (
+          render={({
+            field: {name, onBlur, onChange, value},
+            fieldState: {error},
+          }) => (
             <ValueInput
-              adornmentText="Max"
-              onAdornmentClick={() => alert('Max clicked')}
+              mode={error ? 'critical' : 'default'}
               name={name}
               value={value}
               onBlur={onBlur}
               onChange={onChange}
+              adornmentText="Max"
+              onAdornmentClick={() => onChange(tokenBalance)}
             />
           )}
         />
+        {tokenBalance && (
+          <div className="px-1 text-xs text-right text-ui-600">
+            {`Max Balance: ${tokenBalance} ${tokenSymbol}`}
+          </div>
+        )}
       </FormItem>
 
       {/* Token reference */}
@@ -105,6 +138,18 @@ const DepositForm: React.FC = () => {
           label={t('labels.reference')}
           helpText={t('newDeposit.referenceSubtitle')}
           isOptional={true}
+        />
+        <Controller
+          name="reference"
+          control={control}
+          render={({field: {name, onBlur, onChange, value}}) => (
+            <TextareaSimple
+              name={name}
+              value={value}
+              onBlur={onBlur}
+              onChange={onChange}
+            />
+          )}
         />
       </FormItem>
     </>

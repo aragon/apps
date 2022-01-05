@@ -9,21 +9,32 @@ import {
 } from '@aragon/ui-components';
 import styled from 'styled-components';
 import {Address} from '@aragon/ui-components/dist/utils/addresses';
-import {useForm, FormProvider} from 'react-hook-form';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
+import {useForm, FormProvider} from 'react-hook-form';
 import React, {useCallback, useEffect} from 'react';
 
+import TokenMenu from 'containers/tokenMenu';
 import {useWallet} from 'context/augmentedWallet';
 import DepositForm from 'containers/depositForm';
 import {useStepper} from 'hooks/useStepper';
 import ReviewDeposit from 'containers/reviewDeposit';
 import {NavigationBar} from 'containers/navbar';
 import {TransferTypes} from 'utils/constants';
+import {BaseTokenInfo} from 'utils/types';
 import {useWalletProps} from 'containers/walletMenu';
 import {useWalletMenuContext} from 'context/walletMenu';
-import TokenMenu from 'containers/tokenMenu';
-import {BaseTokenInfo} from 'utils/types';
+
+const steps = {
+  configure: 1,
+  review: 2,
+};
+
+const TOTAL_STEPS = Object.keys(steps).length;
+
+export type WalletToken = BaseTokenInfo & {
+  balance: string;
+};
 
 export type FormData = {
   amount: number;
@@ -32,18 +43,12 @@ export type FormData = {
   type: TransferTypes;
   from: Address;
   to: Address;
+  tokenBalance: string;
   tokenSymbol: string;
   tokenAddress: Address;
   tokenName: string;
   tokenImgUrl: string;
 };
-
-const steps = {
-  configure: 1,
-  review: 2,
-};
-
-const TOTAL_STEPS = Object.keys(steps).length;
 
 const defaultValues = {
   amount: 0,
@@ -70,23 +75,30 @@ const NewDeposit: React.FC = () => {
     }
   }, [account, formMethods]);
 
-  /** Toggle wallet */
+  /*************************************************
+   *             Callbacks and Handlers            *
+   *************************************************/
   const handleWalletButtonClick = useCallback(() => {
     isConnected() ? open() : connect('injected');
   }, [connect, isConnected, open]);
 
-  const handleTokenSelect = (token: BaseTokenInfo) => {
+  const handleTokenSelect = (token: WalletToken) => {
+    if (token.address === '') {
+      formMethods.setValue('isCustomToken', true);
+    } else {
+      formMethods.setValue('isCustomToken', false);
+    }
+
     formMethods.setValue('tokenName', token.name);
     formMethods.setValue('tokenImgUrl', token.imgUrl);
     formMethods.setValue('tokenSymbol', token.symbol);
     formMethods.setValue('tokenAddress', token.address);
-    formMethods.setValue('isCustomToken', false);
+    formMethods.setValue('tokenBalance', token.balance);
   };
-  /**
-   * TODO: The text input should replace with a
-   * drop down input
-   */
 
+  /*************************************************
+   *                    Render                     *
+   *************************************************/
   return (
     <>
       <NavigationBar>
