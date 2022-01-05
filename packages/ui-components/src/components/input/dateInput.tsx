@@ -1,24 +1,27 @@
 import React from 'react';
 import styled from 'styled-components';
 import {IconCalendar} from '../icons';
-import {TextInput} from './textInput';
 
 export type DateInputProps = React.InputHTMLAttributes<HTMLInputElement>;
 
 export const DateInput: React.FC<DateInputProps> = ({disabled, ...props}) => {
-  const v = '2022-04-20';
-  const d = true;
+  console.log(disabled);
   return (
-    <InputContainer disabled={d} value="2022-04-20">
-      <StyledInput type={'date'} value={v} required disabled={d} {...props} />
+    <InputContainer disabled={disabled}>
+      <StyledInput type={'date'} required disabled={disabled} {...props} />
       {/* I know this should be a button BUT IT'S STUPID */}
       {/* TODO make this clickable */}
-      <IconContainer disabled={d}>
+      <IconContainer disabled={disabled}>
         <IconCalendar />
       </IconContainer>
     </InputContainer>
   );
 };
+
+/* I know very similar code already exists in TextInput. But there were a couple
+of issues that made it hard to adopt. One of which is that it still allows for
+hover and active when disabled. */
+/* TODO Unify this with existing text input. */
 
 type InputContainerProps = Pick<DateInputProps, 'disabled'>;
 
@@ -48,24 +51,4 @@ const StyledInput = styled.input.attrs(() => {
 
 const IconContainer = styled.div.attrs(({disabled}: InputContainerProps) => {
   return {className: ` p-1 rounded-xl ${disabled ? 'bg-ui-100' : 'bg-ui-50'}`};
-})<DateInputProps>``;
-
-/* OLD ====================================================================== */
-
-const StyledInput1 = styled.input.attrs(({disabled}: InputContainerProps) => {
-  const type: string = 'date';
-  const baseClasses = 'py-1.5 px-2 rounded-xl border-2 border-ui-100';
-  const textClasses = 'text-ui-600 font-normal';
-  const focusClasses = 'focus:outline-none focus:ring-2 focus:ring-primary-500';
-  const hoverClasses = 'hover:border-ui-300';
-  const activeClasses = 'active:border-primary-500';
-  const disabledClasses = 'disabled:bg-ui-200';
-  let className: string = `${baseClasses} ${textClasses}`;
-
-  if (disabled) {
-    className += ` ${disabledClasses}`;
-  } else {
-    className += ` ${focusClasses} ${hoverClasses} ${activeClasses}`;
-  }
-  return {type, className, disabled};
 })<DateInputProps>``;
