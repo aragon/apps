@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 import {ethers, providers as EthersProviders} from 'ethers';
 import {erc20TokenABI} from 'abis/erc20TokenABI';
 import {BaseTokenInfo, TreasuryToken} from './types';
@@ -113,11 +114,24 @@ export async function getTokenInfo(
   provider: EthersProviders.Provider
 ) {
   const contract = new ethers.Contract(address, erc20TokenABI, provider);
-  const [decimals, name, symbol] = await Promise.all([
-    contract.decimals(),
-    contract.name(),
-    contract.symbol(),
-  ]);
+  let decimals = null,
+    symbol = null,
+    name = null;
+
+  try {
+    const values = await Promise.all([
+      contract.decimals(),
+      contract.name(),
+      contract.symbol(),
+    ]);
+
+    decimals = values[0];
+    name = values[1];
+    symbol = values[2];
+  } catch (error) {
+    console.error('Error, getting token info from contract');
+  }
+
   return {
     decimals,
     name,
@@ -138,7 +152,7 @@ export const fetchBalance = async (
 ) => {
   const contract = new ethers.Contract(tokenAddress, erc20TokenABI, provider);
   const balance = await contract.balanceOf(ownerAddress);
-  const {decimals, symbol} = await getTokenInfo(tokenAddress, provider);
+  const {decimals} = await getTokenInfo(tokenAddress, provider);
 
-  return {amount: formatUnits(balance, decimals), symbol};
+  return formatUnits(balance, decimals);
 };
