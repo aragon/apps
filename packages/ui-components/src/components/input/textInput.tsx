@@ -9,7 +9,7 @@ export type TextInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
    */
   adornment?: ReactNode;
   /**
-   * Wheter the icon is left or right of the input
+   * Whether the icon is left or right of the input
    */
   side?: 'left' | 'right';
   /**
@@ -28,11 +28,7 @@ export const TextInput: React.FC<TextInputProps> = ({
   ...props
 }) => {
   return (
-    <Container
-      data-testid="input"
-      {...{mode, disabled, side, clickable}}
-      onClick={props.onClick}
-    >
+    <Container data-testid="input" {...{mode, disabled, side, clickable}}>
       <StyledInput
         disabled={clickable || disabled}
         clickable={clickable}
@@ -43,14 +39,14 @@ export const TextInput: React.FC<TextInputProps> = ({
   );
 };
 
-type StyledCotainerProps = Pick<
+type StyledContainerProps = Pick<
   TextInputProps,
   'mode' | 'disabled' | 'side' | 'clickable'
 >;
 type StyledInputProps = Pick<TextInputProps, 'clickable' | 'disabled'>;
 
 export const Container = styled.div.attrs(
-  ({mode, disabled, side, clickable}: StyledCotainerProps) => {
+  ({mode, disabled, side, clickable}: StyledContainerProps) => {
     let className = `${
       disabled ? 'bg-ui-100' : 'bg-ui-0'
     } flex space-x-1.5 space-x-1.5
@@ -72,11 +68,11 @@ export const Container = styled.div.attrs(
 
     return {className};
   }
-)<StyledCotainerProps>``;
+)<StyledContainerProps>``;
 
 export const StyledInput = styled.input.attrs(
   ({clickable, disabled}: StyledInputProps) => {
-    let myClassName:
+    const myClassName:
       | string
       | undefined = `w-full bg-transparent focus:outline-none ${
       clickable && !disabled && 'cursor-pointer'
