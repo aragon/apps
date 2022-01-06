@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import {ButtonIcon} from '../button';
 import {IconAdd, IconRemove} from '../icons';
 
-export type NumberInputProps = {
+export type NumberInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   /** Changes a input's color schema */
   mode?: 'default' | 'success' | 'warning' | 'critical';
   disabled?: boolean;
@@ -25,7 +25,13 @@ export const NumberInput: React.FC<NumberInputProps> = ({
         disabled={disabled}
         onClick={() => inputRef.current?.stepDown()}
       />
-      <StyledNumberInput {...props} ref={inputRef} disabled={disabled} />
+      <StyledNumberInput
+        {...props}
+        ref={inputRef}
+        disabled={disabled}
+        type={'number'}
+        placeholder={'0'}
+      />
       <ButtonIcon
         mode="ghost"
         size="medium"
@@ -40,9 +46,11 @@ export const NumberInput: React.FC<NumberInputProps> = ({
 export type StyledContainerProps = Pick<NumberInputProps, 'mode' | 'disabled'>;
 
 const Container = styled.div.attrs(({mode, disabled}: StyledContainerProps) => {
-  let className = `${disabled ? 'bg-ui-100' : 'bg-ui-0'} flex p-1 bg-ui-0 w-18
-    focus:outline-none focus-within:ring-2 focus-within:ring-primary-500
-    rounded-xl hover:border-ui-300 border-2 active:border-primary-500 items-center
+  let className = `${
+    disabled ? 'bg-ui-100' : 'bg-ui-0'
+  } inline-flex p-1 bg-ui-0 w-18 focus:outline-none items-center
+    focus-within:ring-2 focus-within:ring-primary-500 justify-between
+    rounded-xl hover:border-ui-300 border-2 active:border-primary-500 
   `;
 
   if (mode === 'default') {
@@ -58,13 +66,15 @@ const Container = styled.div.attrs(({mode, disabled}: StyledContainerProps) => {
   return {className};
 })<StyledContainerProps>``;
 
-const StyledNumberInput = styled.input.attrs(({disabled}) => ({
-  className: `${
+const StyledNumberInput = styled.input.attrs(({disabled}) => {
+  const className: string | undefined = `${
     disabled ? 'text-ui-300' : 'text-ui-600'
-  } w-full bg-transparent focus:outline-none margin-0`,
-  type: 'number',
-  placeholder: '0',
-}))<React.InputHTMLAttributes<HTMLInputElement>>`
+  } bg-transparent focus:outline-none margin-0 w-full`;
+
+  return {
+    className,
+  };
+})`
   text-align: center;
   ::-webkit-inner-spin-button,
   ::-webkit-outer-spin-button {

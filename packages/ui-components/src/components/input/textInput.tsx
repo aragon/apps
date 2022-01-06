@@ -1,7 +1,7 @@
 import React, {ReactNode} from 'react';
 import styled from 'styled-components';
 
-export type TextInputProps = {
+export type TextInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   /** Changes a input's color schema */
   mode?: 'default' | 'success' | 'warning' | 'critical';
   /**
@@ -56,6 +56,8 @@ export const Container = styled.div.attrs(
   }
 )<StyledContainerProps>``;
 
-export const StyledInput = styled.input.attrs({
-  className: 'w-full bg-transparent focus:outline-none',
-})<React.InputHTMLAttributes<HTMLInputElement>>``;
+export const StyledInput = styled.input.attrs(() => {
+  const className: string | undefined =
+    'w-full bg-transparent focus:outline-none';
+  return {className};
+})``;
