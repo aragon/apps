@@ -80,6 +80,7 @@ module.exports = {
         8: '64px',
         10: '80px',
         14: '112px',
+        22: '176px',
         25: '200px',
       },
     },
@@ -145,5 +146,5 @@ module.exports = {
     },
     fluidType: ['responsive'],
   },
-  plugins: [require('tailwindcss-fluid-type')]
+  plugins: [require('tailwindcss-fluid-type')],
 };
