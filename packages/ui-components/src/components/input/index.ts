@@ -2,4 +2,4 @@ export {TextInputProps, TextInput} from './textInput';
 export {SearchInput, SearchInputProps} from './searchInput';
 export {DropdownInput} from './dropdownInput';
 export * from './valueInput';
-export * from './dateInput';
+export * from './date';

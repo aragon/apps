@@ -5,9 +5,8 @@ import {IconCalendar} from '../icons';
 export type DateInputProps = React.InputHTMLAttributes<HTMLInputElement>;
 
 export const DateInput: React.FC<DateInputProps> = ({disabled, ...props}) => {
-  console.log(disabled);
   return (
-    <InputContainer disabled={disabled}>
+    <InputContainer data-testid="date-input" disabled={disabled}>
       <StyledInput type={'date'} required disabled={disabled} {...props} />
       {/* I know this should be a button BUT IT'S STUPID */}
       {/* TODO make this clickable */}
@@ -21,14 +20,13 @@ export const DateInput: React.FC<DateInputProps> = ({disabled, ...props}) => {
 /* I know very similar code already exists in TextInput. But there were a couple
 of issues that made it hard to adopt. One of which is that it still allows for
 hover and active when disabled. */
-/* TODO Unify this with existing text input. */
 
 type InputContainerProps = Pick<DateInputProps, 'disabled'>;
 
 const InputContainer = styled.div.attrs(({disabled}: InputContainerProps) => {
   const baseClasses =
     'flex items-center py-1.5 px-2 rounded-xl border-2 font-normal';
-  let className: string = `${baseClasses}`;
+  let className = `${baseClasses}`;
 
   if (disabled) {
     className += ' bg-ui-100 text-ui-300 border-ui-200';
@@ -44,7 +42,7 @@ const InputContainer = styled.div.attrs(({disabled}: InputContainerProps) => {
 
 const StyledInput = styled.input.attrs(() => {
   const baseClasses = 'w-full bg-transparent focus:outline-none';
-  let className: string = `${baseClasses}`;
+  const className = `${baseClasses}`;
 
   return {className};
 })<DateInputProps>``;
