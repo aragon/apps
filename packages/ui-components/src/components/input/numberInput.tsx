@@ -7,17 +7,19 @@ export type NumberInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   /** Changes a input's color schema */
   mode?: 'default' | 'success' | 'warning' | 'critical';
   disabled?: boolean;
+  width?: number;
 };
 
 export const NumberInput: React.FC<NumberInputProps> = ({
   mode = 'default',
   disabled,
+  width,
   ...props
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <Container data-testid="number-input" {...{mode, disabled}}>
+    <Container data-testid="number-input" {...{mode, disabled, width}}>
       <ButtonIcon
         mode="ghost"
         size="medium"
@@ -43,28 +45,38 @@ export const NumberInput: React.FC<NumberInputProps> = ({
   );
 };
 
-export type StyledContainerProps = Pick<NumberInputProps, 'mode' | 'disabled'>;
+export type StyledContainerProps = Pick<
+  NumberInputProps,
+  'mode' | 'disabled' | 'width'
+>;
 
-const Container = styled.div.attrs(({mode, disabled}: StyledContainerProps) => {
-  let className = `${
-    disabled ? 'bg-ui-100' : 'bg-ui-0'
-  } inline-flex p-1 bg-ui-0 w-18 focus:outline-none items-center
-    focus-within:ring-2 focus-within:ring-primary-500 justify-between
-    rounded-xl hover:border-ui-300 border-2 active:border-primary-500 
-  `;
+const Container = styled.div.attrs(
+  ({mode, disabled, width}: StyledContainerProps) => {
+    let className = `${
+      disabled ? 'bg-ui-100' : 'bg-ui-0'
+    } inline-flex p-1 bg-ui-0 ${
+      width ? '' : 'w-18'
+    } focus:outline-none items-center
+      focus-within:ring-2 focus-within:ring-primary-500 justify-between
+      rounded-xl hover:border-ui-300 border-2 active:border-primary-500 
+    `;
 
-  if (mode === 'default') {
-    className += 'border-ui-100';
-  } else if (mode === 'success') {
-    className += 'border-success-600';
-  } else if (mode === 'warning') {
-    className += 'border-warning-600';
-  } else if (mode === 'critical') {
-    className += 'border-critical-600';
+    if (mode === 'default') {
+      className += 'border-ui-100';
+    } else if (mode === 'success') {
+      className += 'border-success-600';
+    } else if (mode === 'warning') {
+      className += 'border-warning-600';
+    } else if (mode === 'critical') {
+      className += 'border-critical-600';
+    }
+
+    return {
+      className,
+      ...(width && {style: {width: `${width}px`}}),
+    };
   }
-
-  return {className};
-})<StyledContainerProps>``;
+)<StyledContainerProps>``;
 
 const StyledNumberInput = styled.input.attrs(({disabled}) => {
   const className: string | undefined = `${
