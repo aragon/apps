@@ -77,12 +77,13 @@ const NewDeposit: React.FC = () => {
       <NavigationBar>
         <HStack>
           <InsetButton>
-            <InsetIconContainer>
+            <InsetIconContainer href={'/#/finance'}>
               <IconChevronLeft />
             </InsetIconContainer>
             <InsetButtonText>{t('allTransfer.newTransfer')}</InsetButtonText>
           </InsetButton>
 
+          {/* TODO: Add action after knowing the purpose of this button */}
           <ButtonIcon
             mode="secondary"
             size="large"
@@ -159,7 +160,7 @@ const InsetButton = styled.div.attrs({
   className: 'flex items-center p-0.5 rounded-xl bg-ui-0',
 })``;
 
-const InsetIconContainer = styled.div.attrs({
+const InsetIconContainer = styled.a.attrs({
   className: 'p-1.5 rounded-lg bg-ui-50',
 })``;
 
