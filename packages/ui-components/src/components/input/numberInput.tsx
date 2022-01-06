@@ -21,17 +21,17 @@ export const NumberInput: React.FC<NumberInputProps> = ({
       <ButtonIcon
         mode="ghost"
         size="medium"
-        icon={<IconAdd />}
+        icon={<IconRemove />}
         disabled={disabled}
-        onClick={() => inputRef.current?.stepUp()}
+        onClick={() => inputRef.current?.stepDown()}
       />
       <StyledNumberInput {...props} ref={inputRef} disabled={disabled} />
       <ButtonIcon
         mode="ghost"
         size="medium"
-        icon={<IconRemove />}
+        icon={<IconAdd />}
         disabled={disabled}
-        onClick={() => inputRef.current?.stepDown()}
+        onClick={() => inputRef.current?.stepUp()}
       />
     </Container>
   );
@@ -58,11 +58,13 @@ const Container = styled.div.attrs(({mode, disabled}: StyledContainerProps) => {
   return {className};
 })<StyledContainerProps>``;
 
-const StyledNumberInput = styled.input.attrs({
-  className: 'w-full bg-transparent focus:outline-none margin-0',
+const StyledNumberInput = styled.input.attrs(({disabled}) => ({
+  className: `${
+    disabled ? 'text-ui-300' : 'text-ui-600'
+  } w-full bg-transparent focus:outline-none margin-0`,
   type: 'number',
   placeholder: '0',
-})<React.InputHTMLAttributes<HTMLInputElement>>`
+}))<React.InputHTMLAttributes<HTMLInputElement>>`
   text-align: center;
   ::-webkit-inner-spin-button,
   ::-webkit-outer-spin-button {
