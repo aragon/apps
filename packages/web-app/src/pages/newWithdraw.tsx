@@ -52,7 +52,7 @@ const NewWithdraw: React.FC = () => {
   const {t} = useTranslation();
   const {open} = useWalletMenuContext();
   const {currentStep, prev, next} = useStepper(TOTAL_STEPS);
-  const {control, watch, setValue} = useForm<FormData>({defaultValues});
+  const {control} = useForm<FormData>({defaultValues});
   const {connect, isConnected, account, ensName, ensAvatarUrl}: useWalletProps =
     useWallet();
 
