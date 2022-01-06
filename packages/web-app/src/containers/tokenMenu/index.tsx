@@ -5,19 +5,20 @@ import React, {useCallback, useEffect, useMemo, useState} from 'react';
 
 import TokenBox from './tokenBox';
 import {useWallet} from 'context/augmentedWallet';
-import {WalletToken} from 'pages/newDeposit';
+import {formatUnits} from 'utils/library';
 import {useTokenInfo} from 'hooks/useTokenInformation';
 import {fetchBalance} from 'utils/tokens';
 import {curatedTokens} from 'utils/network';
+import {BaseTokenInfo} from 'utils/types';
 import {useTransferModalContext} from 'context/transfersModal';
 
 type TokenMenuProps = {
-  onTokenSelect: (token: WalletToken) => void;
+  onTokenSelect: (token: BaseTokenInfo) => void;
 };
 
 const TokenMenu: React.FC<TokenMenuProps> = ({onTokenSelect}) => {
   const {t} = useTranslation();
-  const [tokens, setTokens] = useState<WalletToken[]>([]);
+  const [tokens, setTokens] = useState<BaseTokenInfo[]>([]);
   const {isTokenOpen, close} = useTransferModalContext();
   const {chainId, account, provider} = useWallet();
   const [searchValue, setSearchValue] = useState('');
@@ -47,14 +48,15 @@ const TokenMenu: React.FC<TokenMenuProps> = ({onTokenSelect}) => {
       if (account) {
         const allPromise = Promise.all(
           tokenBalances.map(({address}) => {
-            return fetchBalance(address, account, provider);
+            return fetchBalance(address, account, provider, false);
           })
         );
 
         const balances = await allPromise;
+        console.log(balances);
         setTokens(
           data.map((token, index) => {
-            return {...token, balance: balances[index]} as WalletToken;
+            return {...token, count: balances[index]} as BaseTokenInfo;
           })
         );
       }
@@ -66,13 +68,13 @@ const TokenMenu: React.FC<TokenMenuProps> = ({onTokenSelect}) => {
   /*************************************************
    *             Functions and Handlers            *
    *************************************************/
-  const handleTokenClick = (token: WalletToken) => {
+  const handleTokenClick = (token: BaseTokenInfo) => {
     onTokenSelect(token);
     close('token');
   };
 
   const filterValidator = useCallback(
-    (token: WalletToken) => {
+    (token: BaseTokenInfo) => {
       if (searchValue !== '') {
         const re = new RegExp(searchValue, 'i');
         return token.name.match(re) || token.symbol.match(re);
@@ -94,7 +96,7 @@ const TokenMenu: React.FC<TokenMenuProps> = ({onTokenSelect}) => {
               tokenName={token.name}
               tokenLogo={token.imgUrl}
               tokenSymbol={token.symbol}
-              tokenBalance={token.balance}
+              tokenBalance={formatUnits(token.count, token.decimals)}
             />
           </div>
         ))}
@@ -136,7 +138,6 @@ const TokenMenu: React.FC<TokenMenuProps> = ({onTokenSelect}) => {
               imgUrl: '',
               symbol: searchValue,
               name: '',
-              balance: '',
             })
           }
         />

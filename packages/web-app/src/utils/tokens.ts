@@ -143,16 +143,22 @@ export async function getTokenInfo(
  * @param tokenAddress address of token contract
  * @param ownerAddress owner address / wallet address
  * @param provider interface to node
+ * @param shouldFormat whether value is returned in human readable format
  * @returns a promise that will return a balance amount
  */
 export const fetchBalance = async (
   tokenAddress: string,
   ownerAddress: string,
-  provider: EthersProviders.Provider
+  provider: EthersProviders.Provider,
+  shouldFormat = true
 ) => {
   const contract = new ethers.Contract(tokenAddress, erc20TokenABI, provider);
   const balance = await contract.balanceOf(ownerAddress);
-  const {decimals} = await getTokenInfo(tokenAddress, provider);
 
-  return formatUnits(balance, decimals);
+  if (shouldFormat) {
+    const {decimals} = await getTokenInfo(tokenAddress, provider);
+    return formatUnits(balance, decimals);
+  }
+
+  return balance;
 };

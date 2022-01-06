@@ -49,7 +49,7 @@ const ReviewDeposit: React.FC = () => {
   ]);
 
   return (
-    <div className="flex flex-col space-y-1.5 desktop:space-y-3">
+    <div className="space-y-1.5 desktop:space-y-3">
       <CardTransfer
         to="DAO Name"
         from={values.from}

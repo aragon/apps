@@ -18,6 +18,7 @@ import TokenMenu from 'containers/tokenMenu';
 import {useWallet} from 'context/augmentedWallet';
 import DepositForm from 'containers/depositForm';
 import {useStepper} from 'hooks/useStepper';
+import {formatUnits} from 'utils/library';
 import ReviewDeposit from 'containers/reviewDeposit';
 import {NavigationBar} from 'containers/navbar';
 import {TransferTypes} from 'utils/constants';
@@ -31,10 +32,6 @@ const steps = {
 };
 
 const TOTAL_STEPS = Object.keys(steps).length;
-
-export type WalletToken = BaseTokenInfo & {
-  balance: string;
-};
 
 export type FormData = {
   amount: number;
@@ -82,18 +79,24 @@ const NewDeposit: React.FC = () => {
     isConnected() ? open() : connect('injected');
   }, [connect, isConnected, open]);
 
-  const handleTokenSelect = (token: WalletToken) => {
+  const handleTokenSelect = (token: BaseTokenInfo) => {
     if (token.address === '') {
       formMethods.setValue('isCustomToken', true);
+      formMethods.setValue('tokenBalance', '');
     } else {
       formMethods.setValue('isCustomToken', false);
+
+      // Don't set the wallet balance if no address is provided yet
+      formMethods.setValue(
+        'tokenBalance',
+        formatUnits(token.count, token.decimals)
+      );
     }
 
     formMethods.setValue('tokenName', token.name);
     formMethods.setValue('tokenImgUrl', token.imgUrl);
     formMethods.setValue('tokenSymbol', token.symbol);
     formMethods.setValue('tokenAddress', token.address);
-    formMethods.setValue('tokenBalance', token.balance);
   };
 
   /*************************************************
