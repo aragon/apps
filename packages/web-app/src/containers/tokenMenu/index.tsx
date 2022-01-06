@@ -53,7 +53,6 @@ const TokenMenu: React.FC<TokenMenuProps> = ({onTokenSelect}) => {
         );
 
         const balances = await allPromise;
-        console.log(balances);
         setTokens(
           data.map((token, index) => {
             return {...token, count: balances[index]} as BaseTokenInfo;

@@ -1,5 +1,5 @@
 /* eslint-disable no-empty */
-import {ethers, providers as EthersProviders} from 'ethers';
+import {constants, ethers, providers as EthersProviders} from 'ethers';
 import {erc20TokenABI} from 'abis/erc20TokenABI';
 import {BaseTokenInfo, TreasuryToken} from './types';
 import {formatUnits} from 'utils/library';
@@ -113,11 +113,20 @@ export async function getTokenInfo(
   address: string,
   provider: EthersProviders.Provider
 ) {
-  const contract = new ethers.Contract(address, erc20TokenABI, provider);
   let decimals = null,
     symbol = null,
     name = null;
 
+  // is Ether
+  if (address === constants.AddressZero) {
+    return {
+      name: 'Ethereum',
+      symbol: constants.EtherSymbol,
+      decimals: 18,
+    };
+  }
+
+  const contract = new ethers.Contract(address, erc20TokenABI, provider);
   try {
     const values = await Promise.all([
       contract.decimals(),
