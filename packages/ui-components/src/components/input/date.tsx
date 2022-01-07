@@ -8,21 +8,28 @@ import {IconCalendar} from '../icons';
 export type DateInputProps = React.InputHTMLAttributes<HTMLInputElement>;
 
 export const DateInput: React.FC<DateInputProps> = ({disabled, ...props}) => {
+  const isFF = navigator.userAgent.indexOf('Firefox') != -1;
+  console.log(isFF);
   return (
     <InputContainer data-testid="date-input" disabled={disabled}>
       <StyledInput type={'date'} required disabled={disabled} {...props} />
-      {/* I know this should be a button BUT IT'S STUPID */}
-      {/* TODO make this clickable */}
-      <IconContainer disabled={disabled}>
-        <IconCalendar />
-      </IconContainer>
+      {/* TODO Rework the whole icon business. The native icon is somehow 
+      necessary on chrome to open the native date picker. So currently it's 
+      being shown on chrome, although it is not the custom icon from the 
+      designs. On the other hand, it doesn't exist on FF, so there, the custom 
+      icon is shown.*/}
+      {isFF && (
+        <IconContainer disabled={disabled}>
+          <IconCalendar />
+        </IconContainer>
+      )}
     </InputContainer>
   );
 };
 
-/* I know very similar code already exists in TextInput. But there were a couple
-of issues that made it hard to adopt. One of which is that it still allows for
-hover and active when disabled. */
+/* NOTE: I know very similar code already exists in TextInput. But there were a
+couple of issues that made it hard to adopt. One of which is that it still
+allows for hover and active when disabled. */
 
 type InputContainerProps = Pick<DateInputProps, 'disabled'>;
 
@@ -48,12 +55,7 @@ const StyledInput = styled.input.attrs(() => {
   const className = `${baseClasses}`;
 
   return {className};
-})<DateInputProps>`
-  ::-webkit-calendar-picker-indicator {
-    display: none;
-    -webkit-appearance: none;
-  }
-`;
+})<DateInputProps>``;
 
 const IconContainer = styled.div.attrs(({disabled}: InputContainerProps) => {
   return {className: ` p-1 rounded-xl ${disabled ? 'bg-ui-100' : 'bg-ui-50'}`};
