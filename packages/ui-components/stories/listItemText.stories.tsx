@@ -18,10 +18,6 @@ TwoIcons.args = {
   subtitle: 'My subtitle',
   iconLeft: <IconAdd />,
   iconRight: <IconChevronRight />,
-  onClick: event => {
-    event.target.blur();
-    alert('ListItem Clicked!');
-  },
 };
 export const Left = Template.bind({});
 Left.args = {
@@ -29,10 +25,6 @@ Left.args = {
   title: 'My Title',
   subtitle: 'My subtitle',
   iconLeft: <IconAdd />,
-  onClick: event => {
-    event.target.blur();
-    alert('ListItem Clicked!');
-  },
 };
 export const Right = Template.bind({});
 Right.args = {
@@ -40,8 +32,4 @@ Right.args = {
   title: 'My Title',
   subtitle: 'My subtitle',
   iconRight: <IconChevronRight />,
-  onClick: event => {
-    event.target.blur();
-    alert('ListItem Clicked!');
-  },
 };
