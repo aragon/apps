@@ -2,6 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import {IconCalendar} from '../icons';
 
+// NOTE: Currently, there are no designs for the actual date-picker.
+// TODO: Add styling for date-picker once designs are ready. [VR 07-01-2022]
+
 export type DateInputProps = React.InputHTMLAttributes<HTMLInputElement>;
 
 export const DateInput: React.FC<DateInputProps> = ({disabled, ...props}) => {
@@ -45,7 +48,12 @@ const StyledInput = styled.input.attrs(() => {
   const className = `${baseClasses}`;
 
   return {className};
-})<DateInputProps>``;
+})<DateInputProps>`
+  ::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+  }
+`;
 
 const IconContainer = styled.div.attrs(({disabled}: InputContainerProps) => {
   return {className: ` p-1 rounded-xl ${disabled ? 'bg-ui-100' : 'bg-ui-50'}`};
