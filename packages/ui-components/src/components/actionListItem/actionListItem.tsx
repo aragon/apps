@@ -23,9 +23,6 @@ export type ActionListItemProps = {
    * Background color
    */
   background?: string;
-  /**
-   * Define if the border show or hide
-   */
   onClick?: () => void;
 };
 
