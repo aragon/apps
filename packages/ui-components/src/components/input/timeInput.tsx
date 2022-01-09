@@ -55,6 +55,9 @@ export const TimeInput: React.FC<TimeInputProps> = ({
         onChange={e => onChange(e, 'time')}
         type={'time'}
       />
+      {/* TODO: This Radio button need to be customized. For now we used a
+          default Radio button but it should update soon
+      */}
       <RadioGroup defaultValue={'am'} onChange={e => onChange(e, 'midday')}>
         <Radio value="am">AM</Radio>
         <Radio value="pm">PM</Radio>
