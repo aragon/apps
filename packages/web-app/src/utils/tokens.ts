@@ -89,7 +89,7 @@ export function filterTokens(tokens: BaseTokenInfo[], searchTerm: string) {
  * @returns boolean determines whether it is erc20 compatible or not
  */
 
-export async function isTokenERC20(
+export async function isERC20Token(
   address: string,
   provider: EthersProviders.Provider
 ) {
