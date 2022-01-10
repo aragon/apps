@@ -12,7 +12,7 @@ import {Address} from '@aragon/ui-components/dist/utils/addresses';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
 import {useForm, FormProvider} from 'react-hook-form';
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useMemo} from 'react';
 
 import TokenMenu from 'containers/tokenMenu';
 import {useWallet} from 'context/augmentedWallet';
@@ -22,9 +22,10 @@ import {formatUnits} from 'utils/library';
 import ReviewDeposit from 'containers/reviewDeposit';
 import {NavigationBar} from 'containers/navbar';
 import {TransferTypes} from 'utils/constants';
-import {BaseTokenInfo} from 'utils/types';
+import {BaseTokenInfo, TokenBalance} from 'utils/types';
 import {useWalletProps} from 'containers/walletMenu';
 import {useWalletMenuContext} from 'context/walletMenu';
+import {curatedTokens} from 'utils/network';
 
 const steps = {
   configure: 1,
@@ -58,12 +59,23 @@ const defaultValues = {
 };
 
 const NewDeposit: React.FC = () => {
+  const {
+    connect,
+    chainId,
+    isConnected,
+    account,
+    ensName,
+    ensAvatarUrl,
+  }: useWalletProps = useWallet();
   const {t} = useTranslation();
   const {open} = useWalletMenuContext();
   const formMethods = useForm<FormData>({defaultValues});
   const {currentStep, prev, next} = useStepper(TOTAL_STEPS);
-  const {connect, isConnected, account, ensName, ensAvatarUrl}: useWalletProps =
-    useWallet();
+
+  const curatedTokenAddresses = useMemo(
+    () => Object.entries(curatedTokens[chainId || 4].curatedTokens),
+    [chainId]
+  );
 
   useEffect(() => {
     if (account) {
@@ -98,6 +110,16 @@ const NewDeposit: React.FC = () => {
     formMethods.setValue('tokenSymbol', token.symbol);
     formMethods.setValue('tokenAddress', token.address);
   };
+
+  const walletTokens = useMemo(() => {
+    return curatedTokenAddresses.map(
+      value =>
+        ({
+          address: value[1],
+          count: BigInt(0),
+        } as TokenBalance)
+    );
+  }, [curatedTokenAddresses]);
 
   /*************************************************
    *                    Render                     *
@@ -165,7 +187,10 @@ const NewDeposit: React.FC = () => {
             </FormFooter>
           </FormLayout>
         </FormProvider>
-        <TokenMenu onTokenSelect={handleTokenSelect} />
+        <TokenMenu
+          onTokenSelect={handleTokenSelect}
+          tokenBalances={walletTokens}
+        />
 
         {/* View form values; to be removed later */}
         <pre className="mt-2">

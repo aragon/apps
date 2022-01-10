@@ -1,45 +1,38 @@
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Modal, SearchInput, ButtonText, IconAdd} from '@aragon/ui-components';
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
 
 import TokenBox from './tokenBox';
 import {useWallet} from 'context/augmentedWallet';
+import useIsMounted from 'hooks/useIsMounted';
 import {formatUnits} from 'utils/library';
 import {useTokenInfo} from 'hooks/useTokenInformation';
 import {fetchBalance} from 'utils/tokens';
-import {curatedTokens} from 'utils/network';
-import {BaseTokenInfo} from 'utils/types';
 import {useTransferModalContext} from 'context/transfersModal';
+import {BaseTokenInfo, TokenBalance} from 'utils/types';
 
 type TokenMenuProps = {
+  includeCustom?: boolean;
+  tokenBalances: TokenBalance[];
   onTokenSelect: (token: BaseTokenInfo) => void;
 };
 
-const TokenMenu: React.FC<TokenMenuProps> = ({onTokenSelect}) => {
+const TokenMenu: React.FC<TokenMenuProps> = ({
+  includeCustom = true,
+  tokenBalances,
+  onTokenSelect,
+}) => {
   const {t} = useTranslation();
+  const isMounted = useIsMounted();
   const [tokens, setTokens] = useState<BaseTokenInfo[]>([]);
+  const {account, provider} = useWallet();
   const {isTokenOpen, close} = useTransferModalContext();
-  const {chainId, account, provider} = useWallet();
   const [searchValue, setSearchValue] = useState('');
 
   /*************************************************
    *                     Hooks                     *
    *************************************************/
-  const curatedTokenAddresses = useMemo(
-    () => Object.entries(curatedTokens[chainId || 4].curatedTokens),
-    [chainId]
-  );
-
-  const tokenBalances = useMemo(
-    () =>
-      curatedTokenAddresses.map(value => ({
-        address: value[1],
-        count: BigInt(0),
-      })),
-    [curatedTokenAddresses]
-  );
-
   const {data} = useTokenInfo(tokenBalances);
 
   useEffect(() => {
@@ -60,9 +53,8 @@ const TokenMenu: React.FC<TokenMenuProps> = ({onTokenSelect}) => {
         );
       }
     }
-
-    fetchBalances();
-  }, [account, data, provider, tokenBalances]);
+    if (isMounted()) fetchBalances();
+  }, [account, data, isMounted, provider, tokenBalances, tokens]);
 
   /*************************************************
    *             Functions and Handlers            *
@@ -124,22 +116,24 @@ const TokenMenu: React.FC<TokenMenuProps> = ({onTokenSelect}) => {
           onChange={e => setSearchValue(e.target.value)}
         />
         <TokensWrapper>{renderTokens()}</TokensWrapper>
-        <WideButton
-          mode="secondary"
-          size="large"
-          label="Add Custom Token"
-          iconLeft={<IconAdd />}
-          onClick={() =>
-            handleTokenClick({
-              address: '',
-              count: BigInt(0),
-              decimals: 18,
-              imgUrl: '',
-              symbol: searchValue,
-              name: '',
-            })
-          }
-        />
+        {includeCustom && (
+          <WideButton
+            mode="secondary"
+            size="large"
+            label="Add Custom Token"
+            iconLeft={<IconAdd />}
+            onClick={() =>
+              handleTokenClick({
+                address: '',
+                count: BigInt(0),
+                decimals: 18,
+                imgUrl: '',
+                symbol: searchValue,
+                name: '',
+              })
+            }
+          />
+        )}
       </Container>
     </Modal>
   );
