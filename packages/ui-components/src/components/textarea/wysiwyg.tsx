@@ -164,6 +164,11 @@ const StyledEditorContent = styled(EditorContent)`
     a {
       color: #003bf5;
       cursor: pointer;
+      font-weight: 700;
+
+      :hover {
+        color: #0031ad;
+      }
     }
   }
 
