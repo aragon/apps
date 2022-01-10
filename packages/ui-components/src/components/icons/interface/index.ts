@@ -25,3 +25,4 @@ export {IconSwitch} from './icon_switch';
 export {IconTurnOff} from './icon_turn_off';
 export {IconWithdraw} from './icon_withdraw';
 export {IconMenuVertical} from './icon_menu_vertical';
+export {IconExpand} from './icon_expand';
