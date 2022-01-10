@@ -13,32 +13,36 @@ import {useTransferModalContext} from 'context/transfersModal';
 import {BaseTokenInfo, TokenBalance} from 'utils/types';
 
 type TokenMenuProps = {
-  includeCustom?: boolean;
+  isWallet?: boolean;
   tokenBalances: TokenBalance[];
   onTokenSelect: (token: BaseTokenInfo) => void;
 };
 
 const TokenMenu: React.FC<TokenMenuProps> = ({
-  includeCustom = true,
+  isWallet = true,
   tokenBalances,
   onTokenSelect,
 }) => {
   const {t} = useTranslation();
+  const {data} = useTokenInfo(tokenBalances);
   const isMounted = useIsMounted();
   const [tokens, setTokens] = useState<BaseTokenInfo[]>([]);
   const {account, provider} = useWallet();
   const {isTokenOpen, close} = useTransferModalContext();
   const [searchValue, setSearchValue] = useState('');
 
+  console.log('Rendering');
+
   /*************************************************
    *                     Hooks                     *
    *************************************************/
-  const {data} = useTokenInfo(tokenBalances);
 
   useEffect(() => {
-    // fetch token balances
     async function fetchBalances() {
-      if (account) {
+      // wallet not connected; don't let it be caught here ideally
+      if (account === null) return;
+
+      if (isWallet) {
         const allPromise = Promise.all(
           tokenBalances.map(({address}) => {
             return fetchBalance(address, account, provider, false);
@@ -46,15 +50,23 @@ const TokenMenu: React.FC<TokenMenuProps> = ({
         );
 
         const balances = await allPromise;
-        setTokens(
-          data.map((token, index) => {
-            return {...token, count: balances[index]} as BaseTokenInfo;
-          })
-        );
+        if (isMounted()) {
+          setTokens(
+            data.map(
+              (token, index) =>
+                ({...token, count: balances[index]} as BaseTokenInfo)
+            )
+          );
+        }
+      } else {
+        if (isMounted()) {
+          setTokens(data.map(token => ({...token} as BaseTokenInfo)));
+        }
       }
     }
-    if (isMounted()) fetchBalances();
-  }, [account, data, isMounted, provider, tokenBalances, tokens]);
+
+    fetchBalances();
+  }, [account, data, isWallet, isMounted, provider, tokenBalances]);
 
   /*************************************************
    *             Functions and Handlers            *
@@ -80,7 +92,6 @@ const TokenMenu: React.FC<TokenMenuProps> = ({
 
     return tokenList.length !== 0 ? (
       <>
-        <TokenTitle>{t('TokenModal.yourTokens')}</TokenTitle>
         {tokenList.map(token => (
           <div key={token.address} onClick={() => handleTokenClick(token)}>
             <TokenBox
@@ -116,7 +127,7 @@ const TokenMenu: React.FC<TokenMenuProps> = ({
           onChange={e => setSearchValue(e.target.value)}
         />
         <TokensWrapper>{renderTokens()}</TokensWrapper>
-        {includeCustom && (
+        {isWallet && (
           <WideButton
             mode="secondary"
             size="large"
