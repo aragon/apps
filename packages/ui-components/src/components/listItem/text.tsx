@@ -8,7 +8,7 @@ type CustomButtonProps = Omit<
 >;
 export type ListItemTextProps = CustomButtonProps & {
   /**
-   * State that can be explisitely set by the client. These are mutually
+   * State that can be explicitly set by the client. These are mutually
    * exclusive. Default behaves like a normal UI element and will hover, focus,
    * etc. automatically. Disabled will disable the ui component, selected will
    * mark it selected.
