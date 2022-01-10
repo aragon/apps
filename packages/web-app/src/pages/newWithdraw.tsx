@@ -11,9 +11,10 @@ import styled from 'styled-components';
 import {Address} from '@aragon/ui-components/dist/utils/addresses';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
-import React, {useCallback} from 'react';
-import {useForm} from 'react-hook-form';
+import React, {useCallback, useEffect} from 'react';
+import {useForm, FormProvider} from 'react-hook-form';
 
+import TokenMenu from 'containers/tokenMenu';
 import {useWalletMenuContext} from 'context/walletMenu';
 import {useWallet} from 'context/augmentedWallet';
 import {TransferTypes} from 'utils/constants';
@@ -21,15 +22,21 @@ import {useStepper} from 'hooks/useStepper';
 import {NavigationBar} from 'containers/navbar';
 import {useWalletProps} from 'containers/walletMenu';
 import ConfigureWithdrawForm from 'containers/configureWithdraw';
+import {constants} from 'ethers';
+import {BaseTokenInfo} from 'utils/types';
+import {formatUnits} from 'utils/library';
 
 export type FormData = {
   amount: number;
   reference?: string;
   type: TransferTypes;
-  from: Address | null; // null because of useWallet props types
+  from: Address;
   to: Address;
+  tokenName: string;
   tokenSymbol: string;
+  tokenImgUrl: string;
   tokenAddress: Address;
+  tokenBalance: string;
 };
 
 const steps = {
@@ -46,21 +53,47 @@ const defaultValues = {
   reference: '',
   tokenAddress: '',
   tokenSymbol: '',
+  tokenName: '',
+  tokenImgUrl: '',
 };
 
 const NewWithdraw: React.FC = () => {
   const {t} = useTranslation();
   const {open} = useWalletMenuContext();
+  const formMethods = useForm<FormData>({defaultValues});
   const {currentStep, prev, next} = useStepper(TOTAL_STEPS);
-  const {control} = useForm<FormData>({defaultValues});
   const {connect, isConnected, account, ensName, ensAvatarUrl}: useWalletProps =
     useWallet();
 
-  /** Toggle wallet */
+  useEffect(() => {
+    if (account) {
+      // TODO: Change from to proper address
+      formMethods.setValue('from', constants.AddressZero);
+      formMethods.setValue('type', TransferTypes.Withdraw);
+    }
+  }, [account, formMethods]);
+
+  /*************************************************
+   *             Callbacks and Handlers            *
+   *************************************************/
   const handleWalletButtonClick = useCallback(() => {
     isConnected() ? open() : connect('injected');
   }, [connect, isConnected, open]);
 
+  const handleTokenSelect = (token: BaseTokenInfo) => {
+    formMethods.setValue('tokenName', token.name);
+    formMethods.setValue('tokenImgUrl', token.imgUrl);
+    formMethods.setValue('tokenSymbol', token.symbol);
+    formMethods.setValue('tokenAddress', token.address);
+    formMethods.setValue(
+      'tokenBalance',
+      formatUnits(token.count, token.decimals)
+    );
+  };
+
+  /*************************************************
+   *                    Render                     *
+   *************************************************/
   return (
     <>
       <NavigationBar>
@@ -98,30 +131,39 @@ const NewWithdraw: React.FC = () => {
           totalSteps={TOTAL_STEPS}
           currentStep={currentStep}
         />
-        <FormLayout>
-          {currentStep === steps.configure ? (
-            <ConfigureWithdrawForm control={control} />
-          ) : (
-            <h1>Review Deposit</h1>
-          )}
-          <FormFooter>
-            {/* Should change this to secondary on gray which is unsupported now */}
-            <ButtonText
-              label="Back"
-              mode="secondary"
-              size="large"
-              onClick={prev}
-              disabled={currentStep === 1}
-              iconLeft={<IconChevronLeft />}
-            />
-            <ButtonText
-              label="Continue"
-              size="large"
-              onClick={next}
-              iconRight={<IconChevronRight />}
-            />
-          </FormFooter>
-        </FormLayout>
+        <FormProvider {...formMethods}>
+          <FormLayout>
+            {currentStep === steps.configure ? (
+              <ConfigureWithdrawForm />
+            ) : (
+              <h1>Review Deposit</h1>
+            )}
+            <FormFooter>
+              {/* Should change this to secondary on gray which is unsupported now */}
+              <ButtonText
+                label="Back"
+                mode="secondary"
+                size="large"
+                onClick={prev}
+                disabled={currentStep === 1}
+                iconLeft={<IconChevronLeft />}
+              />
+              <ButtonText
+                label="Continue"
+                size="large"
+                onClick={next}
+                iconRight={<IconChevronRight />}
+              />
+            </FormFooter>
+          </FormLayout>
+        </FormProvider>
+
+        <TokenMenu onTokenSelect={handleTokenSelect} />
+
+        {/* View form values; to be removed later */}
+        <pre className="mt-2">
+          Form values: {JSON.stringify(formMethods.watch(), null, 2)}
+        </pre>
       </Layout>
     </>
   );

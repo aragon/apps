@@ -1,8 +1,3 @@
-import React, {useCallback} from 'react';
-import styled from 'styled-components';
-import {constants} from 'ethers';
-import {useTranslation} from 'react-i18next';
-import {Controller, useFormContext, useWatch} from 'react-hook-form';
 import {
   ButtonWallet,
   DropdownInput,
@@ -10,6 +5,11 @@ import {
   TextareaSimple,
   ValueInput,
 } from '@aragon/ui-components';
+import styled from 'styled-components';
+import {constants} from 'ethers';
+import {useTranslation} from 'react-i18next';
+import React, {useCallback} from 'react';
+import {Controller, useFormContext, useWatch} from 'react-hook-form';
 
 import {useTransferModalContext} from 'context/transfersModal';
 
@@ -23,6 +23,7 @@ const DepositForm: React.FC = () => {
     name: ['isCustomToken', 'tokenBalance', 'tokenSymbol'],
   });
 
+  // TODO: This should probably come with the input ui-component
   const handleClipboardActions = useCallback(
     async (currentValue: string, onChange: (value: string) => void) => {
       if (currentValue) {
@@ -67,7 +68,7 @@ const DepositForm: React.FC = () => {
               mode={error ? 'critical' : 'default'}
               value={value}
               onClick={() => open('token')}
-              placeholder={t('labels.selectToken')}
+              placeholder={t('placeHolders.selectToken')}
             />
           )}
         />
