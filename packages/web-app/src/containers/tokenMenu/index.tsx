@@ -1,14 +1,12 @@
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {Modal, SearchInput, ButtonText, IconAdd} from '@aragon/ui-components';
 
 import TokenBox from './tokenBox';
-import {useWallet} from 'context/augmentedWallet';
-import useIsMounted from 'hooks/useIsMounted';
+
 import {formatUnits} from 'utils/library';
 import {useTokenInfo} from 'hooks/useTokenInformation';
-import {fetchBalance} from 'utils/tokens';
 import {useTransferModalContext} from 'context/transfersModal';
 import {BaseTokenInfo, TokenBalance} from 'utils/types';
 
@@ -24,49 +22,9 @@ const TokenMenu: React.FC<TokenMenuProps> = ({
   onTokenSelect,
 }) => {
   const {t} = useTranslation();
-  const {data} = useTokenInfo(tokenBalances);
-  const isMounted = useIsMounted();
-  const [tokens, setTokens] = useState<BaseTokenInfo[]>([]);
-  const {account, provider} = useWallet();
+  const {data: tokens} = useTokenInfo(tokenBalances);
   const {isTokenOpen, close} = useTransferModalContext();
   const [searchValue, setSearchValue] = useState('');
-
-  console.log('Rendering');
-
-  /*************************************************
-   *                     Hooks                     *
-   *************************************************/
-
-  useEffect(() => {
-    async function fetchBalances() {
-      // wallet not connected; don't let it be caught here ideally
-      if (account === null) return;
-
-      if (isWallet) {
-        const allPromise = Promise.all(
-          tokenBalances.map(({address}) => {
-            return fetchBalance(address, account, provider, false);
-          })
-        );
-
-        const balances = await allPromise;
-        if (isMounted()) {
-          setTokens(
-            data.map(
-              (token, index) =>
-                ({...token, count: balances[index]} as BaseTokenInfo)
-            )
-          );
-        }
-      } else {
-        if (isMounted()) {
-          setTokens(data.map(token => ({...token} as BaseTokenInfo)));
-        }
-      }
-    }
-
-    fetchBalances();
-  }, [account, data, isWallet, isMounted, provider, tokenBalances]);
 
   /*************************************************
    *             Functions and Handlers            *
