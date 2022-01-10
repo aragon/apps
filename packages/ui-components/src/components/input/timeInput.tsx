@@ -9,11 +9,13 @@ export type TimeInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   mode?: 'default' | 'success' | 'warning' | 'critical';
   disabled?: boolean;
   onChange: (value: valueType) => void;
+  width?: number;
 };
 
 export const TimeInput: React.FC<TimeInputProps> = ({
   mode = 'default',
   disabled,
+  width,
   onChange: onChangeCallback,
   ...props
 }) => {
@@ -48,7 +50,7 @@ export const TimeInput: React.FC<TimeInputProps> = ({
   };
 
   return (
-    <Container data-testid="time-input" {...{mode, disabled}}>
+    <Container data-testid="time-input" {...{mode, disabled, width}}>
       <StyledTimeInput
         {...props}
         disabled={disabled}
