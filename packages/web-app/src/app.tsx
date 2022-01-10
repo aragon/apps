@@ -9,6 +9,7 @@ import Navbar from 'containers/navbar';
 import WalletMenu from 'containers/walletMenu';
 import TransferMenu from 'containers/transferMenu';
 import TokenMenu from 'containers/tokenMenu';
+import UtcMenu from 'containers/utcMenu';
 import {trackPage} from 'services/analytics';
 import '../i18n.config';
 
@@ -59,6 +60,7 @@ function App() {
       <WalletMenu />
       <TransferMenu />
       <TokenMenu />
+      <UtcMenu />
     </div>
   );
 }

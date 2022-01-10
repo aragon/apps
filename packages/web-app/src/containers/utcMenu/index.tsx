@@ -26,6 +26,7 @@ const UtcMenu: React.FC = () => {
           {timezones.map((tz: string) => {
             return (
               <ListItemText
+                key={tz}
                 title={tz}
                 iconRight={<IconChevronRight />}
                 onClick={() => handleUtcClick()}

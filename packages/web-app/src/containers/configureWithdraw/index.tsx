@@ -42,6 +42,13 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawProps> = ({control}) => {
         />
       </FormItem>
 
+      {/* TODO This is just a reference for development and can savely be
+          removed once the page is actually assembled */}
+      <FormItem>
+        <Label label={'UTC'} />
+        <DropdownInput placeholder={'utc+2'} onClick={() => open('utc')} />
+      </FormItem>
+
       <FormItem>
         <Label
           label={t('labels.amount')}
