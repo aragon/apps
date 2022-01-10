@@ -9,22 +9,23 @@ import {
 } from '@aragon/ui-components';
 import styled from 'styled-components';
 import {Address} from '@aragon/ui-components/dist/utils/addresses';
+import {constants} from 'ethers';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
-import React, {useCallback, useEffect} from 'react';
 import {useForm, FormProvider} from 'react-hook-form';
+import React, {useCallback, useEffect} from 'react';
 
 import TokenMenu from 'containers/tokenMenu';
-import {useWalletMenuContext} from 'context/walletMenu';
 import {useWallet} from 'context/augmentedWallet';
-import {TransferTypes} from 'utils/constants';
 import {useStepper} from 'hooks/useStepper';
+import {formatUnits} from 'utils/library';
+import {useDaoTokens} from 'hooks/useDaoTokens';
 import {NavigationBar} from 'containers/navbar';
+import {BaseTokenInfo} from 'utils/types';
+import {TransferTypes} from 'utils/constants';
 import {useWalletProps} from 'containers/walletMenu';
 import ConfigureWithdrawForm from 'containers/configureWithdraw';
-import {constants} from 'ethers';
-import {BaseTokenInfo} from 'utils/types';
-import {formatUnits} from 'utils/library';
+import {useWalletMenuContext} from 'context/walletMenu';
 
 export type FormData = {
   amount: number;
@@ -61,6 +62,7 @@ const NewWithdraw: React.FC = () => {
   const {t} = useTranslation();
   const {open} = useWalletMenuContext();
   const formMethods = useForm<FormData>({defaultValues});
+  const {data: tokens} = useDaoTokens('myDaoAddress');
   const {currentStep, prev, next} = useStepper(TOTAL_STEPS);
   const {connect, isConnected, account, ensName, ensAvatarUrl}: useWalletProps =
     useWallet();
@@ -136,7 +138,7 @@ const NewWithdraw: React.FC = () => {
             {currentStep === steps.configure ? (
               <ConfigureWithdrawForm />
             ) : (
-              <h1>Review Deposit</h1>
+              <h1>Review Withdraw</h1>
             )}
             <FormFooter>
               {/* Should change this to secondary on gray which is unsupported now */}
@@ -157,8 +159,11 @@ const NewWithdraw: React.FC = () => {
             </FormFooter>
           </FormLayout>
         </FormProvider>
-
-        <TokenMenu onTokenSelect={handleTokenSelect} />
+        <TokenMenu
+          isWallet={false}
+          tokenBalances={tokens}
+          onTokenSelect={handleTokenSelect}
+        />
 
         {/* View form values; to be removed later */}
         <pre className="mt-2">
