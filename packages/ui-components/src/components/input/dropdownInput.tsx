@@ -3,11 +3,9 @@ import styled from 'styled-components';
 import {IconChevronDown} from '../icons';
 import {StyledContainerProps} from './numberInput';
 
-export type DropDownInputProps = {
+export type DropDownInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   /** Changes a input's color schema */
   mode?: 'default' | 'success' | 'warning' | 'critical';
-  disabled?: boolean;
-  value?: string;
   onClick: () => void;
 };
 /** Dropdown input with variable styling (depending on mode) */

@@ -3,15 +3,16 @@ import styled from 'styled-components';
 import {ButtonText} from '../button';
 import {StyledInput} from './textInput';
 
-export type ValueInputProps = {
-  /* Text that appears on the button present on the right side of the input  */
+export type ValueInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
+  /** Text that appears on the button present on the right side of the input  */
   adornmentText: string;
 
+  /** Handler for when the button present on the right side of the input  is
+   * clicked */
   onAdornmentClick: () => void;
 
   /** Changes a input's color schema */
   mode?: 'default' | 'success' | 'warning' | 'critical';
-  disabled: boolean;
 };
 
 export const ValueInput: React.FC<ValueInputProps> = ({

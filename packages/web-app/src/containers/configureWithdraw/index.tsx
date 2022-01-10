@@ -25,9 +25,9 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawProps> = ({control}) => {
           helpText={t('newWithdraw.configureWithdraw.toSubtitle')}
         />
         <ValueInput
-          placeholder={t('placeHolders.walletOrEns')}
           adornmentText={t('labels.paste')}
           onAdornmentClick={() => navigator.clipboard.readText().then(alert)}
+          placeholder={t('placeHolders.walletOrEns')}
         />
       </FormItem>
 
@@ -37,8 +37,8 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawProps> = ({control}) => {
           helpText={t('newWithdraw.configureWithdraw.tokenSubtitle')}
         />
         <DropdownInput
-          placeholder={t('placeHolders.selectToken')}
           onClick={() => open('token')}
+          placeholder={t('placeHolders.selectToken')}
         />
       </FormItem>
 
