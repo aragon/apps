@@ -2,7 +2,7 @@ import React, {useMemo, useState} from 'react';
 import styled from 'styled-components';
 import {Radio, RadioGroup} from '../radioGroup';
 
-export type valueType = {time: string; midday: string};
+export type valueType = {time: string; midday: 'pm' | 'am'};
 
 export type TimeInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   /** Changes a input's color schema */
@@ -42,7 +42,7 @@ export const TimeInput: React.FC<TimeInputProps> = ({
     } else {
       setTime(prevState => ({
         time: prevState.time,
-        midday: nextValue as string,
+        midday: nextValue as 'pm' | 'am',
       }));
     }
   };

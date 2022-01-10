@@ -12,5 +12,4 @@ const Template: Story<TimeInputProps> = args => <TimeInput {...args} />;
 export const Time = Template.bind({});
 Time.args = {
   mode: 'default',
-  placeholder: 'Placeholder',
 };
