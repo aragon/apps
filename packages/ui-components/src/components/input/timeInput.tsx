@@ -56,6 +56,7 @@ export const TimeInput: React.FC<TimeInputProps> = ({
         disabled={disabled}
         onChange={e => onChange(e, 'time')}
         type={'time'}
+        required
       />
       {/* TODO: This Radio button need to be customized. For now we used a
           default Radio button but it should update soon
@@ -79,7 +80,7 @@ const Container = styled.div.attrs(
       disabled ? 'bg-ui-100' : 'bg-ui-0'
     } inline-flex p-1 bg-ui-0 ${
       width ? '' : 'w-30'
-    } focus:outline-none items-center
+    } focus:outline-none items-center font-normal
       focus-within:ring-2 focus-within:ring-primary-500 justify-between
       rounded-xl hover:border-ui-300 border-2 active:border-primary-500 
     `;
