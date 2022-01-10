@@ -9,6 +9,7 @@ export * from './components/card';
 export * from './components/daoSelector';
 export * from './components/icons';
 export * from './components/input';
+export * from './components/listItem';
 export * from './components/menuItem';
 export * from './components/popover';
 export * from './components/radioGroup';
