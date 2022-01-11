@@ -11,7 +11,7 @@ export type CardTokenProps = {
   treasurySharePercentage?: string;
   tokenCount: string;
   tokenUSDValue?: string;
-  treasuryShare: string;
+  treasuryShare?: string;
   type?: 'vault' | 'transfer';
   bgWhite?: boolean;
   changeType?: 'Positive' | 'Negative';
