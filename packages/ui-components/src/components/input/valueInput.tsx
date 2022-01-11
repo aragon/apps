@@ -11,7 +11,6 @@ export type ValueInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
 
   /** Changes a input's color schema */
   mode?: 'default' | 'success' | 'warning' | 'critical';
-  disabled?: boolean;
 };
 
 export const ValueInput: React.FC<ValueInputProps> = ({
