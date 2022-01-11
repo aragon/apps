@@ -18,7 +18,6 @@ import "./../../core/DAO.sol";
 contract DAOFactory {
     using Address for address;
     
-    
     address private votingBase;
     address private daoBase;
     address private governanceERC20Base;
@@ -38,14 +37,15 @@ contract DAOFactory {
     }
 
     function newDAO(
+        string calldata name,
         bytes calldata _metadata,
         TokenConfig calldata _tokenConfig,
         uint256[3] calldata _votingSettings
-    ) external {
+    ) external returns (DAO dao, SimpleVoting voting, address token) {
         // setup Token
         // TODO: Do we wanna leave the option not to use any proxy pattern in such case ? 
         // delegateCall is costly if so many calls are needed for a contract after the deployment.
-        address token = _tokenConfig.addr;
+        token = _tokenConfig.addr;
         // https://forum.openzeppelin.com/t/what-is-the-best-practice-for-initializing-a-clone-created-with-openzeppelin-contracts-proxy-clones-sol/16681
         if(token == address(0)) {
             token = Clones.clone(governanceERC20Base);
@@ -56,8 +56,11 @@ contract DAOFactory {
             GovernanceWrappedERC20(token).initialize(IERC20Upgradeable(_tokenConfig.addr), _tokenConfig.name, _tokenConfig.symbol);
         }
 
-        DAO dao = DAO(createProxy(daoBase, bytes("")));
-        Process voting = createProxy(votingBase, abi.encodeWithSelector(Process.initialize.selector, dao, token, _votingSettings));
+        dao = DAO(createProxy(daoBase, bytes("")));
+        
+        registry.register(name, dao, msg.sender);
+
+        voting = SimpleVoting(createProxy(votingBase, abi.encodeWithSelector(SimpleVoting.initialize.selector, dao, token, _votingSettings)));
         
         dao.initialize(
             _metadata,
@@ -65,8 +68,8 @@ contract DAOFactory {
         );
     }
 
-    function createProxy(address _logic, bytes memory _data) private returns(address) {
-        return address(new ERC1967Proxy(_logic, _data));
+    function createProxy(address _logic, bytes memory _data) private returns(address payable addr) {
+        return payable(address(new ERC1967Proxy(_logic, _data)));
     }
 
     function setupBases() private {

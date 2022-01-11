@@ -75,7 +75,7 @@ abstract contract Process is Component {
 
     /// @dev Used to convert a bytes to type address
     /// @param value The bytes to convert to a address
-    /// @returns addr The converted address
+    /// @return addr The converted address
     function bytesToAddress(bytes memory value) private pure returns (address addr) {
         assembly {
             addr := mload(add(value,20))
