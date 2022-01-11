@@ -1,10 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
 import {CardTransfer, CardTransferProps} from './cardTransfer';
-import {CardToken} from './cardToken';
+import {CardToken, CardTokenProps} from './cardToken';
 import {ButtonText} from '../button';
 
 export type CardExecutionProps = CardTransferProps & {
+  /**
+   * Title of the card
+   */
+  title: string;
+  /**
+   * Description text
+   */
+  description: string;
   /**
    * Allows the Dao Card component grow horizontally, thereby moving the switcher
    * button right.
@@ -14,9 +22,20 @@ export type CardExecutionProps = CardTransferProps & {
   /** Handler for the switch button. Will be called when the button is clicked.
    * */
   onClick?: () => void;
-};
+} & Omit<
+    CardTokenProps,
+    | 'type'
+    | 'bgWhite'
+    | 'changeType'
+    | 'tokenUSDValue'
+    | 'changeDuringInterval'
+    | 'treasurySharePercentage'
+    | 'percentageChangeDuringInterval'
+  >;
 
 export const CardExecution: React.FC<CardExecutionProps> = ({
+  title,
+  description,
   to,
   from,
   toLabel,
@@ -24,13 +43,10 @@ export const CardExecution: React.FC<CardExecutionProps> = ({
   wide = false,
 }: CardExecutionProps) => {
   return (
-    <Card wide={wide}>
+    <Card wide={wide} data-testid="cardExecution">
       <Header>
-        <Title>Execution</Title>
-        <Description>
-          These smart actions are executed when the proposal reaches sufficient
-          support. Find out which actions are executed.
-        </Description>
+        <Title>{title}</Title>
+        <Description>{description}</Description>
       </Header>
       <Content>
         <CardTransfer {...{to, from, toLabel, fromLabel}} bgWhite />
@@ -42,7 +58,7 @@ export const CardExecution: React.FC<CardExecutionProps> = ({
           tokenSymbol={'DAI'}
           tokenCount={'15,000,230.2323'}
           treasuryShare={'$15,000,230.23'}
-          tokenUSDValue={'1$'}
+          type={'transfer'}
           bgWhite
         />
       </Content>
@@ -56,8 +72,9 @@ export const CardExecution: React.FC<CardExecutionProps> = ({
 type CardProps = Pick<CardExecutionProps, 'wide'>;
 
 const Card = styled.div.attrs(({wide}: CardProps) => ({
-  className: `flex flex-col ${wide} bg-white 
-  rounded-xl p-3 space-y-3`,
+  className: `${
+    wide ? 'flex justify-between' : 'inline-flex'
+  } flex-col bg-white rounded-xl p-3 space-y-3`,
 }))<CardProps>``;
 
 const Header = styled.div.attrs({
