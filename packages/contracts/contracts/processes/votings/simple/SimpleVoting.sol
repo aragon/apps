@@ -101,7 +101,7 @@ contract SimpleVoting is VotingProcess, TimeHelpers {
             string memory description, 
             bool executeIfDecided,
             bool castVote
-        ) = abi.decode(execution.additionalArguments, (string, bool, bool));
+        ) = abi.decode(execution.proposal.additionalArguments, (string, bool, bool));
 
         uint64 snapshotBlock = getBlockNumber64() - 1; 
         
@@ -243,7 +243,7 @@ contract SimpleVoting is VotingProcess, TimeHelpers {
         yea = vote_.yea;
         nay = vote_.nay;
         votingPower = vote_.votingPower;
-        actions = _getExecution(_voteId).actions;
+        actions = _getExecution(_voteId).proposal.actions;
     }
 
     /**

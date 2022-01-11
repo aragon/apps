@@ -45,8 +45,7 @@ abstract contract Process is Component {
 
     struct Execution { // A execution contains the process to execute, the proposal passed by the user, and the state of the execution.
         uint256 id;
-        DAO.Action[] actions;
-        bytes additionalArguments;
+        Proposal proposal;
         State state;
     }
 
@@ -125,10 +124,9 @@ abstract contract Process is Component {
         executionsCounter++;
 
         // the reason behind this - https://matrix.to/#/!poXqlbVpQfXKWGseLY:gitter.im/$6IhWbfjcTqmLoqAVMopWFuIhlQwsoaIRxmsXhhmsaSs?via=gitter.im&via=matrix.org&via=ekpyron.org
-        Execution memory execution = executions[executionsCounter];
+        Execution storage execution = executions[executionsCounter];
         execution.id = executionsCounter;
-        execution.actions = proposal.actions;
-        execution.additionalArguments = proposal.additionalArguments;
+        execution.proposal = proposal;
         execution.state = State.RUNNING;
 
         _start(execution); // "Hook" to add logic in start of a concrete implementation.
