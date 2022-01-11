@@ -8,12 +8,12 @@ import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20VotesUpgradeable.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
-import "./../../packages/processes/votings/simple/SimpleVoting.sol";
-import "./../../packages/tokens/GovernanceERC20.sol";
-import "./../../packages/tokens/GovernanceWrappedERC20.sol";
-import "./../../core/processes/Process.sol";
+import "./../processes/votings/simple/SimpleVoting.sol";
+import "./../tokens/GovernanceERC20.sol";
+import "./../tokens/GovernanceWrappedERC20.sol";
+import "./../core/processes/Process.sol";
 import "./../registry/Registry.sol";
-import "./../../core/DAO.sol";
+import "./../core/DAO.sol";
 
 /// @title DAOFactory to create a DAO
 /// @author Giorgi Lagidze & Samuel Furter - Aragon Association - 2022
