@@ -40,6 +40,11 @@ export const CardExecution: React.FC<CardExecutionProps> = ({
   from,
   toLabel,
   fromLabel,
+  tokenName,
+  tokenImageUrl,
+  tokenSymbol,
+  tokenCount,
+  treasuryShare,
   wide = false,
 }: CardExecutionProps) => {
   return (
@@ -51,13 +56,13 @@ export const CardExecution: React.FC<CardExecutionProps> = ({
       <Content>
         <CardTransfer {...{to, from, toLabel, fromLabel}} bgWhite />
         <CardToken
-          tokenName={'DAI'}
-          tokenImageUrl={
-            'https://s2.coinmarketcap.com/static/img/coins/64x64/4943.png'
-          }
-          tokenSymbol={'DAI'}
-          tokenCount={'15,000,230.2323'}
-          treasuryShare={'$15,000,230.23'}
+          {...{
+            tokenName,
+            tokenImageUrl,
+            tokenSymbol,
+            tokenCount,
+            treasuryShare,
+          }}
           type={'transfer'}
           bgWhite
         />
