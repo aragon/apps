@@ -2,7 +2,7 @@
  * SPDX-License-Identifier:    MIT
  */
 
-pragma solidity ^0.8.0;
+pragma solidity 0.8.10;
 
 import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20VotesUpgradeable.sol";
@@ -15,6 +15,9 @@ import "./../../core/processes/Process.sol";
 import "./../registry/Registry.sol";
 import "./../../core/DAO.sol";
 
+/// @title DAOFactory to create a DAO
+/// @author Giorgi Lagidze & Samuel Furter - Aragon Association - 2022
+/// @notice This contract is used to create a DAO.
 contract DAOFactory {
     using Address for address;
     
