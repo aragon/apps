@@ -16,6 +16,7 @@ export * from './components/spinner';
 export * from './components/transferListItem';
 export * from './components/modal';
 export * from './components/label';
+export * from './components/link';
 export * from './components/wizard';
 export * from './components/progress';
 export * from './components/tokenListItem';
