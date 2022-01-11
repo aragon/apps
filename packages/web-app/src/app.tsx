@@ -59,7 +59,7 @@ function App() {
       <Footer />
       <WalletMenu />
       <TransferMenu />
-      {/* TODO remove this from here and add this to the page(s) on which it is 
+      {/* TODO remove this from here and add this to the page(s) on which it is
       actually needed */}
       <TokenMenu />
       <UtcMenu />
