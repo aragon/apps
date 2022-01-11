@@ -20,6 +20,10 @@ export type CardExecutionProps = CardTransferProps & {
   /** Handler for the switch button. Will be called when the button is clicked.
    * */
   onClick?: () => void;
+  /**
+   * whether the action button is disabled or not
+   */
+  disabledAction?: boolean;
 } & Omit<
     CardTokenProps,
     | 'type'
@@ -43,6 +47,8 @@ export const CardExecution: React.FC<CardExecutionProps> = ({
   tokenSymbol,
   tokenCount,
   treasuryShare,
+  onClick,
+  disabledAction = true,
   wide = false,
 }: CardExecutionProps) => {
   return (
@@ -66,7 +72,11 @@ export const CardExecution: React.FC<CardExecutionProps> = ({
         />
       </Content>
       <Action>
-        <ButtonText label={'Execute Now'} />
+        <ButtonText
+          label={'Execute Now'}
+          onClick={onClick}
+          {...(disabledAction && {disabled: true})}
+        />
       </Action>
     </Card>
   );
@@ -76,7 +86,7 @@ type CardProps = Pick<CardExecutionProps, 'wide'>;
 
 const Card = styled.div.attrs(({wide}: CardProps) => ({
   className: `${
-    wide ? 'flex justify-between' : 'inline-flex'
+    wide ? 'flex justify-between' : 'w-84'
   } flex-col bg-white rounded-xl p-3 space-y-3`,
 }))<CardProps>``;
 
