@@ -88,7 +88,7 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
     /// @dev Grants the new process execution rights and amits the related event.
     /// @param process The address of the new process
     function addProcess(Process process) external auth(address(this), DAO_CONFIG_ROLE) {
-        this.grant(address(this), address(process), EXEC_ROLE);
+        _grant(address(this), address(process), EXEC_ROLE);
         emit ProcessAdded(process);
     }
 
@@ -96,7 +96,7 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
     /// @dev Revokes the execution rights from the process and emits the related event.
     /// @param process The address of the new process
     function removeProcess(Process process) external auth(address(this), DAO_CONFIG_ROLE) {
-        this.revoke(address(this), address(process), EXEC_ROLE);
+        _revoke(address(this), address(process), EXEC_ROLE);
         emit ProcessRemoved(process);
     }
 
