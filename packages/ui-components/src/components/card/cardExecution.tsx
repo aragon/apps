@@ -14,11 +14,9 @@ export type CardExecutionProps = CardTransferProps & {
    */
   description: string;
   /**
-   * Allows the Dao Card component grow horizontally, thereby moving the switcher
-   * button right.
+   * Allows the Execution Card component grow horizontally
    * */
   wide?: boolean;
-
   /** Handler for the switch button. Will be called when the button is clicked.
    * */
   onClick?: () => void;
