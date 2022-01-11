@@ -1,18 +1,18 @@
 import React from 'react';
 import {render, screen} from '@testing-library/react';
 
-import {RadioGroup, Radio} from '../src';
+import {Option, ButtonGroup} from '../src';
 
 describe('Radio Group', () => {
   // eslint-disable-next-line
   function setup(args: any) {
     render(
-      <RadioGroup defaultValue="USD" {...args}>
-        <Radio value="USD">USD</Radio>
-        <Radio value="ETH">ETH</Radio>
-      </RadioGroup>
+      <ButtonGroup defaultValue="USD" {...args}>
+        <Option value="USD">USD</Option>
+        <Option value="ETH">ETH</Option>
+      </ButtonGroup>
     );
-    return screen.getByTestId('radioGroup');
+    return screen.getByTestId('buttonGroup');
   }
 
   test('should render without crashing', () => {

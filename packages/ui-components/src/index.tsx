@@ -15,7 +15,6 @@ export * from './components/label';
 export * from './components/modal';
 export * from './components/popover';
 export * from './components/progress';
-export * from './components/radioGroup';
 export * from './components/spinner';
 export * from './components/transferListItem';
 export * from './components/wizard';
