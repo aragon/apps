@@ -108,11 +108,11 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
         bytes[] memory execResults = new bytes[](actions.length);
 
         for (uint256 i = 0; i < actions.length; i++) {
-          (bool success, bytes memory response) = actions[i].to.call{ value: actions[i].value }(actions[i].data);
+            (bool success, bytes memory response) = actions[i].to.call{ value: actions[i].value }(actions[i].data);
 
-          require(success, ERROR_ACTION_CALL_FAILED);
+            require(success, ERROR_ACTION_CALL_FAILED);
 
-          execResults[i] = response;
+            execResults[i] = response;
         }
 
         emit Executed(msg.sender, actions, execResults);

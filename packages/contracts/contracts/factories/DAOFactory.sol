@@ -56,14 +56,30 @@ contract DAOFactory {
         } else {
             token = Clones.clone(governanceWrappedERC20Base);
             // user already has a token. we need to wrap it in our new token to make it governance token.
-            GovernanceWrappedERC20(token).initialize(IERC20Upgradeable(_tokenConfig.addr), _tokenConfig.name, _tokenConfig.symbol);
+            GovernanceWrappedERC20(
+                token
+            ).initialize(
+                IERC20Upgradeable(_tokenConfig.addr),
+                _tokenConfig.name,
+                _tokenConfig.symbol
+            );
         }
 
         dao = DAO(createProxy(daoBase, bytes("")));
         
         registry.register(name, dao, msg.sender);
 
-        voting = SimpleVoting(createProxy(votingBase, abi.encodeWithSelector(SimpleVoting.initialize.selector, dao, token, _votingSettings)));
+        voting = SimpleVoting(
+            createProxy(
+                votingBase,
+                abi.encodeWithSelector(
+                    SimpleVoting.initialize.selector,
+                    dao,
+                    token,
+                    _votingSettings
+                )
+            )
+        );
         
         dao.initialize(
             _metadata,
