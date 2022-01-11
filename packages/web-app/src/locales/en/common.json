@@ -29,7 +29,8 @@
     "amount": "Amount",
     "reference": "Reference",
     "address": "Token Contract Address",
-    "paste": "Paste"
+    "paste": "Paste",
+    "maxBalance": "Max Balance"
   },
   "placeHolders": {
     "selectToken": "Select a Token ...",

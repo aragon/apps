@@ -128,7 +128,7 @@ const DepositForm: React.FC = () => {
         />
         {tokenBalance && (
           <div className="px-1 text-xs text-right text-ui-600">
-            {`Max Balance: ${tokenBalance} ${tokenSymbol}`}
+            {`${t('labels.maxBalance')}: ${tokenBalance} ${tokenSymbol}`}
           </div>
         )}
       </FormItem>
