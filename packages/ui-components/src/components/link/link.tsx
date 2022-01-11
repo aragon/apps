@@ -4,14 +4,18 @@ import styled from 'styled-components';
 import {IconType} from '../icons';
 
 export type LinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement> & {
+  /** activated status of the link */
   active?: boolean;
   disabled?: boolean;
+  /** whether link should open new tab to external location */
   external?: boolean;
   iconRight?: React.FunctionComponentElement<IconType>;
   iconLeft?: React.FunctionComponentElement<IconType>;
+  /** optional label for the link, defaults to the href if value not provided */
   label?: string;
 };
 
+/** Default link component */
 export const Link: React.FC<LinkProps> = ({
   active = false,
   disabled = false,
@@ -24,7 +28,7 @@ export const Link: React.FC<LinkProps> = ({
 }) => {
   return (
     <StyledLink
-      href={href}
+      href={disabled ? undefined : href}
       rel="noopener noreferrer"
       active={active}
       disabled={disabled}
@@ -33,9 +37,9 @@ export const Link: React.FC<LinkProps> = ({
       data-testid="link"
     >
       <div className="inline-flex justify-start items-center space-x-1.5">
-        {iconLeft && <IconContainer>{iconLeft}</IconContainer>}
+        {iconLeft && iconLeft}
         <Label>{label || href}</Label>
-        {!iconLeft && iconRight && <IconContainer>{iconRight}</IconContainer>}
+        {!iconLeft && iconRight && iconRight}
       </div>
     </StyledLink>
   );
@@ -43,18 +47,16 @@ export const Link: React.FC<LinkProps> = ({
 
 type StyledLinkProps = {disabled: boolean; active: boolean};
 const StyledLink = styled.a.attrs(({active, disabled}: StyledLinkProps) => {
-  return {
-    className: `${disabled ? 'text-ui-300' : 'text-primary-500'} ${
-      active ? 'text-primary-800' : 'text-primary-500'
-    } overflow-hidden text-primary-500 hover:text-primary-700
-      focus:bg-ui-0 rounded focus:ring-2 focus:ring-primary-500 focus:outline-none` as
-      | string
-      | undefined,
-  };
+  let className = `overflow-hidden text-primary-500 hover:text-primary-700
+      focus:bg-ui-0 rounded focus:ring-2 focus:ring-primary-500 focus:outline-none`;
+
+  className += ` ${
+    disabled ? 'text-ui-300 pointer-events-none' : 'text-primary-500'
+  } ${active ? 'text-primary-800' : 'text-primary-500'} `;
+
+  return {className};
 })<StyledLinkProps>``;
 
-const IconContainer = styled.span.attrs({})``;
-
 const Label = styled.span.attrs({
-  className: 'text-base font-bold' as string | undefined,
+  className: 'text-base font-bold',
 })``;
