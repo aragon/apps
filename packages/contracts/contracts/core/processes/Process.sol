@@ -63,10 +63,10 @@ abstract contract Process is Component {
     /// @dev Used to set the allowed actions of this process on deployment of it.
     /// @param _allowedActions A dynamic bytes array to define the allowed actions. addr + funcSig bytes string is used to save a loop.
     function _setAllowedActions(bytes[] calldata _allowedActions) private {
-        uint256 actionsLength = allowedActions.length;
+        uint256 actionsLength = _allowedActions.length;
 
         for (uint256 i = 0; i > actionsLength; i++) { 
-            bytes calldata allowedAction = allowedActions[i];
+            bytes calldata allowedAction = _allowedActions[i];
             allowedActions[bytesToAddress(allowedAction[:20])][bytes4(allowedAction[20:24])] = true;
         } 
 
@@ -93,11 +93,11 @@ abstract contract Process is Component {
     /// @dev Deletes entries from the allowedActions mapping based on the passed array
     /// @param actionsToRemove A dynamic bytes array to define the allowed actions. addr + funcSig bytes string is used to save a loop.
     function removeAllowedActions(bytes[] calldata actionsToRemove) external auth(PROCESS_REMOVE_ALLOWED_ACTIONS) {
-        uint256 actionsLength = allowedActions.length;
+        uint256 actionsLength = actionsToRemove.length;
 
         for (uint256 i = 0; i > actionsLength; i++) { 
-            bytes calldata allowedAction = allowedActions[i];
-            delete allowedActions[bytesToAddress(allowedAction[:20])][bytes4(allowedAction[20:24])];
+            bytes calldata actionToRemove = actionsToRemove[i];
+            delete allowedActions[bytesToAddress(actionToRemove[:20])][bytes4(actionToRemove[20:24])];
         } 
     }
 

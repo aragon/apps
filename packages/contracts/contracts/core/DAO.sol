@@ -34,7 +34,7 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
     // of the contract(base contract) that is behind the proxy.
     event ETHDeposited(address sender, uint256 amount);
     event Deposited(address indexed sender, address indexed token, uint256 amount, string _reference);
-    event Withdrawn(address indexed token, address indexed to, address from, uint256 amount, string _reference);
+    event Withdrawn(address indexed token, address indexed to, uint256 amount, string _reference);
     
     // Roles
     bytes32 public constant UPGRADE_ROLE = keccak256("UPGRADE_ROLE");
@@ -46,9 +46,6 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
     string private constant ERROR_ACTION_CALL_FAILED = "ACTION_CALL_FAILED";
     string private constant ERROR_DEPOSIT_AMOUNT_ZERO = "DEPOSIT_AMOUNT_ZERO";
     string private constant ERROR_ETH_DEPOSIT_AMOUNT_MISMATCH = "ETH_DEPOSIT_AMOUNT_MISMATCH";
-    string private constant ERROR_TOKEN_NOT_CONTRACT = "TOKEN_NOT_CONTRACT";
-    string private constant ERROR_TOKEN_DEPOSIT_FAILED = "TOKEN_DEPOSIT_FAILED";
-    string private constant ERROR_TOKEN_WITHDRAW_FAILED = "TOKEN_WITHDRAW_FAILED";
     string private constant ERROR_ETH_WITHDRAW_FAILED = "ETH_WITHDRAW_FAILED";
 
     struct Action {
@@ -138,8 +135,7 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
         if (_token == address(0)) {
             require(msg.value == _amount, ERROR_ETH_DEPOSIT_AMOUNT_MISMATCH);
         } else {
-            require(_token.isContract(), ERROR_TOKEN_NOT_CONTRACT);
-            require(ERC20(_token).safeTransferFrom(msg.sender, address(this), _amount), ERROR_TOKEN_DEPOSIT_FAILED);
+            ERC20(_token).safeTransferFrom(msg.sender, address(this), _amount);
         }
 
         emit Deposited(msg.sender, _token, _amount, _reference);
@@ -155,7 +151,7 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
             (bool ok, ) = _to.call{value: _amount}("");
             require(ok, ERROR_ETH_WITHDRAW_FAILED);
         } else {
-            require(ERC20(_token).safeTransfer(_to, _amount), ERROR_TOKEN_WITHDRAW_FAILED);
+            ERC20(_token).safeTransfer(_to, _amount);
         }
         
         emit Withdrawn(_token, _to, _amount, _reference);

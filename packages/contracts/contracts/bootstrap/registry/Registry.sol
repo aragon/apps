@@ -21,7 +21,7 @@ contract Registry {
     function register(string calldata name, DAO dao, address creator) external {
         require(daos[name] == false, "This name is already in use!");
 
-        daos[name] = dao;
+        daos[name] = true;
         
         emit NewDAORegistered(name, dao, creator);
     }
