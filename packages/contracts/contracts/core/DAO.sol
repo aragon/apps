@@ -6,7 +6,10 @@ pragma solidity 0.8.10;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
-import "./processes/types/Process.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/utils/Address.sol";
+import "./processes/Process.sol";
 import "./component/Component.sol";
 import "./acl/ACL.sol";
 import "./IDAO.sol";
@@ -17,11 +20,14 @@ import "./IDAO.sol";
 /// @notice This contract is the entry point to the Aragon DAO framework and provides our users a simple and use to use public interface.
 /// @dev Public API of the Aragon DAO framework
 contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
+    using SafeERC20 for ERC20;
+    using Address for address;
+
     // Events
     event SetMetadata(bytes indexed metadata);
     event Executed(address indexed actor, Action[] indexed actions, bytes[] execResults);
-    event AddProcess(Process indexed process);
-    event RemoveProcess(Process indexed process);
+    event ProcessAdded(Process indexed process);
+    event ProcessRemoved(Process indexed process);
     // ETHDeposited and Deposited are both needed. ETHDeposited makes sure that whoever sends funds
     // with `send/transfer`, receive function can still be executed without reverting due to gas cost
     // increases in EIP-2929. To still use `send/transfer`, access list is needed that has the address
@@ -34,6 +40,7 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
     bytes32 public constant UPGRADE_ROLE = keccak256("UPGRADE_ROLE");
     bytes32 public constant DAO_CONFIG_ROLE = keccak256("DAO_CONFIG_ROLE");
     bytes32 public constant EXEC_ROLE = keccak256("EXEC_ROLE");
+    bytes32 public constant WITHDRAW_ROLE = keccak256("WITHDRAW_ROLE");
 
     // Error msg's
     string private constant ERROR_ACTION_CALL_FAILED = "ACTION_CALL_FAILED";
@@ -54,9 +61,11 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
     /// @param _metadata IPFS hash that points to all the metadata (logo, description, tags, etc.) of a DAO
     function initialize(
         bytes calldata _metadata,
+        Process process
     ) public initializer {
-        setMetadata(_metadata);
+        this.setMetadata(_metadata);
         ACL.initACL(address(this));
+        this.addProcess(process);
     }
 
     /// @dev Used to check the permissions within the upgradability pattern implementation of OZ
@@ -83,7 +92,7 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
     /// @dev Grants the new process execution rights and amits the related event.
     /// @param process The address of the new process
     function addProcess(Process process) external auth(address(this), DAO_CONFIG_ROLE) {
-        grant(address(this), process, EXEC_ROLE);
+        this.grant(address(this), address(process), EXEC_ROLE);
         emit ProcessAdded(process);
     }
 
@@ -91,7 +100,7 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
     /// @dev Revokes the execution rights from the process and emits the related event.
     /// @param process The address of the new process
     function removeProcess(Process process) external auth(address(this), DAO_CONFIG_ROLE) {
-        revoke(address(this), process, EXEC_ROLE);
+        this.revoke(address(this), address(process), EXEC_ROLE);
         emit ProcessRemoved(process);
     }
 
@@ -99,7 +108,7 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
     /// @dev It run a loop through the array of acctions and execute one by one.
     /// @dev If one acction fails, all will be reverted.
     /// @param actions The aray of actions
-    function execute(Action[] memory actions) external auth(EXEC_ROLE) {
+    function execute(Action[] memory actions) external auth(address(this), EXEC_ROLE) {
         bytes[] memory execResults = new bytes[](actions.length);
 
         for (uint256 i = 0; i < actions.length; i++) {
@@ -141,7 +150,7 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
     // @param _to The target address to send tokens or ETH
     // @param _amount The amount of tokens to deposit
     // @param _reference The deposit reference describing the reason of it
-    function withdraw(address _token, address _to, uint256 _amount, string memory _reference) public auth(WITHDRAW_ROLE) {
+    function withdraw(address _token, address _to, uint256 _amount, string memory _reference) public auth(address(this), WITHDRAW_ROLE) {
         if (_token == address(0)) {
             (bool ok, ) = _to.call{value: _amount}("");
             require(ok, ERROR_ETH_WITHDRAW_FAILED);

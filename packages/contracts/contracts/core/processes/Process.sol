@@ -4,8 +4,8 @@
 
 pragma solidity 0.8.10;
 
-import "./../../component/Component.sol";
-import "./../../DAO.sol";
+import "./../component/Component.sol";
+import "./../DAO.sol";
 
 /// @title Abstract implementation of the governance process
 /// @author Samuel Furter - Aragon Association - 2021
@@ -56,7 +56,7 @@ abstract contract Process is Component {
 
     /// @dev Used for UUPS upgradability pattern
     /// @param _allowedActions A dynamic bytes array to define the allowed actions. Addr + funcSig byte strings.
-    function initialize(bytes[] calldata _allowedActions) initializer {
+    function initialize(bytes[] calldata _allowedActions) public initializer {
         _setAllowedActions(_allowedActions);
     }
 

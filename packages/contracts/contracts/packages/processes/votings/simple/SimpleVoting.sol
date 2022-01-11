@@ -6,7 +6,7 @@ pragma solidity 0.8.10;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20VotesUpgradeable.sol";
 
-import "./../../../../core/processes/types/voting/VotingProcess.sol";
+import "./../../../../core/processes/voting/VotingProcess.sol";
 import "./../../../../core/DAO.sol";
 import "./TimeHelpers.sol";
 
@@ -57,15 +57,15 @@ contract SimpleVoting is VotingProcess, TimeHelpers {
 
     /// @dev Used for UUPS upgradability pattern
     /// @param _dao The DAO contract of the current DAO
-    function initialize(DAO _dao, ERC20VotesUpgradeable _token, uint64[3] calldata _voteSettings) public initializer { 
+    function initialize(DAO _dao, ERC20VotesUpgradeable _token, uint64[3] calldata _votingSettings) public initializer { 
         token = _token;
 
-        require(_voteSettings[0] <= _voteSettings[1], ERROR_INIT_PCTS);
-        require(_voteSettings[1] < PCT_BASE, ERROR_INIT_SUPPORT_TOO_BIG);
+        require(_votingSettings[0] <= _votingSettings[1], ERROR_INIT_PCTS);
+        require(_votingSettings[1] < PCT_BASE, ERROR_INIT_SUPPORT_TOO_BIG);
 
-        minAcceptQuorumPct = _voteSettings[0];
-        supportRequiredPct = _voteSettings[1]; 
-        voteTime = _voteSettings[2];
+        minAcceptQuorumPct = _votingSettings[0];
+        supportRequiredPct = _votingSettings[1]; 
+        voteTime = _votingSettings[2];
 
         Component.initialize(_dao);
     }
