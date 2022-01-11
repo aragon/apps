@@ -40,7 +40,6 @@ const TransferModalsProvider: React.FC<Props> = ({children}) => {
         setIsTokenOpen(true);
         break;
       case 'utc':
-        console.log('Hihodfs');
         setIsUtcOpen(true);
         break;
       default:
