@@ -7,8 +7,8 @@ import {Navigate, Routes, Route, useLocation, Outlet} from 'react-router-dom';
 import Footer from 'containers/footer';
 import Navbar from 'containers/navbar';
 import WalletMenu from 'containers/walletMenu';
+// import TokenMenu from 'containers/tokenMenu';
 import TransferMenu from 'containers/transferMenu';
-import TokenMenu from 'containers/tokenMenu';
 import UtcMenu from 'containers/utcMenu';
 import {trackPage} from 'services/analytics';
 import '../i18n.config';
@@ -61,8 +61,8 @@ function App() {
       <TransferMenu />
       {/* TODO remove this from here and add this to the page(s) on which it is
       actually needed */}
-      <TokenMenu />
       <UtcMenu />
+      {/* <TokenMenu /> */}
     </div>
   );
 }

@@ -6,11 +6,9 @@ import {StyledInput} from './textInput';
 export type ValueInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   /** Text that appears on the button present on the right side of the input  */
   adornmentText: string;
-
   /** Handler for when the button present on the right side of the input  is
    * clicked */
   onAdornmentClick: () => void;
-
   /** Changes a input's color schema */
   mode?: 'default' | 'success' | 'warning' | 'critical';
 };
@@ -19,7 +17,7 @@ export const ValueInput: React.FC<ValueInputProps> = ({
   adornmentText,
   onAdornmentClick,
   mode = 'default',
-  disabled,
+  disabled = false,
   ...props
 }) => {
   return (
