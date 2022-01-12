@@ -68,6 +68,11 @@ contract DAOFactory {
         dao = DAO(createProxy(daoBase, bytes("")));
         
         registry.register(name, dao, msg.sender);
+        
+        dao.initialize(
+            _metadata,
+            address(this)
+        );
 
         voting = SimpleVoting(
             createProxy(
@@ -80,11 +85,19 @@ contract DAOFactory {
                 )
             )
         );
-        
-        dao.initialize(
-            _metadata,
-            voting
-        );
+
+        // Grant factory DAO_CONFIG_ROLE to add a process
+        dao.grant(address(dao), address(this), dao.DAO_CONFIG_ROLE());
+
+        // Add voting process
+        dao.addProcess(voting);
+
+        // Grant DAO ROOT_ROLE on DAO
+        dao.grant(address(dao), address(dao), dao.ROOT_ROLE());
+
+        // Revoke DAO_CONFIG_ROLE and ROOT_ROLE from factory
+        dao.revoke(address(dao), address(this), dao.ROOT_ROLE());
+        dao.revoke(address(dao), address(this), dao.DAO_CONFIG_ROLE());
     }
 
     function createProxy(address _logic, bytes memory _data) private returns(address payable addr) {

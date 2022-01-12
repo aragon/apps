@@ -57,11 +57,10 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
     /// @param _metadata IPFS hash that points to all the metadata (logo, description, tags, etc.) of a DAO
     function initialize(
         bytes calldata _metadata,
-        Process process // TODO: Remove this and pass initial ACL owner.. addProcess can be handled in the factory so we have here more flexibility for some "edge-cases"
+        address initialOwner
     ) public initializer {
         this.setMetadata(_metadata);
-        ACL.initACL(address(this));
-        this.addProcess(process);
+        ACL.initACL(initialOwner);
     }
 
     /// @dev Used to check the permissions within the upgradability pattern implementation of OZ
