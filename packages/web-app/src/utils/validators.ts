@@ -1,4 +1,4 @@
-import {isAddress} from 'ethers/lib/utils';
+import {isAddress, parseUnits} from 'ethers/lib/utils';
 import {ValidateResult} from 'react-hook-form';
 import {BigNumber, providers as EthersProviders} from 'ethers';
 
@@ -40,13 +40,10 @@ export function validateTokenAmount(
   decimals: number,
   balance = '0'
 ) {
+  // Amount has comma
   if (amount.includes(',')) return 'The amount must not be separated by commas';
 
-  if (BigNumber.from(amount).lte(0)) return 'The amount must be positive';
-
-  if (amount.split('.')[1].length > decimals)
-    return `The fractional component exceeds the decimals - ${decimals}`;
-
+  // A token with no decimals (they do exist in the wild)
   if (!decimals) {
     if (amount.includes('.')) {
       return "The token doesn't contain decimals. Please enter the exact amount";
@@ -54,9 +51,22 @@ export function validateTokenAmount(
     return true;
   }
 
-  if (!amount.includes('.')) return 'Include decimals, e.g. 10.0';
+  // Amount has no decimal point or no value after decimal point
+  if (!amount.includes('.') || amount.split('.')[1] === '')
+    return 'Include decimals, e.g. 10.0';
 
-  if (BigNumber.from(balance).gt(balance)) return 'Insufficient balance';
+  // Number of characters after decimal point greater than
+  // the number of decimals in the token itself
+  if (amount.split('.')[1].length > decimals)
+    return `The number of decimals in the amount must not exceed the number of decimal of the token(${decimals})`;
+
+  // Amount less than or equal to zero
+  if (BigNumber.from(parseUnits(amount, decimals)).lte(0))
+    return 'The amount must be greater than zero';
+
+  // Amount is greater than wallet/dao balance
+  if (BigNumber.from(parseUnits(amount, decimals)).gt(parseUnits(balance)))
+    return 'Insufficient balance';
 
   return true;
 }

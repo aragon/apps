@@ -71,7 +71,10 @@ const NewDeposit: React.FC = () => {
   }: useWalletProps = useWallet();
   const {t} = useTranslation();
   const {open} = useWalletMenuContext();
-  const formMethods = useForm<FormData>({defaultValues});
+  const formMethods = useForm<FormData>({
+    defaultValues,
+    mode: 'onChange',
+  });
   const {currentStep, prev, next} = useStepper(TOTAL_STEPS);
   const [walletTokens, setWalletTokens] = useState<TokenBalance[]>([]);
 
@@ -224,6 +227,7 @@ const NewDeposit: React.FC = () => {
         {/* View form values; to be removed later */}
         <pre className="mt-2">
           Form values: {JSON.stringify(formMethods.watch(), null, 2)}
+          Form errors: {JSON.stringify(formMethods.formState.errors, null, 2)}
         </pre>
       </Layout>
     </>
