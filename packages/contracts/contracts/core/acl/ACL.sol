@@ -18,12 +18,7 @@ library ACLData {
 }
 
 contract ACL is Initializable {
-    bytes32 public constant ROOT_ROLE =
-        this.grant.selector
-        ^ this.revoke.selector
-        ^ this.freeze.selector
-        ^ this.bulk.selector
-    ;
+    bytes32 public constant ROOT_ROLE = keccak256("ROOT_ROLE");
 
     // "Who" constants
     address internal constant ANY_ADDR = address(type(uint160).max);
