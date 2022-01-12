@@ -12,7 +12,7 @@ library ACLData {
 
     struct BulkItem {
         BulkOp op;
-        bytes4 role;
+        bytes32 role;
         address who;
     }
 }
