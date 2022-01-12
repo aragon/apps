@@ -2,7 +2,7 @@ import React, {ButtonHTMLAttributes} from 'react';
 import styled from 'styled-components';
 import {useButtonGroupContext} from './buttonGroup';
 
-type OptionProps = {
+export type OptionProps = {
   value: string;
 };
 

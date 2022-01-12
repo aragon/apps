@@ -1,6 +1,8 @@
 import React, {createContext, useContext, useState} from 'react';
 import styled from 'styled-components';
 
+import {OptionProps} from './button';
+
 type ButtonContextType = {
   bgWhite: boolean;
   selectedValue: string;
@@ -53,6 +55,7 @@ export type ButtonGroupProps = {
   defaultValue: string;
   onChange?: (value: string) => void;
   fullWidth?: boolean;
+  children: React.FunctionComponentElement<OptionProps>[];
 };
 
 export const ButtonGroup: React.FC<ButtonGroupProps> = ({

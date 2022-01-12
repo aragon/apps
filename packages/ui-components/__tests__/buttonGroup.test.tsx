@@ -3,7 +3,7 @@ import {render, screen} from '@testing-library/react';
 
 import {Option, ButtonGroup} from '../src';
 
-describe('Radio Group', () => {
+describe('Button Group', () => {
   // eslint-disable-next-line
   function setup(args: any) {
     render(
