@@ -214,4 +214,3 @@ contract ACL is Initializable {
         return keccak256(abi.encodePacked("FREEZE", _where, _role));
     }
 }
-

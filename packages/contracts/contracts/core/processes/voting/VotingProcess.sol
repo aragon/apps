@@ -11,7 +11,7 @@ import "./../Process.sol";
 /// @notice This contract can be used to implement concrete voting governance primitives and being fully compatible with the DAO framework and UI of Aragon
 /// @dev You only have to define the specific custom logic of your needs in _vote, _start, and _execute
 abstract contract VotingProcess is Process {
-    event VotedOnProcess(Execution indexed execution, bytes indexed data, uint256 executionId);
+    event VotedOnProcess(Execution execution, bytes data, uint256 indexed executionId);
 
     // Roles
     bytes32 public constant PROCESS_VOTE_ROLE = keccak256("PROCESS_VOTE_ROLE");

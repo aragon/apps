@@ -15,9 +15,9 @@ abstract contract Process is Component {
     address internal constant ANY_ADDR = address(type(uint160).max);
 
     // Events
-    event ProcessStarted(Execution indexed execution, uint256 indexed executionId, bytes indexed metadata);
-    event ProcessExecuted(Execution indexed execution, uint256 indexed executionId);
-    event AllowedActionsAdded(bytes[] indexed allowedActions);
+    event ProcessStarted(Execution execution, bytes metadata, uint256 indexed executionId);
+    event ProcessExecuted(Execution execution, uint256 indexed executionId);
+    event AllowedActionsAdded(bytes[] allowedActions);
 
     // Roles
     bytes32 public constant PROCESS_START_ROLE = keccak256("PROCESS_START_ROLE");
@@ -131,7 +131,7 @@ abstract contract Process is Component {
 
         _start(execution); // "Hook" to add logic in start of a concrete implementation.
 
-        emit ProcessStarted(execution, executionId, proposal.metadata);
+        emit ProcessStarted(execution, proposal.metadata, executionId);
 
         return executionsCounter;
     }

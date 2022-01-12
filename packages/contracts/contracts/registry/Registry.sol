@@ -10,7 +10,7 @@ import "../core/DAO.sol";
 /// @author Samuel Furter - Aragon Association - 2021
 /// @notice This contract provides the possiblity to register a DAO by a unique name.
 contract Registry {
-    event NewDAORegistered(string indexed name, DAO indexed dao, address indexed creator);
+    event NewDAORegistered(DAO indexed dao, address indexed creator, string name);
 
     mapping(string => bool) public daos;
 
@@ -23,6 +23,6 @@ contract Registry {
 
         daos[name] = true;
         
-        emit NewDAORegistered(name, dao, creator);
+        emit NewDAORegistered(dao, creator, name);
     }
 }
