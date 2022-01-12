@@ -47,8 +47,8 @@ export const Link: React.FC<LinkProps> = ({
 
 type StyledLinkProps = {disabled: boolean; active: boolean};
 const StyledLink = styled.a.attrs(({active, disabled}: StyledLinkProps) => {
-  let className = `overflow-hidden text-primary-500 hover:text-primary-700
-      focus:bg-ui-0 rounded focus:ring-2 focus:ring-primary-500 focus:outline-none`;
+  let className = `overflow-hidden text-primary-500 hover:text-primary-700 rounded 
+     focus:ring-2 focus:ring-primary-500 focus:outline-none`;
 
   className += ` ${
     disabled ? 'text-ui-300 pointer-events-none' : 'text-primary-500'
