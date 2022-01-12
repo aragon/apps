@@ -1,7 +1,8 @@
 /* eslint-disable no-empty */
-import {constants, ethers, providers as EthersProviders} from 'ethers';
 import {erc20TokenABI} from 'abis/erc20TokenABI';
 import {BaseTokenInfo, TreasuryToken} from './types';
+import {constants, ethers, providers as EthersProviders} from 'ethers';
+
 import {formatUnits} from 'utils/library';
 
 /**
@@ -117,8 +118,8 @@ export async function getTokenInfo(
     symbol = null,
     name = null;
 
-  // is Ether
-  if (address === constants.AddressZero) {
+  // if ether (address zero)
+  if (isETH(address)) {
     return {
       name: 'Ethereum',
       symbol: constants.EtherSymbol,
@@ -170,4 +171,15 @@ export const fetchBalance = async (
   }
 
   return balance;
+};
+
+/**
+ * Check if token is Ether; the distinction is made
+ * especially in terms of whether the contract address
+ * is that of an ERC20 token
+ * @param tokenAddress address of token contract
+ * @returns whether token is Ether
+ */
+export const isETH = (tokenAddress: string) => {
+  return tokenAddress === constants.AddressZero;
 };

@@ -1,5 +1,5 @@
-import {isAddress, parseUnits} from 'ethers/lib/utils';
 import {ValidateResult} from 'react-hook-form';
+import {isAddress, parseUnits} from 'ethers/lib/utils';
 import {BigNumber, providers as EthersProviders} from 'ethers';
 
 import {isERC20Token} from './tokens';
@@ -13,7 +13,7 @@ import {isERC20Token} from './tokens';
  * @param provider rpc provider
  * @returns true when valid, or an error message when invalid
  */
-export async function validateToken(
+export async function validateTokenAddress(
   address: string,
   provider: EthersProviders.Provider
 ): Promise<ValidateResult> {
@@ -22,7 +22,7 @@ export async function validateToken(
   if (result === true) {
     return (await isERC20Token(address, provider))
       ? true
-      : 'Token with given address is not ERC20 compliant';
+      : 'Token address is not ERC20 compliant';
   } else {
     return result;
   }

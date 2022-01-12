@@ -6,31 +6,35 @@ import {
   TextareaSimple,
   ValueInput,
 } from '@aragon/ui-components';
+import {
+  Controller,
+  useFormContext,
+  useFormState,
+  useWatch,
+} from 'react-hook-form';
 import styled from 'styled-components';
-import {constants} from 'ethers';
 import {useTranslation} from 'react-i18next';
+import {constants, utils} from 'ethers';
 import React, {useCallback, useEffect} from 'react';
-import {Controller, useFormContext, useWatch} from 'react-hook-form';
 
 import {useWallet} from 'context/augmentedWallet';
 import {fetchTokenData} from 'services/prices';
-import {validateTokenAmount} from 'utils/validators';
 import {useTransferModalContext} from 'context/transfersModal';
-import {fetchBalance, getTokenInfo} from 'utils/tokens';
+import {fetchBalance, getTokenInfo, isETH} from 'utils/tokens';
+import {validateTokenAddress, validateTokenAmount} from 'utils/validators';
 
 // TODO: Add form validation errors to locale strings
 // TODO: Change valueInput to type number and hide steppers
-// TODO: Form validation for enabling continue button
-// TODO: Trigger validation on contract address change
-// TODO: Very important, check for Ether through the whole flow
 const DepositForm: React.FC = () => {
   const {t} = useTranslation();
   const {open} = useTransferModalContext();
-  const {account, provider} = useWallet();
-  const {control, formState, getValues, setValue} = useFormContext();
+  const {account, balance: walletBalance, provider} = useWallet();
   const [isCustomToken, tokenBalance, tokenSymbol, tokenAddress] = useWatch({
     name: ['isCustomToken', 'tokenBalance', 'tokenSymbol', 'tokenAddress'],
   });
+
+  const {control, resetField, setValue, trigger} = useFormContext();
+  const {errors, dirtyFields} = useFormState({control});
 
   /*************************************************
    *                    Hooks                      *
@@ -38,70 +42,94 @@ const DepositForm: React.FC = () => {
   useEffect(() => {
     if (!account) return;
 
-    // TODO: check if token is ETHER
     const fetchTokenInfo = async () => {
-      if (isCustomToken && tokenAddress && !formState?.errors?.tokenAddress) {
-        try {
-          // fetch token balance and token metadata
-          const allTokenInfoPromise = Promise.all([
-            fetchBalance(tokenAddress, account, provider),
-            fetchTokenData(tokenAddress),
-          ]);
-
-          // use blockchain if api data unavailable
-          const [balance, data] = await allTokenInfoPromise;
-          if (data) {
-            setValue('tokenName', data.name);
-            setValue('tokenSymbol', data.symbol);
-            setValue('tokenImgUrl', data.imgUrl);
-          } else {
-            const {name, symbol} = await getTokenInfo(tokenAddress, provider);
-            setValue('tokenName', name);
-            setValue('tokenSymbol', symbol);
-          }
-          setValue('tokenBalance', balance);
-        } catch (error) {
-          /**
-           * Error is intentionally swallowed. Passing invalid address will
-           * return error, but should not be thrown.
-           * Also, double safeguard. Should not actually fall into here since
-           * tokenAddress should be valid in the first place for balance to be fetched.
-           */
-        }
+      if (errors.tokenAddress !== undefined) {
+        if (dirtyFields.amount) trigger(['amount', 'tokenSymbol']);
+        return;
       }
+
+      try {
+        // fetch token balance and token metadata
+        const allTokenInfoPromise = Promise.all([
+          isETH(tokenAddress)
+            ? utils.formatEther(walletBalance)
+            : fetchBalance(tokenAddress, account, provider),
+          fetchTokenData(tokenAddress),
+        ]);
+
+        // use blockchain if api data unavailable
+        const [balance, data] = await allTokenInfoPromise;
+        if (data) {
+          setValue('tokenName', data.name);
+          setValue('tokenSymbol', data.symbol);
+          setValue('tokenImgUrl', data.imgUrl);
+        } else {
+          const {name, symbol} = await getTokenInfo(tokenAddress, provider);
+          setValue('tokenName', name);
+          setValue('tokenSymbol', symbol);
+        }
+        setValue('tokenBalance', balance);
+      } catch (error) {
+        /**
+         * Error is intentionally swallowed. Passing invalid address will
+         * return error, but should not be thrown.
+         * Also, double safeguard. Should not actually fall into here since
+         * tokenAddress should be valid in the first place for balance to be fetched.
+         */
+      }
+      if (dirtyFields.amount) trigger(['amount', 'tokenSymbol']);
     };
 
-    fetchTokenInfo();
+    if (tokenAddress) {
+      fetchTokenInfo();
+    }
   }, [
     account,
-    formState?.errors?.tokenAddress,
+    dirtyFields.amount,
+    errors.tokenAddress,
     isCustomToken,
     provider,
     setValue,
     tokenAddress,
+    trigger,
+    walletBalance,
   ]);
 
   /*************************************************
-   *             Callbacks and Handlers            *
+   *                Field Validators               *
    *************************************************/
+  const addressValidator = useCallback(
+    async (address: string) => {
+      if (isETH(address)) return true;
+
+      const validationResult = await validateTokenAddress(address, provider);
+
+      // address invalid, reset token fields
+      if (validationResult !== true) {
+        resetField('tokenName');
+        resetField('tokenImgUrl');
+        resetField('tokenSymbol');
+        resetField('tokenBalance');
+      }
+
+      return validationResult;
+    },
+    [provider, resetField]
+  );
+
   const amountValidator = useCallback(
     async (amount: string) => {
       // check if a token is selected using it's address
-      const [tokenAddress, tokenBalance] = getValues([
-        'tokenAddress',
-        'tokenBalance',
-      ]);
       if (tokenAddress === '') return 'A token must be selected';
 
       // check if token selected is valid
-      if (formState?.errors?.tokenAddress)
+      if (errors.tokenAddress)
         return 'Cannot validate amount with invalid token address';
 
-      // run number rules
       try {
-        // TODO: check if address is ETHER
         const {decimals} = await getTokenInfo(tokenAddress, provider);
 
+        // run amount rules
         return validateTokenAmount(amount, decimals, tokenBalance);
       } catch (error) {
         // catches miscellaneous cases such as not being able to get token decimal
@@ -109,9 +137,12 @@ const DepositForm: React.FC = () => {
         return 'Error validating amount';
       }
     },
-    [formState?.errors?.tokenAddress, getValues, provider]
+    [errors.tokenAddress, provider, tokenAddress, tokenBalance]
   );
 
+  /*************************************************
+   *             Callbacks and Handlers            *
+   *************************************************/
   const handleMaxClicked = useCallback(
     (onChange: (event: unknown[]) => void) => {
       if (tokenBalance) {
@@ -137,6 +168,9 @@ const DepositForm: React.FC = () => {
     []
   );
 
+  /*************************************************
+   *                    Render                     *
+   *************************************************/
   return (
     <>
       <FormItem>
@@ -160,14 +194,20 @@ const DepositForm: React.FC = () => {
         <Controller
           name="tokenSymbol"
           control={control}
+          rules={{required: 'Token is required'}}
           render={({field: {name, value}, fieldState: {error}}) => (
-            <DropdownInput
-              name={name}
-              mode={error ? 'critical' : 'default'}
-              value={value}
-              onClick={() => open('token')}
-              placeholder={t('placeHolders.selectToken')}
-            />
+            <>
+              <DropdownInput
+                name={name}
+                mode={error ? 'critical' : 'default'}
+                value={value}
+                onClick={() => open('token')}
+                placeholder={t('placeHolders.selectToken')}
+              />
+              {error?.message && (
+                <AlertInline label={error.message} mode="critical" />
+              )}
+            </>
           )}
         />
       </FormItem>
@@ -182,19 +222,30 @@ const DepositForm: React.FC = () => {
           <Controller
             name="tokenAddress"
             control={control}
+            rules={{
+              required: 'Token address is required',
+              validate: addressValidator,
+            }}
             render={({
               field: {name, onBlur, onChange, value},
               fieldState: {error},
             }) => (
-              <ValueInput
-                mode={error ? 'critical' : 'default'}
-                name={name}
-                value={value}
-                onBlur={onBlur}
-                onChange={onChange}
-                adornmentText={value ? 'Copy' : 'Paste'}
-                onAdornmentClick={() => handleClipboardActions(value, onChange)}
-              />
+              <>
+                <ValueInput
+                  mode={error ? 'critical' : 'default'}
+                  name={name}
+                  value={value}
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  adornmentText={value ? 'Copy' : 'Paste'}
+                  onAdornmentClick={() =>
+                    handleClipboardActions(value, onChange)
+                  }
+                />
+                {error?.message && (
+                  <AlertInline label={error.message} mode="critical" />
+                )}
+              </>
             )}
           />
         </FormItem>
