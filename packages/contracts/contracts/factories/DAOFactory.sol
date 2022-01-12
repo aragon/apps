@@ -34,11 +34,20 @@ contract DAOFactory {
         string symbol;
     }
 
+    // @dev Stores the registry address and creates the base contracts required for the factory
+    // @param _registry The DAO registry to register the DAO with his name
     constructor(Registry _registry) {
         registry = _registry;
         setupBases();
     }
 
+    // @notice Creates a new DAO based with his name, token, metadata, and the voting settings.
+    // @param name The DAO name as string
+    // @param _metadata The IPFS hash pointing to the metadata JSON object of the DAO
+    // @param _tokenConfig The address of the token, name, and symbol. If no addr is passed will a new token get created.
+    // @return dao The DAO contract created
+    // @return voting The voting process for this DAO - Currently a hard-coded process. With the planned marketplace will this be more dynamic.
+    // @return token The token passed or created that belongs to this DAO. - Probably not a requirement in the future.
     function newDAO(
         string calldata name,
         bytes calldata _metadata,
@@ -107,10 +116,15 @@ contract DAOFactory {
         dao.bulk(address(dao), items);
     }
 
+    // @dev Internal helper method to create a proxy contract based on the passed base contract address
+    // @param _logic The address of the base contract
+    // @param _data The constructor arguments for this contract
+    // @return addr The address of the proxy contract created
     function createProxy(address _logic, bytes memory _data) private returns(address payable addr) {
         return payable(address(new ERC1967Proxy(_logic, _data)));
     }
 
+    // @dev Internal helper method to set up the required base contracts on DAOFactory deployment.
     function setupBases() private {
         votingBase = address(new SimpleVoting());
         daoBase = address(new DAO());
