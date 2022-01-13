@@ -9,6 +9,7 @@ import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
+import "./erc1271/ERC1271.sol";
 import "./erc165/AdaptiveERC165.sol";
 import "./acl/ACL.sol";
 import "./IDAO.sol";
@@ -17,7 +18,7 @@ import "./IDAO.sol";
 /// @author Samuel Furter - Aragon Association - 2021
 /// @notice This contract is the entry point to the Aragon DAO framework and provides our users a simple and use to use public interface.
 /// @dev Public API of the Aragon DAO framework
-contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, AdaptiveERC165 {
+contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, ERC1271, AdaptiveERC165 {
     using SafeERC20 for ERC20;
     using Address for address;
 
@@ -146,14 +147,14 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, AdaptiveERC165 {
 
     /// @notice Setter to set the signature validator contract of ERC1271
     /// @param _signatureValidator ERC1271 SignatureValidator
-    function setSignatureValidator(ERC1271 _signatureValidator) external auth(SET_SIGNATURE_VALIDATOR_ROLE) {
+    function setSignatureValidator(ERC1271 _signatureValidator) external auth(address(this), SET_SIGNATURE_VALIDATOR_ROLE) {
         signatureValidator = _signatureValidator;
     }
 
     /// @notice Method to validate the signature as described in ERC1271
     /// @param _hash Hash of the data to be signed
     /// @param _signature Signature byte array associated with _hash
-    /// @returns bytes4
+    /// @return bytes4
     function isValidSignature(bytes32 _hash, bytes memory _signature) override public view returns (bytes4) {
         if (address(signatureValidator) == address(0)) return bytes4(0); // invalid magic number
         return signatureValidator.isValidSignature(_hash, _signature); // forward call to set validation contract
