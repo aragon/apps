@@ -26,12 +26,15 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, AdaptiveERC165 {
     bytes32 public constant DAO_CONFIG_ROLE = keccak256("DAO_CONFIG_ROLE");
     bytes32 public constant EXEC_ROLE = keccak256("EXEC_ROLE");
     bytes32 public constant WITHDRAW_ROLE = keccak256("WITHDRAW_ROLE");
+    bytes32 public constant SET_SIGNATURE_VALIDATOR_ROLE = keccak256("SET_SIGNATURE_VALIDATOR_ROLE");
 
      // Error msg's
     string internal constant ERROR_ACTION_CALL_FAILED = "ACTION_CALL_FAILED";
     string internal constant ERROR_DEPOSIT_AMOUNT_ZERO = "DEPOSIT_AMOUNT_ZERO";
     string internal constant ERROR_ETH_DEPOSIT_AMOUNT_MISMATCH = "ETH_DEPOSIT_AMOUNT_MISMATCH";
     string internal constant ERROR_ETH_WITHDRAW_FAILED = "ETH_WITHDRAW_FAILED";
+
+    ERC1271 signatureValidator;
 
     /// @dev Used for UUPS upgradability pattern
     /// @param _metadata IPFS hash that points to all the metadata (logo, description, tags, etc.) of a DAO
@@ -40,6 +43,7 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, AdaptiveERC165 {
         address initialOwner
     ) public initializer {
         _registerStandard(DAO_INTERFACE_ID);
+        _registerStandard(type(ERC1271).interfaceId);
         this.setMetadata(_metadata);
         ACL.initACL(initialOwner);
     }
@@ -103,6 +107,10 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, AdaptiveERC165 {
         emit ETHDeposited(msg.sender, msg.value);
     }
 
+    fallback () external {
+        _handleCallback(msg.sig, msg.data); // WARN: does a low-level return, any code below would be unreacheable
+    }
+
     /// @notice Deposit ETH or any token to this contract with a reference string
     /// @dev Deposit ETH (token address == 0) or any token with a reference
     /// @param _token The address of the token and in case of ETH address(0)
@@ -134,5 +142,20 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, AdaptiveERC165 {
         }
         
         emit Withdrawn(_token, _to, _amount, _reference);
+    }
+
+    /// @notice Setter to set the signature validator contract of ERC1271
+    /// @param _signatureValidator ERC1271 SignatureValidator
+    function setSignatureValidator(ERC1271 _signatureValidator) external auth(SET_SIGNATURE_VALIDATOR_ROLE) {
+        signatureValidator = _signatureValidator;
+    }
+
+    /// @notice Method to validate the signature as described in ERC1271
+    /// @param _hash Hash of the data to be signed
+    /// @param _signature Signature byte array associated with _hash
+    /// @returns bytes4
+    function isValidSignature(bytes32 _hash, bytes memory _signature) override public view returns (bytes4) {
+        if (address(signatureValidator) == address(0)) return bytes4(0); // invalid magic number
+        return signatureValidator.isValidSignature(_hash, _signature); // forward call to set validation contract
     }
 } 
