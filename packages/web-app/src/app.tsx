@@ -7,8 +7,9 @@ import {Navigate, Routes, Route, useLocation, Outlet} from 'react-router-dom';
 import Footer from 'containers/footer';
 import Navbar from 'containers/navbar';
 import WalletMenu from 'containers/walletMenu';
+// import TokenMenu from 'containers/tokenMenu';
 import TransferMenu from 'containers/transferMenu';
-import TokenMenu from 'containers/tokenMenu';
+import UtcMenu from 'containers/utcMenu';
 import {trackPage} from 'services/analytics';
 import '../i18n.config';
 
@@ -24,6 +25,7 @@ const CommunityPage = lazy(() => import('pages/community'));
 const TransfersPage = lazy(() => import('pages/transfers'));
 const GovernancePage = lazy(() => import('pages/governance'));
 const NewDepositPage = lazy(() => import('pages/newDeposit'));
+const NewWithdrawPage = lazy(() => import('pages/newWithdraw'));
 
 function App() {
   const {pathname} = useLocation();
@@ -39,6 +41,7 @@ function App() {
         <Suspense fallback={null}>
           <Routes>
             <Route path={paths.NewDeposit} element={<NewDepositPage />} />
+            <Route path={paths.NewWithDraw} element={<NewWithdrawPage />} />
 
             <Route element={<Layout />}>
               <Route path={paths.Dashboard} element={<HomePage />} />
@@ -56,7 +59,10 @@ function App() {
       <Footer />
       <WalletMenu />
       <TransferMenu />
-      <TokenMenu />
+      {/* TODO remove this from here and add this to the page(s) on which it is
+      actually needed */}
+      <UtcMenu />
+      {/* <TokenMenu /> */}
     </div>
   );
 }

@@ -30,6 +30,17 @@ module.exports = {
           800: '#323F4B',
           900: '#1F2933',
         },
+        info: {
+          100: '#D1FDFA',
+          200: '#A4F9FB',
+          300: '#75E8F3',
+          400: '#52CFE7',
+          500: '#1EADD8',
+          600: '#1588B9',
+          700: '#0F669B',
+          800: '#09497D',
+          900: '#053467',
+        },
         success: {
           100: '#F3FCCC',
           200: '#E4F99A',
@@ -80,7 +91,9 @@ module.exports = {
         8: '64px',
         10: '80px',
         14: '112px',
+        18: '144px',
         25: '200px',
+        30: '240px',
       },
     },
     fontWeight: {
@@ -145,5 +158,5 @@ module.exports = {
     },
     fluidType: ['responsive'],
   },
-  plugins: [require('tailwindcss-fluid-type')]
+  plugins: [require('tailwindcss-fluid-type')],
 };

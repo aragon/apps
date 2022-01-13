@@ -12,51 +12,38 @@ export type TextInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
    * right adornment
    */
   rightAdornment?: ReactNode;
-  /**
-   * Wheter the icon is left or right of the input
-   */
-  side?: 'left' | 'right';
-  /**
-   * make input disabled and the whole form clickable
-   */
-  clickable?: boolean;
-  /**
-   * onClick event
-   */
-  onClick: () => void;
+  disabled?: boolean;
+  ref?: any;
 };
 
 /** Simple input with variable styling (depending on mode) */
 export const TextInput: React.FC<TextInputProps> = ({
   mode = 'default',
-  side = 'right',
   disabled,
   leftAdornment,
   rightAdornment,
-  clickable,
-  onClick,
+  ref,
   ...props
 }) => {
   return (
-    <Container data-testid="input" {...{mode, disabled, side, clickable, onClick}}>
+    <Container data-testid="input" {...{mode, disabled}}>
+      {leftAdornment}
+      <StyledInput disabled={disabled} {...props} ref={ref} />
       {rightAdornment}
-      <InputWrapper>
-        {leftAdornment}
-        <StyledInput disabled={clickable || disabled} clickable={clickable} {...props} />
-      </InputWrapper>
     </Container>
   );
 };
 
-type StyledCotainerProps = Pick<TextInputProps, 'mode' | 'disabled' | 'side' | 'clickable'>;
-type StyledInputProps = Pick<TextInputProps, 'clickable'>;
+type StyledContainerProps = Pick<TextInputProps, 'mode' | 'disabled'>;
 
 export const Container = styled.div.attrs(
-  ({mode, disabled, side, clickable}: StyledCotainerProps) => {
-    let className = `${disabled ? 'bg-ui-100' : 'bg-ui-0'} flex space-x-1.5
-    focus:outline-none focus-within:ring-2 focus-within:ring-primary-500 py-1.5 px-2
-    rounded-xl hover:border-ui-300 border-2 active:border-primary-500 items-center 
-    ${side === 'left' && 'flex-row-reverse space-x-reverse'} ${clickable && 'cursor-pointer'} `;
+  ({mode, disabled}: StyledContainerProps) => {
+    let className = `${
+      disabled ? 'bg-ui-100' : 'bg-ui-0'
+    } flex items-center space-x-1.5 space-x-1.5 py-1.5 px-2
+    focus:outline-none focus-within:ring-2 focus-within:ring-primary-500
+    rounded-xl hover:border-ui-300 border-2
+    active:border-primary-500 `;
 
     if (mode === 'default') {
       className += 'border-ui-100';
@@ -70,14 +57,10 @@ export const Container = styled.div.attrs(
 
     return {className};
   }
-)<StyledCotainerProps>``;
+)<StyledContainerProps>``;
 
-export const StyledInput = styled.input.attrs(({clickable}: StyledInputProps) => {
-  let myClassName: string | undefined =
-    `w-full bg-transparent focus:outline-none ${clickable && 'cursor-pointer'}`;
-  return {className: myClassName};
-})<React.InputHTMLAttributes<HTMLInputElement> & StyledInputProps>``;
-
-export const InputWrapper = styled.div.attrs({
-  className: 'flex space-x-1.5 w-full items-center'
+export const StyledInput = styled.input.attrs(() => {
+  const className: string | undefined =
+    'w-full bg-transparent focus:outline-none';
+  return {className};
 })``;

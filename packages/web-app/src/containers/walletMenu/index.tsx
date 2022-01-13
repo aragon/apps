@@ -1,16 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
-import {WalletCard, ActionListItem, IconTurnOff} from '@aragon/ui-components';
+import {ActionListItem, CardWallet, IconTurnOff} from '@aragon/ui-components';
 
 import BottomSheet from '../../components/bottomSheet';
 import {useWalletMenuContext} from 'context/walletMenu';
-import {useWallet} from 'context/augmentedWallet';
-import {Wallet} from 'use-wallet/dist/cjs/types';
+import {useWallet, WalletAugmented} from 'context/augmentedWallet';
 
 export type useWalletProps = {
   ensName?: string | null;
   ensAvatarUrl?: string | null;
-} & Wallet;
+} & WalletAugmented;
 
 const WalletMenu: React.FC = () => {
   const {isOpen, open, close} = useWalletMenuContext();
@@ -24,7 +23,7 @@ const WalletMenu: React.FC = () => {
       data-testid="walletCard"
     >
       <Container>
-        <WalletCard
+        <CardWallet
           wide
           src={ensAvatarUrl || account}
           name={ensName}
