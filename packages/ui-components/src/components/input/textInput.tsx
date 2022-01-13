@@ -13,7 +13,6 @@ export type TextInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
    */
   rightAdornment?: ReactNode;
   disabled?: boolean;
-  ref?: any;
 };
 
 /** Simple input with variable styling (depending on mode) */
@@ -22,13 +21,12 @@ export const TextInput: React.FC<TextInputProps> = ({
   disabled,
   leftAdornment,
   rightAdornment,
-  ref,
   ...props
 }) => {
   return (
     <Container data-testid="input" {...{mode, disabled}}>
       {leftAdornment}
-      <StyledInput disabled={disabled} {...props} ref={ref} />
+      <StyledInput disabled={disabled} {...props} />
       {rightAdornment}
     </Container>
   );

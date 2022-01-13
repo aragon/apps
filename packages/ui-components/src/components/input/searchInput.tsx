@@ -1,44 +1,55 @@
-import React, {useRef} from 'react';
+import React from 'react';
 import {TextInput, TextInputProps} from './textInput';
 import {IconSearch, IconClose} from '../icons';
-// import styled from 'styled-components';
-
-/** Simple input with variable styling (depending on mode) */
-/**
- * TODO: the drop down should be a select element and We will update
- * it with new designs
- */
+import {Spinner} from '../spinner';
 
 export type SearchInputProps = Omit<
   TextInputProps,
-  'adornment' | 'side' | 'clickable'
->;
+  'leftAdornment' | 'rightAdornment'
+> & {
+  /**
+   * Change input state into isLoading...
+   */
+  isLoading?: boolean;
+};
 
-export const SearchInput: React.FC<SearchInputProps> = ({...props}) => {
-  const inputRef = useRef<HTMLInputElement>(null);
-
+export const SearchInput: React.FC<SearchInputProps> = ({
+  isLoading = false,
+  value,
+  onChange,
+  ...props
+}) => {
   return (
     <TextInput
       data-testid="search-input"
-      ref={inputRef}
-      leftAdornment={<IconSearch className="text-ui-300" />}
+      leftAdornment={
+        isLoading ? (
+          <Spinner size={'small'} />
+        ) : (
+          <IconSearch className="text-ui-300" />
+        )
+      }
+      value={value}
+      onChange={onChange}
       rightAdornment={
-        <div
-          style={{cursor: 'pointer'}}
-          onClick={() => {
-            // (inputRef.current as HTMLInputElement).value = '';
-            console.log('inputRef', inputRef);
-          }}
-        >
-          <IconClose className="text-ui-300" />
-        </div>
+        value !== '' && (
+          <button
+            style={{cursor: 'pointer'}}
+            onClick={() => {
+              if (onChange) {
+                onChange({
+                  target: {
+                    value: '',
+                  },
+                } as React.ChangeEvent<HTMLInputElement>);
+              }
+            }}
+          >
+            <IconClose className="text-ui-300" />
+          </button>
+        )
       }
       {...props}
     />
   );
 };
-
-// const adornmentButton = styled.button.attrs(() => {
-//   const className: string | undefined = 'bg-transparent';
-//   return {className};
-// })``;
