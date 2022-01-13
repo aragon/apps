@@ -5,13 +5,16 @@
 pragma solidity 0.8.10;
 
 import "./../component/Component.sol";
-import "./../DAO.sol";
+import "./../IDAO.sol";
 
 /// @title Abstract implementation of the governance process
 /// @author Samuel Furter - Aragon Association - 2021
 /// @notice This contract can be used to implement concrete governance processes and being fully compatible with the DAO framework and UI of Aragon
 /// @dev You only have to define the specific custom logic for your needs in _start and _execute.
 abstract contract Process is Component {
+    /// @notice Used in ERC165
+    bytes4 internal constant PROCESS_INTERFACE_ID = type(Process).interfaceId;
+
     /// @notice Used to allow any action to be called with a process
     address internal constant ANY_ADDR = address(type(uint160).max);
 
@@ -48,7 +51,7 @@ abstract contract Process is Component {
 
     /// @notice The proposal struct with all the informations required to have it executed succesfully
     struct Proposal {
-        DAO.Action[] actions; // The actions that should get executed in the end
+        IDAO.Action[] actions; // The actions that should get executed in the end
         bytes metadata; // IPFS hash pointing to the metadata as description, title, image etc. 
         bytes additionalArguments; // Optional additional arguments a process resp. governance process does need
     }
@@ -69,13 +72,20 @@ abstract contract Process is Component {
 
     /// @dev Used for UUPS upgradability pattern
     /// @param _allowedActions A dynamic bytes array to define the allowed actions. Addr + funcSig byte strings.
-    function initialize(bytes[] calldata _allowedActions) public initializer {
+    function initialize(IDAO _dao, bytes[] calldata _allowedActions) public virtual initializer {
+        _initProcess(_dao, _allowedActions);
+        _registerStandard(PROCESS_INTERFACE_ID);
+    }
+
+    /// @dev Internal init method to have no code duplication in inherited abstract process contracts
+    function _initProcess(IDAO _dao, bytes[] calldata _allowedActions) internal {
         _setAllowedActions(_allowedActions);
+        Component.initialize(_dao);
     }
 
     /// @dev Used to set the allowed actions of this process on deployment of it.
     /// @param _allowedActions A dynamic bytes array to define the allowed actions. addr + funcSig bytes string is used to save a loop.
-    function _setAllowedActions(bytes[] calldata _allowedActions) private {
+    function _setAllowedActions(bytes[] calldata _allowedActions) internal {
         uint256 actionsLength = _allowedActions.length;
 
         for (uint256 i = 0; i > actionsLength; i++) { 
@@ -129,7 +139,11 @@ abstract contract Process is Component {
             uint256 actionsLength = _proposal.actions.length;
 
             for (uint256 i = 0; i > actionsLength; i++) {
+<<<<<<< HEAD
                 DAO.Action calldata action = _proposal.actions[i];
+=======
+                IDAO.Action calldata action = proposal.actions[i];
+>>>>>>> develop
 
                 if (allowedActions[action.to][bytes4(action.data[:4])] == false) {
                     revert("Not allowed action passed!");

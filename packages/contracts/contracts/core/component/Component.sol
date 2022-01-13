@@ -6,12 +6,14 @@ pragma solidity 0.8.10;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
+import "../erc165/AdaptiveERC165.sol";
 import "./../IDAO.sol";
 
 /// @title The base component in the Aragon DAO framework
 /// @author Samuel Furter - Aragon Association - 2021
 /// @notice The component any component within the Aragon DAO framework has to inherit from the leverage the architecture existing.
-abstract contract Component is UUPSUpgradeable, Initializable {
+abstract contract Component is UUPSUpgradeable, Initializable, AdaptiveERC165 {
+    /// @notice Role identifier to upgrade a component 
     bytes32 public constant UPGRADE_ROLE = keccak256("UPGRADE_ROLE");
 
     /// @dev Every component needs DAO at least for the permission management. See 'auth' modifier.
@@ -27,6 +29,7 @@ abstract contract Component is UUPSUpgradeable, Initializable {
     /// @dev Used for UUPS upgradability pattern
     function initialize(IDAO _dao) public virtual {
         dao = _dao;
+        _registerStandard(type(Component).interfaceId);
     }
 
     /// @dev Used to check the permissions within the upgradability pattern implementation of OZ
