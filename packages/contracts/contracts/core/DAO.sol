@@ -20,35 +20,8 @@ import "./IDAO.sol";
 /// @notice This contract is the entry point to the Aragon DAO framework and provides our users a simple and use to use public interface.
 /// @dev Public API of the Aragon DAO framework
 contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, AdaptiveERC165 {
-    bytes4 internal constant DAO_INTERFACE_ID = type(IDAO).interfaceId;
-
     using SafeERC20 for ERC20;
     using Address for address;
-
-    // Events
-    event SetMetadata(bytes indexed metadata);
-    event Executed(address indexed actor, Action[] indexed actions, bytes[] execResults);
-    event ProcessAdded(Process indexed process);
-    event ProcessRemoved(Process indexed process);
-    // ETHDeposited and Deposited are both needed. ETHDeposited makes sure that whoever sends funds
-    // with `send/transfer`, receive function can still be executed without reverting due to gas cost
-    // increases in EIP-2929. To still use `send/transfer`, access list is needed that has the address
-    // of the contract(base contract) that is behind the proxy.
-    event ETHDeposited(address sender, uint256 amount);
-    event Deposited(address indexed sender, address indexed token, uint256 amount, string _reference);
-    event Withdrawn(address indexed token, address indexed to, uint256 amount, string _reference);
-    
-    // Roles
-    bytes32 public constant UPGRADE_ROLE = keccak256("UPGRADE_ROLE");
-    bytes32 public constant DAO_CONFIG_ROLE = keccak256("DAO_CONFIG_ROLE");
-    bytes32 public constant EXEC_ROLE = keccak256("EXEC_ROLE");
-    bytes32 public constant WITHDRAW_ROLE = keccak256("WITHDRAW_ROLE");
-
-    // Error msg's
-    string private constant ERROR_ACTION_CALL_FAILED = "ACTION_CALL_FAILED";
-    string private constant ERROR_DEPOSIT_AMOUNT_ZERO = "DEPOSIT_AMOUNT_ZERO";
-    string private constant ERROR_ETH_DEPOSIT_AMOUNT_MISMATCH = "ETH_DEPOSIT_AMOUNT_MISMATCH";
-    string private constant ERROR_ETH_WITHDRAW_FAILED = "ETH_WITHDRAW_FAILED";
 
     /// @dev Used for UUPS upgradability pattern
     /// @param _metadata IPFS hash that points to all the metadata (logo, description, tags, etc.) of a DAO
@@ -77,14 +50,14 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, AdaptiveERC165 {
     /// @notice Update the DAO metadata
     /// @dev Sets a new IPFS hash
     /// @param _metadata The IPFS hash of the new metadata object
-    function setMetadata(bytes calldata _metadata) external auth(address(this), DAO_CONFIG_ROLE) {
+    function setMetadata(bytes calldata _metadata) external override auth(address(this), DAO_CONFIG_ROLE) {
         emit SetMetadata(_metadata);
     }
 
     /// @notice Add new process to DAO
     /// @dev Grants the new process execution rights and amits the related event.
     /// @param _process The address of the new process
-    function addProcess(Process _process) external auth(address(this), DAO_CONFIG_ROLE) {
+    function addProcess(Process _process) external override auth(address(this), DAO_CONFIG_ROLE) {
         _grant(address(this), address(_process), EXEC_ROLE);
         emit ProcessAdded(_process);
     }
@@ -92,7 +65,7 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, AdaptiveERC165 {
     /// @notice Remove process from DAO
     /// @dev Revokes the execution rights from the process and emits the related event.
     /// @param _process The address of the new process
-    function removeProcess(Process _process) external auth(address(this), DAO_CONFIG_ROLE) {
+    function removeProcess(Process _process) external override auth(address(this), DAO_CONFIG_ROLE) {
         _revoke(address(this), address(_process), EXEC_ROLE);
         emit ProcessRemoved(_process);
     }
@@ -101,7 +74,7 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, AdaptiveERC165 {
     /// @dev It run a loop through the array of acctions and execute one by one.
     /// @dev If one acction fails, all will be reverted.
     /// @param _actions The aray of actions
-    function execute(Action[] memory _actions) external auth(address(this), EXEC_ROLE) {
+    function execute(Action[] memory _actions) external override auth(address(this), EXEC_ROLE) {
         bytes[] memory execResults = new bytes[](_actions.length);
 
         for (uint256 i = 0; i < _actions.length; i++) {
@@ -125,7 +98,7 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, AdaptiveERC165 {
     /// @param _token The address of the token and in case of ETH address(0)
     /// @param _amount The amount of tokens to deposit
     /// @param _reference The deposit reference describing the reason of it
-    function deposit(address _token, uint256 _amount, string calldata _reference) external payable {
+    function deposit(address _token, uint256 _amount, string calldata _reference) external override payable {
         require(_amount > 0, ERROR_DEPOSIT_AMOUNT_ZERO);
 
         if (_token == address(0)) {
@@ -142,7 +115,7 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, AdaptiveERC165 {
     /// @param _to The target address to send tokens or ETH
     /// @param _amount The amount of tokens to deposit
     /// @param _reference The deposit reference describing the reason of it
-    function withdraw(address _token, address _to, uint256 _amount, string memory _reference) public auth(address(this), WITHDRAW_ROLE) {
+    function withdraw(address _token, address _to, uint256 _amount, string memory _reference) public override auth(address(this), WITHDRAW_ROLE) {
         if (_token == address(0)) {
             (bool ok, ) = _to.call{value: _amount}("");
             require(ok, ERROR_ETH_WITHDRAW_FAILED);
