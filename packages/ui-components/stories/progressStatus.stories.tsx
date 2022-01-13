@@ -1,13 +1,13 @@
 import React from 'react';
 import {Meta, Story} from '@storybook/react';
-import {ProgressStatus} from '../src';
+import {ProgressStatus, ProgressStatusProps} from '../src';
 
 export default {
   title: 'Components/Progress/Status',
   component: ProgressStatus,
 } as Meta;
 
-const Template: Story = args => (
+const Template: Story<ProgressStatusProps> = args => (
   <div className="w-1/3">
     <ProgressStatus {...args} />
   </div>

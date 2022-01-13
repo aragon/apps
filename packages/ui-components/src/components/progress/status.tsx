@@ -1,16 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
 import {
+  IconBlock,
   IconRadioCancle,
   IconRadioDefault,
   IconSpinner,
   IconSuccess,
-  LabelProps,
-} from '../..';
-import {IconBlock} from '../icons';
+} from '../icons';
+import {LabelProps} from '../label';
 
 type ModeType = 'active' | 'failed' | 'done' | 'succeeded' | 'upcoming';
-type ProgressStatusProps = {
+export type ProgressStatusProps = {
   /**
    * The mode is the state of a progress' status. Simple, init? ;)
    *
@@ -53,7 +53,7 @@ export const ProgressStatus: React.FC<ProgressStatusProps> = ({
   block,
 }) => {
   return (
-    <TopContainer>
+    <TopContainer data-testid="progressStatus">
       <LeftContainer mode={mode}>
         <IconContainer>
           <Icon mode={mode} />
