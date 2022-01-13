@@ -6,6 +6,8 @@ pragma solidity 0.8.10;
 
 import "./processes/Process.sol";
 
+/// @title The interface required to have a DAO contract within the Aragon DAO framework
+/// @author Samuel Furter - Aragon Association - 2022
 abstract contract IDAO {
     bytes4 internal constant DAO_INTERFACE_ID = type(IDAO).interfaceId;
 
