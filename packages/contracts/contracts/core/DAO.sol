@@ -108,10 +108,6 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, ERC1271, AdaptiveERC1
         emit ETHDeposited(msg.sender, msg.value);
     }
 
-    fallback () external {
-        _handleCallback(msg.sig, msg.data); // WARN: does a low-level return, any code below would be unreacheable
-    }
-
     /// @notice Deposit ETH or any token to this contract with a reference string
     /// @dev Deposit ETH (token address == 0) or any token with a reference
     /// @param _token The address of the token and in case of ETH address(0)
