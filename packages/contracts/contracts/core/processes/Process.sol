@@ -5,7 +5,7 @@
 pragma solidity 0.8.10;
 
 import "./../component/Component.sol";
-import "./../DAO.sol";
+import "./../IDAO.sol";
 
 /// @title Abstract implementation of the governance process
 /// @author Samuel Furter - Aragon Association - 2021
@@ -40,7 +40,7 @@ abstract contract Process is Component {
     }
 
     struct Proposal {
-        DAO.Action[] actions; // The actions that should get executed in the end
+        IDAO.Action[] actions; // The actions that should get executed in the end
         bytes metadata; // IPFS hash pointing to the metadata as description, title, image etc. 
         bytes additionalArguments; // Optional additional arguments a process resp. governance process does need
     }
@@ -62,7 +62,7 @@ abstract contract Process is Component {
         _registerStandard(PROCESS_INTERFACE_ID);
     }
 
-    // @dev Internal init method to have no code duplication in inherited abstract process contracts
+    /// @dev Internal init method to have no code duplication in inherited abstract process contracts
     function _initProcess(IDAO _dao, bytes[] calldata _allowedActions) internal {
         _setAllowedActions(_allowedActions);
         Component.initialize(_dao);
@@ -122,7 +122,7 @@ abstract contract Process is Component {
             uint256 actionsLength = proposal.actions.length;
 
             for (uint256 i = 0; i > actionsLength; i++) {
-                DAO.Action calldata action = proposal.actions[i];
+                IDAO.Action calldata action = proposal.actions[i];
 
                 if (allowedActions[action.to][bytes4(action.data[:4])] == false) {
                     revert("Not allowed action passed!");

@@ -20,6 +20,8 @@ import "./IDAO.sol";
 /// @notice This contract is the entry point to the Aragon DAO framework and provides our users a simple and use to use public interface.
 /// @dev Public API of the Aragon DAO framework
 contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, AdaptiveERC165 {
+    bytes4 internal constant DAO_INTERFACE_ID = type(IDAO).interfaceId;
+
     using SafeERC20 for ERC20;
     using Address for address;
 
@@ -48,19 +50,13 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, AdaptiveERC165 {
     string private constant ERROR_ETH_DEPOSIT_AMOUNT_MISMATCH = "ETH_DEPOSIT_AMOUNT_MISMATCH";
     string private constant ERROR_ETH_WITHDRAW_FAILED = "ETH_WITHDRAW_FAILED";
 
-    struct Action {
-        address to; // Address to call.
-        uint256 value; // Value to be sent with the call. for example (ETH)
-        bytes data; // FuncSig + arguments
-    }
-
     /// @dev Used for UUPS upgradability pattern
     /// @param _metadata IPFS hash that points to all the metadata (logo, description, tags, etc.) of a DAO
     function initialize(
         bytes calldata _metadata,
         address initialOwner
     ) public initializer {
-        //_registerStandard(type(DAO).interfaceId);
+        _registerStandard(DAO_INTERFACE_ID);
         this.setMetadata(_metadata);
         ACL.initACL(initialOwner);
     }
@@ -73,9 +69,9 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, AdaptiveERC165 {
     /// @param _where Which contract does get called
     /// @param _who Who is calling this method
     /// @param _role Which role is required to call this
-    /// @param data Additional data used in the ACLOracle
-    function hasPermission(address _where, address _who, bytes32 _role, bytes memory data) public override returns(bool) {
-        return willPerform(_where, _who, _role, data);
+    /// @param _data Additional data used in the ACLOracle
+    function hasPermission(address _where, address _who, bytes32 _role, bytes memory _data) public override returns(bool) {
+        return willPerform(_where, _who, _role, _data);
     }
 
     /// @notice Update the DAO metadata
@@ -87,48 +83,48 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, AdaptiveERC165 {
 
     /// @notice Add new process to DAO
     /// @dev Grants the new process execution rights and amits the related event.
-    /// @param process The address of the new process
-    function addProcess(Process process) external auth(address(this), DAO_CONFIG_ROLE) {
-        _grant(address(this), address(process), EXEC_ROLE);
-        emit ProcessAdded(process);
+    /// @param _process The address of the new process
+    function addProcess(Process _process) external auth(address(this), DAO_CONFIG_ROLE) {
+        _grant(address(this), address(_process), EXEC_ROLE);
+        emit ProcessAdded(_process);
     }
 
     /// @notice Remove process from DAO
     /// @dev Revokes the execution rights from the process and emits the related event.
-    /// @param process The address of the new process
-    function removeProcess(Process process) external auth(address(this), DAO_CONFIG_ROLE) {
-        _revoke(address(this), address(process), EXEC_ROLE);
-        emit ProcessRemoved(process);
+    /// @param _process The address of the new process
+    function removeProcess(Process _process) external auth(address(this), DAO_CONFIG_ROLE) {
+        _revoke(address(this), address(_process), EXEC_ROLE);
+        emit ProcessRemoved(_process);
     }
 
     /// @notice If called, the list of provided actions will be executed.
     /// @dev It run a loop through the array of acctions and execute one by one.
     /// @dev If one acction fails, all will be reverted.
-    /// @param actions The aray of actions
-    function execute(Action[] memory actions) external auth(address(this), EXEC_ROLE) {
-        bytes[] memory execResults = new bytes[](actions.length);
+    /// @param _actions The aray of actions
+    function execute(Action[] memory _actions) external auth(address(this), EXEC_ROLE) {
+        bytes[] memory execResults = new bytes[](_actions.length);
 
-        for (uint256 i = 0; i < actions.length; i++) {
-            (bool success, bytes memory response) = actions[i].to.call{ value: actions[i].value }(actions[i].data);
+        for (uint256 i = 0; i < _actions.length; i++) {
+            (bool success, bytes memory response) = _actions[i].to.call{ value: _actions[i].value }(_actions[i].data);
 
             require(success, ERROR_ACTION_CALL_FAILED);
 
             execResults[i] = response;
         }
 
-        emit Executed(msg.sender, actions, execResults);
+        emit Executed(msg.sender, _actions, execResults);
     }
 
-    // @dev Emit ETHDeposited event to track ETH deposits that weren't done over the deposit method.
+    /// @dev Emit ETHDeposited event to track ETH deposits that weren't done over the deposit method.
     receive () external payable {
         emit ETHDeposited(msg.sender, msg.value);
     }
 
-    // @notice Deposit ETH or any token to this contract with a reference string
-    // @dev Deposit ETH (token address == 0) or any token with a reference
-    // @param _token The address of the token and in case of ETH address(0)
-    // @param _amount The amount of tokens to deposit
-    // @param _reference The deposit reference describing the reason of it
+    /// @notice Deposit ETH or any token to this contract with a reference string
+    /// @dev Deposit ETH (token address == 0) or any token with a reference
+    /// @param _token The address of the token and in case of ETH address(0)
+    /// @param _amount The amount of tokens to deposit
+    /// @param _reference The deposit reference describing the reason of it
     function deposit(address _token, uint256 _amount, string calldata _reference) external payable {
         require(_amount > 0, ERROR_DEPOSIT_AMOUNT_ZERO);
 
@@ -141,11 +137,11 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, AdaptiveERC165 {
         emit Deposited(msg.sender, _token, _amount, _reference);
     }
 
-    // @notice Withdraw tokens or ETH from the DAO with a withdraw reference string
-    // @param _token The address of the token and in case of ETH address(0)
-    // @param _to The target address to send tokens or ETH
-    // @param _amount The amount of tokens to deposit
-    // @param _reference The deposit reference describing the reason of it
+    /// @notice Withdraw tokens or ETH from the DAO with a withdraw reference string
+    /// @param _token The address of the token and in case of ETH address(0)
+    /// @param _to The target address to send tokens or ETH
+    /// @param _amount The amount of tokens to deposit
+    /// @param _reference The deposit reference describing the reason of it
     function withdraw(address _token, address _to, uint256 _amount, string memory _reference) public auth(address(this), WITHDRAW_ROLE) {
         if (_token == address(0)) {
             (bool ok, ) = _to.call{value: _amount}("");
