@@ -70,9 +70,20 @@ const NewDeposit: React.FC = () => {
     provider,
   }: useWalletProps = useWallet();
 
+  /**
+   * (Temporary)
+   * NOTE: the mode can also be onBlur (clicking out of the field).
+   * onChange is more snazzy and with the times, but there seems to be
+   * performance issues associated with it. That said, the only place it
+   * is really noticeable is when interacting with the custom token contract address
+   * field (like manually typing or erasing characters). I assume a big
+   * part of it is the validation dependent on that field. Currently when
+   * the custom token contract address field is changed, the input itself as well as
+   * the amount, and token symbol are validated.
+   */
   const formMethods = useForm<FormData>({
     defaultValues,
-    mode: 'onBlur', // this can also be onChange but that comes with performance issues
+    mode: 'onChange',
   });
 
   const {dirtyFields, errors, touchedFields, isDirty, isValid} = useFormState({
@@ -140,12 +151,13 @@ const NewDeposit: React.FC = () => {
   }, [connect, isConnected, open]);
 
   const handleTokenSelect = (token: BaseTokenInfo) => {
+    formMethods.setValue('tokenSymbol', token.symbol);
+
     // custom token selected, should reset all fields
-    // and clear any error pertaining to the amount
+    // save the symbol and clear any error pertaining to the amount
     if (token.address === '') {
       formMethods.setValue('isCustomToken', true);
       formMethods.resetField('tokenName');
-      formMethods.resetField('tokenSymbol');
       formMethods.resetField('tokenImgUrl');
       formMethods.resetField('tokenAddress');
       formMethods.resetField('tokenBalance');
@@ -156,7 +168,6 @@ const NewDeposit: React.FC = () => {
     // fill form with curated token values
     formMethods.setValue('isCustomToken', false);
     formMethods.setValue('tokenName', token.name);
-    formMethods.setValue('tokenSymbol', token.symbol);
     formMethods.setValue('tokenImgUrl', token.imgUrl);
     formMethods.setValue('tokenAddress', token.address);
     formMethods.setValue(
