@@ -116,15 +116,7 @@ contract DAOFactory {
 
         dao.bulk(address(dao), items);
     }
-
-    // // @dev Internal helper method to create a proxy contract based on the passed base contract address
-    // // @param _logic The address of the base contract
-    // // @param _data The constructor arguments for this contract
-    // // @return addr The address of the proxy contract created
-    // function createProxy(address _logic, bytes memory _data) private returns(address payable addr) {
-    //     return payable(address(new ERC1967Proxy(_logic, _data)));
-    // }
-
+    
     // @dev Internal helper method to set up the required base contracts on DAOFactory deployment.
     function setupBases() private {
         votingBase = address(new SimpleVoting());
