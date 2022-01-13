@@ -7,10 +7,11 @@ import {Radio, RadioGroup} from '../radioGroup';
 
 export const VotingTerminal: React.FC = () => {
   const [buttonGroupState, setButtonGroupState] = useState('info');
+  const [votingInProcess, setVotingInProcess] = useState(false);
 
   return (
     <div className="tablet:p-3 py-2.5 px-2 rounded-xl bg-ui-0">
-      <div className="tablet:flex tablet:justify-between tablet:items-center mb-4 tablet:mb-5 ">
+      <div className="tablet:flex tablet:justify-between tablet:items-center mb-4 tablet:mb-5 space-y-2">
         <h1 className="text-2xl font-bold text-ui-800">Voting</h1>
         <RadioGroup
           defaultValue={buttonGroupState}
@@ -43,7 +44,7 @@ export const VotingTerminal: React.FC = () => {
       ) : buttonGroupState === 'voters' ? (
         <div className="space-y-2">
           <SearchInput placeholder="Type Address, ENS or E-Mail" />
-          <div>{'Table->Voters'}</div>
+          <div>{'Table -> Voters'}</div>
         </div>
       ) : (
         <div className="space-y-3">
@@ -54,7 +55,7 @@ export const VotingTerminal: React.FC = () => {
             </div>
             <div className="flex justify-between text-ui-600">
               <p>Strategy</p>
-              <p className="font-bold text-ui-800">1 Token -> 1 Vote</p>
+              <p className="font-bold text-ui-800">{'1 Token -> 1 Vote'}</p>
             </div>
             <div className="flex justify-between text-ui-600">
               <p>Minimum Approval</p>
@@ -72,20 +73,50 @@ export const VotingTerminal: React.FC = () => {
           <div className="space-y-1.5">
             <p className="font-bold text-ui-800">Duration</p>
             <div className="flex justify-between text-ui-600">
-              <p>Options</p>
+              <p>Start</p>
               <p className="font-bold text-ui-800">2021/11/17 00:00 AM UTC+2</p>
             </div>
             <div className="flex justify-between text-ui-600">
-              <p>Options</p>
+              <p>End</p>
               <p className="font-bold text-ui-800">2021/16/17 00:00 AM UTC+2</p>
             </div>
           </div>
         </div>
       )}
-      <div className="tablet:flex tablet:justify-between tablet:items-center mt-4 tablet:mt-5">
-        <ButtonText label="Vote now" size="large" />
-        <AlertInline label="Remaining time" mode="neutral" />
-      </div>
+      {votingInProcess ? (
+        <div className="mt-6 tablet:mt-5">
+          <p className="text-xl font-bold text-ui-800">Choose your option</p>
+          <p className="mt-1 text-ui-500">
+            To vote, you must select one of the following options. Afterwards, a
+            confirmation with your wallet is necessary. Once the transaction is
+            completed, your vote will be counted and displayed.
+          </p>
+          <div className="mt-3">
+            <p>{'Checkbox -> List item'}</p>
+          </div>
+          <div className="flex flex-col tablet:flex-row tablet:justify-between items-center tablet:items-center mt-3 space-y-2 tablet:space-y-0">
+            <div className="flex flex-col tablet:flex-row space-y-2 tablet:space-y-0 space-x-2">
+              <ButtonText label="Submit your vote" size="large" />
+              <ButtonText
+                label="Cancel"
+                mode="ghost"
+                size="large"
+                onClick={() => setVotingInProcess(false)}
+              />
+            </div>
+            <AlertInline label="Remaining time" mode="neutral" />
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-col tablet:flex-row tablet:justify-between items-center tablet:items-center mt-4 tablet:mt-5 space-y-2 tablet:space-y-0">
+          <ButtonText
+            label="Vote now"
+            size="large"
+            onClick={() => setVotingInProcess(true)}
+          />
+          <AlertInline label="Remaining time" mode="neutral" />
+        </div>
+      )}
     </div>
   );
 };
