@@ -4,10 +4,6 @@ import {
   ChangeSupportRequired,
   StartVote
 } from '../../generated/templates/SimpleVoting/SimpleVoting';
-import {DAO as DAOContract} from '../../generated/templates/DAO/DAO';
-import {DAO} from '../../generated/templates';
-import {AllowedAction} from '../../generated/schema';
-import {DataSourceContext} from '@graphprotocol/graph-ts';
 
 export function handleCastVote(event: CastVote): void {}
 

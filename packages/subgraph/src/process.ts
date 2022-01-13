@@ -1,13 +1,15 @@
 import {
   AllowedActionsAdded,
   ProcessExecuted,
-  ProcessStarted,
-  VotedOnProcess
-} from './../generated/templates/ProcessCore/All';
-import {DAO as DAOContract} from './../generated/templates/DAO/DAO';
-import {DAO} from './../generated/templates';
+  ProcessStarted
+} from './../generated/templates/Process/Process';
+import {
+  ProcessHalted,
+  ProcessForwarded,
+  ProcessStopped
+} from './../generated/templates/DisputableProcess/DisputableProcess';
+import {VotedOnProcess} from './../generated/templates/VotingProcess/VotingProcess';
 import {AllowedAction} from './../generated/schema';
-import {DataSourceContext} from '@graphprotocol/graph-ts';
 
 export function handleAllowedActionsAdded(event: AllowedActionsAdded): void {
   let processId = event.address.toHexString();
@@ -33,5 +35,11 @@ export function handleAllowedActionsAdded(event: AllowedActionsAdded): void {
 export function handleProcessExecuted(event: ProcessExecuted): void {}
 
 export function handleProcessStarted(event: ProcessStarted): void {}
+
+export function handleProcessStopped(event: ProcessStopped): void {}
+
+export function handleProcessForwarded(event: ProcessForwarded): void {}
+
+export function handleProcessHalted(event: ProcessHalted): void {}
 
 export function handleVotedOnProcess(event: VotedOnProcess): void {}

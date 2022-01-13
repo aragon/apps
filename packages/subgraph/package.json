@@ -2,7 +2,6 @@
   "name": "@aragon/zaragoza-subgraph",
   "version": "0.0.1",
   "description": "Aragon V2 Subgraph",
-  "author": "Rekard0 <5880388+Rekard0@users.noreply.github.com>",
   "homepage": "https://github.com/aragon/zaragoza#readme",
   "license": "MIT",
   "scripts": {

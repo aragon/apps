@@ -1,14 +1,14 @@
 import {
   DAO as DAOContract,
   SetMetadata,
-  AddProcess,
-  RemoveProcess,
+  ProcessAdded,
+  ProcessRemoved,
   Executed,
   Deposited,
   ETHDeposited,
   Withdrawn
 } from '../generated/templates/DAO/DAO';
-import {DAO, SimpleVoting} from '../generated/templates';
+import {SimpleVoting} from '../generated/templates';
 import {
   Dao,
   Process,
@@ -18,75 +18,45 @@ import {
 } from '../generated/schema';
 import {log} from 'matchstick-as/assembly/index';
 
-export function handleAddProcess(event: AddProcess): void {
+export function handleProcessAdded(event: ProcessAdded): void {
   let processAddress = event.params.process;
-  let daoAddress = event.address;
   let processId = processAddress.toHexString();
-  let daoId = daoAddress.toHexString();
-  let daoEntity = Dao.load(daoId);
-
-  if (daoEntity == null) {
-    daoEntity = new Dao(daoId);
-
-    // subscribe to templates
-    DAO.create(event.address);
-  }
 
   let processEntity = new Process(processId);
-  processEntity.dao = daoAddress.toHexString();
+
+  processEntity.dao = event.address.toHexString();
   processEntity.address = processAddress;
   processEntity.isActive = true;
 
   // subscribe to templates
+  // TODO: verfy process type via supportsInterface
   SimpleVoting.create(processAddress);
 
-  daoEntity.save();
   processEntity.save();
 }
 
-export function handleRemoveProcess(event: RemoveProcess): void {
-  let processAddress = event.params.process;
-  let daoAddress = event.address;
-  let processId = processAddress.toHexString();
-  let daoId = daoAddress.toHexString();
-  let daoEntity = Dao.load(daoId);
-
-  if (daoEntity == null) {
-    daoEntity = new Dao(daoId);
-
-    // subscribe to templates
-    DAO.create(event.address);
-  }
+export function handleProcessRemoved(event: ProcessRemoved): void {
+  let processId = event.params.process.toHexString();
 
   let processEntity = Process.load(processId);
-  if (processEntity == null) {
-    processEntity = new Process(processId);
-    processEntity.dao = daoAddress.toHexString();
-    processEntity.address = processAddress;
-    // subscribe to templates
-    SimpleVoting.create(processAddress);
-  }
-  processEntity.isActive = false;
 
-  daoEntity.save();
-  processEntity.save();
+  if (processEntity) {
+    processEntity.isActive = false;
+    processEntity.save();
+  }
 }
 
 export function handleSetMetadata(event: SetMetadata): void {
   let id = event.address.toHexString();
   let entity = Dao.load(id);
-  if (entity == null) {
-    entity = new Dao(id);
-
-    // subscribe to templates
-    DAO.create(event.address);
+  if (entity) {
+    entity.metadata = event.params.metadata.toString();
+    entity.save();
   }
-  entity.metadata = event.params.metadata.toString();
-  entity.save();
 }
 
 export function handleExecuted(event: Executed): void {
-  // TODO: understand Execution
+  // TODO:
 }
 
 export function handleDeposited(event: Deposited): void {
@@ -99,7 +69,7 @@ export function handleDeposited(event: Deposited): void {
     event.transactionLogIndex.toString();
 
   let entity = VaultDeposit.load(id);
-  if (entity != null) {
+  if (entity) {
     entity.dao = daoId;
     entity.token = event.params.token;
     entity.sender = event.params.sender;
@@ -119,7 +89,7 @@ export function handleETHDeposited(event: ETHDeposited): void {
     event.transactionLogIndex.toString();
 
   let entity = VaultEthDeposit.load(id);
-  if (entity != null) {
+  if (entity) {
     entity.dao = daoId;
     entity.sender = event.params.sender;
     entity.amount = event.params.amount;
@@ -137,7 +107,7 @@ export function handleWithdrawn(event: Withdrawn): void {
     event.transactionLogIndex.toString();
 
   let entity = VaultWithdraw.load(id);
-  if (entity != null) {
+  if (entity) {
     entity.dao = daoId;
     entity.token = event.params.token;
     entity.to = event.params.to;

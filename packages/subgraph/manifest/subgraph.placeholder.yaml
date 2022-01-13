@@ -20,9 +20,9 @@ dataSources:
         - Dao
       abis:
         - name: Registry
-          file: ./../contracts/artifacts/contracts/bootstrap/registry/Registry.sol/Registry.json
+          file: ./../contracts/artifacts/contracts/registry/Registry.sol/Registry.json
       eventHandlers:
-        - event: NewDAORegistered(string,indexed address,indexed address)
+        - event: NewDAORegistered(indexed address,indexed address,string)
           handler: handleNewDAORegistered
       file: ./src/registry.ts
 # templates
@@ -44,10 +44,10 @@ templates:
         - name: DAO
           file: ./../contracts/artifacts/contracts/core/DAO.sol/DAO.json
       eventHandlers:
-        - event: AddProcess(address)
-          handler: handleAddProcess
-        - event: RemoveProcess(address)
-          handler: handleRemoveProcess
+        - event: ProcessAdded(indexed address)
+          handler: handleProcessAdded
+        - event: ProcessRemoved(indexed address)
+          handler: handleProcessRemoved
         - event: SetMetadata(indexed bytes)
           handler: handleSetMetadata
         - event : Executed(indexed address,(address,uint256,bytes)[],bytes[])
@@ -56,7 +56,7 @@ templates:
           handler: handleDeposited
         - event: ETHDeposited(address,uint256)
           handler: handleETHDeposited
-        - event: Withdrawn(indexed address,indexed address,address,uint256,string)
+        - event: Withdrawn(indexed address,indexed address,uint256,string)
           handler: handleWithdrawn
   # Processes (core)
   - name: Process
@@ -74,13 +74,13 @@ templates:
         - Process
       abis:
         - name: Process
-          file: ./../contracts/artifacts/contracts/core/processes/types/Process.sol/Process.json
+          file: ./../contracts/artifacts/contracts/core/processes/Process.sol/Process.json
       eventHandlers:
         - event: AllowedActionsAdded(bytes[])
           handler: handleAllowedActionsAdded
-        - event: ProcessExecuted((uint256,(address,uint256,bytes)[],bytes,uint8),indexed uint256)
+        - event: ProcessExecuted((uint256,((address,uint256,bytes)[],bytes,bytes),uint8),indexed uint256)
           handler: handleProcessExecuted
-        - event: ProcessStarted((uint256,(address,uint256,bytes)[],bytes,uint8),indexed uint256,indexed bytes)
+        - event: ProcessStarted((uint256,((address,uint256,bytes)[],bytes,bytes),uint8),bytes,indexed uint256)
           handler: handleProcessStarted
   - name: DisputableProcess
     kind: ethereum/contract
@@ -97,19 +97,19 @@ templates:
         - Process
       abis:
         - name: DisputableProcess
-          file: ./../contracts/artifacts/contracts/core/processes/types/disputable/DisputableProcess.sol/DisputableProcess.json
+          file: ./../contracts/artifacts/contracts/core/processes/disputable/DisputableProcess.sol/DisputableProcess.json
       eventHandlers:
         - event: AllowedActionsAdded(bytes[])
           handler: handleAllowedActionsAdded
-        - event: ProcessExecuted((uint256,(address,uint256,bytes)[],bytes,uint8),indexed uint256)
+        - event: ProcessExecuted((uint256,((address,uint256,bytes)[],bytes,bytes),uint8),indexed uint256)
           handler: handleProcessExecuted
-        - event: ProcessForwarded((indexed uint256,(address,uint256,bytes)[],bytes,uint8),indexed uint256)
+        - event: ProcessForwarded((uint256,((address,uint256,bytes)[],bytes,bytes),uint8),indexed uint256)
           handler: handleProcessForwarded
-        - event: ProcessHalted((indexed uint256,(address,uint256,bytes)[],bytes,uint8),indexed uint256)
+        - event: ProcessHalted((uint256,((address,uint256,bytes)[],bytes,bytes),uint8),indexed uint256)
           handler: handleProcessHalted
-        - event: ProcessStarted((uint256,(address,uint256,bytes)[],bytes,uint8),indexed uint256,indexed bytes)
+        - event: ProcessStarted((uint256,((address,uint256,bytes)[],bytes,bytes),uint8),bytes,indexed uint256)
           handler: handleProcessStarted
-        - event: ProcessStopped((indexed uint256,(address,uint256,bytes)[],bytes,uint8),indexed uint256)
+        - event: ProcessStopped((indexed uint256,((address,uint256,bytes)[],bytes,bytes),uint8),indexed uint256)
           handler: handleProcessStopped
   - name: StoppableProcess
     kind: ethereum/contract
@@ -126,15 +126,15 @@ templates:
         - Process
       abis:
         - name: StoppableProcess
-          file: ./../contracts/artifacts/contracts/core/processes/types/stoppable/StoppableProcess.sol/StoppableProcess.json
+          file: ./../contracts/artifacts/contracts/core/processes/stoppable/StoppableProcess.sol/StoppableProcess.json
       eventHandlers:
         - event: AllowedActionsAdded(bytes[])
           handler: handleAllowedActionsAdded
-        - event: ProcessExecuted((uint256,(address,uint256,bytes)[],bytes,uint8),indexed uint256)
+        - event: ProcessExecuted((uint256,((address,uint256,bytes)[],bytes,bytes),uint8),indexed uint256)
           handler: handleProcessExecuted
-        - event: ProcessStarted((uint256,(address,uint256,bytes)[],bytes,uint8),indexed uint256,indexed bytes)
+        - event: ProcessStarted((uint256,((address,uint256,bytes)[],bytes,bytes),uint8),bytes,indexed uint256)
           handler: handleProcessStarted
-        - event: ProcessStopped((indexed uint256,(address,uint256,bytes)[],bytes,uint8),indexed uint256)
+        - event: ProcessStopped((indexed uint256,((address,uint256,bytes)[],bytes,bytes),uint8),indexed uint256)
           handler: handleProcessStopped
   - name: VotingProcess
     kind: ethereum/contract
@@ -151,15 +151,15 @@ templates:
         - Process
       abis:
         - name: VotingProcess
-          file: ./../contracts/artifacts/contracts/core/processes/types/voting/VotingProcess.sol/VotingProcess.json
+          file: ./../contracts/artifacts/contracts/core/processes/voting/VotingProcess.sol/VotingProcess.json
       eventHandlers:
         - event: AllowedActionsAdded(bytes[])
           handler: handleAllowedActionsAdded
-        - event: ProcessExecuted((uint256,(address,uint256,bytes)[],bytes,uint8),indexed uint256)
+        - event: ProcessExecuted((uint256,((address,uint256,bytes)[],bytes,bytes),uint8),indexed uint256)
           handler: handleProcessExecuted
-        - event: ProcessStarted((uint256,(address,uint256,bytes)[],bytes,uint8),indexed uint256,indexed bytes)
+        - event: ProcessStarted((uint256,((address,uint256,bytes)[],bytes,bytes),uint8),bytes,indexed uint256)
           handler: handleProcessStarted
-        - event: VotedOnProcess((indexed uint256,(address,uint256,bytes)[],bytes,uint8),indexed bytes,uint256)
+        - event: VotedOnProcess((uint256,((address,uint256,bytes)[],bytes,bytes),uint8),bytes,indexed uint256)
           handler: handleVotedOnProcess
   # Voting (package process)
   - name: SimpleVoting
@@ -177,7 +177,7 @@ templates:
         - Process
       abis:
         - name: SimpleVoting
-          file: ./../contracts/artifacts/contracts/packages/processes/votings/simple/SimpleVoting.sol/SimpleVoting.json
+          file: ./../contracts/artifacts/contracts/processes/votings/simple/SimpleVoting.sol/SimpleVoting.json
       eventHandlers:
         - event: CastVote(indexed uint256,indexed address,bool,uint256)
           handler: handleCastVote

@@ -6,18 +6,14 @@ import {DataSourceContext} from '@graphprotocol/graph-ts';
 
 export function handleNewDAORegistered(event: NewDAORegistered): void {
   let id = event.params.dao.toHexString(); // use dao address as id, because it should not repeat
-  let entity = Dao.load(id);
-
-  if (entity == null) {
-    entity = new Dao(id);
-
-    // subscribe to templates
-    DAO.create(event.params.dao);
-  }
+  let entity = new Dao(id);
 
   entity.name = event.params.name;
   entity.daoAddress = event.params.dao;
   entity.creator = event.params.creator;
+
+  // subscribe to templates
+  DAO.create(event.params.dao);
 
   entity.save();
 }
