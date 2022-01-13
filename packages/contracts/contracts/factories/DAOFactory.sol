@@ -102,7 +102,7 @@ contract DAOFactory {
         // Add voting process
         dao.addProcess(voting);
 
-        ACLData.BulkItem[] memory items = new ACLData.BulkItem[](6);
+        ACLData.BulkItem[] memory items = new ACLData.BulkItem[](7);
         
         // Grant DAO all the permissions required
         items[0] = ACLData.BulkItem(ACLData.BulkOp.Grant, dao.DAO_CONFIG_ROLE(), address(dao));
