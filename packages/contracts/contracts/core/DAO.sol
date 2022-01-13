@@ -21,6 +21,18 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, AdaptiveERC165 {
     using SafeERC20 for ERC20;
     using Address for address;
 
+    // Roles
+    bytes32 public constant UPGRADE_ROLE = keccak256("UPGRADE_ROLE");
+    bytes32 public constant DAO_CONFIG_ROLE = keccak256("DAO_CONFIG_ROLE");
+    bytes32 public constant EXEC_ROLE = keccak256("EXEC_ROLE");
+    bytes32 public constant WITHDRAW_ROLE = keccak256("WITHDRAW_ROLE");
+
+     // Error msg's
+    string internal constant ERROR_ACTION_CALL_FAILED = "ACTION_CALL_FAILED";
+    string internal constant ERROR_DEPOSIT_AMOUNT_ZERO = "DEPOSIT_AMOUNT_ZERO";
+    string internal constant ERROR_ETH_DEPOSIT_AMOUNT_MISMATCH = "ETH_DEPOSIT_AMOUNT_MISMATCH";
+    string internal constant ERROR_ETH_WITHDRAW_FAILED = "ETH_WITHDRAW_FAILED";
+
     /// @dev Used for UUPS upgradability pattern
     /// @param _metadata IPFS hash that points to all the metadata (logo, description, tags, etc.) of a DAO
     function initialize(
