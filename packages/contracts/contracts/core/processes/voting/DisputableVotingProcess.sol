@@ -21,7 +21,6 @@ abstract contract DisputableVotingProcess is DisputableProcess, VotingProcess {
         bytes[] calldata _allowedActions
     ) public virtual override(DisputableProcess, VotingProcess) initializer {
         _initProcess(_dao, _allowedActions);
-
         _registerStandard(DISPUTABLE_VOTING_PROCESS_INTERFACE_ID);
     }
 }
