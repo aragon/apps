@@ -30,7 +30,10 @@
     "reference": "Reference",
     "address": "Token Contract Address",
     "paste": "Paste",
-    "maxBalance": "Max Balance"
+    "maxBalance": "Max Balance",
+    "back": "Back",
+    "continue": "Continue",
+    "submitDeposit": "Submit Deposit"
   },
   "placeHolders": {
     "selectToken": "Select a Token ...",

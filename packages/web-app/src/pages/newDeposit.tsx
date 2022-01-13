@@ -224,17 +224,20 @@ const NewDeposit: React.FC = () => {
               <ReviewDeposit />
             )}
             <FormFooter>
-              {/* Should change this to secondary on gray which is unsupported now */}
               <ButtonText
-                label="Back"
                 mode="secondary"
                 size="large"
+                label={t('labels.back')}
                 onClick={prev}
                 disabled={currentStep === 1}
                 iconLeft={<IconChevronLeft />}
               />
               <ButtonText
-                label={currentStep === steps.configure ? 'Continue' : 'Deposit'}
+                label={
+                  currentStep === 1
+                    ? t('labels.continue')
+                    : t('labels.submitDeposit')
+                }
                 size="large"
                 onClick={next}
                 disabled={!isValid}
