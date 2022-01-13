@@ -12,6 +12,8 @@ import "./../DAO.sol";
 /// @notice This contract can be used to implement concrete governance processes and being fully compatible with the DAO framework and UI of Aragon
 /// @dev You only have to define the specific custom logic for your needs in _start and _execute.
 abstract contract Process is Component {
+    bytes4 internal constant PROCESS_INTERFACE_ID = type(Process).interfaceId;
+
     address internal constant ANY_ADDR = address(type(uint160).max);
 
     // Events
@@ -57,7 +59,7 @@ abstract contract Process is Component {
     /// @param _allowedActions A dynamic bytes array to define the allowed actions. Addr + funcSig byte strings.
     function initialize(IDAO dao, bytes[] calldata _allowedActions) public virtual initializer {
         _setAllowedActions(_allowedActions);
-        _registerStandard(type(Process).interfaceId);
+        _registerStandard(PROCESS_INTERFACE_ID);
 
         Component.initialize(dao);
     }
