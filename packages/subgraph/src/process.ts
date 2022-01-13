@@ -16,19 +16,28 @@ export function handleAllowedActionsAdded(event: AllowedActionsAdded): void {
   let allowedActions = event.params.allowedActions;
   for (let index = 0; index < allowedActions.length; index++) {
     let allowedAction = allowedActions[index];
-    let id =
-      event.address.toHexString() +
-      '_' +
-      event.transaction.hash.toString() +
-      '_' +
-      event.transactionLogIndex.toString() +
-      '_' +
-      index.toString();
+    let id = processId + '_' + allowedAction.toHexString();
 
     let entity = new AllowedAction(id);
     entity.process = processId;
     entity.allowedAction = allowedAction;
+    entity.isRemoved = false;
     entity.save();
+  }
+}
+
+export function handleAllowedActionsRemoved(event: AllowedActionsAdded): void {
+  let processId = event.address.toHexString();
+  let allowedActions = event.params.allowedActions;
+  for (let index = 0; index < allowedActions.length; index++) {
+    let allowedAction = allowedActions[index];
+    let id = processId + '_' + allowedAction.toHexString();
+
+    let entity = AllowedAction.load(id);
+    if (entity) {
+      entity.isRemoved = true;
+      entity.save();
+    }
   }
 }
 

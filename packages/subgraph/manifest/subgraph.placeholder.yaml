@@ -22,7 +22,7 @@ dataSources:
         - name: Registry
           file: ./../contracts/artifacts/contracts/registry/Registry.sol/Registry.json
       eventHandlers:
-        - event: NewDAORegistered(indexed address,indexed address,string)
+        - event: NewDAORegistered(indexed address,indexed address,indexed address,string)
           handler: handleNewDAORegistered
       file: ./src/registry.ts
 # templates
@@ -78,6 +78,8 @@ templates:
       eventHandlers:
         - event: AllowedActionsAdded(bytes[])
           handler: handleAllowedActionsAdded
+        - event: AllowedActionsRemoved(bytes[])
+          handler: handleAllowedActionsRemoved
         - event: ProcessExecuted((uint256,((address,uint256,bytes)[],bytes,bytes),uint8),indexed uint256)
           handler: handleProcessExecuted
         - event: ProcessStarted((uint256,((address,uint256,bytes)[],bytes,bytes),uint8),bytes,indexed uint256)
@@ -101,6 +103,8 @@ templates:
       eventHandlers:
         - event: AllowedActionsAdded(bytes[])
           handler: handleAllowedActionsAdded
+        - event: AllowedActionsRemoved(bytes[])
+          handler: handleAllowedActionsRemoved
         - event: ProcessExecuted((uint256,((address,uint256,bytes)[],bytes,bytes),uint8),indexed uint256)
           handler: handleProcessExecuted
         - event: ProcessForwarded((uint256,((address,uint256,bytes)[],bytes,bytes),uint8),indexed uint256)
@@ -130,6 +134,8 @@ templates:
       eventHandlers:
         - event: AllowedActionsAdded(bytes[])
           handler: handleAllowedActionsAdded
+        - event: AllowedActionsRemoved(bytes[])
+          handler: handleAllowedActionsRemoved
         - event: ProcessExecuted((uint256,((address,uint256,bytes)[],bytes,bytes),uint8),indexed uint256)
           handler: handleProcessExecuted
         - event: ProcessStarted((uint256,((address,uint256,bytes)[],bytes,bytes),uint8),bytes,indexed uint256)
@@ -155,6 +161,8 @@ templates:
       eventHandlers:
         - event: AllowedActionsAdded(bytes[])
           handler: handleAllowedActionsAdded
+        - event: AllowedActionsRemoved(bytes[])
+          handler: handleAllowedActionsRemoved
         - event: ProcessExecuted((uint256,((address,uint256,bytes)[],bytes,bytes),uint8),indexed uint256)
           handler: handleProcessExecuted
         - event: ProcessStarted((uint256,((address,uint256,bytes)[],bytes,bytes),uint8),bytes,indexed uint256)

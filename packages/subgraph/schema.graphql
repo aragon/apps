@@ -20,23 +20,25 @@ type Action @entity {
   to: Bytes! # Address to call.
   value: BigInt! # Value to be sent with the call. for example (ETH)
   data: Bytes!
-  proposal: Proposal
-  execution: Execution
+  proposal: Proposal!
+  execution: Execution!
+  execResult: Bytes
 }
 
 type Proposal @entity {
   id: ID!
   dao: Dao!
   process: Process!
-  metadata: Bytes! # IPFS hash pointing to the metadata as description, title, image etc.
-  additionalArguments: Bytes # Optional additional arguments a process resp. governance primitive does need
-  actions: [Action!]! @derivedFrom(field: "proposal") # The actions that should get executed in the end
+  metadata: Bytes!
+  additionalArguments: Bytes
+  actions: [Action!]! @derivedFrom(field: "proposal")
 }
 
 type AllowedAction @entity {
   id: ID!
   allowedAction: Bytes!
   process: Process!
+  isRemoved: Boolean!
 }
 
 type Process @entity {
@@ -50,34 +52,34 @@ type Process @entity {
 
 type Execution @entity {
   id: ID!
+  dao: Dao!
   executionId: BigInt!
-  actions: [Action!]! @derivedFrom(field: "execution")
-  additionalArguments: Bytes!
+  proposal: Proposal!
   state: State!
 }
 
 # Voting (simple voting)
-type Voter @entity {
-  id: ID!
-  voter: Bytes!
-  state: VoterState!
-}
+# type Voter @entity {
+#   id: ID!
+#   voter: Bytes!
+#   state: VoterState!
+# }
 
-type Vote @entity {
-  id: ID!
-  voteId: BigInt!
-  description: String!
-  creator: Bytes! # address
-  executed: Boolean!
-  startDate: BigInt!
-  snapshotBlock: BigInt!
-  supportRequiredPct: BigInt!
-  minAcceptQuorumPct: BigInt!
-  yea: BigInt!
-  nay: BigInt!
-  votingPower: BigInt!
-  voters: [Voter!]
-}
+# type Vote @entity {
+#   id: ID!
+#   voteId: BigInt!
+#   description: String!
+#   creator: Bytes! # address
+#   executed: Boolean!
+#   startDate: BigInt!
+#   snapshotBlock: BigInt!
+#   supportRequiredPct: BigInt!
+#   minAcceptQuorumPct: BigInt!
+#   yea: BigInt!
+#   nay: BigInt!
+#   votingPower: BigInt!
+#   voters: [Voter!]
+# }
 
 # Vault
 type VaultWithdraw @entity {
@@ -118,4 +120,5 @@ type Dao @entity {
   ethDeposits: [VaultEthDeposit!]! @derivedFrom(field: "dao")
   tokenDeposits: [VaultDeposit!]! @derivedFrom(field: "dao")
   withdraws: [VaultWithdraw!]! @derivedFrom(field: "dao")
+  executions: [Execution!]! @derivedFrom(field: "dao")
 }

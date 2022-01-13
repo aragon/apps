@@ -11,6 +11,7 @@ export function handleNewDAORegistered(event: NewDAORegistered): void {
   entity.name = event.params.name;
   entity.daoAddress = event.params.dao;
   entity.creator = event.params.creator;
+  entity.token = event.params.token;
 
   // subscribe to templates
   DAO.create(event.params.dao);
