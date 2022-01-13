@@ -11,6 +11,7 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "./processes/Process.sol";
 import "./component/Component.sol";
+import "./erc165/AdaptiveERC165.sol";
 import "./acl/ACL.sol";
 import "./IDAO.sol";
 
@@ -18,7 +19,7 @@ import "./IDAO.sol";
 /// @author Samuel Furter - Aragon Association - 2021
 /// @notice This contract is the entry point to the Aragon DAO framework and provides our users a simple and use to use public interface.
 /// @dev Public API of the Aragon DAO framework
-contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
+contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, AdaptiveERC165 {
     using SafeERC20 for ERC20;
     using Address for address;
 
@@ -59,6 +60,7 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL {
         bytes calldata _metadata,
         address initialOwner
     ) public initializer {
+        //_registerStandard(type(DAO).interfaceId);
         this.setMetadata(_metadata);
         ACL.initACL(initialOwner);
     }

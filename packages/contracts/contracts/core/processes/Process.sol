@@ -57,11 +57,15 @@ abstract contract Process is Component {
 
     /// @dev Used for UUPS upgradability pattern
     /// @param _allowedActions A dynamic bytes array to define the allowed actions. Addr + funcSig byte strings.
-    function initialize(IDAO dao, bytes[] calldata _allowedActions) public virtual initializer {
-        _setAllowedActions(_allowedActions);
+    function initialize(IDAO _dao, bytes[] calldata _allowedActions) public virtual initializer {
+        _initProcess(_dao, _allowedActions);
         _registerStandard(PROCESS_INTERFACE_ID);
+    }
 
-        Component.initialize(dao);
+    // @dev Internal init method to have no code duplication in inherited abstract process contracts
+    function _initProcess(IDAO _dao, bytes[] calldata _allowedActions) internal {
+        _setAllowedActions(_allowedActions);
+        Component.initialize(_dao);
     }
 
     /// @dev Used to set the allowed actions of this process on deployment of it.

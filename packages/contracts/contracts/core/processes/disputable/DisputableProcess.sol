@@ -22,10 +22,9 @@ abstract contract DisputableProcess is StoppableProcess {
 
     /// @dev Used for UUPS upgradability pattern
     /// @param _allowedActions A dynamic bytes array to define the allowed actions. Addr + funcSig byte strings.
-    function initialize(IDAO dao, bytes[] calldata _allowedActions) public virtual override initializer {
+    function initialize(IDAO _dao, bytes[] calldata _allowedActions) public virtual override initializer {
+        _initProcess(_dao, _allowedActions);
         _registerStandard(DISPUTABLE_PROCESS_INTERFACE_ID);
-        
-        StoppableProcess.initialize(dao, _allowedActions);
     }
 
     /// @notice If called the execution is halted.

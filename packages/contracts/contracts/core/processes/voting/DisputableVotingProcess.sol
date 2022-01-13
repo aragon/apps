@@ -17,11 +17,11 @@ abstract contract DisputableVotingProcess is DisputableProcess, VotingProcess {
     /// @dev Used for UUPS upgradability pattern
     /// @param _allowedActions A dynamic bytes array to define the allowed actions. Addr + funcSig byte strings.
     function initialize(
-        IDAO dao,
+        IDAO _dao,
         bytes[] calldata _allowedActions
     ) public virtual override(DisputableProcess, VotingProcess) initializer {
-        _setAllowedActions(_allowedActions);
+        _initProcess(_dao, _allowedActions);
+
         _registerStandard(DISPUTABLE_VOTING_PROCESS_INTERFACE_ID);
-        Component.initialize(dao);
     }
 }
