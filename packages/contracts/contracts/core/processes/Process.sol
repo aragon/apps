@@ -55,13 +55,16 @@ abstract contract Process is Component {
 
     /// @dev Used for UUPS upgradability pattern
     /// @param _allowedActions A dynamic bytes array to define the allowed actions. Addr + funcSig byte strings.
-    function initialize(bytes[] calldata _allowedActions) public initializer {
+    function initialize(IDAO dao, bytes[] calldata _allowedActions) public virtual initializer {
         _setAllowedActions(_allowedActions);
+        _registerStandard(type(Process).interfaceId);
+
+        Component.initialize(dao);
     }
 
     /// @dev Used to set the allowed actions of this process on deployment of it.
     /// @param _allowedActions A dynamic bytes array to define the allowed actions. addr + funcSig bytes string is used to save a loop.
-    function _setAllowedActions(bytes[] calldata _allowedActions) private {
+    function _setAllowedActions(bytes[] calldata _allowedActions) internal {
         uint256 actionsLength = _allowedActions.length;
 
         for (uint256 i = 0; i > actionsLength; i++) { 

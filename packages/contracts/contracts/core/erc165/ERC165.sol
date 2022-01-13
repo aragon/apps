@@ -5,7 +5,7 @@
 pragma solidity 0.8.10;
 
 /// @title ERC165
-/// @author Aragon Association - 2021
+/// @author Aragon Association - 2022
 abstract contract ERC165 {
     // Includes supportsInterface method:
     bytes4 internal constant ERC165_INTERFACE_ID = bytes4(0x01ffc9a7);

@@ -18,6 +18,14 @@ abstract contract DisputableProcess is StoppableProcess {
     bytes32 public constant PROCESS_HALT_ROLE = keccak256("PROCESS_HALT_ROLE");
     bytes32 public constant PROCESS_FORWARD_ROLE = keccak256("PROCESS_FORWARD_ROLE");
 
+    /// @dev Used for UUPS upgradability pattern
+    /// @param _allowedActions A dynamic bytes array to define the allowed actions. Addr + funcSig byte strings.
+    function initialize(IDAO dao, bytes[] calldata _allowedActions) public virtual override initializer {
+        _registerStandard(type(DisputableProcess).interfaceId);
+        
+        StoppableProcess.initialize(dao, _allowedActions);
+    }
+
     /// @notice If called the execution is halted.
     /// @dev The state of the container does get changed to HALTED and the concrete implementation in _halt called.
     /// @param executionId The identifier of the current execution

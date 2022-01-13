@@ -16,6 +16,14 @@ abstract contract VotingProcess is Process {
     // Roles
     bytes32 public constant PROCESS_VOTE_ROLE = keccak256("PROCESS_VOTE_ROLE");
 
+    /// @dev Used for UUPS upgradability pattern
+    /// @param _allowedActions A dynamic bytes array to define the allowed actions. Addr + funcSig byte strings.
+    function initialize(IDAO dao, bytes[] calldata _allowedActions) public virtual override initializer {
+        _registerStandard(type(VotingProcess).interfaceId);
+        
+        Process.initialize(dao, _allowedActions);
+    }
+
     /// @notice If called a new vote does get added.
     /// @param executionId The identifier of the current execution
     /// @param data The arbitrary custom data used for the concrete implementation

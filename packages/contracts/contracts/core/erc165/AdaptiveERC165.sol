@@ -7,11 +7,11 @@ pragma solidity 0.8.10;
 import "./ERC165.sol";
 
 /// @title AdaptiveERC165
-/// @author Aragon Association - 2021
+/// @author Aragon Association - 2022
 contract AdaptiveERC165 is ERC165 {
     // ERC165 interface ID -> whether it is supported
     mapping (bytes4 => bool) internal standardSupported;
-    
+
     // Callback function signature -> magic number to return
     mapping (bytes4 => bytes32) internal callbackMagicNumbers;
 
