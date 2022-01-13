@@ -12,6 +12,6 @@ contract ERC20ACLOracle is Component, IACLOracle {
     IERC20 public token;
 
     function willPerform(address _where, address _who, bytes32 _role, bytes calldata _data) external view override returns(bool allowed) {
-        return token.balanceOf(who) > 0;
+        return token.balanceOf(_who) > 0;
     }
 }

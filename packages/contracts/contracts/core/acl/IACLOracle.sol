@@ -14,5 +14,5 @@ interface IACLOracle {
     // @param _role The hash of the role identifier
     // @param _data The optional data passed to the ACLOracle registered.
     // @return bool
-    function willPerform(address _where, address _where, bytes32 _where, bytes calldata _where) external returns (bool allowed);
+    function willPerform(address _where, address _who, bytes32 _role, bytes calldata _data) external returns (bool allowed);
 }

@@ -18,7 +18,7 @@ abstract contract VotingProcess is Process {
     bytes32 public constant PROCESS_VOTE_ROLE = keccak256("PROCESS_VOTE_ROLE");
 
     /// @notice If called a new vote does get added.
-    /// @param _executionId The identifier of the current execution
+    /// @param _executionId The identifier of the execution
     /// @param _data The arbitrary custom data used for the concrete implementation
     function vote(uint256 _executionId, bytes calldata _data) external auth(PROCESS_VOTE_ROLE) {
         Execution memory execution = _getExecution(_executionId);
@@ -31,7 +31,8 @@ abstract contract VotingProcess is Process {
     }
 
     /// @dev The concrete implementation of vote.
-    /// @param data The arbitrary custom data used for the concrete implementation
+    /// @param _data The arbitrary custom data used for the concrete implementation
+    /// @param _executionId The identifier of the execution
     function _vote(uint256 _executionId, bytes calldata _data) internal virtual;
 }
 

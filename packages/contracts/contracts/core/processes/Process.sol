@@ -87,7 +87,7 @@ abstract contract Process is Component {
     }
 
     /// @dev Used to convert a bytes to type address
-    /// @param value The bytes to convert to a address
+    /// @param _value The bytes to convert to a address
     /// @return addr The converted address
     function bytesToAddress(bytes memory _value) private pure returns (address addr) {
         assembly {
@@ -168,8 +168,8 @@ abstract contract Process is Component {
     }
 
     /// @dev Internal helper and abstraction to get a execution struct.
-    /// @param executionId The id of the execution struct.
-    /// @return _execution The execution struct with all his properties.
+    /// @param _executionId The id of the execution struct.
+    /// @return execution The execution struct with all his properties.
     function _getExecution(uint256 _executionId) internal view returns (Execution storage execution) {
         execution = executions[_executionId];
 
