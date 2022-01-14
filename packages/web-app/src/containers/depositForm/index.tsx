@@ -193,7 +193,7 @@ const DepositForm: React.FC = () => {
         <Controller
           name="tokenSymbol"
           control={control}
-          rules={{required: 'Token is required'}}
+          rules={{required: t('errors.required.token')}}
           render={({field: {name, value}, fieldState: {error}}) => (
             <>
               <DropdownInput
@@ -222,7 +222,7 @@ const DepositForm: React.FC = () => {
             name="tokenAddress"
             control={control}
             rules={{
-              required: 'Token address is required',
+              required: t('errors.required.address'),
               validate: addressValidator,
             }}
             render={({
@@ -260,7 +260,7 @@ const DepositForm: React.FC = () => {
           name="amount"
           control={control}
           rules={{
-            required: 'Token amount is required',
+            required: t('errors.required.amount'),
             validate: amountValidator,
           }}
           render={({
