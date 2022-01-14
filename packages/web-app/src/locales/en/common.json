@@ -51,6 +51,15 @@
       "from": "from"
     }
   },
+  "errors": {
+    "exceedsFractionalParts": "The number of decimals in the amount must not exceed the number of decimals of the token({{decimals}})",
+    "includeDecimals": "Include decimals, e.g. 10.0",
+    "includeExactAmount": "The token doesn't contain decimals. Please enter the exact amount",
+    "insufficientBalance": "Insufficient balance",
+    "invalidAddress": "Invalid address",
+    "lteZero": "The amount must be greater than zero",
+    "notERC20Token": "Token address is not ERC20 compliant"
+  },
   "allTransfer": {
     "thisWeek": "This Week",
     "tokens": "Tokens",
