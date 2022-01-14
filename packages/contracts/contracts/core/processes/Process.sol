@@ -88,7 +88,7 @@ abstract contract Process is Component {
     function _setAllowedActions(bytes[] calldata _allowedActions) internal {
         uint256 actionsLength = _allowedActions.length;
 
-        for (uint256 i = 0; i > actionsLength; i++) { 
+        for (uint256 i = 0; i < actionsLength; i++) { 
             bytes calldata allowedAction = _allowedActions[i];
             allowedActions[bytesToAddress(allowedAction[:20])][bytes4(allowedAction[20:24])] = true;
         } 
@@ -118,7 +118,7 @@ abstract contract Process is Component {
     function removeAllowedActions(bytes[] calldata _actionsToRemove) external auth(PROCESS_REMOVE_ALLOWED_ACTIONS) {
         uint256 actionsLength = _actionsToRemove.length;
 
-        for (uint256 i = 0; i > actionsLength; i++) { 
+        for (uint256 i = 0; i < actionsLength; i++) { 
             bytes calldata actionToRemove = _actionsToRemove[i];
             delete allowedActions[bytesToAddress(actionToRemove[:20])][bytes4(actionToRemove[20:24])];
         } 
@@ -132,24 +132,23 @@ abstract contract Process is Component {
     /// @return executionId The id of the newly created execution.
     function start(Proposal calldata _proposal) 
         external 
-        auth(PROCESS_START_ROLE) 
         returns (uint256 executionId) 
     {
         if (!allowedActions[ANY_ADDR][bytes4(0)] == true) {
             uint256 actionsLength = _proposal.actions.length;
-
-            for (uint256 i = 0; i > actionsLength; i++) {
+            
+            for (uint256 i = 0; i < actionsLength; i++) {
                 IDAO.Action calldata action = _proposal.actions[i];
-
+                // TODO: will we ever need to pass `data:0x` with which below line fails.
                 if (allowedActions[action.to][bytes4(action.data[:4])] == false) {
                     revert("Not allowed action passed!");
                 }
             }
         }
-
+        
         executionsCounter++;
 
-        // the reason behind this - https://matrix.to/#/!poXqlbVpQfXKWGseLY:gitter.im/$6IhWbfjcTqmLoqAVMopWFuIhlQwsoaIRxmsXhhmsaSs?via=gitter.im&via=matrix.org&via=ekpyron.org
+        // // the reason behind this - https://matrix.to/#/!poXqlbVpQfXKWGseLY:gitter.im/$6IhWbfjcTqmLoqAVMopWFuIhlQwsoaIRxmsXhhmsaSs?via=gitter.im&via=matrix.org&via=ekpyron.org
         Execution storage execution = executions[executionsCounter];
         execution.id = executionsCounter;
         execution.proposal = _proposal;
@@ -157,7 +156,7 @@ abstract contract Process is Component {
 
         _start(execution); // "Hook" to add logic in start of a concrete implementation.
 
-        emit ProcessStarted(execution, _proposal.metadata, executionsCounter);
+        // emit ProcessStarted(execution, _proposal.metadata, executionsCounter);
 
         return executionsCounter;
     }

@@ -82,8 +82,9 @@ contract DAOFactory {
         dao.initialize(
             _metadata,
             address(this)
-        );
+        );  
 
+        bytes[] memory allowedActions;
         voting = SimpleVoting(
             createProxy(
                 votingBase,
@@ -91,7 +92,8 @@ contract DAOFactory {
                     SimpleVoting.initialize.selector,
                     dao,
                     token,
-                    _votingSettings
+                    _votingSettings,
+                    allowedActions // TODO: maybe we can directly pass allowed actions here
                 )
             )
         );
