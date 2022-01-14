@@ -237,7 +237,7 @@ const DepositForm: React.FC = () => {
                   value={value}
                   onBlur={onBlur}
                   onChange={onChange}
-                  adornmentText={value ? 'Copy' : 'Paste'}
+                  adornmentText={value ? t('labels.copy') : t('labels.paste')}
                   onAdornmentClick={() =>
                     handleClipboardActions(value, onChange)
                   }
@@ -269,13 +269,14 @@ const DepositForm: React.FC = () => {
             fieldState: {error},
           }) => (
             <>
-              <ValueInput
+              <StyledInput
                 mode={error ? 'critical' : 'default'}
                 name={name}
+                type="number"
                 value={value}
                 onBlur={onBlur}
                 onChange={onChange}
-                adornmentText="Max"
+                adornmentText={t('labels.max')}
                 onAdornmentClick={() => handleMaxClicked(onChange)}
               />
               {error?.message && (
@@ -321,3 +322,12 @@ export default DepositForm;
 const FormItem = styled.div.attrs({
   className: 'space-y-1.5',
 })``;
+
+const StyledInput = styled(ValueInput)`
+  ::-webkit-inner-spin-button,
+  ::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  -moz-appearance: textfield;
+`;
