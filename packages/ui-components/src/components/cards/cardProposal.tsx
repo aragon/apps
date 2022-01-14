@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ReactNode} from 'react';
 import styled from 'styled-components';
 import {Badge} from '../badge';
 import {Link} from '../link';
@@ -7,6 +7,8 @@ import {ButtonText} from '../button';
 import {AlertInline} from '../alerts';
 
 export type CardProposalProps = {
+  title: string;
+  description: string;
   /**
    * Allows the Dao Card component grow horizontally, thereby moving the switcher
    * button right.
@@ -17,38 +19,117 @@ export type CardProposalProps = {
    * */
   onClick: () => void;
   state: 'draft' | 'pending' | 'active' | 'Succeeded' | 'Executed' | 'Defeated';
+  voteProgress?: number | string;
+  voteLabel?: string;
+  tokenAmount?: string;
+  tokenSymbol?: string;
 };
 
 export const CardProposal: React.FC<CardProposalProps> = ({
   wide = false,
+  state = 'pending',
+  title,
+  description,
+  voteProgress,
+  voteLabel,
+  tokenAmount,
+  tokenSymbol,
+  onClick,
 }: CardProposalProps) => {
+  const headerOptions: {
+    [key in CardProposalProps['state']]: ReactNode;
+  } = {
+    draft: <Badge label="Draft" />,
+    pending: (
+      <>
+        <Badge label="Pending" />
+        <AlertInline label="Starts in x days y hours" />
+      </>
+    ),
+    active: (
+      <>
+        <Badge label="Active" colorScheme={'info'} />
+        <AlertInline label="x days y hours left" />
+      </>
+    ),
+    Executed: <Badge label="Executed" colorScheme={'success'} />,
+    Succeeded: <Badge label="Succeeded" colorScheme={'success'} />,
+    Defeated: <Badge label="Defeated" colorScheme={'critical'} />,
+  };
+
+  const SelectButtonStatus = (state: CardProposalProps['state']) => {
+    if (state in ['pending', 'Executed', 'Defeated']) {
+      return (
+        <ButtonText
+          size="large"
+          mode="secondary"
+          label={'Read Proposal'}
+          wide={!wide}
+          bgWhite
+          onClick={onClick}
+        />
+      );
+    } else if (state === 'active') {
+      return (
+        <ButtonText
+          size="large"
+          mode="primary"
+          label={'Vote now'}
+          wide={!wide}
+          onClick={onClick}
+        />
+      );
+    } else if (state === 'Succeeded') {
+      return (
+        <ButtonText
+          size="large"
+          mode="primary"
+          label={'Execute Now'}
+          wide={!wide}
+          onClick={onClick}
+        />
+      );
+    } else {
+      // Draft
+      return (
+        <ButtonText
+          size="large"
+          mode="secondary"
+          label={'Edit Proposal'}
+          wide={!wide}
+          bgWhite
+          onClick={onClick}
+        />
+      );
+    }
+  };
+
   return (
     <Card data-testid="cardProposal" wide={wide}>
-      <Header>
-        <Badge label="Draft" />
-        <AlertInline label="Starts in x days y hours" />
-      </Header>
+      <Header>{headerOptions[state]}</Header>
       <TextContent>
-        <Title>Title</Title>
-        <Description>Description</Description>
+        <Title>{title}</Title>
+        <Description>{description}</Description>
         <Publisher>
           Published by <Link label="0x000....2345" />
         </Publisher>
       </TextContent>
-      <LoadingContent>
-        <ProgressInfoWrapper>
-          <ProgressTitle>Winning Option</ProgressTitle>
-          <TokenAmount>3.5M DNT</TokenAmount>
-        </ProgressInfoWrapper>
-        <LinearProgress max={100} value={70} />
-        <ProgressInfoWrapper>
-          <Vote>Yes</Vote>
-          <Percentage>70%</Percentage>
-        </ProgressInfoWrapper>
-      </LoadingContent>
-      <Actions>
-        <ButtonText label={'Vote now'} size="large" wide={!wide} />
-      </Actions>
+      {state === 'active' && (
+        <LoadingContent>
+          <ProgressInfoWrapper>
+            <ProgressTitle>Winning Option</ProgressTitle>
+            <TokenAmount>
+              {tokenAmount} {tokenSymbol}
+            </TokenAmount>
+          </ProgressInfoWrapper>
+          <LinearProgress max={100} value={voteProgress} />
+          <ProgressInfoWrapper>
+            <Vote>{voteLabel}</Vote>
+            <Percentage>{voteProgress}%</Percentage>
+          </ProgressInfoWrapper>
+        </LoadingContent>
+      )}
+      <Actions>{SelectButtonStatus(state)}</Actions>
     </Card>
   );
 };

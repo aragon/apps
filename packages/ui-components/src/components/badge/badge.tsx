@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 export type BadgeProps = {
   /** Changes a badge's color scheme */
-  colorScheme?: 'neutral' | 'info' | 'warning' | 'critical' | 'success' ;
+  colorScheme?: 'neutral' | 'info' | 'warning' | 'critical' | 'success';
   /** Text displayed on the badge */
   label: string;
 };
@@ -30,9 +30,9 @@ const StyledBadge = styled.div.attrs(({colorScheme}: StyledBadgeProps) => {
   } else if (colorScheme === 'critical') {
     colorCode = 'bg-critical-200 text-critical-800';
   } else if (colorScheme === 'warning') {
-    colorCode = 'bg-warning-200 text-critical-800';
+    colorCode = 'bg-warning-200 text-warning-800';
   } else if (colorScheme === 'info') {
-    colorCode = 'bg-info-200 text-critical-800';
+    colorCode = 'bg-info-200 text-info-800';
   } else {
     colorCode = 'bg-ui-50 text-ui-600';
   }
