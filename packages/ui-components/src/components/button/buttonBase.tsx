@@ -10,7 +10,6 @@ export type ButtonBaseProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   label?: string;
   mode?: 'primary' | 'secondary' | 'ghost';
   size?: 'small' | 'medium' | 'large';
-  wide?: boolean;
 };
 
 /**
@@ -27,11 +26,10 @@ export const ButtonBase: React.FC<ButtonBaseProps> = ({
   iconOnly = false,
   size = 'medium',
   label,
-  wide,
   ...props
 }) => {
   return (
-    <BaseStyledButton {...props} size={size} wide={wide}>
+    <BaseStyledButton {...props} size={size}>
       {iconLeft && <IconContainer size={size}>{iconLeft}</IconContainer>}
 
       {!iconOnly && (
@@ -71,17 +69,14 @@ const iconStyles = {
  **********************************/
 type SizeProps = {
   size: ButtonBaseProps['size'];
-  wide?: boolean;
 };
 
-const BaseStyledButton = styled.button.attrs(
-  ({size = 'medium', wide = false}: SizeProps) => {
-    const className = `${sizeStyles[size]} ${fontStyles[size]} 
-    flex justify-center items-center font-bold focus:outline-none 
-    focus:ring-2 focus:ring-primary-500 ${wide && 'w-full'}`;
-    return {className};
-  }
-)<SizeProps>``;
+const BaseStyledButton = styled.button.attrs(({size = 'medium'}: SizeProps) => {
+  const className = `${sizeStyles[size]} ${fontStyles[size]} 
+  flex justify-center items-center font-bold focus:outline-none 
+  focus:ring-2 focus:ring-primary-500`;
+  return {className};
+})<SizeProps>``;
 
 type LabelProps = {
   visible: boolean;

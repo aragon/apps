@@ -9,7 +9,6 @@ export type ButtonTextProps = Omit<ButtonBaseProps, 'label' | 'iconOnly'> & {
   bgWhite?: boolean;
   label: string;
   isActive?: boolean;
-  wide?: boolean;
 };
 
 export const ButtonText: React.FC<ButtonTextProps> = ({
@@ -18,7 +17,6 @@ export const ButtonText: React.FC<ButtonTextProps> = ({
   isActive = false,
   mode = 'primary',
   size = 'medium',
-  wide = false,
   ...props
 }) => {
   return (
@@ -29,7 +27,6 @@ export const ButtonText: React.FC<ButtonTextProps> = ({
       isActive={isActive}
       mode={mode}
       size={size}
-      wide={wide}
     />
   );
 };

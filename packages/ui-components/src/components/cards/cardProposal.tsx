@@ -5,35 +5,50 @@ import {Link} from '../link';
 import {LinearProgress} from '../progress';
 import {ButtonText} from '../button';
 import {AlertInline} from '../alerts';
+import {Address, shortenAddress} from '../../utils/addresses';
 
 export type CardProposalProps = {
+  /** Proposal Title / Title of the card */
   title: string;
+  /** Proposal Description / Description of the card */
   description: string;
   /**
-   * Allows the Dao Card component grow horizontally, thereby moving the switcher
-   * button right.
-   * */
-  wide?: boolean;
-
-  /** Handler for the switch button. Will be called when the button is clicked.
+   * Will be called when the button is clicked.
    * */
   onClick: () => void;
-  state: 'draft' | 'pending' | 'active' | 'Succeeded' | 'Executed' | 'Defeated';
+  /**
+   * Available states that proposal card have. by changing the status,
+   * the headers & buttons wil change to proper format also the progress
+   * section only available on active state.
+   * */
+  state: 'draft' | 'pending' | 'active' | 'succeeded' | 'executed' | 'defeated';
+  /** The title that appears at the top of the progress bar */
+  voteTitle: string;
+  /** Progress bar value in percentage (max: 100) */
   voteProgress?: number | string;
+  /** Vote label that appears at bottom of the progress bar */
   voteLabel?: string;
+  /** Proposal token amount */
   tokenAmount?: string;
+  /** Proposal token symbol */
   tokenSymbol?: string;
+  /** Publish by sentence in any available languages */
+  publishLabel: string;
+  /** Publisher's ethereum address **or** ENS name */
+  publisherAddress?: Address;
 };
 
 export const CardProposal: React.FC<CardProposalProps> = ({
-  wide = false,
   state = 'pending',
   title,
   description,
+  voteTitle,
   voteProgress,
   voteLabel,
   tokenAmount,
   tokenSymbol,
+  publishLabel,
+  publisherAddress,
   onClick,
 }: CardProposalProps) => {
   const headerOptions: {
@@ -52,72 +67,68 @@ export const CardProposal: React.FC<CardProposalProps> = ({
         <AlertInline label="x days y hours left" />
       </>
     ),
-    Executed: <Badge label="Executed" colorScheme={'success'} />,
-    Succeeded: <Badge label="Succeeded" colorScheme={'success'} />,
-    Defeated: <Badge label="Defeated" colorScheme={'critical'} />,
+    executed: <Badge label="Executed" colorScheme={'success'} />,
+    succeeded: <Badge label="Succeeded" colorScheme={'success'} />,
+    defeated: <Badge label="Defeated" colorScheme={'critical'} />,
   };
 
   const SelectButtonStatus = (state: CardProposalProps['state']) => {
-    if (state in ['pending', 'Executed', 'Defeated']) {
+    if (['pending', 'executed', 'defeated'].includes(state)) {
       return (
-        <ButtonText
+        <StyledButton
           size="large"
           mode="secondary"
           label={'Read Proposal'}
-          wide={!wide}
-          bgWhite
           onClick={onClick}
+          bgWhite
         />
       );
     } else if (state === 'active') {
       return (
-        <ButtonText
+        <StyledButton
           size="large"
           mode="primary"
           label={'Vote now'}
-          wide={!wide}
           onClick={onClick}
         />
       );
-    } else if (state === 'Succeeded') {
+    } else if (state === 'succeeded') {
       return (
-        <ButtonText
+        <StyledButton
           size="large"
           mode="primary"
           label={'Execute Now'}
-          wide={!wide}
           onClick={onClick}
         />
       );
     } else {
       // Draft
       return (
-        <ButtonText
+        <StyledButton
           size="large"
           mode="secondary"
           label={'Edit Proposal'}
-          wide={!wide}
-          bgWhite
           onClick={onClick}
+          bgWhite
         />
       );
     }
   };
 
   return (
-    <Card data-testid="cardProposal" wide={wide}>
+    <Card data-testid="cardProposal">
       <Header>{headerOptions[state]}</Header>
       <TextContent>
         <Title>{title}</Title>
         <Description>{description}</Description>
         <Publisher>
-          Published by <Link label="0x000....2345" />
+          {publishLabel} <Link label={shortenAddress(publisherAddress || '')} />
         </Publisher>
       </TextContent>
       {state === 'active' && (
         <LoadingContent>
           <ProgressInfoWrapper>
-            <ProgressTitle>Winning Option</ProgressTitle>
+            <ProgressTitle>{voteTitle}</ProgressTitle>
             <TokenAmount>
               {tokenAmount} {tokenSymbol}
             </TokenAmount>
@@ -134,13 +145,9 @@ export const CardProposal: React.FC<CardProposalProps> = ({
   );
 };
 
-type CardProps = Pick<CardProposalProps, 'wide'>;
-
-const Card = styled.div.attrs(({wide}: CardProps) => ({
-  className: `${
-    wide ? 'flex justify-between' : 'w-84'
-  } flex-col bg-white rounded-xl p-3 space-y-3`,
-}))<CardProps>``;
+const Card = styled.div.attrs({
+  className: 'flex justify-between flex-col bg-white rounded-xl p-3 space-y-3',
+})``;
 
 const Header = styled.div.attrs({
   className: 'flex space-y-1 justify-between',
@@ -188,4 +195,8 @@ const Percentage = styled.span.attrs({
 
 const Actions = styled.div.attrs({
   className: 'flex',
+})``;
+
+const StyledButton = styled(ButtonText).attrs({
+  className: 'tablet:w-auto w-full',
 })``;
