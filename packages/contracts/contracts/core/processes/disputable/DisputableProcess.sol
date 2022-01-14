@@ -15,9 +15,9 @@ abstract contract DisputableProcess is StoppableProcess {
     bytes4 internal constant DISPUTABLE_PROCESS_INTERFACE_ID = STOPPABLE_PROCESS_INTERFACE_ID ^ type(DisputableProcess).interfaceId;
 
     /// @notice Emitted as soon as the process got paused
-    event ProcessHalted(Execution execution, uint256 indexed executionId);
+    event ProcessHalted(Execution execution);
     /// @notice Emittes as soon as the process got started again
-    event ProcessForwarded(Execution execution, uint256 indexed executionId);
+    event ProcessForwarded(Execution execution);
 
     /// @notice The role identifier to halt a process
     bytes32 public constant PROCESS_HALT_ROLE = keccak256("PROCESS_HALT_ROLE");
@@ -44,7 +44,7 @@ abstract contract DisputableProcess is StoppableProcess {
 
         _halt(_data);
 
-        emit ProcessHalted(execution, _executionId);
+        emit ProcessHalted(execution);
     }
 
     /// @notice If called the execution does get forwarded.
@@ -54,13 +54,13 @@ abstract contract DisputableProcess is StoppableProcess {
     function forward(uint256 _executionId, bytes calldata _data) public auth(PROCESS_FORWARD_ROLE) {
         Execution storage execution = _getExecution(_executionId);
 
-        require(execution.state == State.RUNNING, ERROR_EXECUTION_STATE_WRONG);
+        require(execution.state == State.HALTED && execution.state != State.STOPPED, ERROR_EXECUTION_STATE_WRONG);
         
         execution.state = State.RUNNING;
 
         _forward(_data);
 
-        emit ProcessForwarded(execution, _executionId);
+        emit ProcessForwarded(execution);
     }
 
     /// @dev The concrete implementation of halt.
