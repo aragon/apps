@@ -36,6 +36,18 @@ export type CardProposalProps = {
   publishLabel: string;
   /** Publisher's ethereum address **or** ENS name */
   publisherAddress?: Address;
+  /**
+   * Button label for different status
+   * FIXME: I thought to add 4 button Label
+   * props for different states and implement
+   * condition here but i decided to use only one prop
+   * for reducing the complexity
+   */
+  buttonLabel: string;
+  /**
+   * FIXME: Same here!
+   */
+  AlertMessage?: string;
 };
 
 export const CardProposal: React.FC<CardProposalProps> = ({
@@ -49,6 +61,8 @@ export const CardProposal: React.FC<CardProposalProps> = ({
   tokenSymbol,
   publishLabel,
   publisherAddress,
+  buttonLabel,
+  AlertMessage,
   onClick,
 }: CardProposalProps) => {
   const headerOptions: {
@@ -58,13 +72,13 @@ export const CardProposal: React.FC<CardProposalProps> = ({
     pending: (
       <>
         <Badge label="Pending" />
-        <AlertInline label="Starts in x days y hours" />
+        <AlertInline label={AlertMessage || ''} />
       </>
     ),
     active: (
       <>
         <Badge label="Active" colorScheme={'info'} />
-        <AlertInline label="x days y hours left" />
+        <AlertInline label={AlertMessage || ''} />
       </>
     ),
     executed: <Badge label="Executed" colorScheme={'success'} />,
@@ -78,7 +92,7 @@ export const CardProposal: React.FC<CardProposalProps> = ({
         <StyledButton
           size="large"
           mode="secondary"
-          label={'Read Proposal'}
+          label={buttonLabel}
           onClick={onClick}
           bgWhite
         />
@@ -88,7 +102,7 @@ export const CardProposal: React.FC<CardProposalProps> = ({
         <StyledButton
           size="large"
           mode="primary"
-          label={'Vote now'}
+          label={buttonLabel}
           onClick={onClick}
         />
       );
@@ -97,7 +111,7 @@ export const CardProposal: React.FC<CardProposalProps> = ({
         <StyledButton
           size="large"
           mode="primary"
-          label={'Execute Now'}
+          label={buttonLabel}
           onClick={onClick}
         />
       );
@@ -107,7 +121,7 @@ export const CardProposal: React.FC<CardProposalProps> = ({
         <StyledButton
           size="large"
           mode="secondary"
-          label={'Edit Proposal'}
+          label={buttonLabel}
           onClick={onClick}
           bgWhite
         />

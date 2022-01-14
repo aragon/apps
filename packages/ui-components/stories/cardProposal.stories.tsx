@@ -21,6 +21,12 @@ Default.args = {
   tokenSymbol: 'DNT',
   publishLabel: 'Published by',
   publisherAddress: '0x374d444487A4602750CA00EFdaC5d22B21F130E1',
+  readProposalLabel: 'Read Proposal',
+  editProposalLabel: 'Edit Proposal',
+  voteProposalLabel: 'Vote now',
+  executeProposalLabe: 'Execute Now',
+  buttonLabel: 'Read Proposal',
+  AlertMessage: 'Starts in x days y hours',
   onClick: () => {
     alert('Pressing this button would allow to change DAO.');
   },
