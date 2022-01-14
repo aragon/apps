@@ -12,11 +12,11 @@ const Template: Story<ListItemLinkProps> = args => <ListItemLink {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {
-  href: 'https://url.com',
+  href: 'https://aragon.org/',
 };
 
 export const WithLabel = Template.bind({});
 WithLabel.args = {
-  href: 'https://url.com',
+  href: 'https://aragon.org/',
   label: 'This massively long link label for no reason',
 };
