@@ -70,23 +70,12 @@ const NewDeposit: React.FC = () => {
     provider,
   }: useWalletProps = useWallet();
 
-  /**
-   * (Temporary)
-   * NOTE: the mode can also be onBlur (clicking out of the field).
-   * onChange is more snazzy and with the times, but there seems to be
-   * performance issues associated with it. That said, the only place it
-   * is really noticeable is when interacting with the custom token contract address
-   * field (like manually typing or erasing characters). I assume a big
-   * part of it is the validation dependent on that field. Currently when
-   * the custom token contract address field is changed, the input itself as well as
-   * the amount, and token symbol are validated.
-   */
   const formMethods = useForm<FormData>({
     defaultValues,
     mode: 'onChange',
   });
 
-  const {dirtyFields, errors, touchedFields, isDirty, isValid} = useFormState({
+  const {isValid} = useFormState({
     control: formMethods.control,
   });
 
@@ -250,26 +239,6 @@ const NewDeposit: React.FC = () => {
           onTokenSelect={handleTokenSelect}
           tokenBalances={walletTokens}
         />
-
-        {/* View form values; to be removed later */}
-        <pre className="mt-2">
-          isDirty = {isDirty.toString()} - isValid = {isValid.toString()}
-        </pre>
-        <pre className="mt-2">
-          Form values: {JSON.stringify(formMethods.watch(), null, 2)}
-        </pre>
-
-        <pre className="mt-2">
-          Form Errors: {JSON.stringify(errors, null, 2)}
-        </pre>
-
-        <pre className="mt-2">
-          DirtyFields {JSON.stringify(dirtyFields, null, 2)}
-        </pre>
-
-        <pre className="mt-2">
-          TouchedFields {JSON.stringify(touchedFields, null, 2)}
-        </pre>
       </Layout>
     </>
   );

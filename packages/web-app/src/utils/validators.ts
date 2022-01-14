@@ -5,8 +5,6 @@ import {BigNumber, providers as EthersProviders} from 'ethers';
 import {i18n} from '../../i18n.config';
 import {isERC20Token} from './tokens';
 
-// TODO: Create error constants
-
 /**
  * Validate given token contract address
  *
@@ -41,7 +39,6 @@ export function validateTokenAmount(
   decimals: number,
   balance = '0'
 ) {
-  console.log('Decimals', decimals);
   // A token with no decimals (they do exist in the wild)
   if (!decimals) {
     return amount.includes('.')
