@@ -118,7 +118,6 @@ export async function getTokenInfo(
     symbol = null,
     name = null;
 
-  // if ether (address zero)
   if (isETH(address)) {
     return {
       name: 'Ethereum',

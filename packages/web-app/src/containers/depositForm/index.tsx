@@ -120,11 +120,10 @@ const DepositForm: React.FC = () => {
   const amountValidator = useCallback(
     async (amount: string) => {
       // check if a token is selected using it's address
-      if (tokenAddress === '') return 'A token must be selected';
+      if (tokenAddress === '') return t('errors.noTokenSelected');
 
       // check if token selected is valid
-      if (errors.tokenAddress)
-        return 'Cannot validate amount with invalid token address';
+      if (errors.tokenAddress) return t('errors.amountWithInvalidToken');
 
       try {
         const {decimals} = await getTokenInfo(tokenAddress, provider);
@@ -134,10 +133,10 @@ const DepositForm: React.FC = () => {
       } catch (error) {
         // catches miscellaneous cases such as not being able to get token decimal
         console.error('Error validating amount', error);
-        return 'Error validating amount';
+        return t('errors.defaultAmountValidationError');
       }
     },
-    [errors.tokenAddress, provider, tokenAddress, tokenBalance]
+    [errors.tokenAddress, provider, t, tokenAddress, tokenBalance]
   );
 
   /*************************************************
@@ -279,18 +278,22 @@ const DepositForm: React.FC = () => {
                 adornmentText={t('labels.max')}
                 onAdornmentClick={() => handleMaxClicked(onChange)}
               />
-              {error?.message && (
-                <AlertInline label={error.message} mode="critical" />
-              )}
+              <div className="flex justify-between">
+                {error?.message && (
+                  <AlertInline label={error.message} mode="critical" />
+                )}
+
+                {tokenBalance && (
+                  <TokenBalance>
+                    {`${t(
+                      'labels.maxBalance'
+                    )}: ${tokenBalance} ${tokenSymbol}`}
+                  </TokenBalance>
+                )}
+              </div>
             </>
           )}
         />
-
-        {tokenBalance && (
-          <div className="px-1 text-xs text-right text-ui-600">
-            {`${t('labels.maxBalance')}: ${tokenBalance} ${tokenSymbol}`}
-          </div>
-        )}
       </FormItem>
 
       {/* Token reference */}
@@ -321,6 +324,10 @@ export default DepositForm;
 
 const FormItem = styled.div.attrs({
   className: 'space-y-1.5',
+})``;
+
+const TokenBalance = styled.p.attrs({
+  className: 'flex-1 px-1 text-xs text-right text-ui-600',
 })``;
 
 const StyledInput = styled(ValueInput)`
