@@ -166,7 +166,7 @@ const Card = styled.div.attrs({
 })``;
 
 const Header = styled.div.attrs({
-  className: 'flex space-y-1 justify-between',
+  className: 'flex justify-between',
 })``;
 
 const Title = styled.h2.attrs({
