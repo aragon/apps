@@ -8,7 +8,7 @@ export default {
 } as Meta;
 
 const Template: Story<ProgressStatusProps> = args => (
-  <div className="w-1/3">
+  <div className="tablet:w-1/3">
     <ProgressStatus {...args} />
   </div>
 );
@@ -16,6 +16,7 @@ const Template: Story<ProgressStatusProps> = args => (
 export const Default = Template.bind({});
 Default.args = {
   mode: 'active',
-  label: 'hi',
+  label: 'Progress Label',
   block: '123,212,122',
+  date: '02/20/2002',
 };

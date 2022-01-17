@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import {
   IconBlock,
-  IconRadioCancle,
+  IconRadioCancel,
   IconRadioDefault,
   IconSpinner,
   IconSuccess,
@@ -15,8 +15,7 @@ export type ProgressStatusProps = {
    * The mode is the state of a progress' status. Simple, init? ;)
    *
    * Think about it this way: Imagine a list of todos. Each of those todos may
-   * be associated with a status of progress, within that list of todos. If the
-   * todo:
+   * be associated with a status of progress. If the todo:
    *  - has not been tackled, its progress status would be "upcoming".
    *  - is being tackled, progress status would be "active".
    *  - has been tackled, its progress status would be "done".
@@ -52,6 +51,9 @@ export const ProgressStatus: React.FC<ProgressStatusProps> = ({
   date,
   block,
 }) => {
+  if (mode !== 'upcoming' && !date) date = 'No information available';
+  if (mode === 'upcoming') date = '';
+  const mayHaveBlock = mode === 'done' || mode === 'succeeded';
   return (
     <TopContainer data-testid="progressStatus">
       <LeftContainer mode={mode}>
@@ -62,12 +64,14 @@ export const ProgressStatus: React.FC<ProgressStatusProps> = ({
           <CustomLabel label={label} helpText={date} />
         </LabelContainer>
       </LeftContainer>
-      <BlockContainer>
-        <p>{block}</p>
-        <div className="pt-0.25">
-          <IconBlock className="text-ui-400" />
-        </div>
-      </BlockContainer>
+      {block && mayHaveBlock && (
+        <BlockContainer>
+          <p>{block}</p>
+          <div className="pt-0.25">
+            <IconBlock className="text-ui-400" />
+          </div>
+        </BlockContainer>
+      )}{' '}
     </TopContainer>
   );
 };
@@ -114,7 +118,7 @@ const Icon: React.FC<ModeProps> = ({mode}) => {
     case 'upcoming':
       return <IconRadioDefault className={iconColors[mode]} />;
     case 'failed':
-      return <IconRadioCancle className={iconColors[mode]} />;
+      return <IconRadioCancel className={iconColors[mode]} />;
     default:
       return <IconSuccess className={iconColors[mode]} />;
   }

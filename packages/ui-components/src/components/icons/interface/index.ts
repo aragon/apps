@@ -19,7 +19,7 @@ export {IconLinkExternal} from './icon_link_external';
 export {IconMenu} from './icon_menu';
 export {IconPerson} from './icon_person';
 export {IconRadioDefault} from './icon_radio_default';
-export {IconRadioCancle} from './radio';
+export {IconRadioCancel} from './radio';
 export {IconRemove} from './icon_remove';
 export {IconSearch} from './icon_search';
 export {IconSettings} from './icon_settings';
