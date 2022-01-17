@@ -42,7 +42,7 @@ const Container = styled.div.attrs({
 })``;
 
 const Link = styled.a.attrs({
-  className: 'space-y-0.5 truncate' as string,
+  className: 'truncate' as string,
 })``;
 
 const TitleContainer = styled.div.attrs({
