@@ -2,13 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import {TableCell} from '.';
 import {Badge} from '../badge';
-import {ButtonText} from '../button';
 import {IconChevronDown} from '../icons';
+import {Link} from '../link';
 
 export type VotersTableProps = {
   voters: Array<{
     wallet: string;
-    option: string;
+    option: 'Yes' | 'No';
     votingPower: string;
     tokenAmount: string;
   }>;
@@ -20,7 +20,7 @@ export const VotersTable: React.FC<VotersTableProps> = ({
   onLoadMore,
 }) => {
   return (
-    <Table>
+    <Table data-testid="votersTable">
       <thead>
         <tr>
           <TableCell type="head" text="Wallet" />
@@ -47,12 +47,10 @@ export const VotersTable: React.FC<VotersTableProps> = ({
       <tfoot>
         <tr>
           <TableCell type="link">
-            <ButtonText
-              mode="ghost"
+            <Link
               label="Load More"
-              isActive
-              onClick={onLoadMore}
               iconRight={<IconChevronDown />}
+              onClick={onLoadMore}
             />
           </TableCell>
           <TableCell type="text" text="" />

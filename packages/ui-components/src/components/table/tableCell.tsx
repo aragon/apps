@@ -1,6 +1,5 @@
 import React from 'react';
-import {BadgeProps} from '../..';
-import {ButtonTextProps} from '../button';
+import {BadgeProps, LinkProps} from '../..';
 
 export type TableCellProps = {
   type: 'text' | 'foot' | 'head' | 'link' | 'tag';
@@ -10,7 +9,7 @@ export type TableCellProps = {
   bgWhite?: boolean;
   children?:
     | React.FunctionComponentElement<BadgeProps>
-    | React.FunctionComponentElement<ButtonTextProps>;
+    | React.FunctionComponentElement<LinkProps>;
 };
 
 export const TableCell: React.FC<TableCellProps> = ({
@@ -21,20 +20,10 @@ export const TableCell: React.FC<TableCellProps> = ({
   rightAligned = false,
   children,
 }) => {
-  if (type === 'text') {
+  if (type === 'foot') {
     return (
       <td
-        className={`px-2 py-1.5 ${!bgWhite && 'bg-ui-0'} ${
-          rightAligned ? 'text-right' : 'text-left'
-        }`}
-      >
-        <p className="text-ui-600">{text}</p>
-        {subtext && <p className="text-sm text-ui-500">{subtext}</p>}
-      </td>
-    );
-  } else if (type === 'foot') {
-    return (
-      <td
+        data-testid="tableCell"
         className={`px-2 py-1.5 bg-ui-100 ${
           rightAligned ? 'text-right' : 'text-left'
         }`}
@@ -46,6 +35,7 @@ export const TableCell: React.FC<TableCellProps> = ({
   } else if (type === 'head') {
     return (
       <th
+        data-testid="tableCell"
         className={`px-2 py-1.75 bg-ui-100 ${
           rightAligned ? 'text-right' : 'text-left'
         }`}
@@ -56,18 +46,34 @@ export const TableCell: React.FC<TableCellProps> = ({
   } else if (type === 'link') {
     return (
       <td
-        className={`${!bgWhite && 'bg-ui-0'} ${
+        data-testid="tableCell"
+        className={`px-2 py-1.75 ${!bgWhite && 'bg-ui-0'} ${
           rightAligned ? 'text-right' : 'text-left'
         }`}
       >
-        <p className="font-bold text-primary-500 cursor-pointer">{children}</p>
+        <p className="font-bold cursor-pointer text-primary-500">{children}</p>
       </td>
     );
   } else if (type === 'tag') {
     return (
-      <td className={`px-2 py-1.5 ${!bgWhite && 'bg-ui-0'}`}>{children}</td>
+      <td
+        data-testid="tableCell"
+        className={`px-2 py-1.5 ${!bgWhite && 'bg-ui-0'}`}
+      >
+        {children}
+      </td>
     );
   }
 
-  return null;
+  return (
+    <td
+      data-testid="tableCell"
+      className={`px-2 py-1.5 ${!bgWhite && 'bg-ui-0'} ${
+        rightAligned ? 'text-right' : 'text-left'
+      }`}
+    >
+      <p className="text-ui-600">{text}</p>
+      {subtext && <p className="text-sm text-ui-500">{subtext}</p>}
+    </td>
+  );
 };
