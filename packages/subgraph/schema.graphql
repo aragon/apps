@@ -1,5 +1,5 @@
 # Enums
-enum State {
+enum ExecutionState {
   RUNNING
   STOPPED
   HALTED
@@ -17,11 +17,10 @@ enum VoterState {
 # Processes
 type Action @entity {
   id: ID!
-  to: Bytes! # Address to call.
-  value: BigInt! # Value to be sent with the call. for example (ETH)
+  to: Bytes!
+  value: BigInt!
   data: Bytes!
   proposal: Proposal!
-  execution: Execution!
   execResult: Bytes
 }
 
@@ -55,7 +54,7 @@ type Execution @entity {
   dao: Dao!
   executionId: BigInt!
   proposal: Proposal!
-  state: State!
+  state: ExecutionState!
 }
 
 # Voting (simple voting)

@@ -16,21 +16,26 @@ import {
   VaultDeposit,
   VaultWithdraw
 } from '../generated/schema';
+import {DataSourceContext} from '@graphprotocol/graph-ts';
 import {log} from 'matchstick-as/assembly/index';
 
 export function handleProcessAdded(event: ProcessAdded): void {
+  let daoAddress = event.address.toHexString();
   let processAddress = event.params.process;
-  let processId = processAddress.toHexString();
 
-  let processEntity = new Process(processId);
+  let processEntity = new Process(processAddress.toHexString());
 
-  processEntity.dao = event.address.toHexString();
+  processEntity.dao = daoAddress;
   processEntity.address = processAddress;
   processEntity.isActive = true;
 
+  // create context
+  let context = new DataSourceContext();
+  context.setString('daoAddress', daoAddress);
+
   // subscribe to templates
-  // TODO: verfy process type via supportsInterface
-  SimpleVoting.create(processAddress);
+  // TODO: verfy process type via supportsInterface (temporary use SimpleVoting)
+  SimpleVoting.createWithContext(processAddress, context);
 
   processEntity.save();
 }
