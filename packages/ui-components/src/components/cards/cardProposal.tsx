@@ -49,6 +49,10 @@ export type CardProposalProps = {
    * ['Pending message', 'Active message']
    */
   AlertMessage: string[];
+  /**
+   * ['Draft', 'Pending', 'Active', 'Executed', 'Succeeded', 'Defeated']
+   */
+  StatusLabel: string[];
 };
 
 export const CardProposal: React.FC<CardProposalProps> = ({
@@ -64,27 +68,28 @@ export const CardProposal: React.FC<CardProposalProps> = ({
   publisherAddress,
   buttonLabel,
   AlertMessage,
+  StatusLabel,
   onClick,
 }: CardProposalProps) => {
   const headerOptions: {
     [key in CardProposalProps['state']]: ReactNode;
   } = {
-    draft: <Badge label="Draft" />,
+    draft: <Badge label={StatusLabel[0]} />,
     pending: (
       <>
-        <Badge label="Pending" />
+        <Badge label={StatusLabel[1]} />
         {AlertMessage && <AlertInline label={AlertMessage[0] || ''} />}
       </>
     ),
     active: (
       <>
-        <Badge label="Active" colorScheme={'info'} />
+        <Badge label={StatusLabel[2]} colorScheme={'info'} />
         {AlertMessage && <AlertInline label={AlertMessage[0] || ''} />}
       </>
     ),
-    executed: <Badge label="Executed" colorScheme={'success'} />,
-    succeeded: <Badge label="Succeeded" colorScheme={'success'} />,
-    defeated: <Badge label="Defeated" colorScheme={'critical'} />,
+    executed: <Badge label={StatusLabel[3]} colorScheme={'success'} />,
+    succeeded: <Badge label={StatusLabel[4]} colorScheme={'success'} />,
+    defeated: <Badge label={StatusLabel[5]} colorScheme={'critical'} />,
   };
 
   const SelectButtonStatus = (state: CardProposalProps['state']) => {
