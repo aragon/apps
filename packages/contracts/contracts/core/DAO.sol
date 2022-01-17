@@ -4,54 +4,42 @@
 
 pragma solidity 0.8.10;
 
-import '@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol';
-import '@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol';
-import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
-import '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
-import '@openzeppelin/contracts/utils/Address.sol';
-import './erc1271/ERC1271.sol';
-import './erc165/AdaptiveERC165.sol';
-import './acl/ACL.sol';
-import './IDAO.sol';
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/utils/Address.sol";
+import "./erc1271/ERC1271.sol";
+import "./erc165/AdaptiveERC165.sol";
+import "./acl/ACL.sol";
+import "./IDAO.sol";
 
 /// @title The public interface of the Aragon DAO framework.
 /// @author Samuel Furter - Aragon Association - 2021
 /// @notice This contract is the entry point to the Aragon DAO framework and provides our users a simple and use to use public interface.
 /// @dev Public API of the Aragon DAO framework
-contract DAO is
-    IDAO,
-    Initializable,
-    UUPSUpgradeable,
-    ACL,
-    ERC1271,
-    AdaptiveERC165
-{
+contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, ERC1271, AdaptiveERC165 {
     using SafeERC20 for ERC20;
     using Address for address;
 
     // Roles
-    bytes32 public constant UPGRADE_ROLE = keccak256('UPGRADE_ROLE');
-    bytes32 public constant DAO_CONFIG_ROLE = keccak256('DAO_CONFIG_ROLE');
-    bytes32 public constant EXEC_ROLE = keccak256('EXEC_ROLE');
-    bytes32 public constant WITHDRAW_ROLE = keccak256('WITHDRAW_ROLE');
-    bytes32 public constant SET_SIGNATURE_VALIDATOR_ROLE =
-        keccak256('SET_SIGNATURE_VALIDATOR_ROLE');
+    bytes32 public constant UPGRADE_ROLE = keccak256("UPGRADE_ROLE");
+    bytes32 public constant DAO_CONFIG_ROLE = keccak256("DAO_CONFIG_ROLE");
+    bytes32 public constant EXEC_ROLE = keccak256("EXEC_ROLE");
+    bytes32 public constant WITHDRAW_ROLE = keccak256("WITHDRAW_ROLE");
+    bytes32 public constant SET_SIGNATURE_VALIDATOR_ROLE = keccak256("SET_SIGNATURE_VALIDATOR_ROLE");
 
     // Error msg's
-    string internal constant ERROR_ACTION_CALL_FAILED = 'ACTION_CALL_FAILED';
-    string internal constant ERROR_DEPOSIT_AMOUNT_ZERO = 'DEPOSIT_AMOUNT_ZERO';
-    string internal constant ERROR_ETH_DEPOSIT_AMOUNT_MISMATCH =
-        'ETH_DEPOSIT_AMOUNT_MISMATCH';
-    string internal constant ERROR_ETH_WITHDRAW_FAILED = 'ETH_WITHDRAW_FAILED';
+    string internal constant ERROR_ACTION_CALL_FAILED = "ACTION_CALL_FAILED";
+    string internal constant ERROR_DEPOSIT_AMOUNT_ZERO = "DEPOSIT_AMOUNT_ZERO";
+    string internal constant ERROR_ETH_DEPOSIT_AMOUNT_MISMATCH = "ETH_DEPOSIT_AMOUNT_MISMATCH";
+    string internal constant ERROR_ETH_WITHDRAW_FAILED = "ETH_WITHDRAW_FAILED";
 
     ERC1271 signatureValidator;
 
     /// @dev Used for UUPS upgradability pattern
     /// @param _metadata IPFS hash that points to all the metadata (logo, description, tags, etc.) of a DAO
-    function initialize(bytes calldata _metadata, address initialOwner)
-        public
-        initializer
-    {
+    function initialize(bytes calldata _metadata, address initialOwner) public initializer {
         _registerStandard(DAO_INTERFACE_ID);
         _registerStandard(type(ERC1271).interfaceId);
         this.setMetadata(_metadata);
@@ -59,12 +47,7 @@ contract DAO is
     }
 
     /// @dev Used to check the permissions within the upgradability pattern implementation of OZ
-    function _authorizeUpgrade(address)
-        internal
-        virtual
-        override
-        auth(address(this), UPGRADE_ROLE)
-    {}
+    function _authorizeUpgrade(address) internal virtual override auth(address(this), UPGRADE_ROLE) {}
 
     /// @notice Checks if the current callee has the permissions for.
     /// @dev Wrapper for the willPerform method of ACL to later on be able to use it in the modifier of the sub components of this DAO.
@@ -84,22 +67,14 @@ contract DAO is
     /// @notice Update the DAO metadata
     /// @dev Sets a new IPFS hash
     /// @param _metadata The IPFS hash of the new metadata object
-    function setMetadata(bytes calldata _metadata)
-        external
-        override
-        auth(address(this), DAO_CONFIG_ROLE)
-    {
+    function setMetadata(bytes calldata _metadata) external override auth(address(this), DAO_CONFIG_ROLE) {
         emit SetMetadata(_metadata);
     }
 
     /// @notice Add new process to DAO
     /// @dev Grants the new process execution rights and amits the related event.
     /// @param _process The address of the new process
-    function addProcess(Process _process)
-        external
-        override
-        auth(address(this), DAO_CONFIG_ROLE)
-    {
+    function addProcess(Process _process) external override auth(address(this), DAO_CONFIG_ROLE) {
         _grant(address(this), address(_process), EXEC_ROLE);
         emit ProcessAdded(_process);
     }
@@ -107,11 +82,7 @@ contract DAO is
     /// @notice Remove process from DAO
     /// @dev Revokes the execution rights from the process and emits the related event.
     /// @param _process The address of the new process
-    function removeProcess(Process _process)
-        external
-        override
-        auth(address(this), DAO_CONFIG_ROLE)
-    {
+    function removeProcess(Process _process) external override auth(address(this), DAO_CONFIG_ROLE) {
         _revoke(address(this), address(_process), EXEC_ROLE);
         emit ProcessRemoved(_process);
     }
@@ -120,17 +91,11 @@ contract DAO is
     /// @dev It run a loop through the array of acctions and execute one by one.
     /// @dev If one acction fails, all will be reverted.
     /// @param _actions The aray of actions
-    function execute(Action[] memory _actions)
-        external
-        override
-        auth(address(this), EXEC_ROLE)
-    {
+    function execute(Action[] memory _actions) external override auth(address(this), EXEC_ROLE) {
         bytes[] memory execResults = new bytes[](_actions.length);
 
         for (uint256 i = 0; i < _actions.length; i++) {
-            (bool success, bytes memory response) = _actions[i].to.call{
-                value: _actions[i].value
-            }(_actions[i].data);
+            (bool success, bytes memory response) = _actions[i].to.call{value: _actions[i].value}(_actions[i].data);
 
             require(success, ERROR_ACTION_CALL_FAILED);
 
@@ -178,7 +143,7 @@ contract DAO is
         string memory _reference
     ) public override auth(address(this), WITHDRAW_ROLE) {
         if (_token == address(0)) {
-            (bool ok, ) = _to.call{value: _amount}('');
+            (bool ok, ) = _to.call{value: _amount}("");
             require(ok, ERROR_ETH_WITHDRAW_FAILED);
         } else {
             ERC20(_token).safeTransfer(_to, _amount);
@@ -200,12 +165,7 @@ contract DAO is
     /// @param _hash Hash of the data to be signed
     /// @param _signature Signature byte array associated with _hash
     /// @return bytes4
-    function isValidSignature(bytes32 _hash, bytes memory _signature)
-        public
-        view
-        override
-        returns (bytes4)
-    {
+    function isValidSignature(bytes32 _hash, bytes memory _signature) public view override returns (bytes4) {
         if (address(signatureValidator) == address(0)) return bytes4(0); // invalid magic number
         return signatureValidator.isValidSignature(_hash, _signature); // forward call to set validation contract
     }
