@@ -29,7 +29,6 @@ contract ACL is Initializable {
 
     // "Access" flags
     address internal constant UNSET_ROLE = address(0);
-    address internal constant FREEZE_FLAG = address(1); // Also used as "who"
     address internal constant ALLOW_FLAG = address(2);
         
     // hash(where, who, role) => Access flag(unset or allow) or ACLOracle (any other address denominates auth via ACLOracle)
