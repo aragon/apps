@@ -1,47 +1,28 @@
-import React, {ButtonHTMLAttributes} from 'react';
-import styled from 'styled-components';
+import React from 'react';
+import {ButtonText} from '..';
 import {useButtonGroupContext} from './buttonGroup';
 
 export type OptionProps = {
   value: string;
+  label: string;
 };
 
-export const Option: React.FC<OptionProps> = ({value, children}) => {
+export const Option: React.FC<OptionProps> = ({value, label}) => {
   const {bgWhite, selectedValue, onChange} = useButtonGroupContext();
 
   return (
-    <StyledButton
-      isSelected={selectedValue === value}
-      value={value}
+    <ButtonText
+      label={label}
+      isActive={selectedValue === value}
+      bgWhite={!bgWhite}
+      mode="ghost"
+      size="small"
+      className="flex-1 justify-center whitespace-nowrap"
       onClick={() => {
         if (onChange) {
           onChange(value);
         }
       }}
-      bgWhite={bgWhite}
-    >
-      {children}
-    </StyledButton>
+    />
   );
 };
-
-interface StyledButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  isSelected: boolean;
-  bgWhite: boolean;
-}
-
-const StyledButton = styled.button.attrs(
-  ({isSelected, bgWhite}: StyledButtonProps) => ({
-    className: `flex-1 py-0.75 px-1.5 font-bold hover:text-primary-500 whitespace-nowrap
-      ${
-        isSelected
-          ? bgWhite
-            ? 'text-primary-500 bg-ui-0'
-            : 'text-primary-500 bg-ui-50'
-          : bgWhite
-          ? 'bg-ui-50 text-ui-600'
-          : 'bg-ui-0 text-ui-600'
-      }`,
-    style: {borderRadius: '0.625rem'},
-  })
-)<StyledButtonProps>``;

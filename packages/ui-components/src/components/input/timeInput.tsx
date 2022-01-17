@@ -66,8 +66,8 @@ export const TimeInput: React.FC<TimeInputProps> = ({
         defaultValue={'am'}
         onChange={e => onChange(e, 'midday')}
       >
-        <Option value="am">AM</Option>
-        <Option value="pm">PM</Option>
+        <Option value="am" label="AM" />
+        <Option value="pm" label="PM" />
       </ButtonGroup>
     </Container>
   );

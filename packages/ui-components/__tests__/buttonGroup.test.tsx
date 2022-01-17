@@ -8,8 +8,8 @@ describe('Button Group', () => {
   function setup(args: any) {
     render(
       <ButtonGroup defaultValue="USD" {...args}>
-        <Option value="USD">USD</Option>
-        <Option value="ETH">ETH</Option>
+        <Option value="USD" label="USD" />
+        <Option value="ETH" label="ETH" />
       </ButtonGroup>
     );
     return screen.getByTestId('buttonGroup');
