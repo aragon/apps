@@ -1,7 +1,6 @@
 import React, {ReactNode} from 'react';
 import styled from 'styled-components';
 import {Badge} from '../badge';
-import {Link} from '../link';
 import {LinearProgress} from '../progress';
 import {ButtonText} from '../button';
 import {AlertInline} from '../alerts';
@@ -74,13 +73,13 @@ export const CardProposal: React.FC<CardProposalProps> = ({
     pending: (
       <>
         <Badge label="Pending" />
-        <AlertInline label={AlertMessage[0] || ''} />
+        {AlertMessage && <AlertInline label={AlertMessage[0] || ''} />}
       </>
     ),
     active: (
       <>
         <Badge label="Active" colorScheme={'info'} />
-        <AlertInline label={AlertMessage[1] || ''} />
+        {AlertMessage && <AlertInline label={AlertMessage[0] || ''} />}
       </>
     ),
     executed: <Badge label="Executed" colorScheme={'success'} />,
@@ -138,7 +137,8 @@ export const CardProposal: React.FC<CardProposalProps> = ({
         <Title>{title}</Title>
         <Description>{description}</Description>
         <Publisher>
-          {publishLabel} <Link label={shortenAddress(publisherAddress || '')} />
+          {/* We should add link here for address */}
+          {publishLabel} {shortenAddress(publisherAddress || '')}
         </Publisher>
       </TextContent>
       {state === 'active' && (
