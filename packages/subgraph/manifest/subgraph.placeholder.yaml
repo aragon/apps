@@ -170,30 +170,30 @@ templates:
         - event: VotedOnProcess((uint256,((address,uint256,bytes)[],bytes,bytes),uint8),bytes,indexed uint256)
           handler: handleVotedOnProcess
   # Voting (package process)
-  - name: SimpleVoting
-    kind: ethereum/contract
-    network: {{network}}
-    source:
-      abi: SimpleVoting
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.5
-      language: wasm/assemblyscript
-      file: ./src/registry.ts
-      entities:
-        - Execution
-        - Process
-      abis:
-        - name: SimpleVoting
-          file: ./../contracts/artifacts/contracts/processes/votings/simple/SimpleVoting.sol/SimpleVoting.json
-      eventHandlers:
-        - event: CastVote(indexed uint256,indexed address,bool,uint256)
-          handler: handleCastVote
-        - event: ChangeMinQuorum(uint64)
-          handler: handleChangeMinQuorum
-        - event: ChangeSupportRequired(uint64)
-          handler: handleChangeSupportRequired
-        - event: ExecuteVote(indexed uint256)
-          handler: handleExecuteVote
-        - event: StartVote(indexed uint256,indexed address,string)
-          handler: handleStartVote
+  # - name: SimpleVoting
+  #   kind: ethereum/contract
+  #   network: {{network}}
+  #   source:
+  #     abi: SimpleVoting
+  #   mapping:
+  #     kind: ethereum/events
+  #     apiVersion: 0.0.5
+  #     language: wasm/assemblyscript
+  #     file: ./src/registry.ts
+  #     entities:
+  #       - Execution
+  #       - Process
+  #     abis:
+  #       - name: SimpleVoting
+  #         file: ./../contracts/artifacts/contracts/processes/votings/simple/SimpleVoting.sol/SimpleVoting.json
+  #     eventHandlers:
+  #       - event: CastVote(indexed uint256,indexed address,bool,uint256)
+  #         handler: handleCastVote
+  #       - event: ChangeMinQuorum(uint64)
+  #         handler: handleChangeMinQuorum
+  #       - event: ChangeSupportRequired(uint64)
+  #         handler: handleChangeSupportRequired
+  #       - event: ExecuteVote(indexed uint256)
+  #         handler: handleExecuteVote
+  #       - event: StartVote(indexed uint256,indexed address,string)
+  #         handler: handleStartVote
