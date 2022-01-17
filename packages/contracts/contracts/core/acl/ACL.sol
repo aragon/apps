@@ -173,8 +173,6 @@ contract ACL is Initializable {
     /// @param _where The address of the contract
     /// @param _role The hash of the role identifier
     function _freeze(address _where, bytes32 _role) internal {
-        require(!isFrozen(_where,_role), "acl: frozen");
-
         bytes32 permission = freezeHash(_where, _role);
         require(!freezePermissions[permission], "acl: role already freeze");
         freezePermissions[freezeHash(_where, _role)] = true;
