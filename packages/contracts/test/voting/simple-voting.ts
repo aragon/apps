@@ -305,7 +305,7 @@ describe('Voting: SimpleVoting', function () {
             expect(vote.nay).to.equal(1)
         })
 
-        it("should make vote executable if enough yea is given from voting power", async () => {
+        it("makes vote executable if enough yea is given from voting power", async () => {
             // vote with yea as 50 voting stake, which is still 
             // not enough to make vote executable as support required percentage
             // is set to supportRequired = 51. 
@@ -322,7 +322,7 @@ describe('Voting: SimpleVoting', function () {
             expect(await voting.canExecute(1)).to.equal(true);
         })
         
-        it("should return executable if enough yea is given depending on yea + nay total", async () => {
+        it("returns executable if enough yea is given depending on yea + nay total", async () => {
             // vote with yea as 50 voting stake, which is still enough to make vote executable
             // even if the vote is closed due to its duration length.
             await erc20VoteMock.mock.getPastVotes.returns(50)
@@ -338,7 +338,7 @@ describe('Voting: SimpleVoting', function () {
             expect(await voting.canExecute(1)).to.equal(true);
         })
 
-        it("should make vote NON-executable if enough yea isn't given depending on yea + nay total", async () => {
+        it("makes vote NON-executable if enough yea isn't given depending on yea + nay total", async () => {
             // vote with yea as 20 voting stake, which is still not enough 
             //to make vote executable while vote is open or even after it's closed.
             await erc20VoteMock.mock.getPastVotes.returns(20)
@@ -354,7 +354,7 @@ describe('Voting: SimpleVoting', function () {
             expect(await voting.canExecute(1)).to.equal(false);
         })  
 
-        it("should execute the vote immediatelly while final yea is given", async () => {
+        it("executes the vote immediatelly while final yea is given", async () => {
             // vote with supportRequired staking, so 
             // it immediatelly executes the vote
             await erc20VoteMock.mock.getPastVotes.returns(51)
