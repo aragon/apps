@@ -139,7 +139,6 @@ abstract contract Process is Component {
             
             for (uint256 i = 0; i < actionsLength; i++) {
                 IDAO.Action calldata action = _proposal.actions[i];
-                // TODO: will we ever need to pass `data:0x` with which below line fails.
                 if (allowedActions[action.to][bytes4(action.data[:4])] == false) {
                     revert("Not allowed action passed!");
                 }
@@ -148,7 +147,7 @@ abstract contract Process is Component {
         
         executionsCounter++;
 
-        // // the reason behind this - https://matrix.to/#/!poXqlbVpQfXKWGseLY:gitter.im/$6IhWbfjcTqmLoqAVMopWFuIhlQwsoaIRxmsXhhmsaSs?via=gitter.im&via=matrix.org&via=ekpyron.org
+        // the reason behind this - https://matrix.to/#/!poXqlbVpQfXKWGseLY:gitter.im/$6IhWbfjcTqmLoqAVMopWFuIhlQwsoaIRxmsXhhmsaSs?via=gitter.im&via=matrix.org&via=ekpyron.org
         Execution storage execution = executions[executionsCounter];
         execution.id = executionsCounter;
         execution.proposal = _proposal;

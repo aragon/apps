@@ -236,14 +236,12 @@ contract SimpleVoting is VotingProcess, TimeHelpers {
             uint256 yea,
             uint256 nay,
             uint256 votingPower,
-            DAO.Action[] memory actions,
-            uint256 timestamp
+            DAO.Action[] memory actions
         )
     {
         Vote storage vote_ = votes[_voteId];
         
         open = _isVoteOpen(vote_, _voteId);
-        timestamp = getTimestamp64();
         executed = _isVoteExecuted(_voteId);
         startDate = vote_.startDate;
         snapshotBlock = vote_.snapshotBlock;

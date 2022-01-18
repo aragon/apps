@@ -108,12 +108,17 @@ describe('Voting: SimpleVoting', function () {
     }
 
     describe("initialize: ", async () => {
-        it("should revert if quorom is less than support required", async () => {
-            await expect(initializeVoting([2, 1,3],[])).to.be.revertedWith(ERRORS.ERROR_INIT_PCTS)
+        it("reverts if quorom is less than support required", async () => {
+            await expect(
+                initializeVoting([2, 1,3],[])
+            ).to.be.revertedWith(ERRORS.ERROR_INIT_PCTS)
         })
-        it("should revert if trying to re-initialize", async () => {
+        it("reverts if trying to re-initialize", async () => {
             await initializeVoting([1, 2, 3],[])
-            await expect(initializeVoting([2, 1,3],[])).to.be.revertedWith(ERRORS.ALREADY_INITIALIZED)
+
+            await expect(
+                initializeVoting([2, 1,3],[])
+            ).to.be.revertedWith(ERRORS.ALREADY_INITIALIZED)
         })
         it("should initialize dao on the component", async () => {
             // TODO: Waffle's calledOnContractWith is not supported by Hardhat
@@ -128,9 +133,14 @@ describe('Voting: SimpleVoting', function () {
         beforeEach(async () => {
             await initializeVoting([1, 2, 3], [])
         })
-        it("should revert if wrong config is set", async () => {
-            await expect(voting.changeVoteConfig(1, 2)).to.be.revertedWith(ERRORS.ERROR_CHANGE_SUPPORT_PCTS)
-            await expect(voting.changeVoteConfig(pct16(1000), 1)).to.be.revertedWith(ERRORS.ERROR_CHANGE_SUPPORT_TOO_BIG)
+        it("reverts if wrong config is set", async () => {
+            await expect(
+                voting.changeVoteConfig(1, 2)
+            ).to.be.revertedWith(ERRORS.ERROR_CHANGE_SUPPORT_PCTS)
+
+            await expect(
+                voting.changeVoteConfig(pct16(1000), 1)
+            ).to.be.revertedWith(ERRORS.ERROR_CHANGE_SUPPORT_TOO_BIG)
         })
 
         it("should change config successfully", async () => {
@@ -145,15 +155,19 @@ describe('Voting: SimpleVoting', function () {
             await initializeVoting([1, 2, 3], [])
         })
 
-        it("should revert if allowed action is not passed through proposal", async () => {
+        it("reverts if allowed action is not passed through proposal", async () => {
             const proposal = createProposal({ actions: dummyActions })
-            await expect(voting.start(proposal)).to.be.revertedWith(ERRORS.NOT_ALLOWED_ACTION)
+            await expect(
+                voting.start(proposal)
+            ).to.be.revertedWith(ERRORS.NOT_ALLOWED_ACTION)
         })
 
-        it("should revert total token supply while creating a vote is 0", async () => {
+        it("reverts total token supply while creating a vote is 0", async () => {
             const proposal = createProposal({})
             await erc20VoteMock.mock.getPastTotalSupply.returns(0)
-            await expect(voting.start(proposal)).to.be.revertedWith(ERRORS.ERROR_NO_VOTING_POWER)
+            await expect(
+                voting.start(proposal)
+            ).to.be.revertedWith(ERRORS.ERROR_NO_VOTING_POWER)
         })
 
         it("should create a vote successfully, but not vote", async () => {
@@ -246,8 +260,9 @@ describe('Voting: SimpleVoting', function () {
         it("should not be able to vote if user has 0 token", async () => {
             await erc20VoteMock.mock.getPastVotes.returns(0)
 
-            await expect(voting.vote(1, createVoteData(true, false)))
-                .to.be.revertedWith(ERRORS.ERROR_CAN_NOT_VOTE)
+            await expect(
+                voting.vote(1, createVoteData(true, false))
+            ).to.be.revertedWith(ERRORS.ERROR_CAN_NOT_VOTE)
         })
 
         it("should increase the yea or nay count and emit correct events", async () => {
@@ -363,13 +378,15 @@ describe('Voting: SimpleVoting', function () {
             expect(vote.executed).to.equal(true)
 
             // calling execute again should fail
-            await expect(voting.execute(1)).to.be.revertedWith(ERRORS.ERROR_EXECUTION_STATE_WRONG)
+            await expect(
+                voting.execute(1)
+            ).to.be.revertedWith(ERRORS.ERROR_EXECUTION_STATE_WRONG)
         })
 
-        it("should revert if vote is executed while enough yea is not given ", async () => {
-            await expect(voting.execute(1)).to.be.revertedWith(ERRORS.ERROR_CAN_NOT_EXECUTE)
+        it("reverts if vote is executed while enough yea is not given ", async () => {
+            await expect(
+                voting.execute(1)
+            ).to.be.revertedWith(ERRORS.ERROR_CAN_NOT_EXECUTE)
         })
     })
-
-
 })
