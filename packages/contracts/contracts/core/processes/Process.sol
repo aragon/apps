@@ -131,7 +131,8 @@ abstract contract Process is Component {
     /// @param _proposal The proposal for execution submitted by the user.
     /// @return executionId The id of the newly created execution.
     function start(Proposal calldata _proposal) 
-        external 
+        external
+        auth(PROCESS_START_ROLE)
         returns (uint256 executionId) 
     {
         if (!allowedActions[ANY_ADDR][bytes4(0)] == true) {

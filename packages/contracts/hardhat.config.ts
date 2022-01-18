@@ -41,12 +41,8 @@ const config: HardhatUserConfig = {
     },
     hardhat: {
       throwOnTransactionFailures: true,
-      throwOnCallFailures: true,
-      allowUnlimitedContractSize: true,
-      blockGasLimit: 0x1fffffffffffff,
-      gas: 10000000
+      throwOnCallFailures: true
     },
-
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,

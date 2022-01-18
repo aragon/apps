@@ -10,10 +10,10 @@ contract ACLOracleMock is IACLOracle {
     bool internal _willPerformResult = true;
 
     function willPerform(
-        address _where,
-        address _who,
-        bytes32 _role,
-        bytes memory _data
+        address /* _where */,
+        address /* _who */,
+        bytes32 /* _role */,
+        bytes memory /* _data */
     ) external view returns (bool) {
         return _willPerformResult;
     }

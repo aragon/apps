@@ -119,11 +119,17 @@ contract DAOFactory {
 
         dao.bulk(address(dao), items);
 
-        address ANY_ADDR = address(type(uint160).max);
-
         // give voting AND executing capabilities to anyone on the voting process
-        dao.grant(address(voting), ANY_ADDR, voting.PROCESS_VOTE_ROLE());
-        dao.grant(address(voting), ANY_ADDR, voting.PROCESS_EXECUTE_ROLE());
+        items = new ACLData.BulkItem[](4);
+
+        address ANY_ADDR = address(type(uint160).max);
+        
+        items[0] = ACLData.BulkItem(ACLData.BulkOp.Grant, voting.PROCESS_VOTE_ROLE(), ANY_ADDR);
+        items[1] = ACLData.BulkItem(ACLData.BulkOp.Grant, voting.PROCESS_EXECUTE_ROLE(), ANY_ADDR);
+        items[2] = ACLData.BulkItem(ACLData.BulkOp.Grant, voting.PROCESS_START_ROLE(), ANY_ADDR);
+        items[3] = ACLData.BulkItem(ACLData.BulkOp.Grant, voting.MODIFY_CONFIG(), address(dao));
+
+        dao.bulk(address(voting), items);
     }
     
     // @dev Internal helper method to set up the required base contracts on DAOFactory deployment.

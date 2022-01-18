@@ -1,7 +1,7 @@
-import chai, { expect } from 'chai'
-import { ethers, waffle } from 'hardhat'
-import { defaultAbiCoder, BytesLike } from 'ethers/lib/utils'
-import chaiUtils from '../test-utils'
+import chai, { expect } from 'chai';
+import { ethers, waffle } from 'hardhat';
+import { defaultAbiCoder, BytesLike } from 'ethers/lib/utils';
+import chaiUtils from '../test-utils';
 
 chai.use(chaiUtils)
 
