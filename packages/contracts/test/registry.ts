@@ -28,9 +28,10 @@ describe('Registry', function () {
     const daoName = 'my-dao';
     const daoAddress = wallet.address;
 
-    await expect(await registry.register(daoName, daoAddress, ownerAddress, ownerAddress))
-          .to.emit(registry, EVENTS.NewDAORegistered)
-          .withArgs(daoAddress, ownerAddress, ownerAddress, daoName)
+    await expect(
+      await registry.register(daoName, daoAddress, ownerAddress, ownerAddress)
+    ).to.emit(registry, EVENTS.NewDAORegistered)
+      .withArgs(daoAddress, ownerAddress, ownerAddress, daoName)
     
     expect(await registry.daos(daoName)).to.equal(true);
   });
@@ -42,8 +43,9 @@ describe('Registry', function () {
 
     registry.register(daoName, daoAddress, ownerAddress, ownerAddress)
 
-    await expect(registry.register(daoName, daoAddress, ownerAddress, ownerAddress))
-          .to.be.revertedWith(ERRORS.NameAlreadyInUse)
+    await expect(
+      registry.register(daoName, daoAddress, ownerAddress, ownerAddress)
+    ).to.be.revertedWith(ERRORS.NameAlreadyInUse)
   });
 
 });

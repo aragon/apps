@@ -265,7 +265,7 @@ describe('Voting: SimpleVoting', function () {
             ).to.be.revertedWith(ERRORS.ERROR_CAN_NOT_VOTE)
         })
 
-        it("should increase the yea or nay count and emit correct events", async () => {
+        it("increases the yea or nay count and emit correct events", async () => {
             await erc20VoteMock.mock.getPastVotes.returns(1)
 
             const data1 = createVoteData(true, false)
@@ -305,7 +305,7 @@ describe('Voting: SimpleVoting', function () {
             expect(vote.nay).to.equal(1)
         })
 
-        it("makes vote executable if enough yea is given from voting power", async () => {
+        it("makes executable if enough yea is given from voting power", async () => {
             // vote with yea as 50 voting stake, which is still 
             // not enough to make vote executable as support required percentage
             // is set to supportRequired = 51. 
@@ -326,11 +326,13 @@ describe('Voting: SimpleVoting', function () {
             // vote with yea as 50 voting stake, which is still enough to make vote executable
             // even if the vote is closed due to its duration length.
             await erc20VoteMock.mock.getPastVotes.returns(50)
-            await voting.vote(1, createVoteData(true, false)) // supports
+            // supports
+            await voting.vote(1, createVoteData(true, false)) 
 
             // vote with nay with 30 voting stake.
             await erc20VoteMock.mock.getPastVotes.returns(30)
-            await voting.connect(signers[1]).vote(1, createVoteData(false, false)) // not supports
+            // not supports
+            await voting.connect(signers[1]).vote(1, createVoteData(false, false)) 
             
             await ethers.provider.send('evm_increaseTime', [voteTime + 10]) // makes the voting closed.
             await ethers.provider.send('evm_mine', [])
@@ -338,15 +340,17 @@ describe('Voting: SimpleVoting', function () {
             expect(await voting.canExecute(1)).to.equal(true);
         })
 
-        it("makes vote NON-executable if enough yea isn't given depending on yea + nay total", async () => {
+        it("makes NON-executable if enough yea isn't given depending on yea + nay total", async () => {
             // vote with yea as 20 voting stake, which is still not enough 
             //to make vote executable while vote is open or even after it's closed.
             await erc20VoteMock.mock.getPastVotes.returns(20)
-            await voting.vote(1, createVoteData(true, false)) // supports
+            // supports
+            await voting.vote(1, createVoteData(true, false)) 
 
             // vote with nay with 30 voting stake.
             await erc20VoteMock.mock.getPastVotes.returns(30)
-            await voting.connect(signers[1]).vote(1, createVoteData(false, false)) // not supports
+            // not supports
+            await voting.connect(signers[1]).vote(1, createVoteData(false, false)) 
             
             await ethers.provider.send('evm_increaseTime', [voteTime + 10]) // makes the voting closed.
             await ethers.provider.send('evm_mine', [])
@@ -359,7 +363,8 @@ describe('Voting: SimpleVoting', function () {
             // it immediatelly executes the vote
             await erc20VoteMock.mock.getPastVotes.returns(51)
 
-            expect(await voting.vote(1, createVoteData(true, true))) // supports and should execute right away.
+            // supports and should execute right away.
+            expect(await voting.vote(1, createVoteData(true, true))) 
                 .to.emit(daoMock, EVENTS.EXECUTED)
                 .withArgs(
                     voting.address, 
