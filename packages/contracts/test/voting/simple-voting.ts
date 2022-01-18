@@ -315,7 +315,8 @@ describe('Voting: SimpleVoting', function () {
             await voting.vote(1, data)
             expect(await voting.canExecute(1)).to.equal(false);
 
-            // vote with yea as 1 voting stake from another wallet, that becomes 51 total and enough
+            // vote with yea as 1 voting stake from another wallet, 
+            // which becomes 51 total and enough
             await erc20VoteMock.mock.getPastVotes.returns(1)
             await voting.connect(signers[1]).vote(1, data)
 
@@ -323,8 +324,9 @@ describe('Voting: SimpleVoting', function () {
         })
         
         it("returns executable if enough yea is given depending on yea + nay total", async () => {
-            // vote with yea as 50 voting stake, which is still enough to make vote executable
-            // even if the vote is closed due to its duration length.
+            // vote with yea as 50 voting stake, which is still enough 
+            // to make vote executable even if the vote is closed due to 
+            // its duration length.
             await erc20VoteMock.mock.getPastVotes.returns(50)
             // supports
             await voting.vote(1, createVoteData(true, false)) 
@@ -334,7 +336,8 @@ describe('Voting: SimpleVoting', function () {
             // not supports
             await voting.connect(signers[1]).vote(1, createVoteData(false, false)) 
             
-            await ethers.provider.send('evm_increaseTime', [voteTime + 10]) // makes the voting closed.
+            // makes the voting closed.
+            await ethers.provider.send('evm_increaseTime', [voteTime + 10])
             await ethers.provider.send('evm_mine', [])
 
             expect(await voting.canExecute(1)).to.equal(true);
@@ -352,7 +355,8 @@ describe('Voting: SimpleVoting', function () {
             // not supports
             await voting.connect(signers[1]).vote(1, createVoteData(false, false)) 
             
-            await ethers.provider.send('evm_increaseTime', [voteTime + 10]) // makes the voting closed.
+            // makes the voting closed.
+            await ethers.provider.send('evm_increaseTime', [voteTime + 10]) 
             await ethers.provider.send('evm_mine', [])
 
             expect(await voting.canExecute(1)).to.equal(false);
