@@ -35,7 +35,8 @@
     "maxBalance": "Max Balance",
     "back": "Back",
     "continue": "Continue",
-    "submitDeposit": "Submit Deposit"
+    "submitDeposit": "Submit Deposit",
+    "resources": "Resources"
   },
   "placeHolders": {
     "selectToken": "Select a Token ...",
