@@ -169,9 +169,9 @@ abstract contract Process is Component {
         
         require(execution.state == State.RUNNING, ERROR_EXECUTION_STATE_WRONG);
         
-        execution.state = State.EXECUTED;
-
         _execute(execution); 
+
+        execution.state = State.EXECUTED;
         
         emit ProcessExecuted(execution, _executionId);
     }

@@ -118,6 +118,12 @@ contract DAOFactory {
         items[6] = ACLData.BulkItem(ACLData.BulkOp.Revoke, dao.ROOT_ROLE(), address(this));
 
         dao.bulk(address(dao), items);
+
+        address ANY_ADDR = address(type(uint160).max);
+
+        // give voting AND executing capabilities to anyone on the voting process
+        dao.grant(address(voting), ANY_ADDR, voting.PROCESS_VOTE_ROLE());
+        dao.grant(address(voting), ANY_ADDR, voting.PROCESS_EXECUTE_ROLE());
     }
     
     // @dev Internal helper method to set up the required base contracts on DAOFactory deployment.

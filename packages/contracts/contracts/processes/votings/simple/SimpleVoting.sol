@@ -78,7 +78,7 @@ contract SimpleVoting is VotingProcess, TimeHelpers {
     * @param _minAcceptQuorumPct New acceptance quorum
     */
     function changeVoteConfig(uint64 _supportRequiredPct, uint64 _minAcceptQuorumPct) external auth(MODIFY_CONFIG) {
-        require(minAcceptQuorumPct <= _supportRequiredPct, ERROR_CHANGE_SUPPORT_PCTS);
+        require(_minAcceptQuorumPct <= _supportRequiredPct, ERROR_CHANGE_SUPPORT_PCTS);
         require(_supportRequiredPct < PCT_BASE, ERROR_CHANGE_SUPPORT_TOO_BIG);
 
         minAcceptQuorumPct = _minAcceptQuorumPct;
@@ -200,6 +200,16 @@ contract SimpleVoting is VotingProcess, TimeHelpers {
     }
 
     /**
+    * @notice Tells whether a vote #`_voteId` can be executed or not
+    * @dev Initialization check is implicitly provided by `voteExists()` as new votes can only be
+    *      created via `newVote(),` which requires initialization
+    * @return True if the given vote can be executed, false otherwise
+    */
+    function canExecute(uint256 _voteId) public view returns (bool) {
+        return _canExecute(_voteId);
+    }
+
+    /**
     * @dev Return all information for a vote by its ID
     * @param _voteId Vote id
     * @return open Vote open status
@@ -226,12 +236,14 @@ contract SimpleVoting is VotingProcess, TimeHelpers {
             uint256 yea,
             uint256 nay,
             uint256 votingPower,
-            DAO.Action[] memory actions
+            DAO.Action[] memory actions,
+            uint256 timestamp
         )
     {
         Vote storage vote_ = votes[_voteId];
         
         open = _isVoteOpen(vote_, _voteId);
+        timestamp = getTimestamp64();
         executed = _isVoteExecuted(_voteId);
         startDate = vote_.startDate;
         snapshotBlock = vote_.snapshotBlock;
@@ -261,7 +273,7 @@ contract SimpleVoting is VotingProcess, TimeHelpers {
     * @return True if the given vote is open, false otherwise
     */
     function _isVoteOpen(Vote storage vote_, uint256 voteId) internal view returns (bool) {
-        return getTimestamp64() < vote_.startDate + voteTime && _isVoteExecuted(voteId);
+        return getTimestamp64() < vote_.startDate + voteTime && !_isVoteExecuted(voteId);
     }
 
     /**

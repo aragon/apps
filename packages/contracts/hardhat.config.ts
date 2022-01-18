@@ -39,6 +39,14 @@ const config: HardhatUserConfig = {
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
+    hardhat: {
+      throwOnTransactionFailures: true,
+      throwOnCallFailures: true,
+      allowUnlimitedContractSize: true,
+      blockGasLimit: 0x1fffffffffffff,
+      gas: 10000000
+    },
+
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,
