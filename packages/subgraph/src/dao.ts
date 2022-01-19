@@ -17,7 +17,7 @@ import {
   VaultWithdraw,
   ProcessDao
 } from '../generated/schema';
-import {DataSourceContext} from '@graphprotocol/graph-ts';
+import {DataSourceContext, store} from '@graphprotocol/graph-ts';
 import {log} from 'matchstick-as/assembly/index';
 
 export function handleProcessAdded(event: ProcessAdded): void {
@@ -29,7 +29,6 @@ export function handleProcessAdded(event: ProcessAdded): void {
   let processDaoEntity = new ProcessDao(processDaoId);
   processDaoEntity.process = processId;
   processDaoEntity.dao = daoId;
-  processDaoEntity.isRemoved = false;
 
   // handle Process
   let processEntity = new Process(processId);
@@ -47,14 +46,13 @@ export function handleProcessAdded(event: ProcessAdded): void {
 }
 
 export function handleProcessRemoved(event: ProcessRemoved): void {
-  let daoId = event.address.toHexString();
-  let processId = event.params.process.toHexString();
+  let id =
+    event.address.toHexString() + '_' + event.params.process.toHexString();
 
-  let entiry = ProcessDao.load(processId + '_' + daoId);
+  let entity = ProcessDao.load(id);
 
-  if (entiry) {
-    entiry.isRemoved = true;
-    entiry.save();
+  if (entity) {
+    store.remove('ProcessDao', id);
   }
 }
 

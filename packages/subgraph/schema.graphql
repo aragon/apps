@@ -31,7 +31,6 @@ type AllowedAction @entity {
   id: ID!
   allowedAction: Bytes!
   process: Process!
-  isRemoved: Boolean!
 }
 
 type Process @entity {
@@ -45,7 +44,6 @@ type ProcessDao @entity {
   id: ID! # Set to `${process.id}_${dao.id}`
   process: Process!
   dao: Dao!
-  isRemoved: Boolean!
 }
 
 type Execution @entity {

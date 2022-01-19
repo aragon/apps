@@ -15,7 +15,7 @@ import {
   Execution,
   Proposal
 } from './../generated/schema';
-import {dataSource} from '@graphprotocol/graph-ts';
+import {dataSource, store} from '@graphprotocol/graph-ts';
 import {EXECUTION_STATES} from './utils/constants';
 
 export function handleAllowedActionsAdded(event: AllowedActionsAdded): void {
@@ -28,7 +28,6 @@ export function handleAllowedActionsAdded(event: AllowedActionsAdded): void {
     let entity = new AllowedAction(id);
     entity.process = processId;
     entity.allowedAction = allowedAction;
-    entity.isRemoved = false;
     entity.save();
   }
 }
@@ -42,8 +41,7 @@ export function handleAllowedActionsRemoved(event: AllowedActionsAdded): void {
 
     let entity = AllowedAction.load(id);
     if (entity) {
-      entity.isRemoved = true;
-      entity.save();
+      store.remove('AllowedAction', id);
     }
   }
 }

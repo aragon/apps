@@ -7,13 +7,12 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ sarkawttest",
-    "create-local": "graph create --node http://localhost:8020/ sarkawttest",
-    "remove-local": "graph remove --node http://localhost:8020/ sarkawttest",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 sarkawttest",
+    "deploy-arbitrum-rinkeby": "scripts/deploy.sh aragon zaragoza arbitrum-rinkeby",
+    "deploy-local": "LOCAL=true scripts/deploy.sh aragon zaragoza arbitrum-rinkeby",
+    "create-local": "graph create aragon/aragon-zaragoza-arbitrum-rinkeby --node http://localhost:8020",
     "test": "rm -r tests/.bin; graph test",
     "coverage": "graph test -c",
-    "manifest-rinkeby": "scripts/build-manifest.sh rinkeby"
+    "manifest-arbitrum-rinkeby": "scripts/build-manifest.sh arbitrum-rinkeby"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "^0.24.1",
