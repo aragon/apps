@@ -79,14 +79,14 @@ export function handleProcessStarted(event: ProcessStarted): void {
   }
 
   // handle proposal
-  let proposalEntiry = new Proposal(id);
+  let proposalEntity = new Proposal(id);
 
-  proposalEntiry.dao = daoAddress;
-  proposalEntiry.process = event.address.toHexString();
-  proposalEntiry.metadata = event.params.metadata;
-  proposalEntiry.additionalArguments = proposal.additionalArguments;
+  proposalEntity.dao = daoAddress;
+  proposalEntity.process = event.address.toHexString();
+  proposalEntity.metadata = event.params.metadata;
+  proposalEntity.additionalArguments = proposal.additionalArguments;
 
-  proposalEntiry.save();
+  proposalEntity.save();
 
   // handle Execution
   let executionEntity = new Execution(id);

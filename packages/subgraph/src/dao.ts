@@ -14,40 +14,47 @@ import {
   Process,
   VaultEthDeposit,
   VaultDeposit,
-  VaultWithdraw
+  VaultWithdraw,
+  ProcessDao
 } from '../generated/schema';
 import {DataSourceContext} from '@graphprotocol/graph-ts';
 import {log} from 'matchstick-as/assembly/index';
 
 export function handleProcessAdded(event: ProcessAdded): void {
-  let daoAddress = event.address.toHexString();
-  let processAddress = event.params.process;
+  let daoId = event.address.toHexString();
+  let processId = event.params.process.toHexString();
 
-  let processEntity = new Process(processAddress.toHexString());
+  // handle ProcessDao
+  let processDaoId = processId + '_' + daoId;
+  let processDaoEntity = new ProcessDao(processDaoId);
+  processDaoEntity.process = processId;
+  processDaoEntity.dao = daoId;
+  processDaoEntity.isRemoved = false;
 
-  processEntity.dao = daoAddress;
-  processEntity.address = processAddress;
-  processEntity.isActive = true;
+  // handle Process
+  let processEntity = new Process(processId);
 
   // create context
   let context = new DataSourceContext();
-  context.setString('daoAddress', daoAddress);
+  context.setString('daoAddress', daoId);
 
   // subscribe to templates
   // TODO: verfy process type via supportsInterface (temporary use SimpleVoting)
-  SimpleVoting.createWithContext(processAddress, context);
+  SimpleVoting.createWithContext(event.params.process, context);
 
+  processDaoEntity.save();
   processEntity.save();
 }
 
 export function handleProcessRemoved(event: ProcessRemoved): void {
+  let daoId = event.address.toHexString();
   let processId = event.params.process.toHexString();
 
-  let processEntity = Process.load(processId);
+  let entiry = ProcessDao.load(processId + '_' + daoId);
 
-  if (processEntity) {
-    processEntity.isActive = false;
-    processEntity.save();
+  if (entiry) {
+    entiry.isRemoved = true;
+    entiry.save();
   }
 }
 

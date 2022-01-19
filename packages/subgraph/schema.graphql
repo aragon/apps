@@ -6,12 +6,6 @@ enum ExecutionState {
   EXECUTED
 }
 
-enum VoterState {
-  Absent
-  Yea
-  Nay
-}
-
 # Types
 
 # Processes
@@ -42,11 +36,16 @@ type AllowedAction @entity {
 
 type Process @entity {
   id: ID!
-  dao: Dao!
-  address: Bytes!
-  isActive: Boolean!
+  daos: [ProcessDao!]! @derivedFrom(field: "process")
   allowedActions: [AllowedAction!]! @derivedFrom(field: "process")
   proposals: [Proposal!]! @derivedFrom(field: "process")
+}
+
+type ProcessDao @entity {
+  id: ID! # Set to `${process.id}_${dao.id}`
+  process: Process!
+  dao: Dao!
+  isRemoved: Boolean!
 }
 
 type Execution @entity {
@@ -56,29 +55,6 @@ type Execution @entity {
   proposal: Proposal!
   state: ExecutionState!
 }
-
-# Voting (simple voting)
-# type Voter @entity {
-#   id: ID!
-#   voter: Bytes!
-#   state: VoterState!
-# }
-
-# type Vote @entity {
-#   id: ID!
-#   voteId: BigInt!
-#   description: String!
-#   creator: Bytes! # address
-#   executed: Boolean!
-#   startDate: BigInt!
-#   snapshotBlock: BigInt!
-#   supportRequiredPct: BigInt!
-#   minAcceptQuorumPct: BigInt!
-#   yea: BigInt!
-#   nay: BigInt!
-#   votingPower: BigInt!
-#   voters: [Voter!]
-# }
 
 # Vault
 type VaultWithdraw @entity {
@@ -110,11 +86,10 @@ type VaultDeposit @entity {
 type Dao @entity {
   id: ID!
   name: String!
-  daoAddress: Bytes!
   creator: Bytes!
   metadata: String!
   token: Bytes!
-  processes: [Process!]! @derivedFrom(field: "dao")
+  processes: [ProcessDao!]! @derivedFrom(field: "dao")
   proposals: [Proposal!]! @derivedFrom(field: "dao")
   ethDeposits: [VaultEthDeposit!]! @derivedFrom(field: "dao")
   tokenDeposits: [VaultDeposit!]! @derivedFrom(field: "dao")

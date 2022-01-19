@@ -9,7 +9,6 @@ export function handleNewDAORegistered(event: NewDAORegistered): void {
   let entity = new Dao(id);
 
   entity.name = event.params.name;
-  entity.daoAddress = event.params.dao;
   entity.creator = event.params.creator;
   entity.token = event.params.token;
 

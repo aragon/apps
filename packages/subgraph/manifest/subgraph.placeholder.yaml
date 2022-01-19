@@ -1,7 +1,7 @@
 {{info}}
 specVersion: 0.0.2
 description: A template for Aragon subgraphs
-repository: https://github.com/zaragoza
+repository: https://github.com/aragon/zaragoza
 schema:
   file: ./schema.graphql
 dataSources:
