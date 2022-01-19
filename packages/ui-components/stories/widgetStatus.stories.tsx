@@ -90,27 +90,27 @@ const stepDataExecuted: ProgressStatusProps[] = [
 
 export const Published = Template.bind({});
 Published.args = {
-  data: stepDataPublished,
+  steps: stepDataPublished,
 };
 
 export const Running = Template.bind({});
 Running.args = {
-  data: stepDataRunning,
+  steps: stepDataRunning,
 };
 
 export const Declined = Template.bind({});
 Declined.args = {
-  data: stepDataDeclined,
+  steps: stepDataDeclined,
 };
 
 export const Ready = Template.bind({});
 Ready.args = {
-  data: stepDataReady,
+  steps: stepDataReady,
 };
 
 export const Executed = Template.bind({});
 Executed.args = {
-  data: stepDataExecuted,
+  steps: stepDataExecuted,
 };
 
 export const Empty = Template.bind({});
