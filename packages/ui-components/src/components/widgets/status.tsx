@@ -4,16 +4,22 @@ import styled from 'styled-components';
 import {ProgressStatus, ProgressStatusProps} from '../progress/status';
 
 export type WidgetStatusProps = {
-  data: ProgressStatusProps[];
+  /**
+   * The widget status displays the status of a process. Such an process
+   * typically consists of a number of steps. Each of these steps has a set of
+   * attributes (see `ProgressStatusProps`). These attributes must be passed as
+   * an array of objects.
+   */
+  steps: ProgressStatusProps[];
 };
 
-export const WidgetStatus: React.FC<WidgetStatusProps> = ({data}) => {
+export const WidgetStatus: React.FC<WidgetStatusProps> = ({steps}) => {
   return (
     <Card data-testid="widgetStatus">
       <Header>Status</Header>
-      {data ? (
-        data.map(d => {
-          return <ProgressStatus {...d} />;
+      {steps ? (
+        steps.map(s => {
+          return <ProgressStatus key={s.label + s.mode} {...s} />;
         })
       ) : (
         <p className="text-ui-400">Progress unavailable</p>
@@ -23,8 +29,9 @@ export const WidgetStatus: React.FC<WidgetStatusProps> = ({data}) => {
 };
 
 const Card = styled.div.attrs(() => {
-  let className = 'bg-ui-0 rounded-xl pt-3 pb-4 space-y-3';
+  const baseClasses = 'bg-ui-0 rounded-xl pt-3 pb-4 space-y-3';
   const bpClasses = ' px-2  tablet:px-3';
-  return {className: className + bpClasses};
+  return {className: baseClasses + bpClasses};
 })``;
+
 const Header = styled.p.attrs({className: 'font-bold ft-text-xl'})``;
