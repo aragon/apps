@@ -16,7 +16,7 @@ Default.args = {
   label: 'Label',
   helptext: 'Helptext',
   multiSelect: true,
-  isActive: false,
   disabled: false,
-  isMulti: false,
+  state: 'default',
+  onClick: console.log,
 };

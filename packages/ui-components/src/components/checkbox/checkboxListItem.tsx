@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import {
   IconCheckboxDefault,
@@ -25,32 +25,41 @@ export type CheckboxListItemProps = {
   label: string;
   helptext: string;
   multiSelect: boolean;
-  isActive?: boolean;
   disabled?: boolean;
-  isMulti?: boolean;
+  state?: 'default' | 'active' | 'multi';
+  onClick: (nextState: string) => void;
 };
 
 export const CheckboxListItem: React.FC<CheckboxListItemProps> = ({
   label,
   helptext,
   multiSelect,
-  isActive = false,
   disabled = false,
-  isMulti = false,
+  state = 'default',
+  onClick,
 }) => {
-  const iconStyle = multiSelect ? 'multiSelect' : 'radio';
-  const iconType = isActive ? 'active' : isMulti ? 'multi' : 'default';
+  const [checkboxState, setCheckboxState] = useState(state);
+
+  useEffect(() => {
+    setCheckboxState(state);
+  }, [state]);
+
+  const handleClick = () => {
+    const nextState = checkboxState === 'default' ? 'active' : 'default';
+    setCheckboxState(nextState);
+    onClick(nextState);
+  };
 
   return (
     <Container
       data-testid="checkboxListItem"
-      isActive={isActive}
       disabled={disabled}
-      isMulti={isMulti}
+      state={checkboxState}
+      onClick={handleClick}
     >
-      <HStack isActive={isActive} disabled={disabled} isMulti={isMulti}>
+      <HStack disabled={disabled} state={checkboxState}>
         <p className="font-bold">{label}</p>
-        {Icons[iconStyle][iconType]}
+        {Icons[multiSelect ? 'multiSelect' : 'radio'][checkboxState]}
       </HStack>
       <Helptext>{helptext}</Helptext>
     </Container>
@@ -58,35 +67,30 @@ export const CheckboxListItem: React.FC<CheckboxListItemProps> = ({
 };
 
 type ContainerTypes = {
-  isActive: boolean;
   disabled: boolean;
-  isMulti: boolean;
+  state: 'default' | 'active' | 'multi';
 };
 
-const Container = styled.div.attrs(
-  ({disabled, isActive, isMulti}: ContainerTypes) => ({
-    className: `py-1.5 px-2 rounded-xl border-2 focus:outline-none focus-within:ring-2 focus-within:ring-primary-500 ${
-      disabled
-        ? 'bg-ui-100 border-ui-300'
-        : `bg-ui-0 group hover:border-primary-500 ${
-            isActive || isMulti ? 'border-primary-500' : 'border-ui-100'
-          }`
-    }`,
-    tabIndex: disabled ? -1 : 0,
-  })
-)<ContainerTypes>``;
+const Container = styled.div.attrs(({disabled, state}: ContainerTypes) => ({
+  className: `py-1.5 px-2 rounded-xl border-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 cursor-pointer ${
+    disabled
+      ? 'bg-ui-100 border-ui-300'
+      : `bg-ui-0 group hover:border-primary-500 ${
+          state !== 'default' ? 'border-primary-500' : 'border-ui-100'
+        }`
+  }`,
+  tabIndex: disabled ? -1 : 0,
+}))<ContainerTypes>``;
 
-const HStack = styled.div.attrs(
-  ({disabled, isActive, isMulti}: ContainerTypes) => ({
-    className: `flex justify-between items-center group-hover:text-primary-500 ${
-      disabled
-        ? 'text-ui-600'
-        : isActive || isMulti
-        ? 'text-primary-500'
-        : 'text-ui-600'
-    }`,
-  })
-)<ContainerTypes>``;
+const HStack = styled.div.attrs(({disabled, state}: ContainerTypes) => ({
+  className: `flex justify-between items-center group-hover:text-primary-500 ${
+    disabled
+      ? 'text-ui-600'
+      : state !== 'default'
+      ? 'text-primary-500'
+      : 'text-ui-600'
+  }`,
+}))<ContainerTypes>``;
 
 const Helptext = styled.p.attrs({
   className: 'text-sm text-ui-500 mt-0.25',
