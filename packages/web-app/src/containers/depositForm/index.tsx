@@ -149,7 +149,7 @@ const DepositForm: React.FC = () => {
    *             Callbacks and Handlers            *
    *************************************************/
   const handleMaxClicked = useCallback(
-    (onChange: (event: unknown[]) => void) => {
+    (onChange: React.ChangeEventHandler<HTMLInputElement>) => {
       const tokenBalance = getValues('tokenBalance');
 
       if (tokenBalance !== '') {

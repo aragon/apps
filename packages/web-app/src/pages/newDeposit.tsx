@@ -155,7 +155,6 @@ const NewDeposit: React.FC = () => {
     }
 
     // fill form with curated token values
-    formMethods.clearErrors('tokenAddress');
     formMethods.setValue('isCustomToken', false);
     formMethods.setValue('tokenName', token.name);
     formMethods.setValue('tokenImgUrl', token.imgUrl);
@@ -164,6 +163,10 @@ const NewDeposit: React.FC = () => {
       'tokenBalance',
       formatUnits(token.count, token.decimals)
     );
+
+    if (formMethods.formState.dirtyFields.amount) {
+      formMethods.trigger('tokenAddress');
+    }
   };
 
   /*************************************************
