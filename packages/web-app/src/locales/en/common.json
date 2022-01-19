@@ -36,7 +36,8 @@
     "back": "Back",
     "continue": "Continue",
     "submitDeposit": "Submit Deposit",
-    "resources": "Resources"
+    "resources": "Resources",
+    "submitWithdraw": "Publish Proposal"
   },
   "placeHolders": {
     "selectToken": "Select a Token ...",
@@ -67,6 +68,7 @@
     "required": {
       "address": "Token address is required",
       "amount": "Token amount is required",
+      "recipient": "Recipient address is required",
       "token": "Token is required"
     }
   },
