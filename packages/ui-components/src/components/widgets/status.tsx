@@ -9,11 +9,15 @@ export type WidgetStatusProps = {
 
 export const WidgetStatus: React.FC<WidgetStatusProps> = ({data}) => {
   return (
-    <Card>
+    <Card data-testid="widgetStatus">
       <Header>Status</Header>
-      {data.map(d => {
-        return <ProgressStatus {...d} />;
-      })}
+      {data ? (
+        data.map(d => {
+          return <ProgressStatus {...d} />;
+        })
+      ) : (
+        <p className="text-ui-400">Progress unavailable</p>
+      )}
     </Card>
   );
 };
