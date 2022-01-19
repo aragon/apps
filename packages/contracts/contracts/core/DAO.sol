@@ -58,7 +58,7 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, ERC1271, AdaptiveERC1
     /// @param _who Who is calling this method
     /// @param _role Which role is required to call this
     /// @param _data Additional data used in the ACLOracle
-    function hasPermission(address _where, address _who, bytes32 _role, bytes memory _data) public override returns(bool) {
+    function hasPermission(address _where, address _who, bytes32 _role, bytes memory _data) external override returns(bool) {
         return willPerform(_where, _who, _role, _data);
     }
 
