@@ -3,9 +3,6 @@ import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
 
-/* Temporary: to be removed before merge */
-import ResourceList from 'components/resourceList';
-
 const Home: React.FC = () => {
   const {t} = useTranslation();
 
@@ -16,16 +13,6 @@ const Home: React.FC = () => {
           <WelcomeMessage>{t('subtitle')}</WelcomeMessage>
           <Title>{t('title.part1')}</Title>
           <Subtitle>{t('title.part2')}</Subtitle>
-        </div>
-
-        {/* Temporary: to be removed before merge */}
-        <div style={{width: '438px'}}>
-          <ResourceList
-            links={[
-              {href: 'https://client.aragon.org/', label: 'Client'},
-              {href: 'https://govern.aragon.org/', label: 'Govern'},
-            ]}
-          />
         </div>
       </div>
     </>
