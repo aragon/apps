@@ -39,7 +39,7 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, ERC1271, AdaptiveERC1
 
     /// @dev Used for UUPS upgradability pattern
     /// @param _metadata IPFS hash that points to all the metadata (logo, description, tags, etc.) of a DAO
-    function initialize(bytes calldata _metadata, address initialOwner) public initializer {
+    function initialize(bytes calldata _metadata, address initialOwner) external initializer {
         _registerStandard(DAO_INTERFACE_ID);
         _registerStandard(type(ERC1271).interfaceId);
         this.setMetadata(_metadata);
@@ -60,7 +60,7 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, ERC1271, AdaptiveERC1
         address _who,
         bytes32 _role,
         bytes memory _data
-    ) public override returns (bool) {
+    ) external override returns (bool) {
         return willPerform(_where, _who, _role, _data);
     }
 
@@ -110,6 +110,11 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, ERC1271, AdaptiveERC1
         emit ETHDeposited(msg.sender, msg.value);
     }
 
+    /// @dev Fallback to handle future versions of the ERC165 standard.
+    fallback() external {
+        _handleCallback(msg.sig, msg.data); // WARN: does a low-level return, any code below would be unreacheable
+    }
+
     /// @notice Deposit ETH or any token to this contract with a reference string
     /// @dev Deposit ETH (token address == 0) or any token with a reference
     /// @param _token The address of the token and in case of ETH address(0)
@@ -141,7 +146,7 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, ERC1271, AdaptiveERC1
         address _to,
         uint256 _amount,
         string memory _reference
-    ) public override auth(address(this), WITHDRAW_ROLE) {
+    ) external override auth(address(this), WITHDRAW_ROLE) {
         if (_token == address(0)) {
             (bool ok, ) = _to.call{value: _amount}("");
             require(ok, ERROR_ETH_WITHDRAW_FAILED);
@@ -165,7 +170,7 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, ERC1271, AdaptiveERC1
     /// @param _hash Hash of the data to be signed
     /// @param _signature Signature byte array associated with _hash
     /// @return bytes4
-    function isValidSignature(bytes32 _hash, bytes memory _signature) public view override returns (bytes4) {
+    function isValidSignature(bytes32 _hash, bytes memory _signature) external view override returns (bytes4) {
         if (address(signatureValidator) == address(0)) return bytes4(0); // invalid magic number
         return signatureValidator.isValidSignature(_hash, _signature); // forward call to set validation contract
     }

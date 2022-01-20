@@ -9,7 +9,9 @@
   "scripts": {
     "test": "hardhat test",
     "compile": "hardhat compile",
-    "flatten": "hardhat flatten"
+    "coverage": "hardhat coverage --temp artifacts",
+    "flatten": "hardhat flatten",
+    "analyze": "mythx analyze"
   },
   "repository": {
     "type": "git",

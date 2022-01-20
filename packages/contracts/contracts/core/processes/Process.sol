@@ -19,7 +19,7 @@ abstract contract Process is Component {
     address internal constant ANY_ADDR = address(type(uint160).max);
 
     /// @notice Emitted as soon as the process does get started
-    event ProcessStarted(Execution execution, bytes metadata, uint256 indexed executionId);
+    event ProcessStarted(Execution execution);
     /// @notice Emitted as soon as the process with his actions does get executed
     event ProcessExecuted(Execution execution, uint256 indexed executionId);
     /// @notice Emtted as soon as new allowed actions do get added
@@ -88,7 +88,7 @@ abstract contract Process is Component {
     function _setAllowedActions(bytes[] calldata _allowedActions) internal {
         uint256 actionsLength = _allowedActions.length;
 
-        for (uint256 i = 0; i > actionsLength; i++) { 
+        for (uint256 i = 0; i < actionsLength; i++) { 
             bytes calldata allowedAction = _allowedActions[i];
             allowedActions[bytesToAddress(allowedAction[:20])][bytes4(allowedAction[20:24])] = true;
         } 
@@ -118,7 +118,7 @@ abstract contract Process is Component {
     function removeAllowedActions(bytes[] calldata _actionsToRemove) external auth(PROCESS_REMOVE_ALLOWED_ACTIONS) {
         uint256 actionsLength = _actionsToRemove.length;
 
-        for (uint256 i = 0; i > actionsLength; i++) { 
+        for (uint256 i = 0; i < actionsLength; i++) { 
             bytes calldata actionToRemove = _actionsToRemove[i];
             delete allowedActions[bytesToAddress(actionToRemove[:20])][bytes4(actionToRemove[20:24])];
         } 
@@ -131,22 +131,21 @@ abstract contract Process is Component {
     /// @param _proposal The proposal for execution submitted by the user.
     /// @return executionId The id of the newly created execution.
     function start(Proposal calldata _proposal) 
-        external 
-        auth(PROCESS_START_ROLE) 
+        external
+        auth(PROCESS_START_ROLE)
         returns (uint256 executionId) 
     {
         if (!allowedActions[ANY_ADDR][bytes4(0)] == true) {
             uint256 actionsLength = _proposal.actions.length;
-
-            for (uint256 i = 0; i > actionsLength; i++) {
+            
+            for (uint256 i = 0; i < actionsLength; i++) {
                 IDAO.Action calldata action = _proposal.actions[i];
-
                 if (allowedActions[action.to][bytes4(action.data[:4])] == false) {
                     revert("Not allowed action passed!");
                 }
             }
         }
-
+        
         executionsCounter++;
 
         // the reason behind this - https://matrix.to/#/!poXqlbVpQfXKWGseLY:gitter.im/$6IhWbfjcTqmLoqAVMopWFuIhlQwsoaIRxmsXhhmsaSs?via=gitter.im&via=matrix.org&via=ekpyron.org
@@ -157,7 +156,7 @@ abstract contract Process is Component {
 
         _start(execution); // "Hook" to add logic in start of a concrete implementation.
 
-        emit ProcessStarted(execution, _proposal.metadata, executionsCounter);
+        emit ProcessStarted(execution);
 
         return executionsCounter;
     }
@@ -170,9 +169,9 @@ abstract contract Process is Component {
         
         require(execution.state == State.RUNNING, ERROR_EXECUTION_STATE_WRONG);
         
-        execution.state = State.EXECUTED;
-
         _execute(execution); 
+
+        execution.state = State.EXECUTED;
         
         emit ProcessExecuted(execution, _executionId);
     }

@@ -29,12 +29,20 @@
     "amount": "Amount",
     "reference": "Reference",
     "address": "Token Contract Address",
+    "copy": "Copy",
     "paste": "Paste",
-    "maxBalance": "Max Balance"
+    "max": "Max",
+    "maxBalance": "Max Balance",
+    "back": "Back",
+    "continue": "Continue",
+    "submitDeposit": "Submit Deposit",
+    "resources": "Resources",
+    "submitWithdraw": "Publish Proposal"
   },
   "placeHolders": {
     "selectToken": "Select a Token ...",
-    "walletOrEns": "Type wallet address or ENS ..."
+    "walletOrEns": "Type wallet address or ENS ...",
+    "searchTokens": "Type to search ..."
   },
   "finance": {
     "tokenSection": "Tokens",
@@ -44,6 +52,24 @@
     "labels": {
       "to": "to",
       "from": "from"
+    }
+  },
+  "errors": {
+    "amountWithInvalidToken": "Cannot validate amount with invalid token address",
+    "defaultAmountValidationError": "Error validating amount",
+    "exceedsFractionalParts": "The number of decimals in the amount must not exceed the number of decimals of the token({{decimals}})",
+    "includeDecimals": "Include decimals, e.g. 10.0",
+    "includeExactAmount": "The token doesn't contain decimals. Please enter the exact amount",
+    "insufficientBalance": "Insufficient balance",
+    "invalidAddress": "Invalid address",
+    "lteZero": "The amount must be greater than zero",
+    "notERC20Token": "Token address is not ERC20 compliant",
+    "noTokenSelected": "A token must be selected",
+    "required": {
+      "address": "Token address is required",
+      "amount": "Token amount is required",
+      "recipient": "Recipient address is required",
+      "token": "Token is required"
     }
   },
   "allTransfer": {
