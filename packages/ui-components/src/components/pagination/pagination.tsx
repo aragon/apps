@@ -8,59 +8,65 @@ export interface PaginationProps {
    */
   bgWhite?: boolean;
   /**
-   * Number of total steps
+   * Number of total pages
    */
-  totalSteps?: number;
+  totalPages?: number;
   /**
-   * active steps
+   * active page
    */
-  defaultStep?: number;
-  onChange?: (step: number) => void;
+  activePage?: number;
+  /**
+   * With this parameter we can define break points for
+   * change pagination from 1...567...9 to 1...789
+   * views
+   */
+  distance?: number;
+  onChange?: (page: number) => void;
 }
 
 /**
  * Default UI component
  */
 export const Pagination: React.FC<PaginationProps> = ({
-  totalSteps = 10,
-  defaultStep = 1,
+  totalPages = 10,
+  activePage = 1,
   bgWhite = false,
+  distance = 3,
   onChange,
 }) => {
-  const [step, setStep] = useState<number>(defaultStep);
+  const [page, setPage] = useState<number>(activePage);
 
   useEffect(() => {
-    onChange && onChange(step);
-  }, [onChange, step]);
+    onChange && onChange(page);
+  }, [onChange, page]);
 
   function ButtonList() {
-    const List = [];
-    const Distance = 3;
+    const list = [];
 
-    if (totalSteps <= 7) {
-      for (let i = 1; i <= totalSteps; i++) {
-        List.push(
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) {
+        list.push(
           <ButtonText
             mode="secondary"
             size="large"
-            isActive={step === i}
-            onClick={() => setStep(i)}
+            isActive={page === i}
+            onClick={() => setPage(i)}
             {...(bgWhite && {bgWhite})}
             label={`${i}`}
           />
         );
       }
-      return <>{List}</>;
+      return <>{list}</>;
     }
 
-    if (step - 1 <= Distance) {
+    if (page - 1 <= distance) {
       for (let i = 1; i <= 5; i++) {
-        List.push(
+        list.push(
           <ButtonText
             mode="secondary"
             size="large"
-            isActive={step === i}
-            onClick={() => setStep(i)}
+            isActive={page === i}
+            onClick={() => setPage(i)}
             {...(bgWhite && {bgWhite})}
             label={`${i}`}
           />
@@ -68,27 +74,27 @@ export const Pagination: React.FC<PaginationProps> = ({
       }
       return (
         <>
-          {List}
+          {list}
           <Separator>...</Separator>
           <ButtonText
             mode="secondary"
             size="large"
-            onClick={() => setStep(totalSteps)}
+            onClick={() => setPage(totalPages)}
             {...(bgWhite && {bgWhite})}
-            label={`${totalSteps}`}
+            label={`${totalPages}`}
           />
         </>
       );
     }
 
-    if (totalSteps - step <= Distance) {
-      for (let i = totalSteps - 5; i <= totalSteps; i++) {
-        List.push(
+    if (totalPages - page <= distance) {
+      for (let i = totalPages - 4; i <= totalPages; i++) {
+        list.push(
           <ButtonText
             mode="secondary"
             size="large"
-            isActive={step === i}
-            onClick={() => setStep(i)}
+            isActive={page === i}
+            onClick={() => setPage(i)}
             {...(bgWhite && {bgWhite})}
             label={`${i}`}
           />
@@ -99,23 +105,23 @@ export const Pagination: React.FC<PaginationProps> = ({
           <ButtonText
             mode="secondary"
             size="large"
-            onClick={() => setStep(1)}
+            onClick={() => setPage(1)}
             {...(bgWhite && {bgWhite})}
             label={`${1}`}
           />
           <Separator>...</Separator>
-          {List}
+          {list}
         </>
       );
     }
 
-    for (let i = step - 1; i <= step + 1; i++) {
-      List.push(
+    for (let i = page - 1; i <= page + 1; i++) {
+      list.push(
         <ButtonText
           mode="secondary"
           size="large"
-          isActive={step === i}
-          onClick={() => setStep(i)}
+          isActive={page === i}
+          onClick={() => setPage(i)}
           {...(bgWhite && {bgWhite})}
           label={`${i}`}
         />
@@ -126,19 +132,19 @@ export const Pagination: React.FC<PaginationProps> = ({
         <ButtonText
           mode="secondary"
           size="large"
-          onClick={() => setStep(1)}
+          onClick={() => setPage(1)}
           {...(bgWhite && {bgWhite})}
           label={'1'}
         />
         <Separator>...</Separator>
-        {List}
+        {list}
         <Separator>...</Separator>
         <ButtonText
           mode="secondary"
           size="large"
-          onClick={() => setStep(totalSteps)}
+          onClick={() => setPage(totalPages)}
           {...(bgWhite && {bgWhite})}
-          label={`${totalSteps}`}
+          label={`${totalPages}`}
         />
       </>
     );
@@ -149,17 +155,17 @@ export const Pagination: React.FC<PaginationProps> = ({
       <ButtonIcon
         mode="secondary"
         size="large"
-        onClick={() => setStep(step - 1)}
-        disabled={step === 1}
+        onClick={() => setPage(page - 1)}
+        disabled={page === 1}
         icon={<IconChevronLeft />}
         {...(bgWhite && {bgWhite})}
       />
-      {ButtonList()}
+      <ButtonList />
       <ButtonIcon
         mode="secondary"
         size="large"
-        onClick={() => setStep(step + 1)}
-        disabled={step === totalSteps}
+        onClick={() => setPage(page + 1)}
+        disabled={page === totalPages}
         icon={<IconChevronRight />}
         {...(bgWhite && {bgWhite})}
       />
