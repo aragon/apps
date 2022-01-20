@@ -5,6 +5,8 @@ import {
   ValueInput,
 } from '@aragon/ui-components';
 import styled from 'styled-components';
+import {BigNumber} from 'ethers';
+import {parseUnits} from 'ethers/lib/utils';
 import {useTranslation} from 'react-i18next';
 import React, {useCallback} from 'react';
 import {Controller, useFormContext, useWatch} from 'react-hook-form';
@@ -12,8 +14,6 @@ import {Controller, useFormContext, useWatch} from 'react-hook-form';
 import {handleClipboardActions} from 'utils/library';
 import {useTransferModalContext} from 'context/transfersModal';
 import {validateAddress, validateTokenAmount} from 'utils/validators';
-import {BigNumber} from 'ethers';
-import {parseUnits} from 'ethers/lib/utils';
 
 const ConfigureWithdrawForm: React.FC = () => {
   const {t} = useTranslation();
@@ -35,14 +35,16 @@ const ConfigureWithdrawForm: React.FC = () => {
     [balance]
   );
 
-  const renderWarning = () => {
+  const renderWarning = useCallback(() => {
+    // Insufficient data to calculate warning
     if (!decimals || !balance || amount === '') return null;
 
     if (BigNumber.from(parseUnits(amount, decimals)).gt(parseUnits(balance)))
       return (
         <AlertInline label={t('warnings.amountGtDaoToken')} mode="warning" />
       );
-  };
+  }, [amount, balance, decimals, t]);
+
   /*************************************************
    *                Field Validators               *
    *************************************************/
