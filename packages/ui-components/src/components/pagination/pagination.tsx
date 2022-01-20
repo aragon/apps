@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
 import {IconChevronRight, IconChevronLeft} from '../icons/interface';
-
+import {ButtonText, ButtonIcon} from '../button';
 export interface PaginationProps {
   /**
    * white background
@@ -28,118 +28,141 @@ export const Pagination: React.FC<PaginationProps> = ({
   onChange,
 }) => {
   const [step, setStep] = useState<number>(defaultStep);
-  const MovetoNextStep = (step: number) => setStep(step);
 
   useEffect(() => {
-    if (onChange) {
-      onChange(step);
-    }
+    onChange && onChange(step);
   }, [onChange, step]);
 
-  function ButtonList(
-    activeStep: number,
-    totalSteps: number,
-    MovetoNextStep: (step: number) => void
-  ) {
+  function ButtonList() {
     const List = [];
-    if (activeStep <= 5) {
-      for (let i = 1; i <= Math.min(5, totalSteps); i++) {
+    const Distance = 3;
+
+    if (totalSteps <= 7) {
+      for (let i = 1; i <= totalSteps; i++) {
         List.push(
-          <Page
-            isActive={activeStep === i}
-            onClick={() => MovetoNextStep(i)}
+          <ButtonText
+            mode="secondary"
+            size="large"
+            isActive={step === i}
+            onClick={() => setStep(i)}
             {...(bgWhite && {bgWhite})}
-          >
-            {i}
-          </Page>
+            label={`${i}`}
+          />
+        );
+      }
+      return <>{List}</>;
+    }
+
+    if (step - 1 <= Distance) {
+      for (let i = 1; i <= 5; i++) {
+        List.push(
+          <ButtonText
+            mode="secondary"
+            size="large"
+            isActive={step === i}
+            onClick={() => setStep(i)}
+            {...(bgWhite && {bgWhite})}
+            label={`${i}`}
+          />
         );
       }
       return (
         <>
           {List}
-          {totalSteps > 5 && totalSteps !== 6 && (
-            <>
-              <Separator>...</Separator>
-              <Page
-                onClick={() => MovetoNextStep(totalSteps)}
-                {...(bgWhite && {bgWhite})}
-              >
-                {totalSteps}
-              </Page>
-            </>
-          )}
+          <Separator>...</Separator>
+          <ButtonText
+            mode="secondary"
+            size="large"
+            onClick={() => setStep(totalSteps)}
+            {...(bgWhite && {bgWhite})}
+            label={`${totalSteps}`}
+          />
         </>
       );
-    } else if (activeStep >= 5 && activeStep <= totalSteps - 4) {
-      for (let i = activeStep - 1; i <= activeStep + 1; i++) {
+    }
+
+    if (totalSteps - step <= Distance) {
+      for (let i = totalSteps - 5; i <= totalSteps; i++) {
         List.push(
-          <Page
-            isActive={activeStep === i}
-            onClick={() => MovetoNextStep(i)}
+          <ButtonText
+            mode="secondary"
+            size="large"
+            isActive={step === i}
+            onClick={() => setStep(i)}
             {...(bgWhite && {bgWhite})}
-          >
-            {i}
-          </Page>
+            label={`${i}`}
+          />
         );
       }
       return (
         <>
-          <Page onClick={() => MovetoNextStep(1)} {...(bgWhite && {bgWhite})}>
-            {1}
-          </Page>
-          <Separator>...</Separator>
-          {List}
-          <Separator>...</Separator>
-          <Page
-            onClick={() => MovetoNextStep(totalSteps)}
+          <ButtonText
+            mode="secondary"
+            size="large"
+            onClick={() => setStep(1)}
             {...(bgWhite && {bgWhite})}
-          >
-            {totalSteps}
-          </Page>
-        </>
-      );
-    } else if (totalSteps - 5 && activeStep > totalSteps - 4) {
-      for (let i = totalSteps - 4; i <= totalSteps; i++) {
-        List.push(
-          <Page
-            isActive={activeStep === i}
-            onClick={() => MovetoNextStep(i)}
-            {...(bgWhite && {bgWhite})}
-          >
-            {i}
-          </Page>
-        );
-      }
-      return (
-        <>
-          <Page onClick={() => MovetoNextStep(1)} {...(bgWhite && {bgWhite})}>
-            {1}
-          </Page>
+            label={`${1}`}
+          />
           <Separator>...</Separator>
           {List}
         </>
       );
     }
-    return null;
+
+    for (let i = step - 1; i <= step + 1; i++) {
+      List.push(
+        <ButtonText
+          mode="secondary"
+          size="large"
+          isActive={step === i}
+          onClick={() => setStep(i)}
+          {...(bgWhite && {bgWhite})}
+          label={`${i}`}
+        />
+      );
+    }
+    return (
+      <>
+        <ButtonText
+          mode="secondary"
+          size="large"
+          onClick={() => setStep(1)}
+          {...(bgWhite && {bgWhite})}
+          label={'1'}
+        />
+        <Separator>...</Separator>
+        {List}
+        <Separator>...</Separator>
+        <ButtonText
+          mode="secondary"
+          size="large"
+          onClick={() => setStep(totalSteps)}
+          {...(bgWhite && {bgWhite})}
+          label={`${totalSteps}`}
+        />
+      </>
+    );
   }
 
   return (
     <HStack data-testid="pagination">
-      <Navigation
+      <ButtonIcon
+        mode="secondary"
+        size="large"
         onClick={() => setStep(step - 1)}
         disabled={step === 1}
+        icon={<IconChevronLeft />}
         {...(bgWhite && {bgWhite})}
-      >
-        <IconChevronLeft />
-      </Navigation>
-      {ButtonList(step, totalSteps, MovetoNextStep)}
-      <Navigation
+      />
+      {ButtonList()}
+      <ButtonIcon
+        mode="secondary"
+        size="large"
         onClick={() => setStep(step + 1)}
         disabled={step === totalSteps}
+        icon={<IconChevronRight />}
         {...(bgWhite && {bgWhite})}
-      >
-        <IconChevronRight />
-      </Navigation>
+      />
     </HStack>
   );
 };
@@ -147,24 +170,6 @@ export const Pagination: React.FC<PaginationProps> = ({
 const HStack = styled.div.attrs({
   className: 'flex space-x-1.5',
 })``;
-
-type NavigationType = Pick<PaginationProps, 'bgWhite'>;
-
-const Navigation = styled.button.attrs(({bgWhite = false}: NavigationType) => ({
-  className: `flex items-center justify-center text-ui-600 
-    rounded-xl ${!bgWhite && 'bg-ui-0'} h-6 w-6
-    disabled:text-ui-300 ${!bgWhite && 'disabled:bg-ui-100'}`,
-}))<NavigationType>``;
-
-type pageType = {isActive?: boolean; bgWhite?: boolean};
-
-const Page = styled.button.attrs(
-  ({isActive = false, bgWhite = false}: pageType) => ({
-    className: `rounded-xl py-1.5 px-2.5 text-ui-600 ${
-      isActive ? 'bg-ui-200' : `${!bgWhite && 'bg-ui-0'}`
-    }`,
-  })
-)<pageType>``;
 
 const Separator = styled.div.attrs({
   className: 'flex items-center',
