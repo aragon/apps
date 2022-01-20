@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import styled from 'styled-components';
 import {IconChevronRight, IconChevronLeft} from '../icons/interface';
 
@@ -15,7 +15,7 @@ export interface PaginationProps {
    * active steps
    */
   defaultStep?: number;
-  onChange?: () => void;
+  onChange?: (step: number) => void;
 }
 
 /**
@@ -25,10 +25,16 @@ export const Pagination: React.FC<PaginationProps> = ({
   totalSteps = 10,
   defaultStep = 1,
   bgWhite = false,
-  // onChange,
+  onChange,
 }) => {
   const [step, setStep] = useState<number>(defaultStep);
   const MovetoNextStep = (step: number) => setStep(step);
+
+  useEffect(() => {
+    if (onChange) {
+      onChange(step);
+    }
+  }, [onChange, step]);
 
   function ButtonList(
     activeStep: number,
@@ -36,8 +42,8 @@ export const Pagination: React.FC<PaginationProps> = ({
     MovetoNextStep: (step: number) => void
   ) {
     const List = [];
-    if (activeStep < 5) {
-      for (let i = 1; i < 6; i++) {
+    if (activeStep <= 5) {
+      for (let i = 1; i <= Math.min(5, totalSteps); i++) {
         List.push(
           <Page
             isActive={activeStep === i}
@@ -51,7 +57,7 @@ export const Pagination: React.FC<PaginationProps> = ({
       return (
         <>
           {List}
-          {totalSteps > 6 && (
+          {totalSteps > 5 && totalSteps !== 6 && (
             <>
               <Separator>...</Separator>
               <Page
@@ -64,7 +70,7 @@ export const Pagination: React.FC<PaginationProps> = ({
           )}
         </>
       );
-    } else if (activeStep >= 5 && activeStep <= totalSteps - 5) {
+    } else if (activeStep >= 5 && activeStep <= totalSteps - 4) {
       for (let i = activeStep - 1; i <= activeStep + 1; i++) {
         List.push(
           <Page
@@ -92,8 +98,8 @@ export const Pagination: React.FC<PaginationProps> = ({
           </Page>
         </>
       );
-    } else if (activeStep > totalSteps - 5) {
-      for (let i = totalSteps - 5; i <= totalSteps; i++) {
+    } else if (totalSteps - 5 && activeStep > totalSteps - 4) {
+      for (let i = totalSteps - 4; i <= totalSteps; i++) {
         List.push(
           <Page
             isActive={activeStep === i}
@@ -118,7 +124,7 @@ export const Pagination: React.FC<PaginationProps> = ({
   }
 
   return (
-    <HStack>
+    <HStack data-testid="pagination">
       <Navigation
         onClick={() => setStep(step - 1)}
         disabled={step === 1}
