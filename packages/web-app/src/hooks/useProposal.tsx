@@ -2,6 +2,12 @@ import {Address} from '@aragon/ui-components/dist/utils/addresses';
 import {useEffect, useState} from 'react';
 import {HookData} from 'utils/types';
 
+/**
+ * NOTE: This file might only be temporary. At the moment it should be used to
+ * mock data so we can display the UI. The data structure for the mockdata might
+ * be wrong or incomplete. Please feel free to change it if you need.
+ */
+
 export function useProposal(
   proposalId: string
 ): HookData<ProposalData | undefined> {
@@ -12,7 +18,7 @@ export function useProposal(
   useEffect(() => {
     // Fetch data for proposal. This will likely not be necessary, since we'll
     // handle this via Apollo Client. Currently this simply serves static data.
-    const proposal = proposals.find(p => p.id == proposalId);
+    const proposal = proposals.find(p => p.id === proposalId);
     if (proposal) {
       setProposalData(proposal);
       setError(undefined);

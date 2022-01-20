@@ -3,14 +3,19 @@ import styled from 'styled-components';
 import {withTransaction} from '@elastic/apm-rum-react';
 import {useParams} from 'react-router-dom';
 
+import {useProposal} from '../hooks/useProposal';
+
 const Proposal: React.FC = () => {
   const {id} = useParams();
-  const {proposalData} = useProposalData(id);
+  const {data: proposalData} = useProposal(id || '2');
 
   return (
+    // TODO: assemble proposal overview page here. Mock data can be obtained by
+    // the useProposal hook.
     <Content>
       <Header>Proposal {id}</Header>
       <p>This page contains the overview for proposal {id}</p>
+      <p>{JSON.stringify(proposalData, null, 2)}</p>
     </Content>
   );
 };
