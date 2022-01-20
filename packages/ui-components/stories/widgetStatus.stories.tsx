@@ -114,4 +114,6 @@ Executed.args = {
 };
 
 export const Empty = Template.bind({});
-Empty.args = {};
+Empty.args = {
+  steps: [],
+};

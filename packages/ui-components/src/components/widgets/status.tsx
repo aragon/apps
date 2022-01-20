@@ -17,7 +17,7 @@ export const WidgetStatus: React.FC<WidgetStatusProps> = ({steps}) => {
   return (
     <Card data-testid="widgetStatus">
       <Header>Status</Header>
-      {steps ? (
+      {steps.length > 0 ? (
         steps.map(s => {
           return <ProgressStatus key={s.label + s.mode} {...s} />;
         })
