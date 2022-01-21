@@ -22,10 +22,10 @@ import '../utils/Proxy.sol';
 contract DAOFactory {
     using Address for address;
 
-    address private votingBase;
-    address private daoBase;
-    address private governanceERC20Base;
-    address private governanceWrappedERC20Base;
+    address public votingBase;
+    address public daoBase;
+    address public governanceERC20Base;
+    address public governanceWrappedERC20Base;
 
     Registry private registry;
 

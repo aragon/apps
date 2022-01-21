@@ -36,10 +36,6 @@ const config: HardhatUserConfig = {
       url: process.env.MAINNET_URL || '',
       accounts,
     },
-    ropsten: {
-      url: process.env.ROPSTEN_URL || '',
-      accounts,
-    },
     rinkeby: {
       url: process.env.RINKEBY_URL || '',
       accounts,

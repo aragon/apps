@@ -32,8 +32,8 @@ export const verifyContract = async (
     console.warn(
       'Delaying Etherscan verification due their API can not find newly deployed contracts'
     );
-    const msDelay = 3000;
-    const times = 30;
+    const msDelay = 15000; // 15s
+    const times = 4;
     // Write a temporal file to host complex parameters for hardhat-etherscan https://github.com/nomiclabs/hardhat/tree/master/packages/hardhat-etherscan#complex-arguments
     const {fd, path, cleanup} = await file({
       prefix: 'verify-params-',

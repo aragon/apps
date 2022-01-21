@@ -14,13 +14,13 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   console.log('Verifying registry and factories contracts');
 
   console.log(
-    'Waiting for 1 minutes so Etherscan is aware of contracts before verifying'
+    'Waiting for 3 minutes so Etherscan is aware of contracts before verifying'
   );
-  await delay(60000); // Etherscan needs some time to process before trying to verify.
+  await delay(180000); // 3 minutes - Etherscan needs some time to process before trying to verify.
   console.log('Starting to verify now');
 
   await run(TASK_ETHERSCAN_VERIFY, {
-    apiKey: process.env.ETHERSCAN_KEY, // todo : replace from .env
+    apiKey: process.env.ETHERSCAN_KEY,
     license: 'GPL-3.0',
     solcInput: true,
   });
@@ -39,23 +39,23 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
     ).address
   );
 
-  // const votingBase = await DAOFactoryContract.votingBase();
-  // const daoBase = await DAOFactoryContract.daoBase();
-  // const governanceERC20Base = await DAOFactoryContract.governanceERC20Base();
-  // const governanceWrappedERC20Base =
-  //   await DAOFactoryContract.governanceWrappedERC20Base();
-
   console.log('Verifying main contracts');
 
   await verifyContract(RegistryContract.address, []);
   await verifyContract(DAOFactoryContract.address, [RegistryContract.address]);
 
-  // console.log('Verifying base contracts');
+  console.log('Verifying base contracts');
 
-  // await verifyContract(votingBase, []);
-  // await verifyContract(daoBase, []);
-  // await verifyContract(governanceERC20Base, []);
-  // await verifyContract(governanceWrappedERC20Base, []);
+  const votingBase = await DAOFactoryContract.votingBase();
+  const daoBase = await DAOFactoryContract.daoBase();
+  const governanceERC20Base = await DAOFactoryContract.governanceERC20Base();
+  const governanceWrappedERC20Base =
+    await DAOFactoryContract.governanceWrappedERC20Base();
+
+  await verifyContract(votingBase, []);
+  await verifyContract(daoBase, []);
+  await verifyContract(governanceERC20Base, []);
+  await verifyContract(governanceWrappedERC20Base, []);
 };
 export default func;
 func.runAtTheEnd = true;
