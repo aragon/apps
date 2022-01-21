@@ -1,33 +1,32 @@
-import React, {useState} from 'react';
 import styled from 'styled-components';
+import React, {SyntheticEvent} from 'react';
 
 import {Badge} from '../badge';
+import FallbackImg from '../../assets/avatar-token.svg';
 import {IconRadioDefault, IconSuccess} from '../icons';
 
 export type ListItemBlockchainProps = {
-  selected?: boolean;
   domain: string;
-  logo: string;
+  logo?: string;
   name: string;
+  selected?: boolean;
   tag?: string;
-  onClick?: (selectedState: boolean) => void;
+  onClick?: React.MouseEventHandler;
 };
 
 export const ListItemBlockchain: React.FC<ListItemBlockchainProps> = ({
-  onClick,
+  selected = false,
   ...props
 }) => {
-  const [selected, setSelected] = useState(props.selected || false);
-
-  const handleOnClick = () => {
-    const newState = !selected;
-    setSelected(newState);
-    onClick?.(newState);
-  };
-
   return (
-    <Container onClick={handleOnClick} selected={selected} {...props}>
-      <Logo src={props.logo} alt="logo" />
+    <Container selected={selected} {...props}>
+      <Logo
+        src={props.logo || FallbackImg}
+        onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
+          e.currentTarget.src = FallbackImg;
+        }}
+        alt="logo"
+      />
       <Content>
         <Domain selected={selected}>{props.name}</Domain>
         <Name>{props.domain}</Name>
