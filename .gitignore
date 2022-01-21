@@ -30,3 +30,7 @@ yarn-error.log*
 
 # deployments
 deployments
+
+# generated
+generated
+subgraph.yaml
