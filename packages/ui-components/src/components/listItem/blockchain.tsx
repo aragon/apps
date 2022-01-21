@@ -19,13 +19,12 @@ export const ListItemBlockchain: React.FC<ListItemBlockchainProps> = ({
   ...props
 }) => {
   return (
-    <Container selected={selected} {...props}>
+    <Container selected={selected} {...props} data-testid="listItem-blockchain">
       <Logo
         src={props.logo || FallbackImg}
         onError={(e: SyntheticEvent<HTMLImageElement, Event>) => {
           e.currentTarget.src = FallbackImg;
         }}
-        alt="logo"
       />
       <Content>
         <Domain selected={selected}>{props.name}</Domain>
