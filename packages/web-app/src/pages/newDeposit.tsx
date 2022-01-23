@@ -68,7 +68,7 @@ const NewDeposit: React.FC = () => {
     ensName,
     isConnected,
     provider,
-    tokenList,
+    getTokenList,
   }: useWalletProps = useWallet();
 
   const formMethods = useForm<FormData>({
@@ -101,19 +101,11 @@ const NewDeposit: React.FC = () => {
     async function fetchWalletTokens() {
       if (account === null) return;
 
-      // get curated tokens
-      console.log('fetchTokenList', tokenList);
-      const curatedTokenBalances = tokenList.map(
-        value =>
-          ({
-            address: value[1],
-            count: BigInt(0),
-          } as TokenBalance)
-      );
+      const tokenList = await getTokenList();
 
       // get curated tokens balance from wallet
       const allPromise = Promise.all(
-        curatedTokenBalances.map(({address}) =>
+        tokenList.map(address =>
           fetchBalance(address, account, provider, false)
         )
       );
@@ -122,15 +114,15 @@ const NewDeposit: React.FC = () => {
 
       // map tokens with their balance
       setWalletTokens(
-        curatedTokenBalances.map((token, index) => ({
-          ...token,
+        tokenList.map((token, index) => ({
+          address: token,
           count: balances[index],
         }))
       );
     }
 
     fetchWalletTokens();
-  }, [account, chainId, provider, tokenList]);
+  }, [account, chainId, getTokenList, provider]);
 
   /*************************************************
    *             Callbacks and Handlers            *

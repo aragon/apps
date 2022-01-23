@@ -1,7 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // Workarounds are used that necessitate the any escape hatch
 
-import React, {useContext, useEffect, useMemo, useState} from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import {UseWalletProvider, useWallet} from 'use-wallet';
 import {Wallet} from 'use-wallet/dist/cjs/types';
 import {ethers, providers as EthersProviders} from 'ethers';
@@ -15,7 +21,7 @@ import {erc20TokenABI} from '../abis/erc20TokenABI';
 
 export type WalletAugmented = Wallet & {
   provider: EthersProviders.Provider;
-  tokenList: string[];
+  getTokenList: () => string[];
 };
 // Any is a workaround so TS doesn't ask for a filled out default
 const WalletAugmentedContext = React.createContext<WalletAugmented | any>({});
@@ -46,7 +52,7 @@ const WalletAugmented: React.FC<unknown> = ({children}) => {
     return address ? {ensName, ensAvatarUrl} : null;
   }, [injectedProvider, wallet.account]);
 
-  const getTokenList: any = useMemo(async () => {
+  const getTokenList = useCallback(async () => {
     const erc20Interface = new Interface(erc20TokenABI);
     const latestBlockNumber = await provider.getBlockNumber();
 
@@ -62,14 +68,16 @@ const WalletAugmented: React.FC<unknown> = ({children}) => {
     });
 
     // Filter unique token contract addresses and convert all events to Contract instances
-    return Promise.all(
-      await transfers
+    const tokens = await Promise.all(
+      transfers
         .filter(
           (event, i) =>
             i === transfers.findIndex(other => event.address === other.address)
         )
         .map(event => getAddress(event.address))
     );
+    console.log('seeResult', tokens);
+    return tokens;
   }, [provider, wallet.account]);
 
   useEffect(() => {
@@ -92,7 +100,7 @@ const WalletAugmented: React.FC<unknown> = ({children}) => {
       provider,
       ...wallet,
       ...getEnsData,
-      tokenList: getTokenList,
+      getTokenList,
     };
   }, [getEnsData, getTokenList, provider, wallet]);
 
