@@ -23,22 +23,12 @@ import "./TokenFactory.sol";
 /// @notice This contract is used to create a DAO.
 contract DAOFactory {
     using Address for address;
-<<<<<<< HEAD
     using Clones for address;
     
     string private constant ERROR_MISMATCH = "FACTORY: MISMATCH";
 
-    address private votingBase;
-    address private daoBase;
-    address private governanceERC20Base;
-    address private governanceWrappedERC20Base;
-=======
-
     address public votingBase;
     address public daoBase;
-    address public governanceERC20Base;
-    address public governanceWrappedERC20Base;
->>>>>>> develop
 
     Registry public registry;
     TokenFactory public tokenFactory;
@@ -54,8 +44,9 @@ contract DAOFactory {
 
     event DAOCreated(string name, address indexed token, address indexed voting);
 
-    // @dev Stores the registry address and creates the base contracts required for the factory
+    // @dev Stores the registry and token factory address and creates the base contracts required for the factory
     // @param _registry The DAO registry to register the DAO with his name
+    // @param _tokenFactory The Token Factory to register tokens
     constructor(
         Registry _registry,
         TokenFactory _tokenFactory
@@ -67,12 +58,12 @@ contract DAOFactory {
     }
 
     // @notice Creates a new DAO based with his name, token, metadata, and the voting settings.
-    // @param name The DAO name as string
-    // @param _metadata The IPFS hash pointing to the metadata JSON object of the DAO
-    // @param _tokenConfig The address of the token, name, and symbol. If no addr is passed will a new token get created.
-    // @return dao The DAO contract created
-    // @return voting The voting process for this DAO - Currently a hard-coded process. With the planned marketplace will this be more dynamic.
-    // @return token The token passed or created that belongs to this DAO. - Probably not a requirement in the future.
+    // @param _daoConfig The DAO name and metadata
+    // @param _tokenConfig address, name, symbol of the token. If no addr, totally new token gets created.
+    // @param _mintConfig the addresses and amounts to where to mint tokens.
+    // @return _votingSettings settings for the voting contract.
+    // @return _allowedActions allowed actions on the simple voting.
+    // @return token The token passed or created that belongs to this DAO + merkle minter.
     function newDAO(
         DAOConfig calldata _daoConfig,
         TokenFactory.TokenConfig calldata _tokenConfig,
@@ -160,7 +151,5 @@ contract DAOFactory {
     function setupBases() private {
         votingBase = address(new SimpleVoting());
         daoBase = address(new DAO());
-        governanceERC20Base = address(new GovernanceERC20());
-        governanceWrappedERC20Base = address(new GovernanceWrappedERC20());
     }
 }
