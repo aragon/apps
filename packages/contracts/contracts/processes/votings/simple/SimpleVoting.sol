@@ -50,7 +50,7 @@ contract SimpleVoting is VotingProcess, TimeHelpers {
     event StartVote(uint256 indexed voteId, address indexed creator, string description);
     event CastVote(uint256 indexed voteId, address indexed voter, bool voterSupports, uint256 stake);
     event ExecuteVote(uint256 indexed voteId);
-    event ChangeConfig(uint64 supportRequiredPct, uint64 minAcceptQuorumPct);
+    event UpdateConfig(uint64 supportRequiredPct, uint64 minAcceptQuorumPct);
 
     /// @dev Used for UUPS upgradability pattern
     /// @param _dao The DAO contract of the current DAO
@@ -70,6 +70,8 @@ contract SimpleVoting is VotingProcess, TimeHelpers {
         voteTime = _votingSettings[2];
 
         VotingProcess.initialize(_dao, _allowedActions);
+
+        emit UpdateConfig(supportRequiredPct, minAcceptQuorumPct);
     }
 
     /**
@@ -84,7 +86,7 @@ contract SimpleVoting is VotingProcess, TimeHelpers {
         minAcceptQuorumPct = _minAcceptQuorumPct;
         supportRequiredPct = _supportRequiredPct;
 
-        emit ChangeConfig(supportRequiredPct, minAcceptQuorumPct);
+        emit UpdateConfig(supportRequiredPct, minAcceptQuorumPct);
     }
 
     /**

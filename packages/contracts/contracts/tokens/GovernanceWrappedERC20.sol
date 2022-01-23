@@ -4,11 +4,12 @@
 
 pragma solidity 0.8.10;
 
-import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20VotesUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20WrapperUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+
+import "../core/IDAO.sol";
+import "./GovernanceToken.sol";
 
 // NOTE: If user already has a ERC20 token, it's important to wrap it inside This
 // to make it have ERC20Votes functionality. For the voting contract, it works like this:
@@ -17,11 +18,24 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 // After those, Users can now participate in the voting. If user doesn't want to make votes anymore,
 // he can call `withdrawTo` to take his tokens back to his ERC20.
 
-contract GovernanceWrappedERC20 is ERC20VotesUpgradeable, ERC20WrapperUpgradeable {
-    function initialize(IERC20Upgradeable token, string calldata name, string calldata symbol) external initializer {
-        __ERC20_init(name, symbol);
-        __ERC20Permit_init(name);
-        __ERC20Wrapper_init(token);
+contract GovernanceWrappedERC20 is Initializable, GovernanceToken, ERC20WrapperUpgradeable {
+
+    function initialize(
+        IDAO _dao, 
+        IERC20Upgradeable _token, 
+        string calldata _name, 
+        string calldata _symbol
+    ) external initializer {
+        __Initialize_Token(_dao, _name, _symbol);
+        __ERC20Wrapper_init(_token);
+    }
+
+    // IMPORTANT: In this token, no need to have mint functionality, 
+    // as it's the wrapped token's responsibility to mint whenever needed.
+
+    // TODO: https://forum.openzeppelin.com/t/self-delegation-in-erc20votes/17501/12?u=novaknole
+    function delegates(address account) public view virtual override returns (address) {
+        return account;
     }
     
     // The functions below are overrides required by Solidity.

@@ -15,30 +15,48 @@ import "./../registry/Registry.sol";
 import "./../core/DAO.sol";
 
 import "../utils/Proxy.sol";
+import "../tokens/MerkleMinter.sol";
+import "./TokenFactory.sol";
+
+import "../tokens/GovernanceToken.sol";
 
 /// @title DAOFactory to create a DAO
 /// @author Giorgi Lagidze & Samuel Furter - Aragon Association - 2022
 /// @notice This contract is used to create a DAO.
 contract DAOFactory {
     using Address for address;
+    using Clones for address;
     
+    string private constant ERROR_MISMATCH = "FACTORY: MISMATCH";
+
     address private votingBase;
     address private daoBase;
     address private governanceERC20Base;
     address private governanceWrappedERC20Base;
 
-    Registry private registry;
-
-    struct TokenConfig {
-        address addr;
+    Registry public registry;
+    TokenFactory public tokenFactory;
+    
+    struct DAOConfig {
         string name;
-        string symbol;
+        bytes metadata;
     }
+
+    struct AllowedActions {
+        bytes[] SimpleVoting;
+    }
+
+    event DAOCreated(string name, address indexed token, address indexed voting);
 
     // @dev Stores the registry address and creates the base contracts required for the factory
     // @param _registry The DAO registry to register the DAO with his name
-    constructor(Registry _registry) {
+    constructor(
+        Registry _registry,
+        TokenFactory _tokenFactory
+    ) {
         registry = _registry;
+        tokenFactory = _tokenFactory;
+
         setupBases();
     }
 
@@ -50,41 +68,38 @@ contract DAOFactory {
     // @return voting The voting process for this DAO - Currently a hard-coded process. With the planned marketplace will this be more dynamic.
     // @return token The token passed or created that belongs to this DAO. - Probably not a requirement in the future.
     function newDAO(
-        string calldata name,
-        bytes calldata _metadata,
-        TokenConfig calldata _tokenConfig,
-        uint256[3] calldata _votingSettings
-    ) external returns (DAO dao, SimpleVoting voting, address token) {
-        // setup Token
-        // TODO: Do we wanna leave the option not to use any proxy pattern in such case ? 
-        // delegateCall is costly if so many calls are needed for a contract after the deployment.
-        token = _tokenConfig.addr;
-        // https://forum.openzeppelin.com/t/what-is-the-best-practice-for-initializing-a-clone-created-with-openzeppelin-contracts-proxy-clones-sol/16681
-        if(token == address(0)) {
-            token = Clones.clone(governanceERC20Base);
-            GovernanceERC20(token).initialize(_tokenConfig.name, _tokenConfig.symbol);
-        } else {
-            token = Clones.clone(governanceWrappedERC20Base);
-            // user already has a token. we need to wrap it in our new token to make it governance token.
-            GovernanceWrappedERC20(
-                token
-            ).initialize(
-                IERC20Upgradeable(_tokenConfig.addr),
-                _tokenConfig.name,
-                _tokenConfig.symbol
-            );
-        }
-
+        DAOConfig calldata _daoConfig,
+        TokenFactory.TokenConfig calldata _tokenConfig,
+        TokenFactory.MintConfig calldata _mintConfig,
+        uint256[3] calldata _votingSettings,
+        AllowedActions calldata _allowedActions
+    ) external returns (
+        DAO dao, 
+        SimpleVoting voting, 
+        GovernanceToken token,
+        MerkleMinter minter
+    ) {
+        require(_mintConfig.tos.length == _mintConfig.amounts.length, ERROR_MISMATCH);
+        
+        // create dao
         dao = DAO(createProxy(daoBase, bytes("")));
-        
-        registry.register(name, dao, msg.sender, token);
-        
-        dao.initialize(
-            _metadata,
-            address(this)
-        );  
+        // initialize dao
+        dao.initialize(_daoConfig.metadata, address(this));  
 
-        bytes[] memory allowedActions;
+        // Create token and merkle minter
+        dao.grant(address(dao), address(tokenFactory), dao.ROOT_ROLE());
+        (token, minter) = tokenFactory.newToken(
+            dao,
+            _tokenConfig,
+            _mintConfig
+        );
+        dao.revoke(address(dao), address(tokenFactory), dao.ROOT_ROLE());
+
+        // register dao with its name and token to the registry
+        // TODO: shall we add minter as well ? 
+        registry.register(_daoConfig.name, dao, msg.sender, address(token));
+        
+        // create voting and initialize right away.
         voting = SimpleVoting(
             createProxy(
                 votingBase,
@@ -93,7 +108,7 @@ contract DAOFactory {
                     dao,
                     token,
                     _votingSettings,
-                    allowedActions // TODO: maybe we can directly pass allowed actions here
+                    _allowedActions.SimpleVoting // TODO: maybe we can directly pass allowed actions here
                 )
             )
         );
@@ -104,7 +119,20 @@ contract DAOFactory {
         // Add voting process
         dao.addProcess(voting);
 
-        ACLData.BulkItem[] memory items = new ACLData.BulkItem[](7);
+        // set roles on the Voting Process
+        ACLData.BulkItem[] memory items = new ACLData.BulkItem[](4);
+
+        address ANY_ADDR = address(type(uint160).max);
+        
+        items[0] = ACLData.BulkItem(ACLData.BulkOp.Grant, voting.PROCESS_VOTE_ROLE(), ANY_ADDR);
+        items[1] = ACLData.BulkItem(ACLData.BulkOp.Grant, voting.PROCESS_EXECUTE_ROLE(), ANY_ADDR);
+        items[2] = ACLData.BulkItem(ACLData.BulkOp.Grant, voting.PROCESS_START_ROLE(), ANY_ADDR);
+        items[3] = ACLData.BulkItem(ACLData.BulkOp.Grant, voting.MODIFY_CONFIG(), address(dao));
+
+        dao.bulk(address(voting), items);
+
+        // set roles on the dao itself.
+        items = new ACLData.BulkItem[](7);
         
         // Grant DAO all the permissions required
         items[0] = ACLData.BulkItem(ACLData.BulkOp.Grant, dao.DAO_CONFIG_ROLE(), address(dao));
@@ -118,18 +146,8 @@ contract DAOFactory {
         items[6] = ACLData.BulkItem(ACLData.BulkOp.Revoke, dao.ROOT_ROLE(), address(this));
 
         dao.bulk(address(dao), items);
-
-        // give voting AND executing capabilities to anyone on the voting process
-        items = new ACLData.BulkItem[](4);
-
-        address ANY_ADDR = address(type(uint160).max);
-        
-        items[0] = ACLData.BulkItem(ACLData.BulkOp.Grant, voting.PROCESS_VOTE_ROLE(), ANY_ADDR);
-        items[1] = ACLData.BulkItem(ACLData.BulkOp.Grant, voting.PROCESS_EXECUTE_ROLE(), ANY_ADDR);
-        items[2] = ACLData.BulkItem(ACLData.BulkOp.Grant, voting.PROCESS_START_ROLE(), ANY_ADDR);
-        items[3] = ACLData.BulkItem(ACLData.BulkOp.Grant, voting.MODIFY_CONFIG(), address(dao));
-
-        dao.bulk(address(voting), items);
+    
+        emit DAOCreated(_daoConfig.name, address(token), address(voting));
     }
     
     // @dev Internal helper method to set up the required base contracts on DAOFactory deployment.

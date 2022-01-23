@@ -1,7 +1,8 @@
 import chai, { expect } from 'chai';
 import { ethers, waffle } from 'hardhat';
-import { defaultAbiCoder, BytesLike } from 'ethers/lib/utils';
+import { BytesLike } from 'ethers/lib/utils';
 import chaiUtils from '../test-utils';
+import { createProposal, createVoteData } from "../utils/voting";
 
 chai.use(chaiUtils);
 
@@ -31,42 +32,11 @@ const EVENTS = {
   REGISTERED_CALLBACK: 'RegisteredCallback',
   REGISTERED_STANDARD: 'RegisteredStandard',
   RECEIVED_CALLBACK: 'ReceivedCallback',
-  CHANGE_CONFIG: 'ChangeConfig',
+  UPDATE_CONFIG: 'UpdateConfig',
   START_VOTE: 'StartVote',
   CAST_VOTE: 'CastVote',
   EXECUTED: 'Executed'
 };
-
-function createProposal(
-    {actions, metadata, description, castVote, executeIfDecided}: 
-    {actions?: any, metadata?: string, description?: string, castVote?: boolean, executeIfDecided?: boolean}
-) {
-    const proposal = {
-        actions : actions || [],
-        metadata: metadata || '0x',
-        additionalArguments: defaultAbiCoder.encode([
-            'string',
-            'bool',
-            'bool'
-        ],[
-            description || '0x',
-            executeIfDecided || false,
-            castVote || false,
-        ])
-    };
-
-    return proposal;
-}
-
-function createVoteData(supports: boolean, executeIfDecided: boolean) {
-    return defaultAbiCoder.encode([
-        'bool',
-        'bool'
-    ],[
-        supports,
-        executeIfDecided
-    ]);
-}
 
 describe('Voting: SimpleVoting', function () {
     let signers: any;
@@ -129,7 +99,7 @@ describe('Voting: SimpleVoting', function () {
         })
     })
 
-    describe("changeConfig: ", async () => {
+    describe("UpdateConfig: ", async () => {
         beforeEach(async () => {
             await initializeVoting([1, 2, 3], []);
         });
@@ -145,7 +115,7 @@ describe('Voting: SimpleVoting', function () {
 
         it("should change config successfully", async () => {
             expect(await voting.changeVoteConfig(20, 10))
-                .to.emit(voting, EVENTS.CHANGE_CONFIG)
+                .to.emit(voting, EVENTS.UPDATE_CONFIG)
                 .withArgs(20, 10);
         })
     })
