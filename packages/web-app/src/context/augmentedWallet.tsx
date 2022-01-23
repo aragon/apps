@@ -75,7 +75,6 @@ const WalletAugmented: React.FC<unknown> = ({children}) => {
         )
         .map(event => getAddress(event.address))
     );
-    console.log('seeResult', tokens);
     return tokens;
   }, [provider, wallet.account]);
 
