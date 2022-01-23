@@ -23,7 +23,6 @@ import ReviewDeposit from 'containers/reviewDeposit';
 import {fetchBalance} from 'utils/tokens';
 import {NavigationBar} from 'containers/navbar';
 import {TransferTypes} from 'utils/constants';
-import {curatedTokens} from 'utils/network';
 import {useWalletProps} from 'containers/walletMenu';
 import {useWalletMenuContext} from 'context/walletMenu';
 import {BaseTokenInfo, TokenBalance} from 'utils/types';

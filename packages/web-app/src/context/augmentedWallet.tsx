@@ -10,9 +10,8 @@ import React, {
 } from 'react';
 import {UseWalletProvider, useWallet} from 'use-wallet';
 import {Wallet} from 'use-wallet/dist/cjs/types';
-import {ethers, providers as EthersProviders} from 'ethers';
+import {providers as EthersProviders} from 'ethers';
 import {Interface, getAddress, hexZeroPad} from 'ethers/lib/utils';
-import ERC20Artifact from '@openzeppelin/contracts/build/contracts/ERC20.json';
 
 import {identifyUser} from 'services/analytics';
 import {updateAPMContext, useAPM} from './elasticAPM';
