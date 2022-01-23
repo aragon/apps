@@ -10,13 +10,13 @@ import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 
-import "./GovernanceToken.sol";
+import "./GovernanceERC20.sol";
 
 contract MerkleDistributor is Initializable {
     
-    using SafeERC20Upgradeable for GovernanceToken;
+    using SafeERC20Upgradeable for GovernanceERC20;
 
-    GovernanceToken public token;
+    GovernanceERC20 public token;
     bytes32 public merkleRoot;
 
     // This is a packed array of booleans.
@@ -24,7 +24,7 @@ contract MerkleDistributor is Initializable {
 
     event Claimed(uint256 indexed index, address indexed to, uint256 amount);
 
-    function initialize(GovernanceToken _token, bytes32 _merkleRoot) external initializer {
+    function initialize(GovernanceERC20 _token, bytes32 _merkleRoot) external initializer {
         token = _token;
         merkleRoot = _merkleRoot;
     }

@@ -39,7 +39,7 @@ async function getDeployments(tx: any) {
     ).args
 
     return {
-      token: await ethers.getContractAt('GovernanceToken', token),
+      token: await ethers.getContractAt('GovernanceERC20', token),
       dao: await ethers.getContractAt('DAO', dao),
       SimpleVoting: await ethers.getContractAt('SimpleVoting', voting),
       creator,
@@ -69,7 +69,7 @@ describe('DAOFactory: ', function () {
         // @ts-ignore
         const SimpleVoting = await hre.artifacts.readArtifact('SimpleVoting');
         // @ts-ignore
-        const Token = await hre.artifacts.readArtifact('GovernanceToken');
+        const Token = await hre.artifacts.readArtifact('GovernanceERC20');
 
         return {
             abi: [

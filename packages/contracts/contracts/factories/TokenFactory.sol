@@ -6,9 +6,10 @@ pragma solidity 0.8.10;
 
 import "@openzeppelin/contracts/proxy/Clones.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
+
 import "../tokens/GovernanceERC20.sol";
 import "../tokens/GovernanceWrappedERC20.sol";
-import "../tokens/GovernanceToken.sol";
 import "../tokens/MerkleDistributor.sol";
 import "../tokens/MerkleMinter.sol";
 
@@ -51,13 +52,13 @@ contract TokenFactory {
     // @param _metadata The IPFS hash pointing to the metadata JSON object of the DAO
     // @param _tokenConfig The address of the token, name, and symbol. If no addr is passed will a new token get created.
     // @return _mintConfig Where to mint initial tokens
-    // @return GovernanceToken Created or Wrapped Token
+    // @return ERC20VotesUpgradeable Created or Wrapped Token
     // @return MerkleMinter Merkle Minter 
     function newToken(
         DAO _dao,
         TokenConfig calldata _tokenConfig,
         MintConfig calldata _mintConfig
-    ) external returns (GovernanceToken, MerkleMinter) {
+    ) external returns (ERC20VotesUpgradeable, MerkleMinter) {
         address token = _tokenConfig.addr;
 
         // deploy token
@@ -66,13 +67,15 @@ contract TokenFactory {
             // user already has a token. we need to wrap it in our new 
             // token to make it governance token.
             GovernanceWrappedERC20(token).initialize(
-                _dao,
                 IERC20Upgradeable(_tokenConfig.addr),
                 _tokenConfig.name,
                 _tokenConfig.symbol
             );
 
-            return (GovernanceToken(token), MerkleMinter(address(0)));
+            return (
+                ERC20VotesUpgradeable(token), 
+                MerkleMinter(address(0))
+            );
         }
 
         // IMPORTANT: If creator already has a token, It's that token's
@@ -88,18 +91,18 @@ contract TokenFactory {
         address merkleMinter = merkleMinterBase.clone();
         MerkleMinter(merkleMinter).initialize(
             _dao,
-            GovernanceToken(token),
+            GovernanceERC20(token),
             distributorBase
         );
 
-        bytes32 tokenMinterRole  = GovernanceToken(token).TOKEN_MINTER_ROLE();
+        bytes32 tokenMinterRole  = GovernanceERC20(token).TOKEN_MINTER_ROLE();
         bytes32 merkleMinterRole = MerkleMinter(merkleMinter).MERKLE_MINTER_ROLE();
 
         // give tokenFactory the permission to mint.
         _dao.grant(token, address(this), tokenMinterRole);
 
         for(uint i = 0; i < _mintConfig.tos.length; i++) {
-            GovernanceToken(token).mint(
+            GovernanceERC20(token).mint(
                 _mintConfig.tos[i], 
                 _mintConfig.amounts[i]
             );
@@ -111,7 +114,10 @@ contract TokenFactory {
         _dao.grant(token, merkleMinter, tokenMinterRole);
         _dao.grant(merkleMinter, address(_dao), merkleMinterRole);
         
-        return (GovernanceToken(token), MerkleMinter(merkleMinter));
+        return (
+            ERC20VotesUpgradeable(token), 
+            MerkleMinter(merkleMinter)
+        );
     }
     
     // @dev private helper method to set up the required base contracts on TokenFactory deployment.

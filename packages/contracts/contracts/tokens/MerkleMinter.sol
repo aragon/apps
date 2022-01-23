@@ -16,14 +16,14 @@ contract MerkleMinter is Initializable, DAOPermissionHandler {
 
     bytes32 constant public MERKLE_MINTER_ROLE = keccak256("MERKLE_MINTER_ROLE");
 
-    GovernanceToken public token;
+    GovernanceERC20 public token;
     address public distributorBase;
 
     event MintedMerkle(address indexed distributor, bytes32 indexed merkleRoot, uint256 totalAmount, bytes tree, bytes context);
 
     function initialize(
         IDAO _dao,
-        GovernanceToken _token, 
+        GovernanceERC20 _token, 
         MerkleDistributor _distributorBase
     ) external initializer {
         token = _token;

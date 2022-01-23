@@ -18,8 +18,6 @@ import "../utils/Proxy.sol";
 import "../tokens/MerkleMinter.sol";
 import "./TokenFactory.sol";
 
-import "../tokens/GovernanceToken.sol";
-
 /// @title DAOFactory to create a DAO
 /// @author Giorgi Lagidze & Samuel Furter - Aragon Association - 2022
 /// @notice This contract is used to create a DAO.
@@ -76,7 +74,7 @@ contract DAOFactory {
     ) external returns (
         DAO dao, 
         SimpleVoting voting, 
-        GovernanceToken token,
+        ERC20VotesUpgradeable token,
         MerkleMinter minter
     ) {
         require(_mintConfig.tos.length == _mintConfig.amounts.length, ERROR_MISMATCH);
