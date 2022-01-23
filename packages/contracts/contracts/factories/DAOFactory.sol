@@ -23,6 +23,7 @@ import "./TokenFactory.sol";
 /// @notice This contract is used to create a DAO.
 contract DAOFactory {
     using Address for address;
+<<<<<<< HEAD
     using Clones for address;
     
     string private constant ERROR_MISMATCH = "FACTORY: MISMATCH";
@@ -31,6 +32,13 @@ contract DAOFactory {
     address private daoBase;
     address private governanceERC20Base;
     address private governanceWrappedERC20Base;
+=======
+
+    address public votingBase;
+    address public daoBase;
+    address public governanceERC20Base;
+    address public governanceWrappedERC20Base;
+>>>>>>> develop
 
     Registry public registry;
     TokenFactory public tokenFactory;
@@ -147,7 +155,7 @@ contract DAOFactory {
     
         emit DAOCreated(_daoConfig.name, address(token), address(voting));
     }
-    
+
     // @dev Internal helper method to set up the required base contracts on DAOFactory deployment.
     function setupBases() private {
         votingBase = address(new SimpleVoting());
