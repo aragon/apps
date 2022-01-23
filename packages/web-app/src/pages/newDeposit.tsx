@@ -68,6 +68,7 @@ const NewDeposit: React.FC = () => {
     ensName,
     isConnected,
     provider,
+    tokenList,
   }: useWalletProps = useWallet();
 
   const formMethods = useForm<FormData>({
@@ -101,9 +102,8 @@ const NewDeposit: React.FC = () => {
       if (account === null) return;
 
       // get curated tokens
-      const curatedTokenBalances = Object.entries(
-        curatedTokens[chainId || 4].curatedTokens
-      ).map(
+      console.log('fetchTokenList', tokenList);
+      const curatedTokenBalances = tokenList.map(
         value =>
           ({
             address: value[1],
@@ -130,7 +130,7 @@ const NewDeposit: React.FC = () => {
     }
 
     fetchWalletTokens();
-  }, [account, chainId, provider]);
+  }, [account, chainId, provider, tokenList]);
 
   /*************************************************
    *             Callbacks and Handlers            *

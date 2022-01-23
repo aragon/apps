@@ -104,7 +104,9 @@ const TokenMenu: React.FC<TokenMenuProps> = ({
       <Container>
         <SearchInput
           value={searchValue}
-          onChange={e => setSearchValue(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setSearchValue(e.target.value)
+          }
           placeholder={t('placeHolders.searchTokens')}
         />
         <TokensWrapper>{renderTokens()}</TokensWrapper>
