@@ -32,3 +32,4 @@ export {IconWarning} from './icon_warning';
 export {IconWithdraw} from './icon_withdraw';
 export {IconMenuVertical} from './icon_menu_vertical';
 export {IconExpand} from './icon_expand';
+export {IconStorage} from './icon_storage';
