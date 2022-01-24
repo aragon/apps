@@ -1,7 +1,13 @@
 import React from 'react';
 
-const Step = () => {
-  return <h1>Step</h1>;
+export type StepProps = {
+  wizardTitle: string;
+  wizardDescription: string;
+  backButtonLabel?: string;
+  nextButtonLabel?: string;
+  isNextButtonDisabled?: boolean;
 };
 
-export default Step;
+export const Step: React.FC<StepProps> = ({children}) => {
+  return <>{children}</>;
+};
