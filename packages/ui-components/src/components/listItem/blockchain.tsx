@@ -46,7 +46,7 @@ type SelectedProps = {
 const Container = styled.div.attrs(({selected}: SelectedProps) => {
   const className = `${
     selected ? 'bg-ui-0' : 'bg-ui-50'
-  } flex items-center p-2 space-x-2 cursor-pointer`;
+  } flex items-center p-2 space-x-2 rounded-xl cursor-pointer`;
   return {className};
 })<SelectedProps>``;
 
