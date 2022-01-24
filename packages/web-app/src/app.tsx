@@ -43,6 +43,7 @@ function App() {
           <Routes>
             <Route path={paths.NewDeposit} element={<NewDepositPage />} />
             <Route path={paths.NewWithDraw} element={<NewWithdrawPage />} />
+            {/* The next line will be removed before merging */}
             <Route
               path={paths.FullScreenStepper}
               element={<FullScreenStepperDemo />}
