@@ -21,7 +21,7 @@ abstract contract Process is Component {
     /// @notice Emitted as soon as the process does get started
     event ProcessStarted(Execution execution);
     /// @notice Emitted as soon as the process with his actions does get executed
-    event ProcessExecuted(Execution execution, uint256 indexed executionId);
+    event ProcessExecuted(address indexed actor, uint256 indexed executionId, Execution execution, bytes[] results);
     /// @notice Emtted as soon as new allowed actions do get added
     event AllowedActionsAdded(bytes[] allowedActions);
     /// @notice Emtted as soon as allowed actions do get removed
@@ -40,10 +40,10 @@ abstract contract Process is Component {
     string internal constant ERROR_EXECUTION_STATE_WRONG = "ERROR_EXECUTION_STATE_WRONG";
     /// @notice Error emitted in case a action couldn't get executed
     string internal constant ERROR_NO_EXECUTION = "ERROR_NO_EXECUTION";
-    
+
     /// @notice All the different states a process can have
     enum State {
-        RUNNING, 
+        RUNNING,
         STOPPED,
         HALTED,
         EXECUTED
@@ -52,7 +52,7 @@ abstract contract Process is Component {
     /// @notice The proposal struct with all the informations required to have it executed succesfully
     struct Proposal {
         IDAO.Action[] actions; // The actions that should get executed in the end
-        bytes metadata; // IPFS hash pointing to the metadata as description, title, image etc. 
+        bytes metadata; // IPFS hash pointing to the metadata as description, title, image etc.
         bytes additionalArguments; // Optional additional arguments a process resp. governance process does need
     }
 
@@ -68,7 +68,7 @@ abstract contract Process is Component {
     /// @notice All executions of this process in the past and the ones currently running
     mapping(uint256 => Execution) private executions;
     /// @notice The actions allowed for this process
-    mapping(address => mapping(bytes4 => bool)) allowedActions; // The actions allowed for this process 
+    mapping(address => mapping(bytes4 => bool)) allowedActions; // The actions allowed for this process
 
     /// @dev Used for UUPS upgradability pattern
     /// @param _allowedActions A dynamic bytes array to define the allowed actions. Addr + funcSig byte strings.
@@ -88,10 +88,10 @@ abstract contract Process is Component {
     function _setAllowedActions(bytes[] calldata _allowedActions) internal {
         uint256 actionsLength = _allowedActions.length;
 
-        for (uint256 i = 0; i < actionsLength; i++) { 
+        for (uint256 i = 0; i < actionsLength; i++) {
             bytes calldata allowedAction = _allowedActions[i];
             allowedActions[bytesToAddress(allowedAction[:20])][bytes4(allowedAction[20:24])] = true;
-        } 
+        }
 
         emit AllowedActionsAdded(_allowedActions);
     }
@@ -101,8 +101,8 @@ abstract contract Process is Component {
     /// @return addr The converted address
     function bytesToAddress(bytes memory _value) private pure returns (address addr) {
         assembly {
-            addr := mload(add(_value,20))
-        } 
+            addr := mload(add(_value, 20))
+        }
     }
 
     /// @notice Add more allowed actions this process has
@@ -118,10 +118,10 @@ abstract contract Process is Component {
     function removeAllowedActions(bytes[] calldata _actionsToRemove) external auth(PROCESS_REMOVE_ALLOWED_ACTIONS) {
         uint256 actionsLength = _actionsToRemove.length;
 
-        for (uint256 i = 0; i < actionsLength; i++) { 
+        for (uint256 i = 0; i < actionsLength; i++) {
             bytes calldata actionToRemove = _actionsToRemove[i];
             delete allowedActions[bytesToAddress(actionToRemove[:20])][bytes4(actionToRemove[20:24])];
-        } 
+        }
 
         emit AllowedActionsRemoved(_actionsToRemove);
     }
@@ -130,14 +130,10 @@ abstract contract Process is Component {
     /// @dev The state of the container does get changed to RUNNING, the execution struct gets created, and the concrete implementation in _start called.
     /// @param _proposal The proposal for execution submitted by the user.
     /// @return executionId The id of the newly created execution.
-    function start(Proposal calldata _proposal) 
-        external
-        auth(PROCESS_START_ROLE)
-        returns (uint256 executionId) 
-    {
+    function start(Proposal calldata _proposal) external auth(PROCESS_START_ROLE) returns (uint256 executionId) {
         if (!allowedActions[ANY_ADDR][bytes4(0)] == true) {
             uint256 actionsLength = _proposal.actions.length;
-            
+
             for (uint256 i = 0; i < actionsLength; i++) {
                 IDAO.Action calldata action = _proposal.actions[i];
                 if (allowedActions[action.to][bytes4(action.data[:4])] == false) {
@@ -145,7 +141,7 @@ abstract contract Process is Component {
                 }
             }
         }
-        
+
         executionsCounter++;
 
         // the reason behind this - https://matrix.to/#/!poXqlbVpQfXKWGseLY:gitter.im/$6IhWbfjcTqmLoqAVMopWFuIhlQwsoaIRxmsXhhmsaSs?via=gitter.im&via=matrix.org&via=ekpyron.org
@@ -160,20 +156,20 @@ abstract contract Process is Component {
 
         return executionsCounter;
     }
-    
+
     /// @notice If called the proposed actions do get executed.
     /// @dev The state of the container does get changed to EXECUTED, the pre-execute method _execute does get called, and the actions executed.
     /// @param _executionId The id of the execution struct.
     function execute(uint256 _executionId) public auth(PROCESS_EXECUTE_ROLE) {
         Execution storage execution = _getExecution(_executionId);
-        
+
         require(execution.state == State.RUNNING, ERROR_EXECUTION_STATE_WRONG);
-        
-        _execute(execution); 
+
+        bytes[] memory results = _execute(execution);
 
         execution.state = State.EXECUTED;
-        
-        emit ProcessExecuted(execution, _executionId);
+
+        emit ProcessExecuted(msg.sender, _executionId, execution, results);
     }
 
     /// @dev Internal helper and abstraction to get a execution struct.
@@ -193,5 +189,5 @@ abstract contract Process is Component {
 
     /// @dev The concrete execution call.
     /// @param _executionId The execution struct with all the informations needed.
-    function _execute(Execution memory _executionId) internal virtual;
+    function _execute(Execution memory _executionId) internal virtual returns (bytes[] memory);
 }

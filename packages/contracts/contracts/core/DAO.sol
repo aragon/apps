@@ -91,7 +91,12 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, ERC1271, AdaptiveERC1
     /// @dev It run a loop through the array of acctions and execute one by one.
     /// @dev If one acction fails, all will be reverted.
     /// @param _actions The aray of actions
-    function execute(Action[] memory _actions) external override auth(address(this), EXEC_ROLE) {
+    function execute(Action[] memory _actions)
+        external
+        override
+        auth(address(this), EXEC_ROLE)
+        returns (bytes[] memory)
+    {
         bytes[] memory execResults = new bytes[](_actions.length);
 
         for (uint256 i = 0; i < _actions.length; i++) {
@@ -103,6 +108,7 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, ERC1271, AdaptiveERC1
         }
 
         emit Executed(msg.sender, _actions, execResults);
+        return execResults;
     }
 
     /// @dev Emit ETHDeposited event to track ETH deposits that weren't done over the deposit method.

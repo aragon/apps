@@ -12,9 +12,13 @@ import "../../../utils/TimeHelpers.sol";
 contract SimpleVoting is VotingProcess, TimeHelpers {
     bytes32 public constant MODIFY_CONFIG = keccak256("MODIFY_VOTE_CONFIG");
 
-    uint64 public constant PCT_BASE = 10 ** 18; // 0% = 0; 1% = 10^16; 100% = 10^18
+    uint64 public constant PCT_BASE = 10**18; // 0% = 0; 1% = 10^16; 100% = 10^18
 
-    enum VoterState { Absent, Yea, Nay }
+    enum VoterState {
+        Absent,
+        Yea,
+        Nay
+    }
 
     struct Vote {
         uint64 startDate;
@@ -24,18 +28,18 @@ contract SimpleVoting is VotingProcess, TimeHelpers {
         uint256 yea;
         uint256 nay;
         uint256 votingPower;
-        mapping (address => VoterState) voters;
+        mapping(address => VoterState) voters;
     }
 
-    mapping (uint256 => Vote) internal votes;
+    mapping(uint256 => Vote) internal votes;
     uint256 public votesLength;
-    
+
     uint64 public supportRequiredPct;
     uint64 public minAcceptQuorumPct;
     uint64 public voteTime;
 
     ERC20VotesUpgradeable public token;
-    
+
     string private constant ERROR_NO_VOTE = "VOTING_NO_VOTE";
     string private constant ERROR_INIT_PCTS = "VOTING_INIT_PCTS";
     string private constant ERROR_CHANGE_SUPPORT_PCTS = "VOTING_CHANGE_SUPPORT_PCTS";
@@ -55,28 +59,28 @@ contract SimpleVoting is VotingProcess, TimeHelpers {
     /// @dev Used for UUPS upgradability pattern
     /// @param _dao The DAO contract of the current DAO
     function initialize(
-        DAO _dao, 
-        ERC20VotesUpgradeable _token, 
+        DAO _dao,
+        ERC20VotesUpgradeable _token,
         uint64[3] calldata _votingSettings,
         bytes[] calldata _allowedActions
-    ) public initializer { 
+    ) public initializer {
         token = _token;
 
         require(_votingSettings[0] <= _votingSettings[1], ERROR_INIT_PCTS);
         require(_votingSettings[1] < PCT_BASE, ERROR_INIT_SUPPORT_TOO_BIG);
 
         minAcceptQuorumPct = _votingSettings[0];
-        supportRequiredPct = _votingSettings[1]; 
+        supportRequiredPct = _votingSettings[1];
         voteTime = _votingSettings[2];
 
         VotingProcess.initialize(_dao, _allowedActions);
     }
 
     /**
-    * @notice Change required support and minQuorum
-    * @param _supportRequiredPct New required support
-    * @param _minAcceptQuorumPct New acceptance quorum
-    */
+     * @notice Change required support and minQuorum
+     * @param _supportRequiredPct New required support
+     * @param _minAcceptQuorumPct New acceptance quorum
+     */
     function changeVoteConfig(uint64 _supportRequiredPct, uint64 _minAcceptQuorumPct) external auth(MODIFY_CONFIG) {
         require(_minAcceptQuorumPct <= _supportRequiredPct, ERROR_CHANGE_SUPPORT_PCTS);
         require(_supportRequiredPct < PCT_BASE, ERROR_CHANGE_SUPPORT_TOO_BIG);
@@ -88,18 +92,17 @@ contract SimpleVoting is VotingProcess, TimeHelpers {
     }
 
     /**
-    * @notice Create a new vote on this concrete implementation
-    * @param execution all the details necessary to create a new vote.
-    */
+     * @notice Create a new vote on this concrete implementation
+     * @param execution all the details necessary to create a new vote.
+     */
     function _start(Execution memory execution) internal override {
-        (
-            string memory description, 
-            bool executeIfDecided,
-            bool castVote
-        ) = abi.decode(execution.proposal.additionalArguments, (string, bool, bool));
+        (string memory description, bool executeIfDecided, bool castVote) = abi.decode(
+            execution.proposal.additionalArguments,
+            (string, bool, bool)
+        );
 
-        uint64 snapshotBlock = getBlockNumber64() - 1; 
-        
+        uint64 snapshotBlock = getBlockNumber64() - 1;
+
         uint256 votingPower = token.getPastTotalSupply(snapshotBlock);
         require(votingPower > 0, ERROR_NO_VOTING_POWER);
 
@@ -113,21 +116,18 @@ contract SimpleVoting is VotingProcess, TimeHelpers {
         vote_.votingPower = votingPower;
 
         emit StartVote(voteId, msg.sender, description);
-    
+
         if (castVote && canVote(voteId, msg.sender)) {
             _vote(voteId, true, msg.sender, executeIfDecided);
         }
     }
 
     /**
-    * @dev Overriden function that actually gets called from the VotingProcess.
-    * @param data abi encoded data that includes necessary parameters to vote.
-    */
+     * @dev Overriden function that actually gets called from the VotingProcess.
+     * @param data abi encoded data that includes necessary parameters to vote.
+     */
     function _vote(uint256 _voteId, bytes calldata data) internal override {
-        (
-            bool _supports,
-            bool _executesIfDecided
-        ) = abi.decode(data, (bool, bool));
+        (bool _supports, bool _executesIfDecided) = abi.decode(data, (bool, bool));
 
         require(_canVote(_voteId, msg.sender), ERROR_CAN_NOT_VOTE);
 
@@ -135,13 +135,18 @@ contract SimpleVoting is VotingProcess, TimeHelpers {
     }
 
     /**
-    * @dev Internal function to cast a vote. It assumes the queried vote exists. 
-    * @param _voteId voteId
-    * @param _supports whether user supports the decision or not
-    * @param _voter the voter address
-    * @param _executesIfDecided if true, and it's the last vote required, immediatelly executes a vote.
-    */
-    function _vote(uint256 _voteId, bool _supports, address _voter, bool _executesIfDecided) internal {
+     * @dev Internal function to cast a vote. It assumes the queried vote exists.
+     * @param _voteId voteId
+     * @param _supports whether user supports the decision or not
+     * @param _voter the voter address
+     * @param _executesIfDecided if true, and it's the last vote required, immediatelly executes a vote.
+     */
+    function _vote(
+        uint256 _voteId,
+        bool _supports,
+        address _voter,
+        bool _executesIfDecided
+    ) internal {
         Vote storage vote_ = votes[_voteId];
 
         // This could re-enter, though we can assume the governance token is not malicious
@@ -166,63 +171,64 @@ contract SimpleVoting is VotingProcess, TimeHelpers {
         emit CastVote(_voteId, _voter, _supports, voterStake);
 
         if (_executesIfDecided && _canExecute(_voteId)) {
-           execute(_voteId);
+            execute(_voteId);
         }
     }
 
     /**
-    * @dev Internal override function hook to check if vote can be executed. Does gets called from VotingProcess.
-    * @param execution current execution data 
-    */
-    function _execute(Execution memory execution) internal override {
+     * @dev Internal override function hook to check if vote can be executed. Does gets called from VotingProcess.
+     * @param execution current execution data
+     */
+    function _execute(Execution memory execution) internal override returns (bytes[] memory) {
         require(_canExecute(execution.id), ERROR_CAN_NOT_EXECUTE);
 
-        dao.execute(execution.proposal.actions);
+        bytes[] memory results = dao.execute(execution.proposal.actions);
+        return results;
     }
-    
+
     /**
-    * @dev Return the state of a voter for a given vote by its ID
-    * @param _voteId Vote identifier
-    * @return VoterState of the requested voter for a certain vote
-    */
+     * @dev Return the state of a voter for a given vote by its ID
+     * @param _voteId Vote identifier
+     * @return VoterState of the requested voter for a certain vote
+     */
     function getVoterState(uint256 _voteId, address _voter) public view returns (VoterState) {
-       return votes[_voteId].voters[_voter];
+        return votes[_voteId].voters[_voter];
     }
 
     /**
-    * @dev Internal function to check if a voter can participate on a vote. It assumes the queried vote exists.
-    * @param _voteId the vote Id
-    * @param _voter the address of the voter to check
-    * @return bool true if user is allowed to vote
-    */
+     * @dev Internal function to check if a voter can participate on a vote. It assumes the queried vote exists.
+     * @param _voteId the vote Id
+     * @param _voter the address of the voter to check
+     * @return bool true if user is allowed to vote
+     */
     function canVote(uint256 _voteId, address _voter) public view returns (bool) {
-       return _canVote(_voteId, _voter);
+        return _canVote(_voteId, _voter);
     }
 
     /**
-    * @notice Tells whether a vote #`_voteId` can be executed or not
-    * @dev Initialization check is implicitly provided by `voteExists()` as new votes can only be
-    *      created via `newVote(),` which requires initialization
-    * @return True if the given vote can be executed, false otherwise
-    */
+     * @notice Tells whether a vote #`_voteId` can be executed or not
+     * @dev Initialization check is implicitly provided by `voteExists()` as new votes can only be
+     *      created via `newVote(),` which requires initialization
+     * @return True if the given vote can be executed, false otherwise
+     */
     function canExecute(uint256 _voteId) public view returns (bool) {
         return _canExecute(_voteId);
     }
 
     /**
-    * @dev Return all information for a vote by its ID
-    * @param _voteId Vote id
-    * @return open Vote open status
-    * @return executed Vote executed status
-    * @return startDate start date
-    * @return snapshotBlock snapshot block
-    * @return supportRequired support required
-    * @return minAcceptQuorum minimum acceptance quorum
-    * @return yea yeas amount
-    * @return nay nays amount
-    * @return votingPower power
-    * @return actions Actions
-    */
+     * @dev Return all information for a vote by its ID
+     * @param _voteId Vote id
+     * @return open Vote open status
+     * @return executed Vote executed status
+     * @return startDate start date
+     * @return snapshotBlock snapshot block
+     * @return supportRequired support required
+     * @return minAcceptQuorum minimum acceptance quorum
+     * @return yea yeas amount
+     * @return nay nays amount
+     * @return votingPower power
+     * @return actions Actions
+     */
     function getVote(uint256 _voteId)
         public
         view
@@ -240,7 +246,7 @@ contract SimpleVoting is VotingProcess, TimeHelpers {
         )
     {
         Vote storage vote_ = votes[_voteId];
-        
+
         open = _isVoteOpen(vote_, _voteId);
         executed = _isVoteExecuted(_voteId);
         startDate = vote_.startDate;
@@ -254,40 +260,40 @@ contract SimpleVoting is VotingProcess, TimeHelpers {
     }
 
     /**
-    * @dev Internal function to check if a voter can participate on a vote. It assumes the queried vote exists.
-    * @param _voteId the vote Id
-    * @param _voter the address of the voter to check
-    * @return True if the given voter can participate a certain vote, false otherwise
-    */
+     * @dev Internal function to check if a voter can participate on a vote. It assumes the queried vote exists.
+     * @param _voteId the vote Id
+     * @param _voter the address of the voter to check
+     * @return True if the given voter can participate a certain vote, false otherwise
+     */
     function _canVote(uint256 _voteId, address _voter) internal view returns (bool) {
         Vote storage vote_ = votes[_voteId];
         return _isVoteOpen(vote_, _voteId) && token.getPastVotes(_voter, vote_.snapshotBlock) > 0;
     }
 
     /**
-    * @dev Internal function to check if a vote is still open
-    * @param vote_ the vote struct
-    * @param voteId vote id
-    * @return True if the given vote is open, false otherwise
-    */
+     * @dev Internal function to check if a vote is still open
+     * @param vote_ the vote struct
+     * @param voteId vote id
+     * @return True if the given vote is open, false otherwise
+     */
     function _isVoteOpen(Vote storage vote_, uint256 voteId) internal view returns (bool) {
         return getTimestamp64() < vote_.startDate + voteTime && !_isVoteExecuted(voteId);
     }
 
     /**
-    * @dev Internal function to check if a vote is executed
-    * @param _voteId vote id
-    * @return True if the given vote is open, false otherwise
-    */
-    function _isVoteExecuted(uint256 _voteId) internal view returns(bool) {
+     * @dev Internal function to check if a vote is executed
+     * @param _voteId vote id
+     * @return True if the given vote is open, false otherwise
+     */
+    function _isVoteExecuted(uint256 _voteId) internal view returns (bool) {
         return _getExecution(_voteId).state == State.EXECUTED;
     }
 
     /**
-    * @dev Internal function to check if a vote can be executed. It assumes the queried vote exists.
-    * @param _voteId vote id
-    * @return True if the given vote can be executed, false otherwise
-    */
+     * @dev Internal function to check if a vote can be executed. It assumes the queried vote exists.
+     * @param _voteId vote id
+     * @return True if the given vote can be executed, false otherwise
+     */
     function _canExecute(uint256 _voteId) internal view returns (bool) {
         Vote storage vote_ = votes[_voteId];
 
@@ -318,18 +324,22 @@ contract SimpleVoting is VotingProcess, TimeHelpers {
     }
 
     /**
-    * @dev Calculates whether `_value` is more than a percentage `_pct` of `_total`
-    * @param _value the current value 
-    * @param _total the total value
-    * @param _pct the required support percentage
-    * @return returns if the _value is _pct or more percentage of _total. 
-    */
-    function _isValuePct(uint256 _value, uint256 _total, uint256 _pct) internal pure returns (bool) {
-       if (_total == 0) {
-           return false;
-       }
-    
-       uint256 computedPct = _value * PCT_BASE / _total;
-       return computedPct > _pct;
+     * @dev Calculates whether `_value` is more than a percentage `_pct` of `_total`
+     * @param _value the current value
+     * @param _total the total value
+     * @param _pct the required support percentage
+     * @return returns if the _value is _pct or more percentage of _total.
+     */
+    function _isValuePct(
+        uint256 _value,
+        uint256 _total,
+        uint256 _pct
+    ) internal pure returns (bool) {
+        if (_total == 0) {
+            return false;
+        }
+
+        uint256 computedPct = (_value * PCT_BASE) / _total;
+        return computedPct > _pct;
     }
 }
