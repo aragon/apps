@@ -105,8 +105,6 @@ templates:
           handler: handleProcessForwarded
         - event: ProcessHalted((uint256,((address,uint256,bytes)[],bytes,bytes),uint8),indexed uint256)
           handler: handleProcessHalted
-        - event: ProcessStopped((indexed uint256,((address,uint256,bytes)[],bytes,bytes),uint8),indexed uint256)
-          handler: handleProcessStopped
   - name: StoppableProcess
     kind: ethereum/contract
     network: {{network}}

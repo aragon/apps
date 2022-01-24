@@ -8,7 +8,14 @@ import {
   ETHDeposited,
   Withdrawn
 } from '../generated/templates/DAO/DAO';
-import {SimpleVoting} from '../generated/templates';
+import {
+  SimpleVoting,
+  Process as MainProcess,
+  DisputableProcess,
+  StoppableProcess,
+  VotingProcess
+} from '../generated/templates';
+import {SimpleVoting as SimpleVotingContract} from '../generated/templates/SimpleVoting/SimpleVoting';
 import {
   Dao,
   Process,
@@ -19,10 +26,13 @@ import {
 } from '../generated/schema';
 import {DataSourceContext, store} from '@graphprotocol/graph-ts';
 import {log} from 'matchstick-as/assembly/index';
+import {getSupportedTemplates} from './utils/erc165';
+import {Templates} from './utils/constants';
 
 export function handleProcessAdded(event: ProcessAdded): void {
   let daoId = event.address.toHexString();
-  let processId = event.params.process.toHexString();
+  let processAddress = event.params.process;
+  let processId = processAddress.toHexString();
 
   // handle ProcessDao
   let processDaoId = processId + '_' + daoId;
@@ -38,8 +48,21 @@ export function handleProcessAdded(event: ProcessAdded): void {
   context.setString('daoAddress', daoId);
 
   // subscribe to templates
-  // TODO: verfy process type via supportsInterface (temporary use SimpleVoting)
-  SimpleVoting.createWithContext(event.params.process, context);
+  let processContract = SimpleVotingContract.bind(processAddress);
+  let supportedTemplates = getSupportedTemplates(processContract);
+  for (let index = 0; index < supportedTemplates.length; index++) {
+    const template = supportedTemplates[index];
+    switch (template) {
+      case Templates.PROCESS:
+        MainProcess.createWithContext(processAddress, context);
+      case Templates.DISPUTABLE:
+        DisputableProcess.createWithContext(processAddress, context);
+      case Templates.STOPPABLE:
+        StoppableProcess.createWithContext(processAddress, context);
+      case Templates.VOTING:
+        VotingProcess.createWithContext(processAddress, context);
+    }
+  }
 
   processDaoEntity.save();
   processEntity.save();
