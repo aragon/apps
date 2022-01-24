@@ -1,7 +1,13 @@
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import React, {useCallback, useState} from 'react';
-import {Modal, SearchInput, ButtonText, IconAdd} from '@aragon/ui-components';
+import {
+  Modal,
+  SearchInput,
+  ButtonText,
+  IconAdd,
+  IconStorage,
+} from '@aragon/ui-components';
 
 import TokenBox from './tokenBox';
 
@@ -57,38 +63,69 @@ const TokenMenu: React.FC<TokenMenuProps> = ({
   const renderTokens = () => {
     const tokenList = tokens.filter(filterValidator);
 
-    return tokenList.length !== 0 ? (
-      <>
-        {tokenList.map(token => (
-          <div key={token.address} onClick={() => handleTokenClick(token)}>
-            <TokenBox
-              tokenName={token.name}
-              tokenLogo={token.imgUrl}
-              tokenSymbol={token.symbol}
-              tokenBalance={formatUnits(token.count, token.decimals)}
+    if (tokenList.length === 0 && searchValue === '') {
+      return (
+        <>
+          <NoTokenContainer>
+            <IconWrapper>
+              <IconStorage height={24} width={24} />
+            </IconWrapper>
+            <TokenTitle>{t('TokenModal.tokenNotAvailable')}</TokenTitle>
+            <TokenDescription>
+              {t('TokenModal.tokenNotAvailableSubtitle')}
+            </TokenDescription>
+          </NoTokenContainer>
+          {isWallet && (
+            <WideButton
+              mode="secondary"
+              size="large"
+              label="Add Custom Token"
+              iconLeft={<IconAdd />}
+              onClick={() =>
+                handleTokenClick({...customToken, symbol: searchValue})
+              }
             />
-          </div>
-        ))}
-      </>
-    ) : (
-      <>
-        <NoTokenWrapper>
-          <TokenTitle>{t('TokenModal.tokenNotFoundTitle')}</TokenTitle>
-          <TokenSubtitle>{t('TokenModal.tokenNotFoundSubtitle')}</TokenSubtitle>
-        </NoTokenWrapper>
-        {isWallet && (
-          <WideButton
-            mode="secondary"
-            size="large"
-            label="Add Custom Token"
-            iconLeft={<IconAdd />}
-            onClick={() =>
-              handleTokenClick({...customToken, symbol: searchValue})
-            }
-          />
-        )}
-      </>
-    );
+          )}
+        </>
+      );
+    } else if (tokenList.length === 0) {
+      return (
+        <>
+          <NoTokenWrapper>
+            <TokenTitle>{t('TokenModal.tokenNotFoundTitle')}</TokenTitle>
+            <TokenSubtitle>
+              {t('TokenModal.tokenNotFoundSubtitle')}
+            </TokenSubtitle>
+          </NoTokenWrapper>
+          {isWallet && (
+            <WideButton
+              mode="secondary"
+              size="large"
+              label="Add Custom Token"
+              iconLeft={<IconAdd />}
+              onClick={() =>
+                handleTokenClick({...customToken, symbol: searchValue})
+              }
+            />
+          )}
+        </>
+      );
+    } else {
+      return (
+        <>
+          {tokenList.map(token => (
+            <div key={token.address} onClick={() => handleTokenClick(token)}>
+              <TokenBox
+                tokenName={token.name}
+                tokenLogo={token.imgUrl}
+                tokenSymbol={token.symbol}
+                tokenBalance={formatUnits(token.count, token.decimals)}
+              />
+            </div>
+          ))}
+        </>
+      );
+    }
   };
 
   /*************************************************
@@ -130,7 +167,11 @@ const TokenTitle = styled.h2.attrs({
 })``;
 
 const TokenSubtitle = styled.h2.attrs({
-  className: 'text-sm',
+  className: 'text-sm text-ui-600',
+})``;
+
+const TokenDescription = styled.h2.attrs({
+  className: 'text-sm text-center text-ui-600',
 })``;
 
 const WideButton = styled(ButtonText).attrs({
@@ -139,4 +180,13 @@ const WideButton = styled(ButtonText).attrs({
 
 const NoTokenWrapper = styled.div.attrs({
   className: 'space-y-0.5 mb-3',
+})``;
+
+const NoTokenContainer = styled.div.attrs({
+  className: `flex flex-col items-center mb-3
+    justify-center bg-ui-100 py-3 px-2 rounded-xl`,
+})``;
+
+const IconWrapper = styled.div.attrs({
+  className: 'mb-1.5',
 })``;

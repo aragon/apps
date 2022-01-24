@@ -93,7 +93,9 @@
   },
   "TokenModal": {
     "tokenNotFoundTitle": "Token not found",
-    "tokenNotFoundSubtitle": "Add custom token to deposit"
+    "tokenNotAvailable": "No token found",
+    "tokenNotFoundSubtitle": "Add custom token to deposit",
+    "tokenNotAvailableSubtitle": "Check your wallet, update the tokens or add a custom token to transfer"
   },
   "newDeposit": {
     "depositAssets": "Deposit Assets",
