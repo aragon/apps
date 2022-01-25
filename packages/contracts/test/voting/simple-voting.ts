@@ -381,7 +381,17 @@ describe('Voting: SimpleVoting', function () {
           [
             // execution struct
             ethers.BigNumber.from(1), // executionId
-            [proposal.actions, proposal.metadata, proposal.additionalArguments], // proposal
+            [
+              [
+                [
+                  dummyActions[0].to,
+                  ethers.BigNumber.from(dummyActions[0].value),
+                  dummyActions[0].data,
+                ],
+              ],
+              proposal.metadata,
+              proposal.additionalArguments,
+            ], // proposal struct
             ethers.BigNumber.from(3), // state
           ],
           []
