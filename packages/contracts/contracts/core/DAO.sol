@@ -107,7 +107,6 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, ERC1271, AdaptiveERC1
             execResults[i] = response;
         }
 
-        emit Executed(msg.sender, _actions, execResults);
         return execResults;
     }
 

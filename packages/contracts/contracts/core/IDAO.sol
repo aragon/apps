@@ -57,8 +57,6 @@ abstract contract IDAO {
     /// @param _actions The aray of actions
     function execute(Action[] memory _actions) external virtual returns (bytes[] memory);
 
-    event Executed(address indexed actor, Action[] actions, bytes[] execResults);
-
     /// @notice Deposit ETH or any token to this contract with a reference string
     /// @dev Deposit ETH (token address == 0) or any token with a reference
     /// @param _token The address of the token and in case of ETH address(0)
