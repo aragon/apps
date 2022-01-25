@@ -53,6 +53,16 @@ export const FullScreenStepper: React.FC<FullScreenStepperProps> = ({
   }, [connect, isConnected, open]);
 
   const currentIndex = currentStep - 1;
+  const {
+    wizardTitle,
+    wizardDescription,
+    hideWizard,
+    backButtonLabel,
+    nextButtonLabel,
+    isNextButtonDisabled,
+    onBackButtonClicked,
+    onNextButtonClicked,
+  } = children[currentIndex].props;
 
   return (
     <FullScreenStepperContext.Provider value={{setStep}}>
@@ -84,13 +94,15 @@ export const FullScreenStepper: React.FC<FullScreenStepperProps> = ({
       </NavigationBar>
 
       <Layout>
-        <Wizard
-          processName={wizardProcessName}
-          title={children[currentIndex].props.wizardTitle}
-          description={children[currentIndex].props.wizardDescription}
-          totalSteps={children.length}
-          currentStep={currentStep}
-        />
+        {!hideWizard && (
+          <Wizard
+            processName={wizardProcessName}
+            title={wizardTitle}
+            description={wizardDescription}
+            totalSteps={children.length}
+            currentStep={currentStep}
+          />
+        )}
         <FormLayout>
           {children[currentIndex]}
           <FormFooter>
@@ -98,21 +110,20 @@ export const FullScreenStepper: React.FC<FullScreenStepperProps> = ({
             <ButtonText
               mode="secondary"
               size="large"
-              label={
-                children[currentIndex].props.backButtonLabel || t('labels.back')
+              label={backButtonLabel || t('labels.back')}
+              onClick={() =>
+                onBackButtonClicked ? onBackButtonClicked() : prev()
               }
-              onClick={prev}
               disabled={currentStep === 1}
               iconLeft={<IconChevronLeft />}
             />
             <ButtonText
-              label={
-                children[currentIndex].props.nextButtonLabel ||
-                t('labels.continue')
-              }
+              label={nextButtonLabel || t('labels.continue')}
               size="large"
-              onClick={next}
-              disabled={children[currentIndex].props.isNextButtonDisabled}
+              onClick={() =>
+                onNextButtonClicked ? onNextButtonClicked() : next()
+              }
+              disabled={isNextButtonDisabled}
               iconRight={<IconChevronRight />}
             />
           </FormFooter>

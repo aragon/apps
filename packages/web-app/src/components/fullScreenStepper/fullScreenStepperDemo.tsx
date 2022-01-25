@@ -31,7 +31,9 @@ export const FullScreenStepperDemo = () => {
           wizardTitle="Step 3"
           wizardDescription="Description of step 3"
           nextButtonLabel="Can't continue"
+          onBackButtonClicked={() => alert('This button is disabled')}
           isNextButtonDisabled
+          hideWizard
         >
           <Step3 />
         </Step>
