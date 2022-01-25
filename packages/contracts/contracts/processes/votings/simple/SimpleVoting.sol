@@ -182,8 +182,7 @@ contract SimpleVoting is VotingProcess, TimeHelpers {
     function _execute(Execution memory execution) internal override returns (bytes[] memory) {
         require(_canExecute(execution.id), ERROR_CAN_NOT_EXECUTE);
 
-        bytes[] memory results = dao.execute(execution.proposal.actions);
-        return results;
+        return dao.execute(execution.proposal.actions);
     }
 
     /**

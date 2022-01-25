@@ -21,7 +21,7 @@ abstract contract Process is Component {
     /// @notice Emitted as soon as the process does get started
     event ProcessStarted(Execution execution);
     /// @notice Emitted as soon as the process with his actions does get executed
-    event ProcessExecuted(address indexed actor, uint256 indexed executionId, Execution execution, bytes[] results);
+    event ProcessExecuted(address indexed actor, Execution execution, bytes[] results);
     /// @notice Emtted as soon as new allowed actions do get added
     event AllowedActionsAdded(bytes[] allowedActions);
     /// @notice Emtted as soon as allowed actions do get removed
@@ -169,7 +169,7 @@ abstract contract Process is Component {
 
         execution.state = State.EXECUTED;
 
-        emit ProcessExecuted(msg.sender, _executionId, execution, results);
+        emit ProcessExecuted(msg.sender, execution, results);
     }
 
     /// @dev Internal helper and abstraction to get a execution struct.
