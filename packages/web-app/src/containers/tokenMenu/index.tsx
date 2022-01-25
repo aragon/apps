@@ -105,17 +105,15 @@ const TokenMenu: React.FC<TokenMenuProps> = ({
           placeholder={t('placeHolders.searchTokens')}
         />
         <TokensWrapper>{renderTokens()}</TokensWrapper>
-        {isWallet && (
-          <WideButton
-            mode="secondary"
-            size="large"
-            label="Add Custom Token"
-            iconLeft={<IconAdd />}
-            onClick={() =>
-              handleTokenClick({...customToken, symbol: searchValue})
-            }
-          />
-        )}
+        <WideButton
+          mode="secondary"
+          size="large"
+          label="Add Custom Token"
+          iconLeft={<IconAdd />}
+          onClick={() =>
+            handleTokenClick({...customToken, symbol: searchValue})
+          }
+        />
       </Container>
     </Modal>
   );
