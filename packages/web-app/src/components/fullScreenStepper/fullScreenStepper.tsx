@@ -9,7 +9,7 @@ import {
 } from '@aragon/ui-components';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
-import React, {useCallback} from 'react';
+import React, {createContext, useCallback, useContext} from 'react';
 
 import {useWallet} from 'context/augmentedWallet';
 import {useStepper} from 'hooks/useStepper';
@@ -25,6 +25,17 @@ export type FullScreenStepperProps = {
   children: React.FunctionComponentElement<StepProps>[];
 };
 
+type FullScreenStepperContextType = {
+  setStep: React.Dispatch<React.SetStateAction<number>>;
+};
+
+const FullScreenStepperContext = createContext<
+  FullScreenStepperContextType | undefined
+>(undefined);
+
+export const useFormStep = () =>
+  useContext(FullScreenStepperContext) as FullScreenStepperContextType;
+
 export const FullScreenStepper: React.FC<FullScreenStepperProps> = ({
   navbarLabel,
   navbarBackUrl,
@@ -33,7 +44,7 @@ export const FullScreenStepper: React.FC<FullScreenStepperProps> = ({
 }) => {
   const {t} = useTranslation();
   const {open} = useWalletMenuContext();
-  const {currentStep, prev, next} = useStepper(children.length);
+  const {currentStep, prev, next, setStep} = useStepper(children.length);
   const {connect, isConnected, account, ensName, ensAvatarUrl}: useWalletProps =
     useWallet();
 
@@ -44,7 +55,7 @@ export const FullScreenStepper: React.FC<FullScreenStepperProps> = ({
   const currentIndex = currentStep - 1;
 
   return (
-    <>
+    <FullScreenStepperContext.Provider value={{setStep}}>
       <NavigationBar>
         <HStack>
           <InsetButton>
@@ -107,7 +118,7 @@ export const FullScreenStepper: React.FC<FullScreenStepperProps> = ({
           </FormFooter>
         </FormLayout>
       </Layout>
-    </>
+    </FullScreenStepperContext.Provider>
   );
 };
 
