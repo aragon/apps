@@ -7,4 +7,4 @@ export const AllTokens = '/finance/tokens';
 export const AllTransfers = '/finance/transfers';
 export const NewDeposit = 'finance/new-deposit';
 export const NewWithDraw = 'finance/new-withdraw';
-export const Proposal = 'governance/proposal/:id';
+export const Proposals = 'governance/proposals/:id';

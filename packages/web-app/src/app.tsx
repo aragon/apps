@@ -25,7 +25,7 @@ const NotFoundPage = lazy(() => import('pages/notFound'));
 const CommunityPage = lazy(() => import('pages/community'));
 const TransfersPage = lazy(() => import('pages/transfers'));
 const GovernancePage = lazy(() => import('pages/governance'));
-const ProposalPage = lazy(() => import('pages/proposal'));
+const ProposalsPage = lazy(() => import('pages/proposals'));
 const NewDepositPage = lazy(() => import('pages/newDeposit'));
 const NewWithdrawPage = lazy(() => import('pages/newWithdraw'));
 
@@ -50,7 +50,7 @@ function App() {
               <Route path={paths.Community} element={<CommunityPage />} />
               <Route path={paths.Finance} element={<FinancePage />} />
               <Route path={paths.Governance} element={<GovernancePage />} />
-              <Route path={paths.Proposal} element={<ProposalPage />} />
+              <Route path={paths.Proposals} element={<ProposalsPage />} />
               <Route path={paths.AllTokens} element={<TokensPage />} />
               <Route path={paths.AllTransfers} element={<TransfersPage />} />
               <Route path={paths.NotFound} element={<NotFoundPage />} />
