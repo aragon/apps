@@ -37,12 +37,19 @@
     "continue": "Continue",
     "submitDeposit": "Submit Deposit",
     "resources": "Resources",
-    "submitWithdraw": "Publish Proposal"
+    "submitWithdraw": "Publish Proposal",
+    "daoName": "Name",
+    "description": "Description",
+    "links": "Links",
+    "logo": "Logo",
+    "optional": "Optional"
   },
   "placeHolders": {
     "selectToken": "Select a Token ...",
     "walletOrEns": "Type wallet address or ENS ...",
-    "searchTokens": "Type to search ..."
+    "searchTokens": "Type to search ...",
+    "daoName": "Type your DAOs name ...",
+    "daoDescription": "Type your description ..."
   },
   "finance": {
     "tokenSection": "Tokens",
@@ -56,23 +63,23 @@
   },
   "governance": {
     "proposals": {
-      "publishedBy" : "Published by",
-      "pending":"Starts in {{days}} days {{hours}} hours",
-      "active":"{{days}} days {{hours}} hours left",
-      "voteTitle":"Winning Option",
-      "states":{
-        "draft":"Draft",
-        "pending":"Pending",
-        "active":"Active",
-        "executed":"Executed",
-        "succeeded":"Succeeded",
-        "defeated":"Defeated"
+      "publishedBy": "Published by",
+      "pending": "Starts in {{days}} days {{hours}} hours",
+      "active": "{{days}} days {{hours}} hours left",
+      "voteTitle": "Winning Option",
+      "states": {
+        "draft": "Draft",
+        "pending": "Pending",
+        "active": "Active",
+        "executed": "Executed",
+        "succeeded": "Succeeded",
+        "defeated": "Defeated"
       },
-      "buttons":{
-        "read":"Read Proposal",
-        "vote":"Vote now",
-        "execute":"Execute Now",
-        "edit":"Edit Proposal"
+      "buttons": {
+        "read": "Read Proposal",
+        "vote": "Vote now",
+        "execute": "Execute Now",
+        "edit": "Edit Proposal"
       }
     },
     "noProposals": "No proposals found!"
@@ -139,6 +146,16 @@
       "utcMenu": {
         "title": "Select a UTC Timezone"
       }
+    }
+  },
+  "createDao": {
+    "defineMetadata": {
+      "title": "Define Metadata",
+      "subtitle": "Define important data for the DAO so that it can be easily found.",
+      "nameSubtitle": "Define a custom title if needed",
+      "logoSubtitle": "This is the logo which represents your DAO. Supports SVG, JPG, PNG or GIFs with max 3MB in size and must be 1:1 ratio. Suggested dimensions 1024x1024.",
+      "descriptionSubtitle": "Describe your DAO in 2-3 short sentences as a summary. This information will be presented in the sharing, in the overview, and helps people to understand what's your DAO about.",
+      "linksSubtitle": "Link to external resources, such as documents, forum links, chats or similar."
     }
   }
 }
