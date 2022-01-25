@@ -18,7 +18,6 @@ import '../i18n.config';
 // work properly on the pages.
 import HomePage from 'pages/home';
 import * as paths from 'utils/paths';
-import {FullScreenStepperDemo} from 'components/fullScreenStepper';
 const TokensPage = lazy(() => import('pages/tokens'));
 const FinancePage = lazy(() => import('pages/finance'));
 const NotFoundPage = lazy(() => import('pages/notFound'));
@@ -43,11 +42,6 @@ function App() {
           <Routes>
             <Route path={paths.NewDeposit} element={<NewDepositPage />} />
             <Route path={paths.NewWithDraw} element={<NewWithdrawPage />} />
-            {/* The next line will be removed before merging */}
-            <Route
-              path={paths.FullScreenStepper}
-              element={<FullScreenStepperDemo />}
-            />
 
             <Route element={<Layout />}>
               <Route path={paths.Dashboard} element={<HomePage />} />
