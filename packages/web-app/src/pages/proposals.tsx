@@ -1,13 +1,23 @@
 import React from 'react';
 import styled from 'styled-components';
 import {withTransaction} from '@elastic/apm-rum-react';
-import {useParams} from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 
 import {useProposal} from '../hooks/useProposal';
+import * as paths from 'utils/paths';
 
 const Proposal: React.FC = () => {
+  const navigate = useNavigate();
   const {id} = useParams();
-  const {data: proposalData} = useProposal(id || '2');
+  if (!id) {
+    navigate(paths.NotFound);
+  }
+  let definedId = id as string;
+  const {
+    data: proposalData,
+    isLoading,
+    error,
+  } = useProposal('0x0000000000', definedId);
 
   return (
     // TODO: assemble proposal overview page here. Mock data can be obtained by
@@ -15,7 +25,14 @@ const Proposal: React.FC = () => {
     <Content>
       <Header>Proposal {id}</Header>
       <p>This page contains the overview for proposal {id}</p>
-      <p>{JSON.stringify(proposalData, null, 2)}</p>
+      <br />
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : error ? (
+        <p>Error: {error.message}</p>
+      ) : (
+        <p>{JSON.stringify(proposalData, null, 2)}</p>
+      )}
     </Content>
   );
 };

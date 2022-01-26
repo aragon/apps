@@ -3,6 +3,7 @@ import {CardProposal} from '@aragon/ui-components';
 import {useTranslation} from 'react-i18next';
 import {translateProposalDate} from '../../utils/date';
 import {ProposalData, VotingData} from 'hooks/useProposal';
+import {useNavigate} from 'react-router-dom';
 
 // types will come from subgraph and will need to be refactored.
 type ProposalListProps = {
@@ -11,6 +12,7 @@ type ProposalListProps = {
 
 const ProposalList: React.FC<ProposalListProps> = ({proposals}) => {
   const {t} = useTranslation();
+  const navigate = useNavigate();
 
   if (proposals.length === 0)
     return <p data-testid="proposalList">{t('governance.noProposals')}</p>;
@@ -26,7 +28,9 @@ const ProposalList: React.FC<ProposalListProps> = ({proposals}) => {
           <CardProposal
             title={proposal.metadata.title}
             description={proposal.metadata.description}
-            onClick={() => null}
+            onClick={() => {
+              navigate('proposals/' + proposal.id);
+            }}
             state={proposal.type}
             voteTitle={t('governance.proposals.voteTitle') as string}
             {...(proposal.type === 'active' && {

@@ -1,6 +1,7 @@
 import {Address} from '@aragon/ui-components/dist/utils/addresses';
 import {useEffect, useState} from 'react';
 import {HookData} from 'utils/types';
+import {useDaoProposals} from './useDaoProposals';
 
 /**
  * NOTE: This file might only be temporary. At the moment it should be used to
@@ -9,13 +10,19 @@ import {HookData} from 'utils/types';
  */
 
 export function useProposal(
+  daoAddress: Address,
   proposalId: string
 ): HookData<UncategorizedProposalData | undefined> {
+  const {
+    data: proposals,
+    isLoading: isLoadingProposals,
+    error: proposalsError,
+  } = useDaoProposals(daoAddress);
   const [proposalData, setProposalData] = useState<
     UncategorizedProposalData | undefined
   >();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | undefined>();
+  const [isLoading, setIsLoading] = useState(isLoadingProposals);
+  const [error, setError] = useState<Error | undefined>(proposalsError);
 
   useEffect(() => {
     // Fetch data for proposal. This will likely not be necessary, since we'll
@@ -25,12 +32,12 @@ export function useProposal(
       setProposalData(proposal);
       setError(undefined);
     } else {
-      setError(new Error('ProposalNotFOundError'));
+      setError(new Error('Proposal not found'));
     }
-    setLoading(false);
-  }, [proposalId]);
+    setIsLoading(false);
+  }, [proposalId, proposals, isLoadingProposals, proposalsError]);
 
-  return {data: proposalData, isLoading: loading, error};
+  return {data: proposalData, isLoading, error};
 }
 
 /* DATA STRUCTURE =========================================================== */
