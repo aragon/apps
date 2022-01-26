@@ -12,8 +12,8 @@ import {Address} from '@aragon/ui-components/dist/utils/addresses';
 import {constants} from 'ethers';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
+import {useForm, FormProvider} from 'react-hook-form';
 import React, {useCallback, useEffect} from 'react';
-import {useForm, FormProvider, useFormState} from 'react-hook-form';
 
 import TokenMenu from 'containers/tokenMenu';
 import {useWallet} from 'context/augmentedWallet';
@@ -65,7 +65,6 @@ const NewWithdraw: React.FC = () => {
   const {t} = useTranslation();
   const {open} = useWalletMenuContext();
   const formMethods = useForm<FormData>({defaultValues, mode: 'onChange'});
-  const {isValid} = useFormState({control: formMethods.control});
   const {data: tokens} = useDaoTokens('myDaoAddress');
   const {currentStep, prev, next} = useStepper(TOTAL_STEPS);
   const {connect, isConnected, account, ensName, ensAvatarUrl}: useWalletProps =
@@ -173,11 +172,10 @@ const NewWithdraw: React.FC = () => {
                 }
                 size="large"
                 onClick={next}
-                disabled={!isValid}
+                disabled={!formMethods.formState.isValid}
                 iconRight={<IconChevronRight />}
               />
             </FormFooter>
-            {/* <pre>{JSON.stringify(formMethods.watch(), null, 2)}</pre> */}
           </FormLayout>
         </FormProvider>
         <TokenMenu
