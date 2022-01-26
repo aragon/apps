@@ -28,21 +28,20 @@ import {formatUnits, handleClipboardActions} from 'utils/library';
 const ConfigureWithdrawForm: React.FC = () => {
   const {t} = useTranslation();
   const {open} = useTransferModalContext();
-  const {control, getValues, trigger, resetField, setValue} = useFormContext();
   const {account, provider} = useWallet();
+  const {control, getValues, trigger, resetField, setFocus, setValue} =
+    useFormContext();
   const {errors, dirtyFields} = useFormState({control});
-  const [tokenAddress, isCustomToken, amount, tokenBalance, symbol] = useWatch({
-    name: [
-      'tokenAddress',
-      'isCustomToken',
-      'amount',
-      'tokenBalance',
-      'tokenSymbol',
-    ],
+  const [tokenAddress, isCustomToken, tokenBalance, symbol] = useWatch({
+    name: ['tokenAddress', 'isCustomToken', 'tokenBalance', 'tokenSymbol'],
   });
   /*************************************************
    *                    Hooks                      *
    *************************************************/
+  useEffect(() => {
+    if (isCustomToken) setFocus('tokenAddress');
+  }, [isCustomToken, setFocus]);
+
   useEffect(() => {
     if (!account || !isCustomToken || !tokenAddress) return;
 
@@ -109,15 +108,18 @@ const ConfigureWithdrawForm: React.FC = () => {
     [tokenBalance]
   );
 
-  const renderWarning = useCallback(() => {
-    // Insufficient data to calculate warning
-    if (!tokenBalance || amount === '') return null;
+  const renderWarning = useCallback(
+    (value: string) => {
+      // Insufficient data to calculate warning
+      if (!tokenBalance || value === '') return null;
 
-    if (Number(amount) > Number(tokenBalance))
-      return (
-        <AlertInline label={t('warnings.amountGtDaoToken')} mode="warning" />
-      );
-  }, [amount, tokenBalance, t]);
+      if (Number(value) > Number(tokenBalance))
+        return (
+          <AlertInline label={t('warnings.amountGtDaoToken')} mode="warning" />
+        );
+    },
+    [tokenBalance, t]
+  );
 
   /*************************************************
    *                Field Validators               *
@@ -248,12 +250,13 @@ const ConfigureWithdrawForm: React.FC = () => {
               validate: addressValidator,
             }}
             render={({
-              field: {name, onBlur, onChange, value},
+              field: {name, onBlur, onChange, value, ref},
               fieldState: {error},
             }) => (
               <>
                 <ValueInput
                   mode={error ? 'critical' : 'default'}
+                  ref={ref}
                   name={name}
                   value={value}
                   onBlur={onBlur}
@@ -305,7 +308,7 @@ const ConfigureWithdrawForm: React.FC = () => {
                   {error?.message && (
                     <AlertInline label={error.message} mode="critical" />
                   )}
-                  {renderWarning()}
+                  {renderWarning(value)}
                 </div>
                 {tokenBalance && (
                   <TokenBalance>
