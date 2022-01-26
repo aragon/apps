@@ -29,6 +29,7 @@ import {useWalletMenuContext} from 'context/walletMenu';
 
 export type FormData = {
   amount: string;
+  isCustomToken: boolean;
   reference?: string;
   type: TransferTypes;
   from: Address;
@@ -57,6 +58,7 @@ const defaultValues = {
   tokenSymbol: '',
   tokenName: '',
   tokenImgUrl: '',
+  isCustomToken: false,
 };
 
 const NewWithdraw: React.FC = () => {
@@ -85,11 +87,22 @@ const NewWithdraw: React.FC = () => {
   }, [connect, isConnected, open]);
 
   const handleTokenSelect = (token: BaseTokenInfo) => {
+    formMethods.setValue('tokenSymbol', token.symbol);
+
+    if (token.address === '') {
+      formMethods.setValue('isCustomToken', true);
+      formMethods.resetField('tokenName');
+      formMethods.resetField('tokenImgUrl');
+      formMethods.resetField('tokenAddress');
+      formMethods.resetField('tokenBalance');
+      formMethods.clearErrors('amount');
+      return;
+    }
+
+    formMethods.setValue('isCustomToken', false);
     formMethods.setValue('tokenName', token.name);
     formMethods.setValue('tokenImgUrl', token.imgUrl);
-    formMethods.setValue('tokenSymbol', token.symbol);
     formMethods.setValue('tokenAddress', token.address);
-    formMethods.setValue('tokenDecimals', token.decimals);
     formMethods.setValue(
       'tokenBalance',
       formatUnits(token.count, token.decimals)
@@ -144,7 +157,6 @@ const NewWithdraw: React.FC = () => {
               <h1>Review Withdraw</h1>
             )}
             <FormFooter>
-              {/* Should change this to secondary on gray which is unsupported now */}
               <ButtonText
                 mode="secondary"
                 size="large"
@@ -165,6 +177,7 @@ const NewWithdraw: React.FC = () => {
                 iconRight={<IconChevronRight />}
               />
             </FormFooter>
+            {/* <pre>{JSON.stringify(formMethods.watch(), null, 2)}</pre> */}
           </FormLayout>
         </FormProvider>
         <TokenMenu
