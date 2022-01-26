@@ -2,8 +2,8 @@ import React from 'react';
 import {CardProposal} from '@aragon/ui-components';
 import {useTranslation} from 'react-i18next';
 import {translateProposalDate} from '../../utils/date';
-import {ProposalData, VotingData} from 'hooks/useProposal';
 import {useNavigate} from 'react-router-dom';
+import {ProposalData, VotingData} from 'utils/types';
 
 // types will come from subgraph and will need to be refactored.
 type ProposalListProps = {
@@ -19,7 +19,7 @@ const ProposalList: React.FC<ProposalListProps> = ({proposals}) => {
 
   return (
     <div className="space-y-3" data-testid="proposalList">
-      {proposals.map((proposal, _) => {
+      {proposals.map(proposal => {
         const AlertMessage = translateProposalDate(
           proposal.type,
           proposal.vote
@@ -35,8 +35,8 @@ const ProposalList: React.FC<ProposalListProps> = ({proposals}) => {
             voteTitle={t('governance.proposals.voteTitle') as string}
             {...(proposal.type === 'active' && {
               voteProgress: getVoteResults(proposal.vote).toString(),
-              voteLabel: proposal.vote.results.yes,
-              tokenAmount: proposal.vote.total,
+              voteLabel: proposal.vote.results.yes.toString(),
+              tokenAmount: proposal.vote.total.toString(),
               tokenSymbol: proposal.vote.tokenSymbol,
             })}
             publishLabel={t('governance.proposals.publishedBy') as string}

@@ -2,8 +2,7 @@ import {Address} from '@aragon/ui-components/dist/utils/addresses';
 import {useEffect, useState} from 'react';
 
 import useIsMounted from 'hooks/useIsMounted';
-import {HookData} from 'utils/types';
-import {ProposalData, UncategorizedProposalData} from './useProposal';
+import {HookData, ProposalData, UncategorizedProposalData} from 'utils/types';
 import {getRemainingTime} from 'utils/date';
 
 /**
@@ -23,6 +22,7 @@ export function useDaoProposals(daoAddress: Address): HookData<ProposalData[]> {
 
   useEffect(() => {
     // TODO extract this into graphQL query
+    // eslint-disable-next-line
     async function fetchData(addr: Address) {
       return TEMP_PROPOSALS;
     }
@@ -51,6 +51,12 @@ export function useDaoProposals(daoAddress: Address): HookData<ProposalData[]> {
   return {data: proposals, isLoading: loading, error};
 }
 
+/**
+ * Takes and uncategorized proposal and categorizes it according to definitions.
+ * @param uncategorizedProposal
+ * @returns categorized proposal (i.e., uncategorizedProposal with additional
+ * type field)
+ */
 function categorizeProposal(
   uncategorizedProposal: UncategorizedProposalData
 ): ProposalData {
@@ -90,6 +96,8 @@ function categorizeProposal(
   }
 }
 
+/* MOCK DATA ================================================================ */
+
 // TEMPORARY, should eventually be obtained from a subgraph
 const TEMP_PROPOSALS: UncategorizedProposalData[] = [
   {
@@ -122,6 +130,12 @@ const TEMP_PROPOSALS: UncategorizedProposalData[] = [
         date: '1644988365',
         block: '123456789',
       },
+      resources: [
+        {
+          title: 'Resource title',
+          url: 'https://example.com',
+        },
+      ],
     },
     vote: {
       tokenSymbol: 'DNT',
@@ -201,6 +215,12 @@ const TEMP_PROPOSALS: UncategorizedProposalData[] = [
         date: '1639988358',
         block: '123456789',
       },
+      resources: [
+        {
+          title: 'Resource title',
+          url: 'https://example.com',
+        },
+      ],
       executed: {
         date: '1642925958',
         block: '123456789',

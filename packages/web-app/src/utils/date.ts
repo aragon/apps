@@ -1,6 +1,5 @@
 import {i18n} from '../../i18n.config';
-import {Proposal} from 'utils/types';
-import {VotingData} from 'hooks/useProposal';
+import {ProposalData, VotingData} from './types';
 /**
  * Note: This function will return a list of timestamp that we can use to categorize transfers
  * @return a object with milliseconds params
@@ -50,7 +49,7 @@ export function getRemainingTime(
  * @returns a message with i18 translation as proposal ends alert
  */
 export function translateProposalDate(
-  type: Proposal['type'],
+  type: ProposalData['type'],
   voteData: VotingData
 ): string | null {
   let leftTimestamp;

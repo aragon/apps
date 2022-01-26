@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import {PageWrapper} from 'components/wrappers';
 import ProposalList from 'components/proposalList';
 import {useDaoProposals} from '../hooks/useDaoProposals';
-import {ProposalData} from 'hooks/useProposal';
+import {ProposalData} from 'utils/types';
 
 const Governance: React.FC = () => {
   const [filterValue, setFilterValue] = useState<string>('all');

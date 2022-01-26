@@ -12,7 +12,7 @@ const Proposal: React.FC = () => {
   if (!id) {
     navigate(paths.NotFound);
   }
-  let definedId = id as string;
+  const definedId = id as string;
   const {
     data: proposalData,
     isLoading,
