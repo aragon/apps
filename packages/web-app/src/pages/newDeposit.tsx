@@ -26,6 +26,7 @@ import {TransferTypes} from 'utils/constants';
 import {useWalletProps} from 'containers/walletMenu';
 import {useWalletMenuContext} from 'context/walletMenu';
 import {BaseTokenInfo, TokenBalance} from 'utils/types';
+import {constants} from 'ethers';
 
 const steps = {
   configure: 1,
@@ -68,6 +69,7 @@ const NewDeposit: React.FC = () => {
     isConnected,
     provider,
     getTokenList,
+    balance,
   }: useWalletProps = useWallet();
 
   const formMethods = useForm<FormData>({
@@ -103,25 +105,26 @@ const NewDeposit: React.FC = () => {
       const tokenList = await getTokenList();
 
       // get curated tokens balance from wallet
-      const allPromise = Promise.all(
+      const balances = await Promise.all(
         tokenList.map(address =>
           fetchBalance(address, account, provider, false)
         )
-      );
-
-      const balances = await allPromise;
+      ).then(async result => {
+        if (balance !== '-1') await tokenList.push(constants.AddressZero);
+        return result;
+      });
 
       // map tokens with their balance
       setWalletTokens(
         tokenList.map((token, index) => ({
           address: token,
-          count: balances[index],
+          count: balances[index] || balance,
         }))
       );
     }
 
     fetchWalletTokens();
-  }, [account, chainId, getTokenList, provider]);
+  }, [account, balance, chainId, getTokenList, provider]);
 
   /*************************************************
    *             Callbacks and Handlers            *
