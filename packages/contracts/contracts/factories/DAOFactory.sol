@@ -123,8 +123,6 @@ contract DAOFactory {
         // give voting AND executing capabilities to anyone on the voting process
         items = new ACLData.BulkItem[](4);
 
-        address ANY_ADDR = address(type(uint160).max);
-
         items[3] = ACLData.BulkItem(ACLData.BulkOp.Grant, voting.MODIFY_CONFIG(), address(dao));
 
         dao.bulk(address(voting), items);

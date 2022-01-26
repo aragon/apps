@@ -106,7 +106,10 @@ contract SimpleVoting is Component, TimeHelpers {
         vote_.supportRequiredPct = supportRequiredPct;
         vote_.minAcceptQuorumPct = minAcceptQuorumPct;
         vote_.votingPower = votingPower;
-        vote_.actions = _actions;
+
+        for (uint256 i; i < _actions.length; i++) {
+            vote_.actions.push(_actions[i]);
+        }
 
         emit StartVote(votesLength, msg.sender, proposalMetadata);
     
@@ -221,7 +224,7 @@ contract SimpleVoting is Component, TimeHelpers {
             uint256 yea,
             uint256 nay,
             uint256 votingPower,
-            IDAO.Action[] storage actions
+            IDAO.Action[] memory actions
         )
     {
         Vote storage vote_ = votes[_voteId];
