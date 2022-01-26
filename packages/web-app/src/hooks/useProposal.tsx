@@ -10,8 +10,10 @@ import {HookData} from 'utils/types';
 
 export function useProposal(
   proposalId: string
-): HookData<ProposalData | undefined> {
-  const [proposalData, setProposalData] = useState<ProposalData | undefined>();
+): HookData<UncategorizedProposalData | undefined> {
+  const [proposalData, setProposalData] = useState<
+    UncategorizedProposalData | undefined
+  >();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | undefined>();
 
@@ -33,7 +35,13 @@ export function useProposal(
 
 /* DATA STRUCTURE =========================================================== */
 
-type ProposalData = {
+export type ProposalData = UncategorizedProposalData & {
+  type: 'draft' | 'pending' | 'active' | 'succeeded' | 'executed' | 'defeated';
+};
+
+type Seconds = string;
+
+export type UncategorizedProposalData = {
   id: string;
   metadata: ProposalMetadata;
   vote: VotingData;
@@ -55,15 +63,16 @@ type ProposalResource = {
 };
 
 type BlockChainInteraction = {
-  date: string;
+  date: Seconds;
   block: string;
 };
 
-type VotingData = {
-  start: string;
-  end: string;
+export type VotingData = {
+  start: Seconds;
+  end: Seconds;
   total: number;
   results: Record<string, number>; // e.g. option -> amount of votes
+  tokenSymbol: string;
 };
 
 type ExecutionData = {
@@ -74,7 +83,7 @@ type ExecutionData = {
 
 /* MOCK DATA ================================================================ */
 
-const fullProposalData: ProposalData = {
+const fullProposalData: UncategorizedProposalData = {
   id: '1',
   metadata: {
     title: 'Proposal: Title',
@@ -87,22 +96,23 @@ const fullProposalData: ProposalData = {
       },
     ],
     published: {
-      date: '2019-01-01',
+      date: '1644988365',
       block: '123456789',
     },
     executed: {
-      date: '2019-01-01',
+      date: '1644988365',
       block: '123456789',
     },
   },
   vote: {
-    start: '2019-01-01',
-    end: '2019-02-01',
+    start: '1644988365',
+    end: '1644988365',
     total: 100,
     results: {
       option1: 10,
       option2: 90,
     },
+    tokenSymbol: 'ANT',
   },
   execution: {
     from: '0x1234567890123456789012345678901234567890',
@@ -110,22 +120,23 @@ const fullProposalData: ProposalData = {
     amount: 0,
   },
 };
-const partialProposalData: ProposalData = {
+const partialProposalData: UncategorizedProposalData = {
   id: '2',
   metadata: {
     title: 'Proposal: Title',
     description: 'Proposal: Description',
     publisher: '0x1234567890123456789012345678901234567890',
     published: {
-      date: '2019-01-01',
+      date: '1644988365',
       block: '123456789',
     },
   },
   vote: {
-    start: '2019-01-01',
-    end: '2019-02-01',
+    start: '1644988365',
+    end: '1644988365',
     total: 100,
     results: {},
+    tokenSymbol: 'DAI',
   },
   execution: {
     from: '0x1234567890123456789012345678901234567890',
@@ -134,4 +145,7 @@ const partialProposalData: ProposalData = {
   },
 };
 
-const proposals: ProposalData[] = [fullProposalData, partialProposalData];
+const proposals: UncategorizedProposalData[] = [
+  fullProposalData,
+  partialProposalData,
+];

@@ -1,12 +1,12 @@
 import React from 'react';
 import {CardProposal} from '@aragon/ui-components';
 import {useTranslation} from 'react-i18next';
-import {Proposal} from 'utils/types';
 import {translateProposalDate} from '../../utils/date';
+import {ProposalData, VotingData} from 'hooks/useProposal';
 
-// types might come from subgraph - not adding any now
+// types will come from subgraph and will need to be refactored.
 type ProposalListProps = {
-  proposals: Array<Proposal>;
+  proposals: Array<ProposalData>;
 };
 
 const ProposalList: React.FC<ProposalListProps> = ({proposals}) => {
@@ -17,26 +17,26 @@ const ProposalList: React.FC<ProposalListProps> = ({proposals}) => {
 
   return (
     <div className="space-y-3" data-testid="proposalList">
-      {proposals.map((proposal, index) => {
+      {proposals.map((proposal, _) => {
         const AlertMessage = translateProposalDate(
           proposal.type,
-          proposal.startAt || proposal.endAt || ''
+          proposal.vote
         );
         return (
           <CardProposal
-            title={proposal.title}
-            description={proposal.description}
+            title={proposal.metadata.title}
+            description={proposal.metadata.description}
             onClick={() => null}
             state={proposal.type}
             voteTitle={t('governance.proposals.voteTitle') as string}
             {...(proposal.type === 'active' && {
-              voteProgress: proposal.voteProgress,
-              voteLabel: proposal.voteLabel,
-              tokenAmount: proposal.tokenAmount,
-              tokenSymbol: proposal.tokenSymbol,
+              voteProgress: getVoteResults(proposal.vote).toString(),
+              voteLabel: proposal.vote.results.yes,
+              tokenAmount: proposal.vote.total,
+              tokenSymbol: proposal.vote.tokenSymbol,
             })}
             publishLabel={t('governance.proposals.publishedBy') as string}
-            publisherAddress={proposal.publisherAddress}
+            publisherAddress={proposal.metadata.publisher}
             StateLabel={[
               t('governance.proposals.states.draft'),
               t('governance.proposals.states.pending'),
@@ -53,12 +53,19 @@ const ProposalList: React.FC<ProposalListProps> = ({proposals}) => {
               t('governance.proposals.buttons.edit'),
             ]}
             // FIXME: need add better keys when we start backend integration
-            key={index}
+            key={proposal.id}
           />
         );
       })}
     </div>
   );
 };
+
+function getVoteResults(votes: VotingData) {
+  if (votes.results.total === 0) {
+    return 0;
+  }
+  return Math.round((votes.results.yes / votes.total) * 100);
+}
 
 export default ProposalList;
