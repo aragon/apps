@@ -39,7 +39,7 @@
     "resources": "Resources",
     "submitWithdraw": "Publish Proposal",
     "daoName": "Name",
-    "description": "Description",
+    "description": "Summary",
     "links": "Links",
     "logo": "Logo",
     "optional": "Optional"
@@ -49,7 +49,7 @@
     "walletOrEns": "Type wallet address or ENS ...",
     "searchTokens": "Type to search ...",
     "daoName": "Type your DAOs name ...",
-    "daoDescription": "Type your description ..."
+    "daoDescription": "Type your summary ..."
   },
   "finance": {
     "tokenSection": "Tokens",
@@ -98,6 +98,8 @@
     "required": {
       "address": "Token address is required",
       "amount": "Token amount is required",
+      "label": "Label is mandatory",
+      "link": "Link is mandatory",
       "recipient": "Recipient address is required",
       "token": "Token is required"
     }
