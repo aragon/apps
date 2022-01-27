@@ -7,13 +7,27 @@ import {Spinner} from '../spinner';
 import {ButtonIcon} from '../button';
 
 export type FileAvatarInputProps = {
+  /**
+   * onChange Event will fires after uploading a valid image
+   */
   onChange: (file: File) => void;
+  /**
+   * All error messages will pass as onError function inputs
+   */
   onError: (error: {code: string; message: string}) => void;
+  /**
+   * limit maximum dimension of the image (in px)
+   */
   maxDimension?: number;
+  /**
+   * limit minimum dimension of the image (in px)
+   */
   minDimension?: number;
+  /**
+   * limit maximum file size of the image (in bytes)
+   */
   maxFileSize: number;
 };
-/** Dropdown input with variable styling (depending on mode) */
 
 export const FileAvatarInput: React.FC<FileAvatarInputProps> = ({
   onChange,
@@ -24,19 +38,25 @@ export const FileAvatarInput: React.FC<FileAvatarInputProps> = ({
 }) => {
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+
   const onDrop = useCallback(
     (acceptedFiles: Array<File>, onDropRejected) => {
       if (onDropRejected.length !== 0) {
         onError(onDropRejected[0].errors[0]);
       } else {
+        /**
+         * Render image to calculate the dimensions
+         */
+        setLoading(true);
         const image = new Image();
         image.addEventListener('load', () => {
+          setLoading(false);
           if (
             image.width > maxDimension ||
             image.height > maxDimension ||
             image.width < minDimension ||
             image.height < minDimension ||
-            image.height !== image.width
+            image.height !== image.width // check if the image is squere or not
           ) {
             onError({
               code: 'wrong-dimension',
@@ -61,7 +81,11 @@ export const FileAvatarInput: React.FC<FileAvatarInputProps> = ({
   });
   return (
     <>
-      {!loading ? (
+      {loading ? (
+        <LoadingContainer>
+          <Spinner size="small" />
+        </LoadingContainer>
+      ) : (
         <>
           {preview ? (
             <ImageContainer>
@@ -74,16 +98,15 @@ export const FileAvatarInput: React.FC<FileAvatarInputProps> = ({
               />
             </ImageContainer>
           ) : (
-            <DefaultContainer {...getRootProps()}>
+            <DefaultContainer
+              data-testid="fileAvatar-input"
+              {...getRootProps()}
+            >
               <IconAdd />
               <input {...getInputProps()} />
             </DefaultContainer>
           )}
         </>
-      ) : (
-        <LoadingContainer>
-          <Spinner size="small" />
-        </LoadingContainer>
       )}
     </>
   );

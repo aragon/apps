@@ -13,7 +13,7 @@ const Template: Story<FileAvatarInputProps> = args => (
 
 export const Avatar = Template.bind({});
 Avatar.args = {
-  onClick: () => null,
+  onChange: () => null,
   onError: () =>
     alert(
       'Please provide a squared image (PNG, SVG, JPG or GIF) with maximum of 5MB and size between 256px and 2400 px on each side'
