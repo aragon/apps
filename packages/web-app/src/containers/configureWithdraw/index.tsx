@@ -56,8 +56,8 @@ const ConfigureWithdrawForm: React.FC = () => {
         // TODO: replace with commented out code when integrating backend
         const allTokenInfoPromise = Promise.all([
           isETH(tokenAddress)
-            ? formatUnits('6650000000000000000000', 18) //provider.getBalance(DAOVaultAddress)
-            : formatUnits('6650000000000000000000', 18), //fetchBalance(tokenAddress, DAOVaultAddress, provider),
+            ? formatUnits('4242424242400000000000', 18) //provider.getBalance(DAOVaultAddress)
+            : formatUnits('4242424242400000000000', 18), //fetchBalance(tokenAddress, DAOVaultAddress, provider),
           fetchTokenData(tokenAddress),
         ]);
 

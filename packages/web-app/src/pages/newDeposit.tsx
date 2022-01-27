@@ -89,7 +89,7 @@ const NewDeposit: React.FC = () => {
     }
   }, [account, formMethods]);
 
-  // fetch curated tokens and corresponding balance on wallet
+  // fetch tokens and corresponding balance on wallet
   useEffect(() => {
     async function fetchWalletTokens() {
       if (account === null) {
@@ -101,7 +101,7 @@ const NewDeposit: React.FC = () => {
       if (Number(balance) !== -1 && Number(balance) !== 0)
         await tokenList.push(constants.AddressZero);
 
-      // get curated tokens balance from wallet
+      // get tokens balance from wallet
       const balances = await Promise.all(
         tokenList.map(address => {
           if (isETH(address)) return formatUnits(balance, 18)?.slice(0, 4);
