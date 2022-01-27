@@ -106,7 +106,8 @@ const NewDeposit: React.FC = () => {
       }
 
       const tokenList = await getTokenList();
-      if (balance !== '-1') await tokenList.push(constants.AddressZero);
+      if (Number(balance) !== -1 && Number(balance) !== 0)
+        await tokenList.push(constants.AddressZero);
 
       // get curated tokens balance from wallet
       const balances = await Promise.all(
