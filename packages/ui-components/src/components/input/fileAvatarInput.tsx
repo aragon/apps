@@ -10,7 +10,7 @@ export type FileAvatarInputProps = {
   /**
    * onChange Event will fires after uploading a valid image
    */
-  onChange: (file: File) => void;
+  onChange: (file: File | null) => void;
   /**
    * All error messages will pass as onError function inputs
    */
@@ -94,7 +94,10 @@ export const FileAvatarInput: React.FC<FileAvatarInputProps> = ({
                 icon={<IconClose />}
                 size="small"
                 mode="secondary"
-                onClick={() => setPreview(null)}
+                onClick={() => {
+                  setPreview(null);
+                  onChange(null);
+                }}
               />
             </ImageContainer>
           ) : (
