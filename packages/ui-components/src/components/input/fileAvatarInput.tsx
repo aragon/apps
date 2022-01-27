@@ -8,8 +8,10 @@ import {ButtonIcon} from '../button';
 
 export type FileAvatarInputProps = {
   onChange: (file: File) => void;
+  onError: (error: {code: string; message: string}) => void;
   maxDimension?: number;
   minDimension?: number;
+  maxFileSize: number;
 };
 /** Dropdown input with variable styling (depending on mode) */
 
@@ -17,41 +19,44 @@ export const FileAvatarInput: React.FC<FileAvatarInputProps> = ({
   onChange,
   maxDimension = 2400,
   minDimension = 256,
+  maxFileSize = 5000000,
+  onError,
 }) => {
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const onDrop = useCallback(
     (acceptedFiles: Array<File>, onDropRejected) => {
-      const image = new Image();
-      image.addEventListener('load', () => {
-        if (
-          image.width > maxDimension ||
-          image.height > maxDimension ||
-          image.width < minDimension ||
-          image.height < minDimension ||
-          image.height !== image.width
-        ) {
-          alert(
-            'Please provide a squared image (PNG, SVG, JPG or GIF) with maximum of 5MB and size between 256px and 2400 px on each side'
-          );
-        } else {
-          onChange(acceptedFiles[0]);
-          setPreview(image.src);
-        }
-      });
-      image.src = URL.createObjectURL(acceptedFiles[0]);
       if (onDropRejected.length !== 0) {
-        alert(
-          'Please provide a squared image (PNG, SVG, JPG or GIF) with maximum of 5MB and size between 256px and 2400 px on each side'
-        );
+        onError(onDropRejected[0].errors[0]);
+      } else {
+        const image = new Image();
+        image.addEventListener('load', () => {
+          if (
+            image.width > maxDimension ||
+            image.height > maxDimension ||
+            image.width < minDimension ||
+            image.height < minDimension ||
+            image.height !== image.width
+          ) {
+            onError({
+              code: 'wrong-dimension',
+              message:
+                'Please provide a squared image with size between 256px and 2400 px on each side',
+            });
+          } else {
+            onChange(acceptedFiles[0]);
+            setPreview(image.src);
+          }
+        });
+        image.src = URL.createObjectURL(acceptedFiles[0]);
       }
     },
-    [maxDimension, minDimension, onChange]
+    [maxDimension, minDimension, onChange, onError]
   );
 
   const {getRootProps, getInputProps} = useDropzone({
     onDrop,
-    maxSize: 5000000,
+    maxSize: maxFileSize,
     accept: 'image/jpg, image/jpeg, image/png, image/gif, image/svg',
   });
   return (
