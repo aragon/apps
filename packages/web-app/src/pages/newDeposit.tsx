@@ -20,7 +20,7 @@ import DepositForm from 'containers/depositForm';
 import {useStepper} from 'hooks/useStepper';
 import {formatUnits} from 'utils/library';
 import ReviewDeposit from 'containers/reviewDeposit';
-import {fetchBalance} from 'utils/tokens';
+import {fetchBalance, isETH} from 'utils/tokens';
 import {NavigationBar} from 'containers/navbar';
 import {TransferTypes} from 'utils/constants';
 import {useWalletProps} from 'containers/walletMenu';
@@ -100,25 +100,27 @@ const NewDeposit: React.FC = () => {
   // fetch curated tokens and corresponding balance on wallet
   useEffect(() => {
     async function fetchWalletTokens() {
-      if (account === null) return;
+      if (account === null) {
+        setWalletTokens([]);
+        return;
+      }
 
       const tokenList = await getTokenList();
+      if (balance !== '-1') tokenList.push(constants.AddressZero);
 
       // get curated tokens balance from wallet
       const balances = await Promise.all(
-        tokenList.map(address =>
-          fetchBalance(address, account, provider, false)
-        )
-      ).then(async result => {
-        if (balance !== '-1') await tokenList.push(constants.AddressZero);
-        return result;
-      });
+        tokenList.map(address => {
+          if (isETH(address)) return formatUnits(balance, 18)?.slice(0, 4);
+          else return fetchBalance(address, account, provider, false);
+        })
+      );
 
       // map tokens with their balance
       setWalletTokens(
         tokenList.map((token, index) => ({
           address: token,
-          count: balances[index] || balance,
+          count: balances[index],
         }))
       );
     }
