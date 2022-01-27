@@ -79,6 +79,7 @@ const DepositForm: React.FC = () => {
          * Also, double safeguard. Should not actually fall into here since
          * tokenAddress should be valid in the first place for balance to be fetched.
          */
+        console.error(error);
       }
       if (dirtyFields.amount) trigger(['amount', 'tokenSymbol']);
     };
