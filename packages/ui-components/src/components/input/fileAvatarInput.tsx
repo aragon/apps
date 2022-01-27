@@ -48,7 +48,7 @@ export const FileAvatarInput: React.FC<FileAvatarInputProps> = ({
          * Render image to calculate the dimensions
          */
         setLoading(true);
-        const image = new Image();
+        const image: HTMLImageElement = new Image();
         image.addEventListener('load', () => {
           setLoading(false);
           if (
