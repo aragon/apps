@@ -1,17 +1,17 @@
 import React from 'react';
 import {render, screen} from '@testing-library/react';
 
-import {WidgetStatus} from '../src';
+import {CheckboxListItem} from '../src';
 
-describe('WidgetStatus', () => {
+describe('CheckboxListItem', () => {
   // eslint-disable-next-line
   function setup(args: any) {
-    render(<WidgetStatus {...args} />);
-    return screen.getByTestId('widgetStatus');
+    render(<CheckboxListItem {...args} />);
+    return screen.getByTestId('checkboxListItem');
   }
 
   test('should render without crashing', () => {
-    const element = setup({steps: []});
+    const element = setup({});
     expect(element).toBeInTheDocument;
   });
 });

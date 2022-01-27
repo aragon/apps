@@ -65,6 +65,56 @@ export type Transfer = {
   isPending?: boolean;
 };
 
+/* PROPOSAL DATA ============================================================ */
+
+export type ProposalData = UncategorizedProposalData & {
+  type: 'draft' | 'pending' | 'active' | 'succeeded' | 'executed' | 'defeated';
+};
+
+type Seconds = string;
+
+export type UncategorizedProposalData = {
+  id: string;
+  metadata: ProposalMetadata;
+  vote: VotingData;
+  execution: ExecutionData;
+};
+
+type ProposalMetadata = {
+  title: string;
+  description: string;
+  publisher: Address;
+  resources?: ProposalResource[];
+  published?: BlockChainInteraction;
+  executed?: BlockChainInteraction;
+};
+
+type ProposalResource = {
+  title: string;
+  url: string;
+};
+
+type BlockChainInteraction = {
+  date: Seconds;
+  block: string;
+};
+
+export type VotingData = {
+  start: Seconds;
+  end: Seconds;
+  total: number;
+  results: Record<string, number>; // e.g. option -> amount of votes
+  tokenSymbol: string;
+};
+
+type ExecutionData = {
+  from: Address;
+  to: Address;
+  amount: number;
+};
+
+/* GENERIC HOOK RETURN TYPE ================================================= */
+
 /** Return type for data hooks */
 export type HookData<T> = {
   data: T;

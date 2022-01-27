@@ -5,8 +5,6 @@ import {
   ValueInput,
 } from '@aragon/ui-components';
 import styled from 'styled-components';
-import {BigNumber} from 'ethers';
-import {parseUnits} from 'ethers/lib/utils';
 import {useTranslation} from 'react-i18next';
 import React, {useCallback} from 'react';
 import {Controller, useFormContext, useWatch} from 'react-hook-form';
@@ -39,7 +37,7 @@ const ConfigureWithdrawForm: React.FC = () => {
     // Insufficient data to calculate warning
     if (!decimals || !balance || amount === '') return null;
 
-    if (BigNumber.from(parseUnits(amount, decimals)).gt(parseUnits(balance)))
+    if (Number(amount) > Number(balance))
       return (
         <AlertInline label={t('warnings.amountGtDaoToken')} mode="warning" />
       );

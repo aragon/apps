@@ -75,17 +75,6 @@ const TokenMenu: React.FC<TokenMenuProps> = ({
               {t('TokenModal.tokenNotAvailableSubtitle')}
             </TokenDescription>
           </NoTokenContainer>
-          {isWallet && (
-            <WideButton
-              mode="secondary"
-              size="large"
-              label="Add Custom Token"
-              iconLeft={<IconAdd />}
-              onClick={() =>
-                handleTokenClick({...customToken, symbol: searchValue})
-              }
-            />
-          )}
         </>
       );
     } else if (tokenList.length === 0) {
@@ -97,17 +86,6 @@ const TokenMenu: React.FC<TokenMenuProps> = ({
               {t('TokenModal.tokenNotFoundSubtitle')}
             </TokenSubtitle>
           </NoTokenWrapper>
-          {isWallet && (
-            <WideButton
-              mode="secondary"
-              size="large"
-              label="Add Custom Token"
-              iconLeft={<IconAdd />}
-              onClick={() =>
-                handleTokenClick({...customToken, symbol: searchValue})
-              }
-            />
-          )}
         </>
       );
     } else {
@@ -147,6 +125,15 @@ const TokenMenu: React.FC<TokenMenuProps> = ({
           placeholder={t('placeHolders.searchTokens')}
         />
         <TokensWrapper>{renderTokens()}</TokensWrapper>
+        <WideButton
+          mode="secondary"
+          size="large"
+          label="Add Custom Token"
+          iconLeft={<IconAdd />}
+          onClick={() =>
+            handleTokenClick({...customToken, symbol: searchValue})
+          }
+        />
       </Container>
     </Modal>
   );
