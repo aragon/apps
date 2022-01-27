@@ -56,23 +56,23 @@
   },
   "governance": {
     "proposals": {
-      "publishedBy" : "Published by",
-      "pending":"Starts in {{days}} days {{hours}} hours",
-      "active":"{{days}} days {{hours}} hours left",
-      "voteTitle":"Winning Option",
-      "states":{
-        "draft":"Draft",
-        "pending":"Pending",
-        "active":"Active",
-        "executed":"Executed",
-        "succeeded":"Succeeded",
-        "defeated":"Defeated"
+      "publishedBy": "Published by",
+      "pending": "Starts in {{days}} days {{hours}} hours",
+      "active": "{{days}} days {{hours}} hours left",
+      "voteTitle": "Winning Option",
+      "states": {
+        "draft": "Draft",
+        "pending": "Pending",
+        "active": "Active",
+        "executed": "Executed",
+        "succeeded": "Succeeded",
+        "defeated": "Defeated"
       },
-      "buttons":{
-        "read":"Read Proposal",
-        "vote":"Vote now",
-        "execute":"Execute Now",
-        "edit":"Edit Proposal"
+      "buttons": {
+        "read": "Read Proposal",
+        "vote": "Vote now",
+        "execute": "Execute Now",
+        "edit": "Edit Proposal"
       }
     },
     "noProposals": "No proposals found!"
@@ -119,7 +119,9 @@
     "tokenNotFoundTitle": "Token not found",
     "tokenNotAvailable": "No token found",
     "tokenNotFoundSubtitle": "Add custom token to deposit",
-    "tokenNotAvailableSubtitle": "Check your wallet, update the tokens or add a custom token to transfer"
+    "tokenNotFoundSubtitleDao": "Add custom token to withdraw",
+    "tokenNotAvailableSubtitle": "Check your wallet, update the tokens or add a custom token to transfer",
+    "tokenNotAvailableSubtitleDao": "Update the tokens or add a custom token to transfer."
   },
   "newDeposit": {
     "depositAssets": "Deposit Assets",
