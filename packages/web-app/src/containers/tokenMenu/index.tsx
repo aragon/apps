@@ -1,6 +1,3 @@
-import styled from 'styled-components';
-import {useTranslation} from 'react-i18next';
-import React, {useCallback, useState} from 'react';
 import {
   Modal,
   SearchInput,
@@ -8,9 +5,12 @@ import {
   IconAdd,
   IconStorage,
 } from '@aragon/ui-components';
+import styled from 'styled-components';
+import {useTranslation} from 'react-i18next';
+import React, {useCallback, useState} from 'react';
 
 import TokenBox from './tokenBox';
-
+import {sortTokens} from 'utils/tokens';
 import {formatUnits} from 'utils/library';
 import {useTokenInfo} from 'hooks/useTokenInformation';
 import {useTransferModalContext} from 'context/transfersModal';
@@ -62,6 +62,7 @@ const TokenMenu: React.FC<TokenMenuProps> = ({
 
   const renderTokens = () => {
     const tokenList = tokens.filter(filterValidator);
+    sortTokens(tokenList, 'name');
 
     if (tokenList.length === 0 && searchValue === '') {
       return (
@@ -72,7 +73,9 @@ const TokenMenu: React.FC<TokenMenuProps> = ({
             </IconWrapper>
             <TokenTitle>{t('TokenModal.tokenNotAvailable')}</TokenTitle>
             <TokenDescription>
-              {t('TokenModal.tokenNotAvailableSubtitle')}
+              {isWallet
+                ? t('TokenModal.tokenNotAvailableSubtitle')
+                : t('TokenModal.tokenNotAvailableSubtitleDao')}
             </TokenDescription>
           </NoTokenContainer>
         </>
@@ -83,7 +86,9 @@ const TokenMenu: React.FC<TokenMenuProps> = ({
           <NoTokenWrapper>
             <TokenTitle>{t('TokenModal.tokenNotFoundTitle')}</TokenTitle>
             <TokenSubtitle>
-              {t('TokenModal.tokenNotFoundSubtitle')}
+              {isWallet
+                ? t('TokenModal.tokenNotFoundSubtitle')
+                : t('TokenModal.tokenNotFoundSubtitleDao')}
             </TokenSubtitle>
           </NoTokenWrapper>
         </>
