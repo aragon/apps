@@ -12,7 +12,7 @@ const DefineMetadata: React.FC = () => {
   const {t} = useTranslation();
 
   return (
-    <Container>
+    <>
       {/* Name */}
       <FormItem>
         <Label
@@ -35,7 +35,9 @@ const DefineMetadata: React.FC = () => {
         />
         <>
           {/* TODO: replace with proper logo component */}
-          <div className="w-8 h-8 border-dashed">Logo</div>
+          <div className="flex justify-center items-center w-8 h-8 bg-ui-0 rounded-xl border-2 border-dashed">
+            +
+          </div>
           <AlertInline label="Wire up field error message" mode="critical" />
         </>
       </FormItem>
@@ -60,17 +62,17 @@ const DefineMetadata: React.FC = () => {
         />
         <>
           {/* TODO: replace with proper logo component */}
-          <div className="bg-ui-0">Placeholder links component</div>
+          <div className="h-25 bg-ui-0 rounded-xl">
+            Placeholder links component
+          </div>
           <AlertInline label="Wire up field error message" mode="critical" />
         </>
       </FormItem>
-    </Container>
+    </>
   );
 };
 
 export default DefineMetadata;
-
-const Container = styled.div.attrs({})``;
 
 const FormItem = styled.div.attrs({
   className: 'space-y-1.5',
