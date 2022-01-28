@@ -1,38 +1,19 @@
-import {
-  ButtonIcon,
-  ButtonText,
-  ButtonWallet,
-  IconChevronLeft,
-  IconChevronRight,
-  IconMenuVertical,
-  Wizard,
-} from '@aragon/ui-components';
-import styled from 'styled-components';
 import {Address} from '@aragon/ui-components/dist/utils/addresses';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
 import {useForm, FormProvider} from 'react-hook-form';
-import React, {useCallback, useEffect} from 'react';
+import React, {useEffect} from 'react';
 
 import TokenMenu from 'containers/tokenMenu';
 import {useWallet} from 'context/augmentedWallet';
 import DepositForm from 'containers/depositForm';
-import {useStepper} from 'hooks/useStepper';
 import {formatUnits} from 'utils/library';
 import ReviewDeposit from 'containers/reviewDeposit';
-import {NavigationBar} from 'containers/navbar';
 import {TransferTypes} from 'utils/constants';
 import {useWalletProps} from 'containers/walletMenu';
-import {useWalletMenuContext} from 'context/walletMenu';
 import {BaseTokenInfo} from 'utils/types';
 import {useWalletTokens} from 'hooks/useWalletTokens';
-
-const steps = {
-  configure: 1,
-  review: 2,
-};
-
-const TOTAL_STEPS = Object.keys(steps).length;
+import {FullScreenStepper, Step} from 'components/fullScreenStepper';
 
 export type FormData = {
   amount: string;
@@ -59,13 +40,9 @@ const defaultValues = {
 };
 
 const NewDeposit: React.FC = () => {
-  const {account, connect, ensAvatarUrl, ensName, isConnected}: useWalletProps =
-    useWallet();
-
   const {t} = useTranslation();
-  const {open} = useWalletMenuContext();
+  const {account} = useWallet();
   const formMethods = useForm<FormData>({defaultValues, mode: 'onChange'});
-  const {currentStep, prev, next} = useStepper(TOTAL_STEPS);
   const walletTokens = useWalletTokens();
 
   /*************************************************
@@ -82,10 +59,6 @@ const NewDeposit: React.FC = () => {
   /*************************************************
    *             Callbacks and Handlers            *
    *************************************************/
-  const handleWalletButtonClick = useCallback(() => {
-    isConnected() ? open() : connect('injected');
-  }, [connect, isConnected, open]);
-
   const handleTokenSelect = (token: BaseTokenInfo) => {
     formMethods.setValue('tokenSymbol', token.symbol);
 
@@ -120,107 +93,35 @@ const NewDeposit: React.FC = () => {
    *                    Render                     *
    *************************************************/
   return (
-    <>
-      <NavigationBar>
-        <HStack>
-          <InsetButton>
-            <InsetIconContainer href={'/#/finance'}>
-              <IconChevronLeft />
-            </InsetIconContainer>
-            <InsetButtonText>{t('allTransfer.newTransfer')}</InsetButtonText>
-          </InsetButton>
-
-          {/* TODO: Add action after knowing the purpose of this button */}
-          <ButtonIcon
-            mode="secondary"
-            size="large"
-            icon={<IconMenuVertical />}
-          />
-        </HStack>
-
-        <ButtonWallet
-          onClick={handleWalletButtonClick}
-          isConnected={isConnected()}
-          label={
-            isConnected() ? ensName || account : t('navButtons.connectWallet')
-          }
-          src={ensAvatarUrl || account}
-        />
-      </NavigationBar>
-
-      <Layout>
-        <Wizard
-          title={t('newDeposit.configureDeposit')}
-          processName={t('newDeposit.depositAssets')}
-          description={t('newDeposit.configureDepositSubtitle')}
-          totalSteps={TOTAL_STEPS}
-          currentStep={currentStep}
-        />
-        <FormProvider {...formMethods}>
-          <FormLayout>
-            {currentStep === steps.configure ? (
-              <DepositForm />
-            ) : (
-              <ReviewDeposit />
-            )}
-            <FormFooter>
-              <ButtonText
-                mode="secondary"
-                size="large"
-                label={t('labels.back')}
-                onClick={prev}
-                disabled={currentStep === 1}
-                iconLeft={<IconChevronLeft />}
-              />
-              <ButtonText
-                label={
-                  currentStep === 1
-                    ? t('labels.continue')
-                    : t('labels.submitDeposit')
-                }
-                size="large"
-                onClick={next}
-                disabled={!formMethods.formState.isValid}
-                iconRight={<IconChevronRight />}
-              />
-            </FormFooter>
-          </FormLayout>
-        </FormProvider>
-        <TokenMenu
-          onTokenSelect={handleTokenSelect}
-          tokenBalances={walletTokens}
-        />
-      </Layout>
-    </>
+    <FormProvider {...formMethods}>
+      <FullScreenStepper
+        navbarLabel="New Transfer"
+        //TODO shouldn't this simply go back in router hisory?
+        navbarBackUrl="/finance"
+        wizardProcessName={t('newDeposit.depositAssets')}
+      >
+        <Step
+          wizardTitle={t('newDeposit.configureDeposit')}
+          wizardDescription={t('newDeposit.configureDepositSubtitle')}
+          isNextButtonDisabled={!formMethods.formState.isValid}
+        >
+          {/* Each step could be a separate component which could be put here */}
+          <DepositForm />
+        </Step>
+        <Step
+          wizardTitle={t('newDeposit.reviewTransfer')}
+          wizardDescription={t('newDeposit.reviewTransferSubtitle')}
+          nextButtonLabel={t('labels.submitDeposit')}
+        >
+          <ReviewDeposit />
+        </Step>
+      </FullScreenStepper>
+      <TokenMenu
+        onTokenSelect={handleTokenSelect}
+        tokenBalances={walletTokens}
+      />
+    </FormProvider>
   );
 };
 
 export default withTransaction('NewDeposit', 'component')(NewDeposit);
-
-const Layout = styled.div.attrs({
-  className: 'm-auto mt-3 w-8/12 font-medium text-ui-600',
-})``;
-
-const FormLayout = styled.div.attrs({
-  className: 'my-8 mx-auto space-y-5 w-3/4',
-})``;
-
-const HStack = styled.div.attrs({
-  className: 'flex space-x-1.5',
-})``;
-
-const InsetButton = styled.div.attrs({
-  className: 'flex items-center p-0.5 rounded-xl bg-ui-0',
-})``;
-
-const InsetIconContainer = styled.a.attrs({
-  className: 'p-1.5 rounded-lg bg-ui-50',
-})``;
-
-const InsetButtonText = styled.div.attrs({
-  className: 'pr-2 pl-1.5 font-bold text-ui-700',
-})``;
-
-const FormFooter = styled.div.attrs({
-  className: 'flex justify-between mt-8',
-})``;
