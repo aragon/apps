@@ -10,7 +10,6 @@ import DepositForm from 'containers/depositForm';
 import {formatUnits} from 'utils/library';
 import ReviewDeposit from 'containers/reviewDeposit';
 import {TransferTypes} from 'utils/constants';
-import {useWalletProps} from 'containers/walletMenu';
 import {BaseTokenInfo} from 'utils/types';
 import {useWalletTokens} from 'hooks/useWalletTokens';
 import {FullScreenStepper, Step} from 'components/fullScreenStepper';
@@ -48,6 +47,7 @@ const NewDeposit: React.FC = () => {
   /*************************************************
    *                    Hooks                      *
    *************************************************/
+
   useEffect(() => {
     // add form metadata
     if (account) {
@@ -59,6 +59,7 @@ const NewDeposit: React.FC = () => {
   /*************************************************
    *             Callbacks and Handlers            *
    *************************************************/
+
   const handleTokenSelect = (token: BaseTokenInfo) => {
     formMethods.setValue('tokenSymbol', token.symbol);
 
@@ -105,7 +106,6 @@ const NewDeposit: React.FC = () => {
           wizardDescription={t('newDeposit.configureDepositSubtitle')}
           isNextButtonDisabled={!formMethods.formState.isValid}
         >
-          {/* Each step could be a separate component which could be put here */}
           <DepositForm />
         </Step>
         <Step
