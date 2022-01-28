@@ -20,21 +20,25 @@ const Home: React.FC = () => {
       {/* This whole thing is just for a demo, will be removed before merging */}
       <div className="tablet:flex mx-3 tablet:mx-40 space-y-3 tablet:space-y-0 tablet:space-x-3">
         <CardWithImage
+          imgSrc="https://source.unsplash.com/sqdY_rJg8wg"
           caption="Step 1"
           title="Select Blockchain"
           subtitle="Decide which blockchain the DAO should be at home on."
         />
         <CardWithImage
+          imgSrc="https://source.unsplash.com/sqdY_rJg8wg"
           caption="Step 2"
           title="Select"
           subtitle="Decide which blockchain the DAO should be at home on."
         />
         <CardWithImage
+          imgSrc="https://source.unsplash.com/sqdY_rJg8wg"
           caption="Step 3"
           title="Blockchain"
           subtitle="Decide which blockchain the DAO should be at home on."
         />
         <CardWithImage
+          imgSrc="https://source.unsplash.com/sqdY_rJg8wg"
           caption="Step 4"
           title="Configure Governance"
           subtitle="How are decisions made in the DAO? How long may a proposal be open for voting? Decide which blockchain the DAO should be at home on."
