@@ -15,19 +15,30 @@ import {useWalletProps} from 'containers/walletMenu';
 import ConfigureWithdrawForm from 'containers/configureWithdraw';
 import {FullScreenStepper, Step} from 'components/fullScreenStepper';
 
-export type FormData = {
+export type TransferData = {
   amount: string;
-  isCustomToken: boolean;
-  reference?: string;
-  type: TransferTypes;
   from: Address;
   to: Address;
+  reference?: string;
+};
+
+export type TokenFormData = {
   tokenName: string;
   tokenSymbol: string;
   tokenImgUrl: string;
-  tokenDecimals: number;
   tokenAddress: Address;
   tokenBalance: string;
+};
+
+export type TransferFormData = TransferData &
+  TokenFormData & {
+    isCustomToken: boolean;
+    type: TransferTypes;
+  };
+
+export type WithdrawFormData = TransferFormData & {
+  // NOTE: Is this really just a withdrawl thing?
+  tokenDecimals: number;
 };
 
 const defaultValues = {
@@ -42,7 +53,10 @@ const defaultValues = {
 
 const NewWithdraw: React.FC = () => {
   const {t} = useTranslation();
-  const formMethods = useForm<FormData>({defaultValues, mode: 'onChange'});
+  const formMethods = useForm<WithdrawFormData>({
+    defaultValues,
+    mode: 'onChange',
+  });
   const {data: tokens} = useDaoTokens('myDaoAddress');
   const {account}: useWalletProps = useWallet();
 
@@ -88,7 +102,7 @@ const NewWithdraw: React.FC = () => {
     <FormProvider {...formMethods}>
       <FullScreenStepper
         navbarLabel="New Transfer"
-        navbarBackUrl="/finance"
+        navbarBackUrl="/#/finance"
         wizardProcessName={t('newWithdraw.withdrawAssets')}
       >
         <Step
@@ -104,7 +118,7 @@ const NewWithdraw: React.FC = () => {
           nextButtonLabel={t('labels.submitDeposit')}
         >
           <div>Voting setup form comes here.</div>
-          {/* TODO create form for second withdrawl step (analoguosly to 
+          {/* TODO create form for second withdrawl step (analoguosly to
             ConfigureWithdrawlForm above) is created. (DAO-621) */}
           {/* <SetupVotingForm /> */}
         </Step>

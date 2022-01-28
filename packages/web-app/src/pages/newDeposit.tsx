@@ -1,4 +1,3 @@
-import {Address} from '@aragon/ui-components/dist/utils/addresses';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
 import {useForm, FormProvider} from 'react-hook-form';
@@ -13,20 +12,9 @@ import {TransferTypes} from 'utils/constants';
 import {BaseTokenInfo} from 'utils/types';
 import {useWalletTokens} from 'hooks/useWalletTokens';
 import {FullScreenStepper, Step} from 'components/fullScreenStepper';
+import {TransferFormData} from './newWithdraw';
 
-export type FormData = {
-  amount: string;
-  isCustomToken: boolean;
-  reference?: string;
-  type: TransferTypes;
-  from: Address;
-  to: Address;
-  tokenBalance: string;
-  tokenSymbol: string;
-  tokenAddress: Address;
-  tokenName: string;
-  tokenImgUrl: string;
-};
+export type DepositFormData = TransferFormData;
 
 const defaultValues = {
   amount: '',
@@ -41,7 +29,10 @@ const defaultValues = {
 const NewDeposit: React.FC = () => {
   const {t} = useTranslation();
   const {account} = useWallet();
-  const formMethods = useForm<FormData>({defaultValues, mode: 'onChange'});
+  const formMethods = useForm<DepositFormData>({
+    defaultValues,
+    mode: 'onChange',
+  });
   const walletTokens = useWalletTokens();
 
   /*************************************************
@@ -98,7 +89,7 @@ const NewDeposit: React.FC = () => {
       <FullScreenStepper
         navbarLabel="New Transfer"
         //TODO shouldn't this simply go back in router hisory?
-        navbarBackUrl="/finance"
+        navbarBackUrl="/#/finance"
         wizardProcessName={t('newDeposit.depositAssets')}
       >
         <Step
