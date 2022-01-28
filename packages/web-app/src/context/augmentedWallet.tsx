@@ -20,7 +20,8 @@ import {erc20TokenABI} from '../abis/erc20TokenABI';
 
 export type WalletAugmented = Wallet & {
   provider: EthersProviders.Provider;
-  getTokenList: () => string[];
+  // TODO this should be moved to useWallet
+  getTokenList: () => Promise<string[]>;
 };
 // Any is a workaround so TS doesn't ask for a filled out default
 const WalletAugmentedContext = React.createContext<WalletAugmented | any>({});

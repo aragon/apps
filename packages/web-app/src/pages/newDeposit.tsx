@@ -12,7 +12,7 @@ import {Address} from '@aragon/ui-components/dist/utils/addresses';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
 import {useForm, FormProvider} from 'react-hook-form';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect} from 'react';
 
 import TokenMenu from 'containers/tokenMenu';
 import {useWallet} from 'context/augmentedWallet';
@@ -20,13 +20,12 @@ import DepositForm from 'containers/depositForm';
 import {useStepper} from 'hooks/useStepper';
 import {formatUnits} from 'utils/library';
 import ReviewDeposit from 'containers/reviewDeposit';
-import {fetchBalance, isETH} from 'utils/tokens';
 import {NavigationBar} from 'containers/navbar';
 import {TransferTypes} from 'utils/constants';
 import {useWalletProps} from 'containers/walletMenu';
 import {useWalletMenuContext} from 'context/walletMenu';
-import {BaseTokenInfo, TokenBalance} from 'utils/types';
-import {constants} from 'ethers';
+import {BaseTokenInfo} from 'utils/types';
+import {useWalletTokens} from 'hooks/useWalletTokens';
 
 const steps = {
   configure: 1,
@@ -60,23 +59,14 @@ const defaultValues = {
 };
 
 const NewDeposit: React.FC = () => {
-  const {
-    account,
-    chainId,
-    connect,
-    ensAvatarUrl,
-    ensName,
-    isConnected,
-    provider,
-    getTokenList,
-    balance,
-  }: useWalletProps = useWallet();
+  const {account, connect, ensAvatarUrl, ensName, isConnected}: useWalletProps =
+    useWallet();
 
   const {t} = useTranslation();
   const {open} = useWalletMenuContext();
   const formMethods = useForm<FormData>({defaultValues, mode: 'onChange'});
   const {currentStep, prev, next} = useStepper(TOTAL_STEPS);
-  const [walletTokens, setWalletTokens] = useState<TokenBalance[]>([]);
+  const walletTokens = useWalletTokens();
 
   /*************************************************
    *                    Hooks                      *
@@ -88,38 +78,6 @@ const NewDeposit: React.FC = () => {
       formMethods.setValue('type', TransferTypes.Deposit);
     }
   }, [account, formMethods]);
-
-  // fetch tokens and corresponding balance on wallet
-  useEffect(() => {
-    async function fetchWalletTokens() {
-      if (account === null) {
-        setWalletTokens([]);
-        return;
-      }
-
-      const tokenList = await getTokenList();
-      if (Number(balance) !== -1 && Number(balance) !== 0)
-        await tokenList.push(constants.AddressZero);
-
-      // get tokens balance from wallet
-      const balances = await Promise.all(
-        tokenList.map(address => {
-          if (isETH(address)) return formatUnits(balance, 18)?.slice(0, 4);
-          else return fetchBalance(address, account, provider, false);
-        })
-      );
-
-      // map tokens with their balance
-      setWalletTokens(
-        tokenList.map((token, index) => ({
-          address: token,
-          count: balances[index],
-        }))
-      );
-    }
-
-    fetchWalletTokens();
-  }, [account, balance, chainId, getTokenList, provider]);
 
   /*************************************************
    *             Callbacks and Handlers            *
