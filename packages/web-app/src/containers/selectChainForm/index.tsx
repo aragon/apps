@@ -8,32 +8,42 @@ import {
 } from '@aragon/ui-components';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
-import React, {useState} from 'react';
-import {useForm, Controller} from 'react-hook-form';
+import {Controller, useFormContext} from 'react-hook-form';
+import React, {useCallback, useState} from 'react';
 
 import {i18n} from '../../../i18n.config';
+import {isTestNet} from 'utils/library';
 import {useWallet} from 'context/augmentedWallet';
 
 type NetworkType = 'main' | 'test';
 type SortFilter = 'cost' | 'popularity' | 'security';
 
+function getDefaultNetworkType(id: number | undefined) {
+  if (!id) return 'main';
+  return isTestNet(id) ? 'test' : 'main';
+}
+
 const SelectChainForm: React.FC = () => {
   const {t} = useTranslation();
+  const {control} = useFormContext();
   const {account, chainId} = useWallet();
   const [isOpen, setIsOpen] = useState(false);
   const [sortFilter, setFilter] = useState<SortFilter>('cost');
-  const [networkType, setNetworkType] = useState<NetworkType>('main');
+  const [networkType, setNetworkType] = useState<NetworkType>(() =>
+    getDefaultNetworkType(chainId)
+  );
 
-  const methods = useForm();
+  const handleFilterChanged = useCallback(
+    (e: React.MouseEvent) => {
+      setIsOpen(false);
+      const {name} = e.currentTarget as HTMLButtonElement;
 
-  const handleFilterChanged = (e: React.MouseEvent) => {
-    setIsOpen(false);
-    const {name} = e.currentTarget as HTMLButtonElement;
-
-    if (sortFilter !== name) {
-      setFilter(name as SortFilter);
-    }
-  };
+      if (sortFilter !== name) {
+        setFilter(name as SortFilter);
+      }
+    },
+    [sortFilter]
+  );
 
   return (
     <>
@@ -100,7 +110,7 @@ const SelectChainForm: React.FC = () => {
               key={id}
               name="blockchain"
               rules={{required: true}}
-              control={methods.control}
+              control={control}
               defaultValue={(account && chainId) || 1}
               render={({field}) => (
                 <ListItemBlockchain
