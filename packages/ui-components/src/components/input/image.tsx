@@ -6,7 +6,7 @@ import {IconAdd, IconClose} from '../icons/interface';
 import {Spinner} from '../spinner';
 import {ButtonIcon} from '../button';
 
-export type FileAvatarInputProps = {
+export type InputImageProps = {
   /**
    * onChange Event will fires after uploading a valid image
    */
@@ -29,7 +29,7 @@ export type FileAvatarInputProps = {
   maxFileSize: number;
 };
 
-export const FileAvatarInput: React.FC<FileAvatarInputProps> = ({
+export const InputImage: React.FC<InputImageProps> = ({
   onChange,
   maxDimension = 2400,
   minDimension = 256,
@@ -60,8 +60,7 @@ export const FileAvatarInput: React.FC<FileAvatarInputProps> = ({
           ) {
             onError({
               code: 'wrong-dimension',
-              message:
-                'Please provide a squared image with size between 256px and 2400 px on each side',
+              message: `Please provide a squared image with size between ${minDimension}px and ${maxDimension}px on each side`,
             });
           } else {
             onChange(acceptedFiles[0]);
@@ -102,7 +101,7 @@ export const FileAvatarInput: React.FC<FileAvatarInputProps> = ({
       />
     </ImageContainer>
   ) : (
-    <DefaultContainer data-testid="fileAvatar-input" {...getRootProps()}>
+    <DefaultContainer data-testid="input-image" {...getRootProps()}>
       <IconAdd />
       <input {...getInputProps()} />
     </DefaultContainer>

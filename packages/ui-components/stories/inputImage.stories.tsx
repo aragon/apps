@@ -1,18 +1,16 @@
 import React from 'react';
 import {Meta, Story} from '@storybook/react';
-import {FileAvatarInput, FileAvatarInputProps} from '../src';
+import {InputImage, InputImageProps} from '../src';
 
 export default {
-  title: 'Components/Input/Avatar',
-  component: FileAvatarInput,
+  title: 'Components/Input/Image',
+  component: InputImage,
 } as Meta;
 
-const Template: Story<FileAvatarInputProps> = args => (
-  <FileAvatarInput {...args} />
-);
+const Template: Story<InputImageProps> = args => <InputImage {...args} />;
 
-export const Avatar = Template.bind({});
-Avatar.args = {
+export const Image = Template.bind({});
+Image.args = {
   onChange: () => null,
   onError: () =>
     alert(

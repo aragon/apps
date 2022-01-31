@@ -1,13 +1,13 @@
 import React from 'react';
 import {render, screen} from '@testing-library/react';
 
-import {Avatar as FileAvatarInput} from '../stories/inputFileAvatar.stories';
+import {Image as InputImage} from '../stories/inputImage.stories';
 
-describe('FileAvatarInput', () => {
+describe('inputImage', () => {
   // eslint-disable-next-line
   function setup(args: any) {
-    render(<FileAvatarInput {...args} />);
-    return screen.getByTestId('fileAvatar-input');
+    render(<InputImage {...args} />);
+    return screen.getByTestId('input-image');
   }
 
   test('should render without crashing', () => {
