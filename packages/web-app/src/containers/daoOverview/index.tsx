@@ -3,10 +3,10 @@ import {useTranslation} from 'react-i18next';
 import {ButtonText, IconChevronRight} from '@aragon/ui-components';
 import CardWithImage from 'components/cardWithImage';
 import {useFormStep} from 'components/fullScreenStepper';
-import SelectBlockchain from '../../public/selectBlockchain.svg';
-import DefineMetadata from '../../public/defineMetadata.svg';
-import SetupCommunity from '../../public/setupCommunity.svg';
-import ConfigureGovernance from '../../public/configureGovernance.svg';
+import SelectBlockchain from 'public/selectBlockchain.svg';
+import DefineMetadata from 'public/defineMetadata.svg';
+import SetupCommunity from 'public/setupCommunity.svg';
+import ConfigureGovernance from 'public/configureGovernance.svg';
 
 export const OverviewDAOHeader: React.FC = () => {
   const {t} = useTranslation();
