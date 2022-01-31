@@ -55,11 +55,7 @@
     "tokenSection": "Tokens",
     "transferSection": "Transfers",
     "unknownUSDValue": "Value unknown",
-    "tokens": "Tokens",
-    "labels": {
-      "to": "to",
-      "from": "from"
-    }
+    "tokens": "Tokens"
   },
   "governance": {
     "proposals": {
@@ -124,13 +120,20 @@
     "item2Subtitle": "Propose to withdraw assets from the DAO treasury"
   },
   "TokenModal": {
+    "noTokens": "No tokens available",
     "tokenNotFoundTitle": "Token not found",
-    "tokenNotFoundSubtitle": "Add custom token to deposit"
+    "tokenNotAvailable": "No token found",
+    "tokenNotFoundSubtitle": "Add custom token to deposit",
+    "tokenNotFoundSubtitleDao": "Add custom token to withdraw",
+    "tokenNotAvailableSubtitle": "Check your wallet, update the tokens or add a custom token to transfer",
+    "tokenNotAvailableSubtitleDao": "Update the tokens or add a custom token to transfer."
   },
   "newDeposit": {
     "depositAssets": "Deposit Assets",
     "configureDeposit": "Configure Deposit",
     "configureDepositSubtitle": "Enter the desired token and its number for transmission. Furthermore, a reception address is necessary.",
+    "reviewTransfer": "Review Transfer",
+    "reviewTransferSubtitle": "Check your details and make sure everything is correct. After confirmation, no more changes can be made and your token will be transferred.",
     "toSubtitle": "The recipient of the tokens is the DAO in which you are currently operating.",
     "tokenSubtitle": "Select Token to deposit in DAO",
     "contractAddressSubtitle": "You have selected a custom token. Enter the contract address of this token to interact with it.",
@@ -150,14 +153,31 @@
       }
     }
   },
-  "createDao": {
-    "defineMetadata": {
+  "createDAO": {
+    "title": "Create your DAO",
+    "overview": {
+      "title": "Get started with your DAO",
+      "description": "Create your own DAO in 4 easy steps + [TBD more helptext] Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum scelerisque quam a quam molestie, vel euismod massa maximus. Duis mattis justo risus, nec sollicitudin leo mollis ac. Nulla orci tellus, hendrerit eu metus eget, dictum placerat sapien."
+    },
+    "step1": {
+      "label": "Step 1",
+      "title": "Select Blockchain",
+      "description": "Decide which blockchain the DAO should be at home on."
+    },
+    "step2": {
+      "label": "Step 2",
       "title": "Define Metadata",
-      "subtitle": "Define important data for the DAO so that it can be easily found.",
-      "nameSubtitle": "Define a custom title if needed",
-      "logoSubtitle": "This is the logo which represents your DAO. Supports SVG, JPG, PNG or GIFs with max 3MB in size and must be 1:1 ratio. Suggested dimensions 1024x1024.",
-      "descriptionSubtitle": "Describe your DAO in 2-3 short sentences as a summary. This information will be presented in the sharing, in the overview, and helps people to understand what's your DAO about.",
-      "linksSubtitle": "Link to external resources, such as documents, forum links, chats or similar."
+      "description": "Define important data for the DAO so that it can be easily found."
+    },
+    "step3": {
+      "label": "Step 3",
+      "title": "Setup Community",
+      "description": "Who is eligible to participate in the DAO? Create a token if needed."
+    },
+    "step4": {
+      "label": "Step 4",
+      "title": "Configure Governance",
+      "description": "How are decisions made in the DAO? How long may a proposal be open for voting?"
     }
   }
 }

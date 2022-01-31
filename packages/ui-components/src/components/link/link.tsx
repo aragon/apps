@@ -47,7 +47,7 @@ export const Link: React.FC<LinkProps> = ({
 
 type StyledLinkProps = {disabled: boolean; active: boolean};
 const StyledLink = styled.a.attrs(({active, disabled}: StyledLinkProps) => {
-  let className = `overflow-hidden text-primary-500 hover:text-primary-700 rounded 
+  let className = `overflow-hidden hover:text-primary-700 rounded 
      focus:ring-2 focus:ring-primary-500 focus:outline-none`;
 
   className += ` ${
@@ -58,5 +58,5 @@ const StyledLink = styled.a.attrs(({active, disabled}: StyledLinkProps) => {
 })<StyledLinkProps>``;
 
 const Label = styled.span.attrs({
-  className: 'text-base font-bold',
+  className: 'font-bold',
 })``;

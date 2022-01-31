@@ -18,14 +18,17 @@ import '../i18n.config';
 // work properly on the pages.
 import HomePage from 'pages/home';
 import * as paths from 'utils/paths';
+
 const TokensPage = lazy(() => import('pages/tokens'));
 const FinancePage = lazy(() => import('pages/finance'));
 const NotFoundPage = lazy(() => import('pages/notFound'));
 const CommunityPage = lazy(() => import('pages/community'));
 const TransfersPage = lazy(() => import('pages/transfers'));
 const GovernancePage = lazy(() => import('pages/governance'));
+const ProposalsPage = lazy(() => import('pages/proposals'));
 const NewDepositPage = lazy(() => import('pages/newDeposit'));
 const NewWithdrawPage = lazy(() => import('pages/newWithdraw'));
+const CreateDAOPage = lazy(() => import('pages/createDAO'));
 
 function App() {
   const {pathname} = useLocation();
@@ -42,12 +45,14 @@ function App() {
           <Routes>
             <Route path={paths.NewDeposit} element={<NewDepositPage />} />
             <Route path={paths.NewWithDraw} element={<NewWithdrawPage />} />
+            <Route path={paths.CreateDAO} element={<CreateDAOPage />} />
 
             <Route element={<Layout />}>
               <Route path={paths.Dashboard} element={<HomePage />} />
               <Route path={paths.Community} element={<CommunityPage />} />
               <Route path={paths.Finance} element={<FinancePage />} />
               <Route path={paths.Governance} element={<GovernancePage />} />
+              <Route path={paths.Proposals} element={<ProposalsPage />} />
               <Route path={paths.AllTokens} element={<TokensPage />} />
               <Route path={paths.AllTransfers} element={<TransfersPage />} />
               <Route path={paths.NotFound} element={<NotFoundPage />} />
