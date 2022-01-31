@@ -101,7 +101,7 @@ const NewWithdraw: React.FC = () => {
   return (
     <FormProvider {...formMethods}>
       <FullScreenStepper
-        navbarLabel="New Transfer"
+        navbarLabel={t('allTransfer.newTransfer')}
         navbarBackUrl="/#/finance"
         wizardProcessName={t('newWithdraw.withdrawAssets')}
       >
