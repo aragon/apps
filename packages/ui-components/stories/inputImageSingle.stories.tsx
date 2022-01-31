@@ -1,16 +1,18 @@
 import React from 'react';
 import {Meta, Story} from '@storybook/react';
-import {InputImage, InputImageProps} from '../src';
+import {InputImageSingle, InputImageSingleProps} from '../src';
 
 export default {
-  title: 'Components/Input/Image',
-  component: InputImage,
+  title: 'Components/Input/Image/Single',
+  component: InputImageSingle,
 } as Meta;
 
-const Template: Story<InputImageProps> = args => <InputImage {...args} />;
+const Template: Story<InputImageSingleProps> = args => (
+  <InputImageSingle {...args} />
+);
 
-export const Image = Template.bind({});
-Image.args = {
+export const Single = Template.bind({});
+Single.args = {
   onChange: () => null,
   onError: () =>
     alert(
