@@ -33,7 +33,7 @@ export const FileAvatarInput: React.FC<FileAvatarInputProps> = ({
   onChange,
   maxDimension = 2400,
   minDimension = 256,
-  maxFileSize = 5000000,
+  maxFileSize = 3000000,
   onError,
 }) => {
   const [preview, setPreview] = useState<string | null>(null);
@@ -56,7 +56,7 @@ export const FileAvatarInput: React.FC<FileAvatarInputProps> = ({
             image.height > maxDimension ||
             image.width < minDimension ||
             image.height < minDimension ||
-            image.height !== image.width // check if the image is squere or not
+            image.height !== image.width // check if the image is square or not
           ) {
             onError({
               code: 'wrong-dimension',
@@ -79,39 +79,33 @@ export const FileAvatarInput: React.FC<FileAvatarInputProps> = ({
     maxSize: maxFileSize,
     accept: 'image/jpg, image/jpeg, image/png, image/gif, image/svg',
   });
-  return (
-    <>
-      {loading ? (
-        <LoadingContainer>
-          <Spinner size="small" />
-        </LoadingContainer>
-      ) : (
-        <>
-          {preview ? (
-            <ImageContainer>
-              <Preview src={preview} />
-              <StyledButton
-                icon={<IconClose />}
-                size="small"
-                mode="secondary"
-                onClick={() => {
-                  setPreview(null);
-                  onChange(null);
-                }}
-              />
-            </ImageContainer>
-          ) : (
-            <DefaultContainer
-              data-testid="fileAvatar-input"
-              {...getRootProps()}
-            >
-              <IconAdd />
-              <input {...getInputProps()} />
-            </DefaultContainer>
-          )}
-        </>
-      )}
-    </>
+
+  if (loading) {
+    return (
+      <LoadingContainer>
+        <Spinner size="small" />
+      </LoadingContainer>
+    );
+  }
+
+  return preview ? (
+    <ImageContainer>
+      <Preview src={preview} />
+      <StyledButton
+        icon={<IconClose />}
+        size="small"
+        mode="secondary"
+        onClick={() => {
+          setPreview(null);
+          onChange(null);
+        }}
+      />
+    </ImageContainer>
+  ) : (
+    <DefaultContainer data-testid="fileAvatar-input" {...getRootProps()}>
+      <IconAdd />
+      <input {...getInputProps()} />
+    </DefaultContainer>
   );
 };
 
@@ -134,10 +128,8 @@ const Preview = styled.img.attrs({
 })``;
 
 const StyledButton = styled(ButtonIcon).attrs({
-  className: 'absolute',
+  className: 'absolute -top-2 -right-1.75',
 })`
-  top: -10px;
-  left: 54px;
   box-shadow: 0px 4px 8px rgba(31, 41, 51, 0.04),
     0px 0px 2px rgba(31, 41, 51, 0.06), 0px 0px 1px rgba(31, 41, 51, 0.04);
 `;
