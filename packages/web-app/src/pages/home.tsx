@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
+import SelectChainForm from 'containers/selectChainForm';
 
 const Home: React.FC = () => {
   const {t} = useTranslation();
@@ -14,6 +15,7 @@ const Home: React.FC = () => {
           <Title>{t('title.part1')}</Title>
           <Subtitle>{t('title.part2')}</Subtitle>
         </div>
+        <SelectChainForm />
       </div>
     </>
   );

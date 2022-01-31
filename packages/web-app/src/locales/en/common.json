@@ -37,7 +37,16 @@
     "continue": "Continue",
     "submitDeposit": "Submit Deposit",
     "resources": "Resources",
-    "submitWithdraw": "Publish Proposal"
+    "submitWithdraw": "Publish Proposal",
+    "sortBy": "Sort by",
+    "mainNet": "Main net",
+    "testNet": "Test Net",
+    "cheapest": "cheapest",
+    "safest": "safest",
+    "mostPopular": "most popular",
+    "networkCost": "Network Cost",
+    "security": "Security",
+    "popularity": "Popularity"
   },
   "placeHolders": {
     "selectToken": "Select a Token ...",
