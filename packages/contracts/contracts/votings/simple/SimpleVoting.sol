@@ -121,8 +121,19 @@ contract SimpleVoting is Component, TimeHelpers {
         emit StartVote(voteId, msg.sender, proposalMetadata);
     
         if (castVote && canVote(voteId, msg.sender)) {
-            vote(voteId, true, executeIfDecided);
+            _vote(voteId, true, msg.sender, executeIfDecided);
         }
+    }
+
+    /**
+    * @notice Vote `_supports ? 'yes' : 'no'` in vote #`_voteId`
+    * @param _voteId Id for vote
+    * @param _supports Whether voter supports the vote
+    * @param _executesIfDecided Whether the vote should execute its action if it becomes decided
+    */
+    function vote(uint256 _voteId, bool _supports, bool _executesIfDecided) external {
+        require(_canVote(_voteId, msg.sender), ERROR_CAN_NOT_VOTE);
+        _vote(_voteId, _supports, msg.sender, _executesIfDecided);
     }
 
     /**
@@ -131,14 +142,12 @@ contract SimpleVoting is Component, TimeHelpers {
     * @param _supports whether user supports the decision or not
     * @param _executesIfDecided if true, and it's the last vote required, immediatelly executes a vote.
     */
-    function vote(uint256 _voteId, bool _supports, bool _executesIfDecided) public {
+    function _vote(uint256 _voteId, bool _supports, address _voter, bool _executesIfDecided) internal {
         Vote storage vote_ = votes[_voteId];
 
-        require(_canVote(vote_, msg.sender), ERROR_CAN_NOT_VOTE);
-
         // This could re-enter, though we can assume the governance token is not malicious
-        uint256 voterStake = token.getPastVotes(msg.sender, vote_.snapshotBlock);
-        VoterState state = vote_.voters[msg.sender];
+        uint256 voterStake = token.getPastVotes(_voter, vote_.snapshotBlock);
+        VoterState state = vote_.voters[_voter];
 
         // If voter had previously voted, decrease count
         if (state == VoterState.Yea) {
@@ -153,12 +162,12 @@ contract SimpleVoting is Component, TimeHelpers {
             vote_.nay = vote_.nay + voterStake;
         }
 
-        vote_.voters[msg.sender] = _supports ? VoterState.Yea : VoterState.Nay;
+        vote_.voters[_voter] = _supports ? VoterState.Yea : VoterState.Nay;
 
-        emit CastVote(_voteId, msg.sender, _supports, voterStake);
+        emit CastVote(_voteId, _voter, _supports, voterStake);
 
         if (_executesIfDecided && _canExecute(_voteId)) {
-           execute(_voteId);
+           _execute(_voteId);
         }
     }
 
@@ -168,7 +177,14 @@ contract SimpleVoting is Component, TimeHelpers {
     */
     function execute(uint256 _voteId) public {
         require(_canExecute(_voteId), ERROR_CAN_NOT_EXECUTE);
+        _execute(_voteId);
+    }
 
+    /**
+    * @dev Internal function to execute a vote. It assumes the queried vote exists.
+    * @param _voteId the vote Id
+    */
+    function _execute(uint256 _voteId) internal {
         dao.execute(votes[_voteId].actions);
 
         votes[_voteId].executed = true;
@@ -190,8 +206,7 @@ contract SimpleVoting is Component, TimeHelpers {
     * @return bool true if user is allowed to vote
     */
     function canVote(uint256 _voteId, address _voter) public view returns (bool) {
-        Vote storage vote_ = votes[_voteId];
-        return _canVote(vote_, _voter);
+        return _canVote(_voteId, _voter);
     }
 
     /**
@@ -250,21 +265,22 @@ contract SimpleVoting is Component, TimeHelpers {
 
     /**
     * @dev Internal function to check if a voter can participate on a vote. It assumes the queried vote exists.
-    * @param _vote The Vote struct
+    * @param _voteId The voteId
     * @param _voter the address of the voter to check
     * @return True if the given voter can participate a certain vote, false otherwise
     */
-    function _canVote(Vote storage _vote, address _voter) internal view returns (bool) {
-        return _isVoteOpen(_vote) && token.getPastVotes(_voter, _vote.snapshotBlock) > 0;
+    function _canVote(uint256 _voteId, address _voter) internal view returns (bool) {
+        Vote storage vote_ = votes[_voteId];
+        return _isVoteOpen(vote_) && token.getPastVotes(_voter, vote_.snapshotBlock) > 0;
     }
 
     /**
     * @dev Internal function to check if a vote is still open
-    * @param _vote the vote struct
+    * @param vote_ the vote struct
     * @return True if the given vote is open, false otherwise
     */
-    function _isVoteOpen(Vote storage _vote) internal view returns (bool) {
-        return getTimestamp64() < _vote.startDate + voteTime && !_vote.executed;
+    function _isVoteOpen(Vote storage vote_) internal view returns (bool) {
+        return getTimestamp64() < vote_.startDate + voteTime && !vote_.executed;
     }
 
     /**
