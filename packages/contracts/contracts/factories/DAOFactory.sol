@@ -38,10 +38,6 @@ contract DAOFactory {
         bytes metadata;
     }
 
-    struct AllowedActions {
-        bytes[] SimpleVoting;
-    }
-
     event DAOCreated(string name, address indexed token, address indexed voting);
 
     // @dev Stores the registry and token factory address and creates the base contracts required for the factory
@@ -57,19 +53,22 @@ contract DAOFactory {
         setupBases();
     }
 
-    // @notice Creates a new DAO based with his name, token, metadata, and the voting settings.
-    // @param _daoConfig The DAO name and metadata
-    // @param _tokenConfig address, name, symbol of the token. If no addr, totally new token gets created.
-    // @param _mintConfig the addresses and amounts to where to mint tokens.
-    // @return _votingSettings settings for the voting contract.
-    // @return _allowedActions allowed actions on the simple voting.
-    // @return token The token passed or created that belongs to this DAO + merkle minter.
+    /// @notice Creates a new DAO based with his name, token, metadata, and the voting settings.
+    /// @param _daoConfig The DAO name and metadata
+    /// @param _tokenConfig address, name, symbol of the token. If no addr, totally new token gets created.
+    /// @param _mintConfig the addresses and amounts to where to mint tokens.
+    /// @param _votingSettings settings for the voting contract.
+    /// @param _allowedActions allowed actions on the simple voting.
+    /// @return dao DAO address.
+    /// @return voting The SimpleVoting address
+    /// @return token The token address(wrapped one or the new one)
+    /// @return minter Merkle Minter contract address
     function newDAO(
         DAOConfig calldata _daoConfig,
         TokenFactory.TokenConfig calldata _tokenConfig,
         TokenFactory.MintConfig calldata _mintConfig,
         uint256[3] calldata _votingSettings,
-        AllowedActions calldata _allowedActions
+        bytes[] calldata _allowedActions
     ) external returns (
         DAO dao, 
         SimpleVoting voting, 
@@ -105,7 +104,7 @@ contract DAOFactory {
                     dao,
                     token,
                     _votingSettings,
-                    _allowedActions.SimpleVoting // TODO: maybe we can directly pass allowed actions here
+                    _allowedActions // TODO: maybe we can directly pass allowed actions here
                 )
             )
         );
@@ -117,7 +116,7 @@ contract DAOFactory {
         dao.addProcess(voting);
 
         // set roles on the Voting Process
-        ACLData.BulkItem[] memory items = new ACLData.BulkItem[](4);
+        ACLData.BulkItem[] memory items = new ACLData.BulkItem[](6);
 
         address ANY_ADDR = address(type(uint160).max);
         
@@ -125,6 +124,8 @@ contract DAOFactory {
         items[1] = ACLData.BulkItem(ACLData.BulkOp.Grant, voting.PROCESS_EXECUTE_ROLE(), ANY_ADDR);
         items[2] = ACLData.BulkItem(ACLData.BulkOp.Grant, voting.PROCESS_START_ROLE(), ANY_ADDR);
         items[3] = ACLData.BulkItem(ACLData.BulkOp.Grant, voting.MODIFY_CONFIG(), address(dao));
+        items[4] = ACLData.BulkItem(ACLData.BulkOp.Grant, voting.PROCESS_ADD_ALLOWED_ACTIONS(), address(dao));
+        items[5] = ACLData.BulkItem(ACLData.BulkOp.Grant, voting.PROCESS_REMOVE_ALLOWED_ACTIONS(), address(dao));
 
         dao.bulk(address(voting), items);
 

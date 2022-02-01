@@ -140,10 +140,7 @@ abstract contract Process is Component {
             
             for (uint256 i = 0; i < actionsLength; i++) {
                 IDAO.Action calldata action = _proposal.actions[i];
-                if (
-                    allowedActions[action.to][bytes4(action.data[:4])] == false && 
-                    action.to != address(this)
-                ) {
+                if (allowedActions[action.to][bytes4(action.data[:4])] == false) {
                     revert("Not allowed action passed!");
                 }
             }

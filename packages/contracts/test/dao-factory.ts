@@ -22,7 +22,7 @@ const ERRORS = {
 const zeroAddress = ethers.constants.AddressZero;
 const ACLAnyAddress = "0xFFfFfFffFFfffFFfFFfFFFFFffFFFffffFfFFFfF";
 const ACLAllowFlagAddress = "0x0000000000000000000000000000000000000002";
-
+const ANY_ACTION_ALLOWED = `${ACLAnyAddress}00000000`
 const daoDummyName = 'dao1';
 const daoDummyMetadata = '0x0000';
 const dummyVoteSettings = [1, 2, 3];
@@ -53,7 +53,6 @@ describe('DAOFactory: ', function () {
     let daoFactory: any;
 
     let actionExecuteContract: any; // contract
-    let actionExecuteFuncSig: string;
 
     let signers: any;
     let ownerAddress: string;
@@ -112,14 +111,9 @@ describe('DAOFactory: ', function () {
 
         const ActionExecuteContract = await ethers.getContractFactory('ActionExecute');
         actionExecuteContract = await ActionExecuteContract.deploy();
-        actionExecuteFuncSig = ActionExecuteContract.interface.getSighash(
-            ActionExecuteContract.interface.getFunction('setTest')
-        );    
     });
 
     it("creates GovernanceWrappedERC20 clone when token is NON-zero", async () => {
-        const addr = actionExecuteContract.address;
-        const sig = actionExecuteFuncSig.substring(2);
         const mintAmount = 100
 
         let tx = await daoFactory.newDAO(
@@ -137,9 +131,9 @@ describe('DAOFactory: ', function () {
                 amounts: [mintAmount]
             },
             dummyVoteSettings,
-            {
-                SimpleVoting: [`${addr}${sig}`]
-            }
+            [
+                ANY_ACTION_ALLOWED
+            ]
         );
 
         // get block that tx was mined
@@ -233,8 +227,13 @@ describe('DAOFactory: ', function () {
         // ===== Test if user can create a vote and execute it ======
 
         // should be only callable by simplevoting
-        await expect(dao.execute([])).to.be.revertedWith(ERRORS.ACLAuth);
-        await expect(SimpleVoting.changeVoteConfig(1, 2)).to.be.revertedWith(ERRORS.ComponentAuth);
+        await expect(
+            dao.execute([])
+        ).to.be.revertedWith(ERRORS.ACLAuth);
+        
+        await expect(
+            SimpleVoting.changeVoteConfig(1, 2)
+        ).to.be.revertedWith(ERRORS.ComponentAuth);
 
         const actions = [
             {

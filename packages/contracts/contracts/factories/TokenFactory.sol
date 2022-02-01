@@ -36,7 +36,7 @@ contract TokenFactory {
     }
 
     struct MintConfig {
-        address[] tos;
+        address[] receivers;
         uint256[] amounts;
     }
 
@@ -46,14 +46,13 @@ contract TokenFactory {
         setupBases();
     }
 
-    // TODO: Worth considering the decimals ? 
-    // @notice Creates or Wraps Token based with its name and symbol.
-    // @param _dao The dao address
-    // @param _metadata The IPFS hash pointing to the metadata JSON object of the DAO
-    // @param _tokenConfig The address of the token, name, and symbol. If no addr is passed will a new token get created.
-    // @return _mintConfig Where to mint initial tokens
-    // @return ERC20VotesUpgradeable Created or Wrapped Token
-    // @return MerkleMinter Merkle Minter 
+    /// TODO: Worth considering the decimals ? 
+    /// @notice if addr is zero, creates new token + merkle minter, otherwise, creates a wrapped token only.
+    /// @param _dao The dao address
+    /// @param _tokenConfig The address of the token, name, and symbol. If no addr is passed will a new token get created.
+    /// @param _mintConfig contains addresses and values(where to mint tokens and how much)
+    /// @return ERC20VotesUpgradeable new token address
+    /// @return MerkleMinter new merkle minter address(zero address in case passed token addr was not zero)
     function newToken(
         DAO _dao,
         TokenConfig calldata _tokenConfig,
@@ -64,8 +63,9 @@ contract TokenFactory {
         // deploy token
         if(token != address(0)) {
             token = governanceWrappedERC20Base.clone();
-            // user already has a token. we need to wrap it in our new 
-            // token to make it governance token.
+            // user already has a token. we need to wrap it in 
+            // GovernanceWrappedERC20 in order to make the token
+            // include governance functionality.
             GovernanceWrappedERC20(token).initialize(
                 IERC20Upgradeable(_tokenConfig.addr),
                 _tokenConfig.name,
@@ -78,8 +78,6 @@ contract TokenFactory {
             );
         }
 
-        // IMPORTANT: If creator already has a token, It's that token's
-        // responsibility to handle minting(if it exists on it)
         token = governanceERC20Base.clone();
         GovernanceERC20(token).initialize(
             _dao, 
@@ -103,7 +101,7 @@ contract TokenFactory {
 
         for(uint i = 0; i < _mintConfig.tos.length; i++) {
             GovernanceERC20(token).mint(
-                _mintConfig.tos[i], 
+                _mintConfig.receivers[i], 
                 _mintConfig.amounts[i]
             );
         }
@@ -128,5 +126,3 @@ contract TokenFactory {
         merkleMinterBase = address(new MerkleMinter());
     }
 }
-
-

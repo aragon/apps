@@ -68,7 +68,7 @@ contract SimpleVoting is VotingProcess, TimeHelpers {
         minAcceptQuorumPct = _votingSettings[0];
         supportRequiredPct = _votingSettings[1]; 
         voteTime = _votingSettings[2];
-
+        
         VotingProcess.initialize(_dao, _allowedActions);
 
         emit UpdateConfig(supportRequiredPct, minAcceptQuorumPct);
