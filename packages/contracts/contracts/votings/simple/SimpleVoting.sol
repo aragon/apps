@@ -188,6 +188,8 @@ contract SimpleVoting is Component, TimeHelpers {
         dao.execute(votes[_voteId].actions);
 
         votes[_voteId].executed = true;
+
+        emit ExecuteVote(_voteId);
     }
     
     /**
