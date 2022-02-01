@@ -20,6 +20,7 @@ const CreateDAO: React.FC = () => {
       <FullScreenStepper
         navbarBackUrl="/"
         navbarLabel={t('createDAO.title')}
+        totalFormSteps={4}
         wizardProcessName={t('createDAO.title')}
       >
         <Step
@@ -41,6 +42,18 @@ const CreateDAO: React.FC = () => {
           wizardDescription={t('createDAO.step2.description')}
         >
           <DefineMetadata />
+        </Step>
+        <Step
+          wizardTitle={t('createDAO.step3.title')}
+          wizardDescription={t('createDAO.step3.description')}
+        >
+          <div>Setup Community</div>
+        </Step>
+        <Step
+          wizardTitle={t('createDAO.step4.title')}
+          wizardDescription={t('createDAO.step4.description')}
+        >
+          <div>Configure Governance</div>
         </Step>
       </FullScreenStepper>
     </FormProvider>

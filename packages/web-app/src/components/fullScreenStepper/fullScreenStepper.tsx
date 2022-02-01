@@ -9,7 +9,7 @@ import {
 } from '@aragon/ui-components';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
-import React, {createContext, useCallback, useContext} from 'react';
+import React, {createContext, useCallback, useContext, useMemo} from 'react';
 
 import {useWallet} from 'context/augmentedWallet';
 import {useStepper} from 'hooks/useStepper';
@@ -23,6 +23,7 @@ export type FullScreenStepperProps = {
   navbarLabel: string;
   navbarBackUrl: string;
   wizardProcessName: string;
+  totalFormSteps?: number;
   children: React.FunctionComponentElement<StepProps>[];
 };
 
@@ -43,6 +44,7 @@ export const useFormStep = () =>
 export const FullScreenStepper: React.FC<FullScreenStepperProps> = ({
   navbarLabel,
   navbarBackUrl,
+  totalFormSteps,
   wizardProcessName,
   children,
 }) => {
@@ -72,6 +74,12 @@ export const FullScreenStepper: React.FC<FullScreenStepperProps> = ({
   } = children[currentIndex].props;
 
   const value = {currentStep, setStep, prev, next};
+
+  const currentFormStep = useMemo(() => {
+    return !totalFormSteps || totalFormSteps === children.length
+      ? currentStep
+      : currentStep - (children.length - totalFormSteps);
+  }, [children.length, currentStep, totalFormSteps]);
 
   return (
     <FullScreenStepperContext.Provider value={value}>
@@ -108,8 +116,8 @@ export const FullScreenStepper: React.FC<FullScreenStepperProps> = ({
             processName={wizardProcessName}
             title={wizardTitle || ''}
             description={wizardDescription || ''}
-            totalSteps={children.length}
-            currentStep={currentStep}
+            totalSteps={totalFormSteps || children.length}
+            currentStep={currentFormStep}
           />
         )}
         {customHeader}
