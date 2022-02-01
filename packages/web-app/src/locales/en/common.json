@@ -42,7 +42,9 @@
     "description": "Summary",
     "links": "Links",
     "logo": "Logo",
-    "optional": "Optional"
+    "optional": "Optional",
+    "membership": "Who is eligible to participate in your DAO?",
+    "communityToken": "Does your community have a token?"
   },
   "placeHolders": {
     "selectToken": "Select a Token ...",
@@ -176,7 +178,15 @@
     "step3": {
       "label": "Step 3",
       "title": "Setup Community",
-      "description": "Who is eligible to participate in the DAO? Create a token if needed."
+      "newToken": "No",
+      "newTokenSubtitle": "No, I would like to create a token.",
+      "existingToken": "Yes",
+      "existingTokenSubtitle": "Yes, we already have a token.",
+      "description": "Who is eligible to participate in the DAO? Create a token if needed.",
+      "tokenMembership": "Token Holders",
+      "tokenMembershipSubtitle": "All those who have a token are entitled to participate. 1 token equals 1 vote.",
+      "walletMemberShip": "Authorized Wallets",
+      "walletMemberShipSubtitle": "All those who have a token are entitled to participate. 1 token equals 1 vote."
     },
     "step4": {
       "label": "Step 4",
