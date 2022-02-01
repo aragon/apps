@@ -7,7 +7,6 @@ const EVENTS = {
   SetMetadata: 'SetMetadata',
   UpdateConfig: 'UpdateConfig',
   DAOCreated: 'DAOCreated',
-  ProcessAdded: 'ProcessAdded',
   Granted: 'Granted',
   Revoked: 'Revoked',
   EXECUTED: 'Executed'
@@ -22,7 +21,6 @@ const ERRORS = {
 const zeroAddress = ethers.constants.AddressZero;
 const ACLAnyAddress = "0xFFfFfFffFFfffFFfFFfFFFFFffFFFffffFfFFFfF";
 const ACLAllowFlagAddress = "0x0000000000000000000000000000000000000002";
-const ANY_ACTION_ALLOWED = `${ACLAnyAddress}00000000`
 const daoDummyName = 'dao1';
 const daoDummyMetadata = '0x0000';
 const dummyVoteSettings = [1, 2, 3];
