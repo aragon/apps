@@ -8,6 +8,14 @@ Ensure the monorepo’s dependencies are installed:
 cd ../.. && yarn && cd packages/subgraph
 ```
 
+## Build Contracts
+
+make sure the Contracts package at /root/packages/contracts are compiled:
+
+```console
+cd ../.. && yarn build:contracts && cd packages/subgraph
+```
+
 ## Build & deploy the subgraph
 
 You can build and deploy the subgraph using a single `yarn deploy-<network>` command:
@@ -40,6 +48,19 @@ yarn build
 ```
 
 You are now ready to deploy the subgraph using [the `graph deploy` command](https://thegraph.com/docs/deploy-a-subgraph).
+
+### Test the subgraph
+
+build the the contracts as explained above.
+build the subgraph as explained above
+
+run tests via docker:
+
+```console
+yarn test:docker
+```
+
+however due to matchstick not supporting monorepo as of now, using docker for testing might not be practical during developing process, a work arround could be copying the entire /node_modules from stand alone subgraph project and pasting it in packages/subgraph only for development purposes.
 
 ### Deploy the subgraph locally
 
