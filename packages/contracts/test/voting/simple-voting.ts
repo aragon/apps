@@ -17,7 +17,6 @@ const ERRORS = {
     ERROR_CHANGE_SUPPORT_PCTS: "VOTING_CHANGE_SUPPORT_PCTS",
     ERROR_CHANGE_SUPPORT_TOO_BIG: "VOTING_CHANGE_SUPP_TOO_BIG",
     ERROR_CAN_NOT_EXECUTE: "VOTING_CAN_NOT_EXECUTE",
-    ERROR_EXECUTION_STATE_WRONG: "ERROR_EXECUTION_STATE_WRONG",
     ALREADY_INITIALIZED: 'Initializable: contract is already initialized'
 };
 
@@ -291,7 +290,7 @@ describe('Voting: SimpleVoting', function () {
             // vote with nay with 30 voting stake.
             await erc20VoteMock.mock.getPastVotes.returns(30);
             // not supports
-            await voting.connect(signers[1]).vote(0, true, false);
+            await voting.connect(signers[1]).vote(0, false, false);
             
             // makes the voting closed.
             await ethers.provider.send('evm_increaseTime', [voteTime + 10]);
@@ -327,7 +326,7 @@ describe('Voting: SimpleVoting', function () {
             // calling execute again should fail
             await expect(
                 voting.execute(0)
-            ).to.be.revertedWith(ERRORS.ERROR_EXECUTION_STATE_WRONG);
+            ).to.be.revertedWith(ERRORS.ERROR_CAN_NOT_EXECUTE);
         })
 
         it("reverts if vote is executed while enough yea is not given ", async () => {

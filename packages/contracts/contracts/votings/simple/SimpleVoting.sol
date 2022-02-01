@@ -170,6 +170,8 @@ contract SimpleVoting is Component, TimeHelpers {
         require(_canExecute(_voteId), ERROR_CAN_NOT_EXECUTE);
 
         dao.execute(votes[_voteId].actions);
+
+        votes[_voteId].executed = true;
     }
     
     /**
