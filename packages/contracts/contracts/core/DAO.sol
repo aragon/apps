@@ -42,7 +42,7 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, ERC1271, AdaptiveERC1
     function initialize(bytes calldata _metadata, address initialOwner) external initializer {
         _registerStandard(DAO_INTERFACE_ID);
         _registerStandard(type(ERC1271).interfaceId);
-        this.setMetadata(_metadata);
+        _setMetadata(_metadata);
         ACL.initACL(initialOwner);
     }
 
@@ -68,23 +68,7 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, ERC1271, AdaptiveERC1
     /// @dev Sets a new IPFS hash
     /// @param _metadata The IPFS hash of the new metadata object
     function setMetadata(bytes calldata _metadata) external override auth(address(this), DAO_CONFIG_ROLE) {
-        emit SetMetadata(_metadata);
-    }
-
-    /// @notice Add new process to DAO
-    /// @dev Grants the new process execution rights and amits the related event.
-    /// @param _process The address of the new process
-    function addProcess(Process _process) external override auth(address(this), DAO_CONFIG_ROLE) {
-        _grant(address(this), address(_process), EXEC_ROLE);
-        emit ProcessAdded(_process);
-    }
-
-    /// @notice Remove process from DAO
-    /// @dev Revokes the execution rights from the process and emits the related event.
-    /// @param _process The address of the new process
-    function removeProcess(Process _process) external override auth(address(this), DAO_CONFIG_ROLE) {
-        _revoke(address(this), address(_process), EXEC_ROLE);
-        emit ProcessRemoved(_process);
+        _setMetadata(_metadata);
     }
 
     /// @notice If called, the list of provided actions will be executed.
@@ -174,4 +158,10 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, ERC1271, AdaptiveERC1
         if (address(signatureValidator) == address(0)) return bytes4(0); // invalid magic number
         return signatureValidator.isValidSignature(_hash, _signature); // forward call to set validation contract
     }
-}
+
+    /// Private/Internal Functions
+
+    function _setMetadata(bytes calldata _metadata) internal {
+        emit SetMetadata(_metadata);
+    }
+} 
