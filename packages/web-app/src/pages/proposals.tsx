@@ -74,6 +74,7 @@ const Proposal: React.FC = () => {
         </p>
       </div>
       <div className="my-3">
+        {/* TODO: Render content using Tiptap https://tiptap.dev/guide/output#option-1-read-only-instance-of-tiptap */}
         As most community members know, Aragon has strived to deploy its
         products to more cost-efficient blockchain networks to facilitate more
         adoption. Since Aragon is building products on Arbitrum which will use
@@ -87,6 +88,9 @@ const Proposal: React.FC = () => {
       />
       <div className="flex mt-8 space-x-3">
         <div className="space-y-3 w-3/5">
+          <div className="p-4 h-96 bg-white rounded-xl">
+            Voting table placeholder
+          </div>
           <CardExecution
             title="Execution"
             description="These smart actions are executed when the proposal reaches sufficient support. Find out which actions are executed."
@@ -102,7 +106,18 @@ const Proposal: React.FC = () => {
           />
         </div>
         <div className="space-y-3 w-2/5">
-          <ResourceList />
+          <ResourceList
+            links={[
+              {
+                label: 'Draft of Proposal',
+                href: 'https://docs.google.com/spreadsheets/d/1qpUXGUrR3LXed4VkONYzRQhic0ahMb9wJxOzSLiuoYs/edit#gid=289257943',
+              },
+              {
+                label: 'Thread in discord',
+                href: 'https://discord.com/channels/672466989217873929/910124501264658442/936598604804685884',
+              },
+            ]}
+          />
           <WidgetStatus steps={stepDataRunning} />
         </div>
       </div>
