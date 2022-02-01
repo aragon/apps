@@ -1,0 +1,25 @@
+FROM ubuntu:20.04
+
+ARG BUILDPLATFORM=linux/x86_64
+
+ENV ARGS=""
+
+RUN apt update
+RUN apt install -y nodejs
+RUN apt install -y npm
+RUN apt install -y git
+RUN apt install -y postgresql
+RUN apt install -y curl
+RUN apt install -y cmake
+
+RUN mkdir matchstick
+WORKDIR /matchstick
+
+COPY . .
+
+RUN npx rimraf ./**/node_modules
+RUN npm install
+RUN npm run manifest-arbitrum-rinkeby .
+RUN npm run build
+RUN npm run test
+
