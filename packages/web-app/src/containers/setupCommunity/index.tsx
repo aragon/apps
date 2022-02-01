@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import {CheckboxListItem, Label} from '@aragon/ui-components';
 import {Controller, useFormContext, useWatch} from 'react-hook-form';
+import ExistingTokenPartialForm from './addExistingToken';
 
 const SetupCommunityForm: React.FC = () => {
   const {t} = useTranslation();
@@ -17,6 +18,7 @@ const SetupCommunityForm: React.FC = () => {
         <Controller
           name="membership"
           control={control}
+          defaultValue="token"
           render={({field: {onChange, value}}) => (
             <CheckboxListItem
               label={t('createDAO.step3.tokenMembership')}
@@ -74,7 +76,7 @@ const SetupCommunityForm: React.FC = () => {
 
       {isCustomToken && <div>Create Token</div>}
 
-      {isCustomToken === false && <div>Add existing token</div>}
+      {isCustomToken === false && <ExistingTokenPartialForm />}
     </>
   );
 };
