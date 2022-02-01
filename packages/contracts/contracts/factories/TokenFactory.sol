@@ -99,7 +99,7 @@ contract TokenFactory {
         // give tokenFactory the permission to mint.
         _dao.grant(token, address(this), tokenMinterRole);
 
-        for(uint i = 0; i < _mintConfig.tos.length; i++) {
+        for(uint i = 0; i < _mintConfig.receivers.length; i++) {
             GovernanceERC20(token).mint(
                 _mintConfig.receivers[i], 
                 _mintConfig.amounts[i]

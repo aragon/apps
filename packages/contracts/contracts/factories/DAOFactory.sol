@@ -7,10 +7,9 @@ pragma solidity 0.8.10;
 import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20VotesUpgradeable.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
-import "./../processes/votings/simple/SimpleVoting.sol";
+import "./../votings/simple/SimpleVoting.sol";
 import "./../tokens/GovernanceERC20.sol";
 import "./../tokens/GovernanceWrappedERC20.sol";
-import "./../core/processes/Process.sol";
 import "./../registry/Registry.sol";
 import "./../core/DAO.sol";
 
@@ -58,7 +57,6 @@ contract DAOFactory {
     /// @param _tokenConfig address, name, symbol of the token. If no addr, totally new token gets created.
     /// @param _mintConfig the addresses and amounts to where to mint tokens.
     /// @param _votingSettings settings for the voting contract.
-    /// @param _allowedActions allowed actions on the simple voting.
     /// @return dao DAO address.
     /// @return voting The SimpleVoting address
     /// @return token The token address(wrapped one or the new one)
@@ -67,19 +65,18 @@ contract DAOFactory {
         DAOConfig calldata _daoConfig,
         TokenFactory.TokenConfig calldata _tokenConfig,
         TokenFactory.MintConfig calldata _mintConfig,
-        uint256[3] calldata _votingSettings,
-        bytes[] calldata _allowedActions
+        uint256[3] calldata _votingSettings
     ) external returns (
         DAO dao, 
         SimpleVoting voting, 
         ERC20VotesUpgradeable token,
         MerkleMinter minter
     ) {
-        require(_mintConfig.tos.length == _mintConfig.amounts.length, ERROR_MISMATCH);
+        require(_mintConfig.receivers.length == _mintConfig.amounts.length, ERROR_MISMATCH);
         
         // create dao
         dao = DAO(createProxy(daoBase, bytes("")));
-        // initialize dao
+        // initialize dao with the ROOT_ROLE as DAOFactory
         dao.initialize(_daoConfig.metadata, address(this));  
 
         // Create token and merkle minter
@@ -103,44 +100,30 @@ contract DAOFactory {
                     SimpleVoting.initialize.selector,
                     dao,
                     token,
-                    _votingSettings,
-                    _allowedActions // TODO: maybe we can directly pass allowed actions here
+                    _votingSettings[0],
+                    _votingSettings[1],
+                    _votingSettings[2]
                 )
             )
         );
 
-        // Grant factory DAO_CONFIG_ROLE to add a process
-        dao.grant(address(dao), address(this), dao.DAO_CONFIG_ROLE());
+        // Grant dao permission to change voting settings.
+        dao.grant(address(voting), address(dao), voting.MODIFY_CONFIG());
 
-        // Add voting process
-        dao.addProcess(voting);
-
-        // set roles on the Voting Process
-        ACLData.BulkItem[] memory items = new ACLData.BulkItem[](6);
-
-        address ANY_ADDR = address(type(uint160).max);
-        
-        items[0] = ACLData.BulkItem(ACLData.BulkOp.Grant, voting.PROCESS_VOTE_ROLE(), ANY_ADDR);
-        items[1] = ACLData.BulkItem(ACLData.BulkOp.Grant, voting.PROCESS_EXECUTE_ROLE(), ANY_ADDR);
-        items[2] = ACLData.BulkItem(ACLData.BulkOp.Grant, voting.PROCESS_START_ROLE(), ANY_ADDR);
-        items[3] = ACLData.BulkItem(ACLData.BulkOp.Grant, voting.MODIFY_CONFIG(), address(dao));
-        items[4] = ACLData.BulkItem(ACLData.BulkOp.Grant, voting.PROCESS_ADD_ALLOWED_ACTIONS(), address(dao));
-        items[5] = ACLData.BulkItem(ACLData.BulkOp.Grant, voting.PROCESS_REMOVE_ALLOWED_ACTIONS(), address(dao));
-
-        dao.bulk(address(voting), items);
+        ACLData.BulkItem[] memory items = new ACLData.BulkItem[](7);
 
         // set roles on the dao itself.
         items = new ACLData.BulkItem[](7);
-        
+
         // Grant DAO all the permissions required
         items[0] = ACLData.BulkItem(ACLData.BulkOp.Grant, dao.DAO_CONFIG_ROLE(), address(dao));
         items[1] = ACLData.BulkItem(ACLData.BulkOp.Grant, dao.WITHDRAW_ROLE(), address(dao));
         items[2] = ACLData.BulkItem(ACLData.BulkOp.Grant, dao.UPGRADE_ROLE(), address(dao));
         items[3] = ACLData.BulkItem(ACLData.BulkOp.Grant, dao.ROOT_ROLE(), address(dao));
         items[4] = ACLData.BulkItem(ACLData.BulkOp.Grant, dao.SET_SIGNATURE_VALIDATOR_ROLE(), address(dao));
-
+        // Grant voting execution permission
+        items[5] = ACLData.BulkItem(ACLData.BulkOp.Grant, dao.EXEC_ROLE(), address(voting));
         // Revoke permissions from factory
-        items[5] = ACLData.BulkItem(ACLData.BulkOp.Revoke, dao.DAO_CONFIG_ROLE(), address(this));
         items[6] = ACLData.BulkItem(ACLData.BulkOp.Revoke, dao.ROOT_ROLE(), address(this));
 
         dao.bulk(address(dao), items);

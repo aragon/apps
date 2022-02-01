@@ -1,17 +1,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // Workarounds are used that necessitate the any escape hatch
 
-import React, {useContext, useEffect, useMemo, useState} from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import {UseWalletProvider, useWallet} from 'use-wallet';
 import {Wallet} from 'use-wallet/dist/cjs/types';
 import {providers as EthersProviders} from 'ethers';
+import {Interface, getAddress, hexZeroPad} from 'ethers/lib/utils';
 
 import {identifyUser} from 'services/analytics';
 import {updateAPMContext, useAPM} from './elasticAPM';
 import {INFURA_PROJECT_ID} from 'utils/constants';
+import {erc20TokenABI} from '../abis/erc20TokenABI';
 
 export type WalletAugmented = Wallet & {
   provider: EthersProviders.Provider;
+  getTokenList: () => Promise<string[]>;
 };
 // Any is a workaround so TS doesn't ask for a filled out default
 const WalletAugmentedContext = React.createContext<WalletAugmented | any>({});
@@ -23,12 +32,20 @@ function useWalletAugmented(): WalletAugmented {
 const WalletAugmented: React.FC<unknown> = ({children}) => {
   const wallet = useWallet();
   const ethereum: any = wallet.ethereum;
-  const fallbackProvider = new EthersProviders.InfuraProvider(
+  const defaultProvider = new EthersProviders.InfuraProvider(
     wallet.chainId, // set provider based on wallet chain id
     INFURA_PROJECT_ID
   );
   const [provider, setProvider] =
-    useState<EthersProviders.Provider>(fallbackProvider);
+    useState<EthersProviders.Provider>(defaultProvider);
+
+  useEffect(() => {
+    const infuraProvider = new EthersProviders.InfuraProvider(
+      wallet.chainId,
+      INFURA_PROJECT_ID
+    );
+    setProvider(infuraProvider);
+  }, [wallet.chainId]);
 
   const injectedProvider: any = useMemo(
     () => (ethereum ? new EthersProviders.Web3Provider(ethereum) : null),
@@ -41,6 +58,33 @@ const WalletAugmented: React.FC<unknown> = ({children}) => {
     const address = await injectedProvider?.resolveName(ensName || '');
     return address ? {ensName, ensAvatarUrl} : null;
   }, [injectedProvider, wallet.account]);
+
+  const getTokenList = useCallback(async () => {
+    const erc20Interface = new Interface(erc20TokenABI);
+    const latestBlockNumber = await provider.getBlockNumber();
+
+    // Get all transfers sent to the input address
+    const transfers = await provider.getLogs({
+      fromBlock: 0,
+      toBlock: latestBlockNumber,
+      topics: [
+        erc20Interface.getEventTopic('Transfer'),
+        null,
+        hexZeroPad(wallet.account as string, 32),
+      ],
+    });
+
+    // Filter unique token contract addresses and convert all events to Contract instances
+    const tokens = await Promise.all(
+      transfers
+        .filter(
+          (event, i) =>
+            i === transfers.findIndex(other => event.address === other.address)
+        )
+        .map(event => getAddress(event.address))
+    );
+    return tokens;
+  }, [provider, wallet.account]);
 
   useEffect(() => {
     if (
@@ -62,8 +106,9 @@ const WalletAugmented: React.FC<unknown> = ({children}) => {
       provider,
       ...wallet,
       ...getEnsData,
+      getTokenList,
     };
-  }, [getEnsData, provider, wallet]);
+  }, [getEnsData, getTokenList, provider, wallet]);
 
   const {apm} = useAPM();
   useEffect(() => {

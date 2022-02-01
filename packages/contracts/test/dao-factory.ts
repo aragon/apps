@@ -114,7 +114,7 @@ describe('DAOFactory: ', function () {
     });
 
     it("creates GovernanceWrappedERC20 clone when token is NON-zero", async () => {
-        const mintAmount = 100
+        const mintAmount = 100;
 
         let tx = await daoFactory.newDAO(
             {
@@ -127,13 +127,10 @@ describe('DAOFactory: ', function () {
                 symbol: 'TokenSymbol'
             }, 
             {
-                tos: [ownerAddress],
+                receivers: [ownerAddress],
                 amounts: [mintAmount]
             },
-            dummyVoteSettings,
-            [
-                ANY_ACTION_ALLOWED
-            ]
+            dummyVoteSettings
         );
 
         // get block that tx was mined
@@ -148,16 +145,10 @@ describe('DAOFactory: ', function () {
 
         expect(
             await token.getPastVotes(ownerAddress, blockNum)
-        ).to.equal(mintAmount)
+        ).to.equal(mintAmount);
         
         const MODIFY_CONFIG_ROLE = await SimpleVoting.MODIFY_CONFIG();
         const EXEC_ROLE = await dao.EXEC_ROLE();
-
-        const votingRoles = await Promise.all([
-            SimpleVoting.PROCESS_START_ROLE(),
-            SimpleVoting.PROCESS_EXECUTE_ROLE(),
-            SimpleVoting.PROCESS_VOTE_ROLE(),
-        ]);
 
         const DAORoles = await Promise.all([
             dao.DAO_CONFIG_ROLE(),
@@ -176,18 +167,7 @@ describe('DAOFactory: ', function () {
             .withArgs(daoDummyMetadata)
             .to.emit(SimpleVoting, EVENTS.UpdateConfig)
             .withArgs(dummyVoteSettings[1], dummyVoteSettings[0])
-            .to.emit(dao, EVENTS.Granted);
         
-        // @ts-ignore
-        votingRoles.map(item => {
-            tx = tx.to.emit(dao, EVENTS.Granted).withArgs(
-                item, 
-                daoFactory.address, 
-                ACLAnyAddress, 
-                SimpleVoting.address, 
-                ACLAllowFlagAddress
-            )
-        });
 
         // @ts-ignore
         DAORoles.map(item => {
@@ -207,11 +187,14 @@ describe('DAOFactory: ', function () {
                 dao.address, 
                 SimpleVoting.address, 
                 ACLAllowFlagAddress
-            ).to.emit(dao, EVENTS.Granted)
+            )
             .to.emit(dao, EVENTS.Revoked)
-            .withArgs(DAORoles[0], daoFactory.address, daoFactory.address, dao.address)
-            .to.emit(dao, EVENTS.Revoked)
-            .withArgs(DAORoles[1], daoFactory.address, daoFactory.address, dao.address)
+            .withArgs(
+                DAORoles[1], 
+                daoFactory.address, 
+                daoFactory.address, 
+                dao.address
+            )
             .to.emit(dao, EVENTS.Granted)
             .withArgs(
                 EXEC_ROLE, 
@@ -219,9 +202,7 @@ describe('DAOFactory: ', function () {
                 SimpleVoting.address, 
                 dao.address, 
                 ACLAllowFlagAddress
-            )
-            .to.emit(dao, EVENTS.ProcessAdded)
-            .withArgs(SimpleVoting.address)
+            );
 
         
         // ===== Test if user can create a vote and execute it ======
@@ -254,10 +235,9 @@ describe('DAOFactory: ', function () {
             }
         ];
 
-        await SimpleVoting.start(createProposal({ actions: actions }));
-        const data = createVoteData(true, true);
+        await SimpleVoting.newVote("0x", actions, false, false);
         
-        expect(await SimpleVoting.vote(1, data))
+        expect(await SimpleVoting.vote(0, true, true))
             .to.emit(dao, EVENTS.EXECUTED)
             .withArgs(SimpleVoting.address, [], [])
             .to.emit(SimpleVoting, EVENTS.UpdateConfig)

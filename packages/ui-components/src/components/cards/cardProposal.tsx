@@ -5,6 +5,7 @@ import {LinearProgress} from '../progress';
 import {ButtonText} from '../button';
 import {AlertInline} from '../alerts';
 import {Address, shortenAddress} from '../../utils/addresses';
+import {Link} from '../link';
 
 export type CardProposalProps = {
   /** Proposal Title / Title of the card */
@@ -35,6 +36,8 @@ export type CardProposalProps = {
   publishLabel: string;
   /** Publisher's ethereum address **or** ENS name */
   publisherAddress?: Address;
+  /** Chain ID for redirect user to the right explorer */
+  chainId?: number;
   /**
    * Button label for different status
    * ['pending / executed / defeated label', 'active label', 'succeeded label', 'draft label']
@@ -44,15 +47,19 @@ export type CardProposalProps = {
    * for reducing the complexity
    */
   buttonLabel: string[];
-  /**
-   * TODO: Same here!
-   * ['Pending message', 'Active message']
-   */
-  AlertMessage: string[];
+  AlertMessage?: string;
   /**
    * ['Draft', 'Pending', 'Active', 'Executed', 'Succeeded', 'Defeated']
    */
-  StatusLabel: string[];
+  StateLabel: string[];
+};
+
+const explorers: {
+  [key: number]: string;
+} = {
+  1: 'https://etherscan.io/address/',
+  4: 'https://rinkeby.etherscan.io/address/',
+  42161: 'https://arbiscan.io/address/',
 };
 
 export const CardProposal: React.FC<CardProposalProps> = ({
@@ -66,30 +73,31 @@ export const CardProposal: React.FC<CardProposalProps> = ({
   tokenSymbol,
   publishLabel,
   publisherAddress,
+  chainId = 1,
   buttonLabel,
   AlertMessage,
-  StatusLabel,
+  StateLabel,
   onClick,
 }: CardProposalProps) => {
   const headerOptions: {
     [key in CardProposalProps['state']]: ReactNode;
   } = {
-    draft: <Badge label={StatusLabel[0]} />,
+    draft: <Badge label={StateLabel[0]} />,
     pending: (
       <>
-        <Badge label={StatusLabel[1]} />
-        {AlertMessage && <AlertInline label={AlertMessage[0] || ''} />}
+        <Badge label={StateLabel[1]} />
+        {AlertMessage && <AlertInline label={AlertMessage} />}
       </>
     ),
     active: (
       <>
-        <Badge label={StatusLabel[2]} colorScheme={'info'} />
-        {AlertMessage && <AlertInline label={AlertMessage[0] || ''} />}
+        <Badge label={StateLabel[2]} colorScheme={'info'} />
+        {AlertMessage && <AlertInline label={AlertMessage} />}
       </>
     ),
-    executed: <Badge label={StatusLabel[3]} colorScheme={'success'} />,
-    succeeded: <Badge label={StatusLabel[4]} colorScheme={'success'} />,
-    defeated: <Badge label={StatusLabel[5]} colorScheme={'critical'} />,
+    executed: <Badge label={StateLabel[3]} colorScheme={'success'} />,
+    succeeded: <Badge label={StateLabel[4]} colorScheme={'success'} />,
+    defeated: <Badge label={StateLabel[5]} colorScheme={'critical'} />,
   };
 
   const SelectButtonStatus = (state: CardProposalProps['state']) => {
@@ -142,8 +150,13 @@ export const CardProposal: React.FC<CardProposalProps> = ({
         <Title>{title}</Title>
         <Description>{description}</Description>
         <Publisher>
-          {/* We should add link here for address */}
-          {publishLabel} {shortenAddress(publisherAddress || '')}
+          {publishLabel}{' '}
+          <Link
+            external
+            label={shortenAddress(publisherAddress || '')}
+            href={`${explorers[chainId]}${publisherAddress}`}
+            className="text-sm"
+          />
         </Publisher>
       </TextContent>
       {state === 'active' && (

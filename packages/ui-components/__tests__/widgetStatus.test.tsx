@@ -11,7 +11,7 @@ describe('WidgetStatus', () => {
   }
 
   test('should render without crashing', () => {
-    const element = setup({});
+    const element = setup({steps: []});
     expect(element).toBeInTheDocument;
   });
 });
