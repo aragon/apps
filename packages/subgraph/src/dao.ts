@@ -8,7 +8,7 @@ import {
   ETHDeposited,
   Withdrawn
 } from '../generated/templates/DAO/DAO';
-import {SimpleVoting} from '../generated/templates';
+// import {SimpleVoting} from '../generated/templates';
 import {
   Dao,
   Process,
@@ -39,7 +39,7 @@ export function handleProcessAdded(event: ProcessAdded): void {
 
   // subscribe to templates
   // TODO: verfy process type via supportsInterface (temporary use SimpleVoting)
-  SimpleVoting.createWithContext(event.params.process, context);
+  // SimpleVoting.createWithContext(event.params.process, context);
 
   processDaoEntity.save();
   processEntity.save();
@@ -74,19 +74,18 @@ export function handleDeposited(event: Deposited): void {
   let id =
     event.address.toHexString() +
     '_' +
-    event.transaction.hash.toString() +
+    event.transaction.hash.toHexString() +
     '_' +
-    event.transactionLogIndex.toString();
+    event.transactionLogIndex.toHexString();
 
-  let entity = VaultDeposit.load(id);
-  if (entity) {
-    entity.dao = daoId;
-    entity.token = event.params.token;
-    entity.sender = event.params.sender;
-    entity.amount = event.params.amount;
-    entity.reason = event.params._reference;
-    entity.save();
-  }
+  let entity = new VaultDeposit(id);
+
+  entity.dao = daoId;
+  entity.token = event.params.token;
+  entity.sender = event.params.sender;
+  entity.amount = event.params.amount;
+  entity.reason = event.params._reference;
+  entity.save();
 }
 
 export function handleETHDeposited(event: ETHDeposited): void {
@@ -94,17 +93,16 @@ export function handleETHDeposited(event: ETHDeposited): void {
   let id =
     event.address.toHexString() +
     '_' +
-    event.transaction.hash.toString() +
+    event.transaction.hash.toHexString() +
     '_' +
-    event.transactionLogIndex.toString();
+    event.transactionLogIndex.toHexString();
 
-  let entity = VaultEthDeposit.load(id);
-  if (entity) {
-    entity.dao = daoId;
-    entity.sender = event.params.sender;
-    entity.amount = event.params.amount;
-    entity.save();
-  }
+  let entity = new VaultEthDeposit(id);
+
+  entity.dao = daoId;
+  entity.sender = event.params.sender;
+  entity.amount = event.params.amount;
+  entity.save();
 }
 
 export function handleWithdrawn(event: Withdrawn): void {
@@ -112,17 +110,16 @@ export function handleWithdrawn(event: Withdrawn): void {
   let id =
     event.address.toHexString() +
     '_' +
-    event.transaction.hash.toString() +
+    event.transaction.hash.toHexString() +
     '_' +
-    event.transactionLogIndex.toString();
+    event.transactionLogIndex.toHexString();
 
-  let entity = VaultWithdraw.load(id);
-  if (entity) {
-    entity.dao = daoId;
-    entity.token = event.params.token;
-    entity.to = event.params.to;
-    entity.amount = event.params.amount;
-    entity.reason = event.params._reference;
-    entity.save();
-  }
+  let entity = new VaultWithdraw(id);
+
+  entity.dao = daoId;
+  entity.token = event.params.token;
+  entity.to = event.params.to;
+  entity.amount = event.params.amount;
+  entity.reason = event.params._reference;
+  entity.save();
 }
