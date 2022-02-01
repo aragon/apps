@@ -5,8 +5,6 @@
 pragma solidity 0.8.10;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-
-
 import "./../IDAO.sol";
 
 /// @title Abstract implementation of the DAO permissions
