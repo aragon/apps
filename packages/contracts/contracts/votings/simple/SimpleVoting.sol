@@ -94,13 +94,20 @@ contract SimpleVoting is Component, TimeHelpers {
     * @param executeIfDecided Configuration to enable automatic execution on the last required vote
     * @param castVote Configuration to cast vote as "YES" on creation of it
     */
-    function newVote(bytes calldata proposalMetadata, IDAO.Action[] calldata _actions, bool executeIfDecided, bool castVote) external {
+    function newVote(
+        bytes calldata proposalMetadata,
+        IDAO.Action[] calldata _actions,
+        bool executeIfDecided, 
+        bool castVote
+    ) external returns (uint256 voteId) {
         uint64 snapshotBlock = getBlockNumber64() - 1; 
         
         uint256 votingPower = token.getPastTotalSupply(snapshotBlock);
         require(votingPower > 0, ERROR_NO_VOTING_POWER);
 
-        Vote storage vote_ = votes[votesLength];
+        voteId = votesLength++;
+
+        Vote storage vote_ = votes[voteId];
         vote_.startDate = getTimestamp64();
         vote_.snapshotBlock = snapshotBlock;
         vote_.supportRequiredPct = supportRequiredPct;
@@ -111,13 +118,11 @@ contract SimpleVoting is Component, TimeHelpers {
             vote_.actions.push(_actions[i]);
         }
 
-        emit StartVote(votesLength, msg.sender, proposalMetadata);
+        emit StartVote(voteId, msg.sender, proposalMetadata);
     
-        if (castVote && canVote(votesLength, msg.sender)) {
-            vote(votesLength, true, executeIfDecided);
+        if (castVote && canVote(voteId, msg.sender)) {
+            vote(voteId, true, executeIfDecided);
         }
-
-        votesLength++;
     }
 
     /**

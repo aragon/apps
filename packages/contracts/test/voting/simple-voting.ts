@@ -1,6 +1,5 @@
 import chai, { expect } from 'chai';
 import { ethers, waffle } from 'hardhat';
-import { defaultAbiCoder, BytesLike } from 'ethers/lib/utils';
 import chaiUtils from '../test-utils';
 
 chai.use(chaiUtils);
@@ -142,9 +141,9 @@ describe('Voting: SimpleVoting', function () {
 
             expect(await voting.newVote('0x00', dummyActions, false, false))
                 .to.emit(voting, EVENTS.START_VOTE)
-                .withArgs(1, ownerAddress, "0x00");
+                .withArgs(0, ownerAddress, "0x00");
 
-            const vote = await voting.getVote(1);
+            const vote = await voting.getVote(0);
             expect(vote.open).to.equal(true);
             expect(vote.executed).to.equal(false);
             expect(vote.supportRequired).to.equal(2);
@@ -158,7 +157,7 @@ describe('Voting: SimpleVoting', function () {
             expect(vote.actions).to.eql([
                 [
                     dummyActions[0].to,
-                    ethers.BigNumber.from(dummyActions[0].value),
+                    toBn(dummyActions[0].value),
                     dummyActions[0].data,
                 ]
             ]);
@@ -170,11 +169,11 @@ describe('Voting: SimpleVoting', function () {
 
             expect(await voting.newVote('0x00', dummyActions, false, true))
                 .to.emit(voting, EVENTS.START_VOTE)
-                .withArgs(1, ownerAddress, "0x00")
+                .withArgs(0, ownerAddress, "0x00")
                 .to.emit(voting, EVENTS.CAST_VOTE)
-                .withArgs(1, ownerAddress, true, 1);
+                .withArgs(0, ownerAddress, true, 1);
 
-            const vote = await voting.getVote(1);
+            const vote = await voting.getVote(0);
             expect(vote.open).to.equal(true);
             expect(vote.executed).to.equal(false);
             expect(vote.supportRequired).to.equal(2);
@@ -214,14 +213,14 @@ describe('Voting: SimpleVoting', function () {
 
             expect(await voting.vote(0, true, false))
                 .to.emit(voting, EVENTS.CAST_VOTE)
-                .withArgs(1, ownerAddress, true, 1);
+                .withArgs(0, ownerAddress, true, 1);
 
-            let vote = await voting.getVote(1);
+            let vote = await voting.getVote(0);
             expect(vote.yea).to.equal(1);
 
-            expect(await voting.vote(1, false, false))
+            expect(await voting.vote(0, false, false))
                 .to.emit(voting, EVENTS.CAST_VOTE)
-                .withArgs(1, ownerAddress, false, 1);
+                .withArgs(0, ownerAddress, false, 1);
 
             vote = await voting.getVote(0);
             expect(vote.nay).to.equal(1);
@@ -333,7 +332,7 @@ describe('Voting: SimpleVoting', function () {
 
         it("reverts if vote is executed while enough yea is not given ", async () => {
             await expect(
-                voting.execute(1)
+                voting.execute(0)
             ).to.be.revertedWith(ERRORS.ERROR_CAN_NOT_EXECUTE);
         })
     })
