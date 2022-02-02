@@ -13,7 +13,7 @@ import TokenBox from './tokenBox';
 import {sortTokens} from 'utils/tokens';
 import {formatUnits} from 'utils/library';
 import {useTokenInfo} from 'hooks/useTokenInformation';
-import {useTransferModalContext} from 'context/transfersModal';
+import {useGlobalModalContext} from 'context/transfersModal';
 import {BaseTokenInfo, TokenBalance} from 'utils/types';
 
 const customToken = {
@@ -38,7 +38,7 @@ const TokenMenu: React.FC<TokenMenuProps> = ({
 }) => {
   const {t} = useTranslation();
   const {data: tokens} = useTokenInfo(tokenBalances);
-  const {isTokenOpen, close} = useTransferModalContext();
+  const {isTokenOpen, close} = useGlobalModalContext();
   const [searchValue, setSearchValue] = useState('');
 
   /*************************************************
@@ -117,7 +117,7 @@ const TokenMenu: React.FC<TokenMenuProps> = ({
   //TODO: Cross Icon should added in the next released
   return (
     <Modal
-      open={isTokenOpen}
+      isOpen={isTokenOpen}
       onClose={() => close('token')}
       data-testid="TokenMenu"
     >

@@ -186,11 +186,7 @@ const Navbar: React.FC = () => {
       </NavContainer>
 
       {/* ------- NavLinks (Mobile) ------- */}
-      <BottomSheet
-        isOpen={showMobileMenu}
-        onOpen={handleShowMobileMenu}
-        onClose={handleHideMobileMenu}
-      >
+      <BottomSheet isOpen={showMobileMenu} onClose={handleHideMobileMenu}>
         <div className="space-y-3">
           <CardDao
             daoAddress="bushido.aragonid.eth"

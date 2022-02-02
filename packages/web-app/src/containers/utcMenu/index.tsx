@@ -8,11 +8,11 @@ import {
   SearchInput,
 } from '@aragon/ui-components';
 
-import {useTransferModalContext} from 'context/transfersModal';
+import {useGlobalModalContext} from 'context/transfersModal';
 import {timezones} from './utcData';
 
 const UtcMenu: React.FC = () => {
-  const {isUtcOpen, close} = useTransferModalContext();
+  const {isUtcOpen, close} = useGlobalModalContext();
   const [searchTerm, setSearchTerm] = useState<string>('');
   const {t} = useTranslation();
 
@@ -32,7 +32,7 @@ const UtcMenu: React.FC = () => {
 
   return (
     <Modal
-      open={isUtcOpen}
+      isOpen={isUtcOpen}
       onClose={() => close('utc')}
       title={t('newWithdraw.configureWithdraw.utcMenu.title') as string}
       data-testid="walletCard"

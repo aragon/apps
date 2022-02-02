@@ -6,10 +6,10 @@ import {Modal, ActionListItem, IconChevronRight} from '@aragon/ui-components';
 
 import {useWallet} from 'context/augmentedWallet';
 import {NewDeposit, NewWithDraw} from 'utils/paths';
-import {useTransferModalContext} from 'context/transfersModal';
+import {useGlobalModalContext} from 'context/transfersModal';
 
 const TransferMenu: React.FC = () => {
-  const {isTransferOpen, close} = useTransferModalContext();
+  const {isTransferOpen, close} = useGlobalModalContext();
   const {t} = useTranslation();
   const navigate = useNavigate();
   const {isConnected} = useWallet();
@@ -35,7 +35,7 @@ const TransferMenu: React.FC = () => {
 
   return (
     <Modal
-      open={isTransferOpen}
+      isOpen={isTransferOpen}
       onClose={() => close('default')}
       title={t('TransferModal.newTransfer') as string}
       data-testid="walletCard"

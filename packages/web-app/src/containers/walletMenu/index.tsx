@@ -12,16 +12,11 @@ export type useWalletProps = {
 } & WalletAugmented;
 
 const WalletMenu: React.FC = () => {
-  const {isOpen, open, close} = useWalletMenuContext();
+  const {isOpen, close} = useWalletMenuContext();
   const {reset, account, ensName, ensAvatarUrl}: useWalletProps = useWallet();
 
   return (
-    <BottomSheet
-      isOpen={isOpen}
-      onOpen={open}
-      onClose={close}
-      data-testid="walletCard"
-    >
+    <BottomSheet isOpen={isOpen} onClose={close} data-testid="walletCard">
       <Container>
         <CardWallet
           wide

@@ -9,7 +9,8 @@
     "build": "tsc && vite build",
     "serve": "vite preview",
     "test": "jest",
-    "lint": "eslint src --max-warnings=0"
+    "lint": "eslint src --max-warnings=0 && yarn check-types",
+    "check-types": "tsc --noemit"
   },
   "dependencies": {
     "@aragon/ui-components": "0.1.0",

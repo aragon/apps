@@ -6,11 +6,9 @@ import React, {
   ReactNode,
 } from 'react';
 
-const TransferModalContext = createContext<TransferModalContextType | null>(
-  null
-);
+const GlobalModalContext = createContext<GlobalModalContextType | null>(null);
 
-type TransferModalContextType = {
+type GlobalModalContextType = {
   isTransferOpen: boolean;
   isTokenOpen: boolean;
   isUtcOpen: boolean;
@@ -26,13 +24,13 @@ type Props = Record<'children', ReactNode>;
 instead of one boolean state for each of the menus. This can be done based on a
 type like MenuType. Then this context can be extended simply by adding a new
 type to MenuTypes. */
-const TransferModalsProvider: React.FC<Props> = ({children}) => {
+const GlobalModalsProvider: React.FC<Props> = ({children}) => {
   const [isTransferOpen, setIsTransferOpen] =
-    useState<TransferModalContextType['isTransferOpen']>(false);
+    useState<GlobalModalContextType['isTransferOpen']>(false);
   const [isTokenOpen, setIsTokenOpen] =
-    useState<TransferModalContextType['isTokenOpen']>(false);
+    useState<GlobalModalContextType['isTokenOpen']>(false);
   const [isUtcOpen, setIsUtcOpen] =
-    useState<TransferModalContextType['isUtcOpen']>(false);
+    useState<GlobalModalContextType['isUtcOpen']>(false);
 
   const open = (type?: MenuTypes) => {
     switch (type) {
@@ -72,7 +70,7 @@ const TransferModalsProvider: React.FC<Props> = ({children}) => {
   // extend. [VR 10-01-2022]
 
   const value = useMemo(
-    (): TransferModalContextType => ({
+    (): GlobalModalContextType => ({
       isTransferOpen,
       isTokenOpen,
       isUtcOpen,
@@ -83,14 +81,14 @@ const TransferModalsProvider: React.FC<Props> = ({children}) => {
   );
 
   return (
-    <TransferModalContext.Provider value={value}>
+    <GlobalModalContext.Provider value={value}>
       {children}
-    </TransferModalContext.Provider>
+    </GlobalModalContext.Provider>
   );
 };
 
-function useTransferModalContext(): TransferModalContextType {
-  return useContext(TransferModalContext) as TransferModalContextType;
+function useGlobalModalContext(): GlobalModalContextType {
+  return useContext(GlobalModalContext) as GlobalModalContextType;
 }
 
-export {useTransferModalContext, TransferModalsProvider};
+export {useGlobalModalContext, GlobalModalsProvider};
