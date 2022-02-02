@@ -118,7 +118,7 @@ type DefaultContainerProps = {
 
 const DefaultContainer = styled.div.attrs(
   ({isDragActive}: DefaultContainerProps) => ({
-    className: `flex items-center justify-center bg-ui-0 text-ui-600 
+    className: `flex items-center justify-center bg-ui-0
     h-8 w-8 border-dashed ${
       isDragActive ? 'border-primary-500' : 'border-ui-100'
     } border-2 rounded-xl cursor-pointer`,
@@ -147,6 +147,6 @@ const StyledButton = styled(ButtonIcon).attrs({
 
 const StyledIconAdd = styled(IconAdd).attrs(
   ({isDragActive}: DefaultContainerProps) => ({
-    className: `${isDragActive && 'text-primary-500'}`,
+    className: `${isDragActive ? 'text-primary-500' : 'text-ui-600'}`,
   })
 )<DefaultContainerProps>``;
