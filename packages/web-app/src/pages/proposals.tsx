@@ -70,14 +70,13 @@ const Proposal: React.FC = () => {
       </SummaryText>
 
       {!expandedProposal && (
-        <ButtonContainer>
-          <ButtonText
-            label="Read Full Proposal"
-            mode="secondary"
-            iconRight={<IconChevronDown />}
-            onClick={() => setExpandedProposal(true)}
-          />
-        </ButtonContainer>
+        <ButtonText
+          className="mt-3 w-full tablet:w-max"
+          label="Read Full Proposal"
+          mode="secondary"
+          iconRight={<IconChevronDown />}
+          onClick={() => setExpandedProposal(true)}
+        />
       )}
 
       <ContentContainer expandedProposal={expandedProposal}>
@@ -165,16 +164,6 @@ const ProposerLink = styled.p.attrs({
 const SummaryText = styled.p.attrs({
   className: 'text-lg text-ui-600 mt-3',
 })``;
-
-const ButtonContainer = styled.div.attrs({
-  className: 'mt-3',
-})`
-  button {
-    @media (max-width: 767px) {
-      width: 100%;
-    }
-  }
-`;
 
 const ProposalContainer = styled.div.attrs({
   className: 'space-y-3 tablet:w-3/5',
