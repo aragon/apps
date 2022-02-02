@@ -14,6 +14,7 @@ import {TransferTypes} from 'utils/constants';
 import {useWalletProps} from 'containers/walletMenu';
 import ConfigureWithdrawForm from 'containers/configureWithdraw';
 import {FullScreenStepper, Step} from 'components/fullScreenStepper';
+import SetupVotingForm from 'containers/setupVotingForm';
 
 export type TransferData = {
   amount: string;
@@ -113,14 +114,11 @@ const NewWithdraw: React.FC = () => {
           <ConfigureWithdrawForm />
         </Step>
         <Step
-          wizardTitle={t('newDeposit.reviewTransfer')}
-          wizardDescription={t('newDeposit.reviewTransferSubtitle')}
+          wizardTitle={t('newWithdraw.setupVoting.title')}
+          wizardDescription={t('newWithdraw.setupVoting.description')}
           nextButtonLabel={t('labels.submitDeposit')}
         >
-          <div>Voting setup form comes here.</div>
-          {/* TODO create form for second withdrawl step (analoguosly to
-            ConfigureWithdrawlForm above) is created. (DAO-621) */}
-          {/* <SetupVotingForm /> */}
+          <SetupVotingForm />
         </Step>
       </FullScreenStepper>
       <TokenMenu

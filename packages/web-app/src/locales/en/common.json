@@ -37,7 +37,11 @@
     "continue": "Continue",
     "submitDeposit": "Submit Deposit",
     "resources": "Resources",
-    "submitWithdraw": "Publish Proposal"
+    "submitWithdraw": "Publish Proposal",
+    "start": "Start",
+    "end": "End",
+    "days": "Days",
+    "dateTime": "Date + Time"
   },
   "placeHolders": {
     "selectToken": "Select a Token ...",
@@ -73,6 +77,9 @@
     },
     "noProposals": "No proposals found!"
   },
+  "infos": {
+    "voteDuration": "The minimum duration of 5 days is defined by DAO Governance Settings"
+  },
   "errors": {
     "amountWithInvalidToken": "Cannot validate amount with invalid token address",
     "defaultAmountValidationError": "Error validating amount",
@@ -88,7 +95,9 @@
       "address": "Token address is required",
       "amount": "Token amount is required",
       "recipient": "Recipient address is required",
-      "token": "Token is required"
+      "token": "Token is required",
+      "timezone": "Timezone is required",
+      "endDate": "End date is required"
     }
   },
   "warnings": {
@@ -142,6 +151,19 @@
       "utcMenu": {
         "title": "Select a UTC Timezone"
       }
+    },
+    "setupVoting": {
+      "title": "Setup Voting",
+      "description": "For a withdraw, a vote is necessary so that the majority can determine whether your proposal is legitimate. For this, you need this configuration.",
+      "optionLabel": {
+        "title": "Options",
+        "helptext": "This is a placeholder"
+      },
+      "yesNoLabel": {
+        "title": "Yes & No",
+        "helptext": "Let users vote for or against."
+      },
+      "endDescription": "Define how long the voting should last in days or exact date and time."
     }
   }
 }
