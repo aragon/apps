@@ -28,13 +28,3 @@ export async function handleClipboardActions(
     onChange(textFromClipboard);
   }
 }
-
-/** (Temporary)
- * Check if network is supported test net
- * @param chainId network chain id
- * @returns whether network is one of the supported testnets
- */
-export function isTestNet(chainId: number) {
-  const testNetChainIds = [80001, 421611, 4];
-  return testNetChainIds.includes(chainId);
-}

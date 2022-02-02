@@ -7,20 +7,27 @@ import {
   Popover,
 } from '@aragon/ui-components';
 import styled from 'styled-components';
+import {chains} from 'use-wallet';
 import {useTranslation} from 'react-i18next';
 import {Controller, useFormContext} from 'react-hook-form';
 import React, {useCallback, useState} from 'react';
 
 import {i18n} from '../../../i18n.config';
-import {isTestNet} from 'utils/library';
 import {useWallet} from 'context/augmentedWallet';
+import {CHAIN_METADATA} from 'utils/constants';
 
 type NetworkType = 'main' | 'test';
 type SortFilter = 'cost' | 'popularity' | 'security';
 
 function getDefaultNetworkType(id: number | undefined) {
   if (!id) return 'main';
-  return isTestNet(id) ? 'test' : 'main';
+
+  try {
+    return chains.getChainInformation(id).testnet ? 'test' : 'main';
+  } catch (error) {
+    console.error('Unknown chain, defaulting to main', error);
+    return 'main';
+  }
 }
 
 const SelectChainForm: React.FC = () => {
@@ -104,25 +111,23 @@ const SelectChainForm: React.FC = () => {
         </SortFilter>
       </Header>
       <FormItem>
-        {supportedNetworks[networkType][sortFilter].map(
-          ({id, ...rest}, index) => (
-            <Controller
-              key={id}
-              name="blockchain"
-              rules={{required: true}}
-              control={control}
-              defaultValue={(account && chainId) || 1}
-              render={({field}) => (
-                <ListItemBlockchain
-                  onClick={() => field.onChange(id)}
-                  selected={id === field.value}
-                  {...(index === 0 ? {tag: labels[sortFilter].tag} : {})}
-                  {...rest}
-                />
-              )}
-            />
-          )
-        )}
+        {networks[networkType][sortFilter].map(({id, ...rest}, index) => (
+          <Controller
+            key={id}
+            name="blockchain"
+            rules={{required: true}}
+            control={control}
+            defaultValue={(account && chainId) || 1}
+            render={({field}) => (
+              <ListItemBlockchain
+                onClick={() => field.onChange(id)}
+                selected={id === field.value}
+                {...(index === 0 ? {tag: labels[sortFilter].tag} : {})}
+                {...rest}
+              />
+            )}
+          />
+        ))}
       </FormItem>
     </>
   );
@@ -158,57 +163,39 @@ const labels = {
   },
 };
 
-// TODO: Find proper place. Configs maybe?
-const chainMetadata = {
-  arbitrum: {
-    domain: 'L2 Blockchain',
-    logo: 'https://bridge.arbitrum.io/logo.png',
-  },
-  ethereum: {
-    domain: 'L1 Blockchain',
-    logo: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png?1595348880',
-  },
-  polygon: {
-    domain: 'L2 Blockchain',
-    logo: 'https://assets.coingecko.com/coins/images/4713/large/matic-token-icon.png?1624446912',
-  },
-};
-
-const supportedNetworks = {
+const networks = {
   main: {
     cost: [
-      {id: 137, name: 'Polygon', ...chainMetadata.polygon},
-      {id: 42161, name: 'Arbitrum', ...chainMetadata.arbitrum},
-      {id: 1, name: 'Ethereum', ...chainMetadata.ethereum},
+      CHAIN_METADATA.main[137], //polygon
+      CHAIN_METADATA.main[42161], //arbitrum
+      CHAIN_METADATA.main[1], //ethereum
     ],
-
     popularity: [
-      {id: 137, name: 'Polygon', ...chainMetadata.polygon},
-      {id: 1, name: 'Ethereum', ...chainMetadata.ethereum},
-      {id: 42161, name: 'Arbitrum', ...chainMetadata.arbitrum},
+      CHAIN_METADATA.main[137], //polygon
+      CHAIN_METADATA.main[1], //ethereum
+      CHAIN_METADATA.main[42161], //arbitrum
     ],
-
     security: [
-      {id: 1, name: 'Ethereum', ...chainMetadata.ethereum},
-      {id: 42161, name: 'Arbitrum', ...chainMetadata.arbitrum},
-      {id: 137, name: 'Polygon', ...chainMetadata.polygon},
+      CHAIN_METADATA.main[1], //ethereum
+      CHAIN_METADATA.main[42161], //arbitrum
+      CHAIN_METADATA.main[137], //polygon
     ],
   },
   test: {
     cost: [
-      {id: 80001, name: 'Mumbai', ...chainMetadata.polygon},
-      {id: 421611, name: 'Arbitrum Rinkeby', ...chainMetadata.arbitrum},
-      {id: 4, name: 'Rinkeby', ...chainMetadata.ethereum},
+      CHAIN_METADATA.test[80001], //mumbai
+      CHAIN_METADATA.test[421611], //arbitrum
+      CHAIN_METADATA.test[4], //ethereum
     ],
     popularity: [
-      {id: 80001, name: 'Mumbai', ...chainMetadata.polygon},
-      {id: 4, name: 'Rinkeby', ...chainMetadata.ethereum},
-      {id: 421611, name: 'Arbitrum Rinkeby', ...chainMetadata.arbitrum},
+      CHAIN_METADATA.test[80001], //mumbai
+      CHAIN_METADATA.test[4], //ethereum
+      CHAIN_METADATA.test[421611], //arbitrum
     ],
     security: [
-      {id: 4, name: 'Rinkeby', ...chainMetadata.ethereum},
-      {id: 421611, name: 'Arbitrum Rinkeby', ...chainMetadata.arbitrum},
-      {id: 80001, name: 'Mumbai', ...chainMetadata.polygon},
+      CHAIN_METADATA.test[4], //ethereum
+      CHAIN_METADATA.test[421611], //arbitrum
+      CHAIN_METADATA.test[80001], //Mumbai
     ],
   },
 };
