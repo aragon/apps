@@ -1,8 +1,6 @@
 import {
   DAO as DAOContract,
   SetMetadata,
-  ProcessAdded,
-  ProcessRemoved,
   Executed,
   Deposited,
   ETHDeposited,
@@ -11,50 +9,12 @@ import {
 // import {SimpleVoting} from '../generated/templates';
 import {
   Dao,
-  Process,
   VaultEthDeposit,
   VaultDeposit,
-  VaultWithdraw,
-  ProcessDao
+  VaultWithdraw
 } from '../generated/schema';
 import {DataSourceContext, store} from '@graphprotocol/graph-ts';
 import {log} from 'matchstick-as/assembly/index';
-
-export function handleProcessAdded(event: ProcessAdded): void {
-  let daoId = event.address.toHexString();
-  let processId = event.params.process.toHexString();
-
-  // handle ProcessDao
-  let processDaoId = processId + '_' + daoId;
-  let processDaoEntity = new ProcessDao(processDaoId);
-  processDaoEntity.process = processId;
-  processDaoEntity.dao = daoId;
-
-  // handle Process
-  let processEntity = new Process(processId);
-
-  // create context
-  let context = new DataSourceContext();
-  context.setString('daoAddress', daoId);
-
-  // subscribe to templates
-  // TODO: verfy process type via supportsInterface (temporary use SimpleVoting)
-  // SimpleVoting.createWithContext(event.params.process, context);
-
-  processDaoEntity.save();
-  processEntity.save();
-}
-
-export function handleProcessRemoved(event: ProcessRemoved): void {
-  let id =
-    event.address.toHexString() + '_' + event.params.process.toHexString();
-
-  let entity = ProcessDao.load(id);
-
-  if (entity) {
-    store.remove('ProcessDao', id);
-  }
-}
 
 export function handleSetMetadata(event: SetMetadata): void {
   let id = event.address.toHexString();
