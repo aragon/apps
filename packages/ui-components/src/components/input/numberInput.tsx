@@ -8,12 +8,14 @@ export type NumberInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   mode?: 'default' | 'success' | 'warning' | 'critical';
   disabled?: boolean;
   width?: number;
+  percentage?: boolean;
 };
 
 export const NumberInput: React.FC<NumberInputProps> = ({
   mode = 'default',
   disabled,
   width,
+  percentage = false,
   ...props
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -27,13 +29,17 @@ export const NumberInput: React.FC<NumberInputProps> = ({
         disabled={disabled}
         onClick={() => inputRef.current?.stepDown()}
       />
-      <StyledNumberInput
-        {...props}
-        ref={inputRef}
-        disabled={disabled}
-        type={'number'}
-        placeholder={'0'}
-      />
+      <InputWrapper>
+        <StyledNumberInput
+          {...props}
+          {...(percentage && {percentage, min: 0, max: 100})}
+          ref={inputRef}
+          disabled={disabled}
+          type={'number'}
+          placeholder={'0'}
+        />
+        {percentage && <Percent disabled={disabled}>%</Percent>}
+      </InputWrapper>
       <ButtonIcon
         mode="ghost"
         size="medium"
@@ -55,7 +61,7 @@ const Container = styled.div.attrs(
     let className = `${
       disabled ? 'bg-ui-100' : 'bg-ui-0'
     } inline-flex p-1 bg-ui-0 ${
-      width ? '' : 'w-18'
+      width ? '' : 'w-full'
     } focus:outline-none items-center
       focus-within:ring-2 focus-within:ring-primary-500 justify-between
       rounded-xl hover:border-ui-300 border-2 active:border-primary-500 
@@ -78,15 +84,38 @@ const Container = styled.div.attrs(
   }
 )<StyledContainerProps>``;
 
-const StyledNumberInput = styled.input.attrs(({disabled}) => {
+const InputWrapper = styled.div.attrs({
+  className: 'flex justify-center w-full',
+})``;
+
+export type StyledNumberInputProps = Pick<
+  NumberInputProps,
+  'disabled' | 'percentage'
+>;
+
+export type PercentProps = Pick<NumberInputProps, 'disabled'>;
+
+const Percent = styled.label.attrs(({disabled}: PercentProps) => {
   const className: string | undefined = `${
     disabled ? 'text-ui-300' : 'text-ui-600'
-  } bg-transparent focus:outline-none margin-0 w-full`;
-
+  }`;
   return {
     className,
   };
-})`
+})<PercentProps>``;
+
+const StyledNumberInput = styled.input.attrs(
+  ({disabled, percentage}: StyledNumberInputProps) => {
+    const className: string | undefined = `${
+      disabled ? 'text-ui-300' : 'text-ui-600'
+    } bg-transparent focus:outline-none margin-0 ${
+      percentage ? 'w-2' : 'w-full'
+    }`;
+    return {
+      className,
+    };
+  }
+)<StyledNumberInputProps>`
   text-align: center;
   ::-webkit-inner-spin-button,
   ::-webkit-outer-spin-button {
