@@ -88,6 +88,29 @@ describe('WhitelistVoting', function () {
         })
     })
 
+    describe("WhitelistingUsers: ", async () => {
+        beforeEach(async () => {
+            await initializeVoting([], 2, 3);
+        });
+        it("should return fasle, if user is not whitelisted", async () => {
+           expect(await voting.whitelisted(ownerAddress)).to.equal(false);
+        })
+
+        it("should add new users in the whitelist", async () => {
+            await voting.addWhitelistedUsers([ownerAddress, user1]);
+            expect(await voting.whitelisted(ownerAddress)).to.equal(true);
+            expect(await voting.whitelisted(user1)).to.equal(true);
+         })
+
+        it("should remove users from the whitelist", async () => {
+            await voting.addWhitelistedUsers([ownerAddress]);
+            expect(await voting.whitelisted(ownerAddress)).to.equal(true);
+
+            await voting.removeWhitelistedUsers([ownerAddress]);
+            expect(await voting.whitelisted(ownerAddress)).to.equal(false);
+        })
+    })
+
     describe("UpdateConfig: ", async () => {
         beforeEach(async () => {
             await initializeVoting([], 2, 3);
@@ -221,7 +244,6 @@ describe('WhitelistVoting', function () {
             // // 3rd votes, enough.
             await voting.connect(signers[2]).vote(0, true, false);
             
-            console.log((await voting.getVote(0)).votingPower)
             expect(await voting.canExecute(0)).to.equal(true);
         })
         
