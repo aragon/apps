@@ -9,6 +9,7 @@ export type NumberInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   disabled?: boolean;
   width?: number;
   percentage?: boolean;
+  value: string;
 };
 
 export const NumberInput: React.FC<NumberInputProps> = ({
@@ -16,6 +17,7 @@ export const NumberInput: React.FC<NumberInputProps> = ({
   disabled,
   width,
   percentage = false,
+  value,
   ...props
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -32,13 +34,14 @@ export const NumberInput: React.FC<NumberInputProps> = ({
       <InputWrapper>
         <StyledNumberInput
           {...props}
+          {...{value}}
           {...(percentage && {percentage, min: 0, max: 100})}
           ref={inputRef}
           disabled={disabled}
           type={'number'}
-          placeholder={'0'}
+          placeholder={percentage ? '0%' : '0'}
         />
-        {percentage && <Percent disabled={disabled}>%</Percent>}
+        {percentage && value !== '' && <Percent disabled={disabled}>%</Percent>}
       </InputWrapper>
       <ButtonIcon
         mode="ghost"
@@ -109,7 +112,7 @@ const StyledNumberInput = styled.input.attrs(
     const className: string | undefined = `${
       disabled ? 'text-ui-300' : 'text-ui-600'
     } bg-transparent focus:outline-none margin-0 ${
-      percentage ? 'w-2' : 'w-full'
+      percentage ? 'w-3.5' : 'w-full'
     }`;
     return {
       className,
