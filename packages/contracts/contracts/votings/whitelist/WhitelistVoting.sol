@@ -69,6 +69,8 @@ contract WhitelistVoting is Component, TimeHelpers {
             whitelisted[_whitelisted[i]] = true;
         }
 
+        whitelistedLength = uint64(_whitelisted.length);
+
         Component.initialize(_dao);
         
         emit UpdateConfig(_supportRequiredPct);

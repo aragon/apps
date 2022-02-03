@@ -1,13 +1,10 @@
 import chai, { expect } from 'chai';
-import { ethers, waffle } from 'hardhat';
+import { ethers } from 'hardhat';
 import chaiUtils from '../test-utils';
 
 chai.use(chaiUtils);
 
-import { SimpleVoting, WhitelistVoting } from '../../typechain';
-import ERC20Governance from '../../artifacts/contracts/tokens/GovernanceERC20.sol/GovernanceERC20.json';
-
-const { deployMockContract } = waffle;
+import { WhitelistVoting } from '../../typechain';
 
 const ERRORS = {
     ERROR_INIT_PCTS: "VOTING_INIT_PCTS",
@@ -26,20 +23,16 @@ const bigExp = (x:number, y:number) => toBn(x).mul(toBn(10).pow(toBn(y)));
 const pct16 = (x: number) => bigExp(x, 16);
 
 const EVENTS = {
-  REGISTERED_CALLBACK: 'RegisteredCallback',
-  REGISTERED_STANDARD: 'RegisteredStandard',
-  RECEIVED_CALLBACK: 'ReceivedCallback',
   UPDATE_CONFIG: 'UpdateConfig',
   START_VOTE: 'StartVote',
   CAST_VOTE: 'CastVote',
   EXECUTED: 'Executed'
 };
 
-describe('Voting: SimpleVoting', function () {
+describe('WhitelistVoting', function () {
     let signers: any;
     let voting: WhitelistVoting;
     let daoMock: any;
-    let erc20VoteMock: any;
     let ownerAddress: string;
     let user1: string;
     let dummyActions: any;
@@ -59,19 +52,16 @@ describe('Voting: SimpleVoting', function () {
         daoMock = await DAOMock.deploy(ownerAddress);
     })
 
-    beforeEach(async () => {
-        // erc20VoteMock = await deployMockContract(signers[0], ERC20Governance.abi);
-        
+    beforeEach(async () => {        
         const WhitelistVoting = await ethers.getContractFactory('WhitelistVoting');
         voting = await WhitelistVoting.deploy();
     })
 
     function initializeVoting(
-        whitelisted: any,
+        whitelisted: Array<string>,
         supportRequired: any, 
         voteTime: any,
     ) {
-        // @ts-ignore
         return voting['initialize(address,address[],uint64,uint64)']
             (
                 daoMock.address, 
@@ -169,20 +159,21 @@ describe('Voting: SimpleVoting', function () {
 
     describe("Vote + Execute:", async () => {
         let voteTime = 500;
-        let supportRequired = pct16(5);
+        let supportRequired = pct16(29);
 
         beforeEach(async () => {
-            await initializeVoting([ownerAddress], supportRequired, voteTime);
+            const addresses = [];
+            
+            for(let i = 0; i < 10; i++) {
+                const addr = await signers[i].getAddress();
+                addresses.push(addr);
+            }
 
+            // voting will be initialized with 10 whitelisted addresses
+            // Which means votingPower = 10 at this point.
+            await initializeVoting(addresses, supportRequired, voteTime);
+            
             await voting.newVote('0x00', dummyActions, false, false);
-        })
-
-        it.skip("should not be able to vote if user has 0 token", async () => {
-            await erc20VoteMock.mock.getPastVotes.returns(0);
-
-            await expect(
-                voting.vote(0, true, false)
-            ).to.be.revertedWith(ERRORS.ERROR_CAN_NOT_VOTE);
         })
 
         it("increases the yea or nay count and emit correct events", async () => {
@@ -216,53 +207,49 @@ describe('Voting: SimpleVoting', function () {
             expect(vote.yea).to.equal(0);
             expect(vote.nay).to.equal(1);
         })
-        
-        it("returns executable if enough yea is given depending on yea + nay total", async () => {
-            // vote with yea as 50 voting stake, which is still enough 
-            // to make vote executable even if the vote is closed due to 
-            // its duration length.
-            await erc20VoteMock.mock.getPastVotes.returns(50);
-            // supports
+
+        it("makes executable if enough yea is given from on voting power", async () => {
+            // Since voting power is set to 29%, and 
+            // whitelised is 10 addresses, voting yea 
+            // from 3 addresses should be enough to 
+            // make vote executable
             await voting.vote(0, true, false);
+            await voting.connect(signers[1]).vote(0, true, false);
 
-            // vote with nay with 30 voting stake.
-            await erc20VoteMock.mock.getPastVotes.returns(30);
-            // not supports
-            await voting.connect(signers[1]).vote(0, false, false);
+            // // only 2 voted, not enough for 30%
+            expect(await voting.canExecute(0)).to.equal(false);
+            // // 3rd votes, enough.
+            await voting.connect(signers[2]).vote(0, true, false);
             
-            // makes the voting closed.
-            await ethers.provider.send('evm_increaseTime', [voteTime + 10]);
-            await ethers.provider.send('evm_mine', []);
-
+            console.log((await voting.getVote(0)).votingPower)
             expect(await voting.canExecute(0)).to.equal(true);
         })
-
-        it("makes NON-executable if enough yea isn't given depending on yea + nay total", async () => {
-            // vote with yea as 20 voting stake, which is still not enough 
-            //to make vote executable while vote is open or even after it's closed.
-            await erc20VoteMock.mock.getPastVotes.returns(20);
-            // supports
+        
+        it("makes executable if enough yea is given depending on yea + nay total", async () => {
+            // 1 supports
             await voting.vote(0, true, false);
 
-            // vote with nay with 30 voting stake.
-            await erc20VoteMock.mock.getPastVotes.returns(30);
-            // not supports
+            // 2 not supports
             await voting.connect(signers[1]).vote(0, false, false);
-            
+            await voting.connect(signers[2]).vote(0, false, false);
+
+            expect(await voting.canExecute(0)).to.equal(false);
+
             // makes the voting closed.
             await ethers.provider.send('evm_increaseTime', [voteTime + 10]);
             await ethers.provider.send('evm_mine', []);
-
-            expect(await voting.canExecute(0)).to.equal(false);
-        })  
-
+            
+            // 3 voted no, 2 voted yea. Enough to surpass supportedRequired percentage
+            expect(await voting.canExecute(0)).to.equal(true);
+        })
+        
         it("executes the vote immediatelly while final yea is given", async () => {
-            // vote with supportRequired staking, so 
-            // it immediatelly executes the vote
-            await erc20VoteMock.mock.getPastVotes.returns(51);
-
-            // supports and should execute right away.
-            expect(await voting.vote(0, true, true))
+            // 2 votes in favor of yea
+            await voting.connect(signers[0]).vote(0, true, false);
+            await voting.connect(signers[1]).vote(0, true, false);
+            
+            // 3th supports(which is enough) and should execute right away.
+            expect(await voting.connect(signers[3]).vote(0, true, true))
                 .to.emit(daoMock, EVENTS.EXECUTED)
                 .withArgs(
                     voting.address, 
