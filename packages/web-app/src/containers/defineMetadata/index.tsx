@@ -15,7 +15,7 @@ import AddLinks from 'components/addLinks';
 const DefineMetadata: React.FC = () => {
   const {t} = useTranslation();
   const {errors} = useFormState();
-  const {control, clearErrors, setError, setValue, watch} = useFormContext();
+  const {control, clearErrors, setError, setValue} = useFormContext();
 
   const handleImageError = (error: {code: string; message: string}) => {
     setError('daoLogo', {type: 'manual', message: error.message});
