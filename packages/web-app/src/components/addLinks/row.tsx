@@ -76,6 +76,7 @@ const LinkRow: React.FC<LinkRowProps> = ({control, index, onDelete}) => {
           size="large"
           bgWhite
           icon={<IconMenuVertical />}
+          data-testid="trigger"
         />
       </Popover>
     </Row>
