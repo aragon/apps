@@ -9,6 +9,7 @@ import {
   OverviewDAOStep,
 } from 'containers/daoOverview';
 import DefineMetadata from 'containers/defineMetadata';
+import ConfigureCommunity from 'containers/configureCommunity';
 
 const CreateDAO: React.FC = () => {
   const {t} = useTranslation();
@@ -40,6 +41,12 @@ const CreateDAO: React.FC = () => {
           wizardDescription={t('createDAO.step2.description')}
         >
           <DefineMetadata />
+        </Step>
+        <Step
+          wizardTitle={t('createDAO.step4.title')}
+          wizardDescription={t('createDAO.step4.description')}
+        >
+          <ConfigureCommunity />
         </Step>
       </FullScreenStepper>
     </FormProvider>
