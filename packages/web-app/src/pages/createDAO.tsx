@@ -10,9 +10,17 @@ import {
 } from 'containers/daoOverview';
 import DefineMetadata from 'containers/defineMetadata';
 
+type FormData = {
+  links: {label: string; link: string}[];
+};
+
+const defaultValues = {
+  links: [{label: '', link: ''}],
+};
+
 const CreateDAO: React.FC = () => {
   const {t} = useTranslation();
-  const formMethods = useForm<FormData>({mode: 'onChange'});
+  const formMethods = useForm<FormData>({mode: 'onChange', defaultValues});
 
   return (
     <FormProvider {...formMethods}>
