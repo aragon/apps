@@ -10,6 +10,7 @@
     "serve": "vite preview",
     "test": "jest",
     "lint": "eslint src --max-warnings=0 && yarn check-types",
+    "lint:fix": "eslint src --fix",
     "check-types": "tsc --noemit"
   },
   "dependencies": {
