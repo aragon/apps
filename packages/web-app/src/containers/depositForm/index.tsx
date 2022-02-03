@@ -20,7 +20,7 @@ import React, {useCallback, useEffect} from 'react';
 import {useWallet} from 'context/augmentedWallet';
 import {fetchTokenData} from 'services/prices';
 import {handleClipboardActions} from 'utils/library';
-import {useGlobalModalContext} from 'context/transfersModal';
+import {useGlobalModalContext} from 'context/globalModals';
 import {fetchBalance, getTokenInfo, isETH} from 'utils/tokens';
 import {validateTokenAddress, validateTokenAmount} from 'utils/validators';
 

@@ -4,11 +4,16 @@ import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
 import {ButtonText} from '@aragon/ui-components';
 import {useNavigate} from 'react-router-dom';
+<<<<<<< HEAD
 import {VotingTerminal} from 'containers/votingTerminal';
+=======
+import {useGlobalModalContext} from 'context/globalModals';
+>>>>>>> b272bd4 (modal refactoring completed)
 
 const Home: React.FC = () => {
   const {t} = useTranslation();
   const navigate = useNavigate();
+  const {open} = useGlobalModalContext();
 
   return (
     <>
@@ -31,6 +36,18 @@ const Home: React.FC = () => {
       <div className="my-4 mx-auto w-11/12 tablet:w-1/2">
         <VotingTerminal />
       </div>
+      <ButtonText
+        label="Create DAO"
+        className="mx-auto"
+        size="large"
+        onClick={() => navigate('/create-dao')}
+      />
+      <ButtonText
+        label="Open Transaction Modal"
+        className="mx-auto mt-3"
+        size="large"
+        onClick={() => open('transaction')}
+      />
     </>
   );
 };

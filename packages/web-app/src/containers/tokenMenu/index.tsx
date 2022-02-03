@@ -1,5 +1,4 @@
 import {
-  Modal,
   SearchInput,
   ButtonText,
   IconAdd,
@@ -13,8 +12,9 @@ import TokenBox from './tokenBox';
 import {sortTokens} from 'utils/tokens';
 import {formatUnits} from 'utils/library';
 import {useTokenInfo} from 'hooks/useTokenInformation';
-import {useGlobalModalContext} from 'context/transfersModal';
+import {useGlobalModalContext} from 'context/globalModals';
 import {BaseTokenInfo, TokenBalance} from 'utils/types';
+import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 
 const customToken = {
   address: '',
@@ -116,7 +116,7 @@ const TokenMenu: React.FC<TokenMenuProps> = ({
    *************************************************/
   //TODO: Cross Icon should added in the next released
   return (
-    <Modal
+    <ModalBottomSheetSwitcher
       isOpen={isTokenOpen}
       onClose={() => close('token')}
       data-testid="TokenMenu"
@@ -140,14 +140,14 @@ const TokenMenu: React.FC<TokenMenuProps> = ({
           }
         />
       </Container>
-    </Modal>
+    </ModalBottomSheetSwitcher>
   );
 };
 
 export default TokenMenu;
 
 const Container = styled.div.attrs({
-  className: 'space-y-3',
+  className: 'space-y-3 p-3',
 })``;
 
 const TokensWrapper = styled.div.attrs({

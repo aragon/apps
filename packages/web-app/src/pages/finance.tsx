@@ -10,7 +10,7 @@ import {
 import TokenList from 'components/tokenList';
 import TransferList from 'components/transferList';
 import {useDaoTreasury} from 'hooks/useDaoTreasury';
-import {useGlobalModalContext} from 'context/transfersModal';
+import {useGlobalModalContext} from 'context/globalModals';
 import {TimeFilter, TransferTypes} from 'utils/constants';
 
 import type {Transfer, TreasuryToken} from 'utils/types';

@@ -69,16 +69,16 @@ export default function BottomSheet({
             {subtitle && <ModalSubtitle>{subtitle}</ModalSubtitle>}
           </ModalTitleContainer>
         )}
-        <Content>{children}</Content>
+        {children}
       </StyledMotionContainer>
     </>
   );
 }
 
 const StyledMotionContainer = styled(motion.div).attrs({
-  className: 'block fixed bottom-0 bg-white w-full',
+  className:
+    'bg-ui-50 block fixed bottom-0 tablet:bottom-3 w-full tablet:w-max rounded-t-xl tablet:rounded-xl tablet:left-0 tablet:right-0 tablet:mx-auto',
 })`
-  border-radius: 12px 12px 0px 0px;
   &:before {
     content: '';
     display: inline-block;
@@ -93,10 +93,6 @@ const StyledMotionContainer = styled(motion.div).attrs({
     top: -14px;
   }
 `;
-
-const Content = styled.div.attrs({
-  className: 'bg-ui-50 px-2 pt-2.5 pb-5',
-})``;
 
 const ModalTitleContainer = styled.div.attrs({
   className: 'bg-white rounded-xl p-3 space-y-0.5 text-center',

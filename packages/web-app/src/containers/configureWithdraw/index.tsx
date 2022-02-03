@@ -22,7 +22,7 @@ import {
 import {useWallet} from 'context/augmentedWallet';
 import {fetchTokenData} from 'services/prices';
 import {getTokenInfo, isETH} from 'utils/tokens';
-import {useGlobalModalContext} from 'context/transfersModal';
+import {useGlobalModalContext} from 'context/globalModals';
 import {formatUnits, handleClipboardActions} from 'utils/library';
 
 const ConfigureWithdrawForm: React.FC = () => {

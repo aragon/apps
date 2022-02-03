@@ -64,7 +64,7 @@ export const Modal: React.FC<ModalProps> = ({
                 </ModalClose>
               </ModalHeader>
             )}
-            <ModalChildren>{children}</ModalChildren>
+            {children}
           </ModalContainer>
         </Portal>
       </Root>
@@ -114,8 +114,4 @@ const ModalSubtitle = styled.div.attrs({
 const ModalClose = styled(Close).attrs({
   className:
     'flex-shrink-0 text-ui-500 w-4 h-4 rounded-lg bg-ui-50 outline:none',
-})``;
-
-const ModalChildren = styled.div.attrs({
-  className: 'p-3',
 })``;

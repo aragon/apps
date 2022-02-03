@@ -1,49 +1,14 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {
   AlertInline,
   ButtonText,
   IconReload,
-  Modal,
-  ModalProps,
+  LinearProgress,
   Spinner,
 } from '@aragon/ui-components';
-import BottomSheet from 'components/bottomSheet';
-import useMediaQuery from 'hooks/useMediaQuery';
-
-const ModalBottomSheetSwitcher: React.FC<ModalProps> = ({
-  title,
-  subtitle,
-  isOpen,
-  onClose,
-  children,
-}) => {
-  const matches = useMediaQuery('(min-width: 768px)');
-
-  return (
-    <>
-      {matches ? (
-        <Modal
-          isOpen={isOpen}
-          onClose={() => onClose && onClose()}
-          title={title}
-          subtitle={subtitle}
-          data-testid="walletCard"
-        >
-          {children}
-        </Modal>
-      ) : (
-        <BottomSheet
-          isOpen={isOpen || false}
-          onClose={() => onClose && onClose()}
-          title={title}
-          subtitle={subtitle}
-        >
-          {children}
-        </BottomSheet>
-      )}
-    </>
-  );
-};
+import {useStepper} from 'hooks/useStepper';
+import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
+import {useGlobalModalContext} from 'context/globalModals';
 
 export enum TransactionState {
   WAITING = 'WAITING',
@@ -58,9 +23,10 @@ type TransactionModalProps = {
   state: TransactionState;
   callback: () => void;
   subtitle?: string;
-  approveStepNeeded?: boolean;
-  errorLabel?: string;
   successLabel?: string;
+  errorLabel?: string;
+  approveStepNeeded?: boolean;
+  approveCallback?: () => void;
 };
 
 const icons = {
@@ -76,27 +42,36 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
   state,
   callback,
   subtitle,
-  approveStepNeeded,
-  errorLabel,
   successLabel,
+  errorLabel,
+  approveStepNeeded = false,
+  approveCallback,
 }) => {
-  const [isOpen, setIsOpen] = useState(true);
+  const {isTransactionOpen, close} = useGlobalModalContext();
+  const {currentStep, next} = useStepper(2);
 
   const label = {
     [TransactionState.WAITING]: footerButtonLabel,
     [TransactionState.LOADING]: footerButtonLabel,
-    [TransactionState.SUCCESS]: 'Try Again',
-    [TransactionState.ERROR]: 'Dismiss',
+    [TransactionState.SUCCESS]: 'Dismiss',
+    [TransactionState.ERROR]: 'Try Again',
+  };
+
+  const handleApproveClick = () => {
+    if (approveCallback) {
+      approveCallback();
+    }
+    next();
   };
 
   return (
     <ModalBottomSheetSwitcher
-      isOpen={isOpen}
-      onClose={() => setIsOpen(false)}
+      isOpen={isTransactionOpen}
+      onClose={() => close('transaction')}
       title={title}
       subtitle={subtitle}
     >
-      <div className="bg-white rounded-xl border border-ui-100">
+      <div className="m-3 bg-white rounded-xl border border-ui-100">
         <div className="flex justify-between py-1.5 px-2">
           <div className="space-y-0.25">
             <p className="text-ui-600">Estimated Gas Fees</p>
@@ -116,26 +91,76 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
           </div>
         </div>
       </div>
-      <ButtonText
-        className="mt-3 w-full"
-        label={label[state]}
-        iconLeft={icons[state]}
-        onClick={callback}
-      />
-      {state === TransactionState.ERROR && (
-        <div className="mx-auto mt-2 w-max">
-          <AlertInline
-            label={errorLabel || 'Error while confirmation'}
-            mode="critical"
-          />
+      {approveStepNeeded ? (
+        <div className="p-3 bg-white rounded-b-xl">
+          <div className="flex justify-between mb-1 text-sm">
+            <p className="font-bold text-primary-500">
+              {currentStep === 1 ? 'Approve token' : 'Sign Deposit'}
+            </p>
+            <p className="text-ui-400">{`Step ${currentStep} of 2`}</p>
+          </div>
+          <LinearProgress max={2} value={currentStep} />
+          <p className="mt-1 text-sm text-ui-600">
+            To sign your first transaction, you must approve Aragon Zaragoza to
+            make a transaction with your token.
+          </p>
+          <div className="flex space-x-2">
+            <ButtonText
+              className="mt-3 w-full"
+              label="Approve token"
+              iconLeft={icons[state]}
+              onClick={handleApproveClick}
+              disabled={currentStep !== 1}
+            />
+            <ButtonText
+              className="mt-3 w-full"
+              label={label[state]}
+              iconLeft={icons[state]}
+              onClick={callback}
+              disabled={currentStep !== 2}
+            />
+          </div>
+          {state === TransactionState.ERROR && (
+            <div className="mx-auto mt-2 w-max">
+              <AlertInline
+                label={errorLabel || 'Error while confirmation'}
+                mode="critical"
+              />
+            </div>
+          )}
+          {state === TransactionState.SUCCESS && (
+            <div className="mx-auto mt-2 w-max">
+              <AlertInline
+                label={successLabel || 'Transaction successful'}
+                mode="success"
+              />
+            </div>
+          )}
         </div>
-      )}
-      {state === TransactionState.SUCCESS && (
-        <div className="mx-auto mt-2 w-max">
-          <AlertInline
-            label={successLabel || 'Transaction successful'}
-            mode="success"
+      ) : (
+        <div className="px-3 pb-3 rounded-b-xl">
+          <ButtonText
+            className="mt-3 w-full"
+            label={label[state]}
+            iconLeft={icons[state]}
+            onClick={callback}
           />
+          {state === TransactionState.ERROR && (
+            <div className="mx-auto mt-2 w-max">
+              <AlertInline
+                label={errorLabel || 'Error while confirmation'}
+                mode="critical"
+              />
+            </div>
+          )}
+          {state === TransactionState.SUCCESS && (
+            <div className="mx-auto mt-2 w-max">
+              <AlertInline
+                label={successLabel || 'Transaction successful'}
+                mode="success"
+              />
+            </div>
+          )}
         </div>
       )}
     </ModalBottomSheetSwitcher>

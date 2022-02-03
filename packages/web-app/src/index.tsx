@@ -6,7 +6,7 @@ import App from './app';
 import {WalletProvider} from 'context/augmentedWallet';
 import {APMProvider} from 'context/elasticAPM';
 import {WalletMenuProvider} from 'context/walletMenu';
-import {GlobalModalsProvider} from 'context/transfersModal';
+import {GlobalModalsProvider} from 'context/globalModals';
 import 'tailwindcss/tailwind.css';
 
 ReactDOM.render(

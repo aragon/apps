@@ -72,9 +72,9 @@ function App() {
         title="Sign Deposit"
         subtitle="To register your deposit, you need to submit a transaction which costs you following."
         footerButtonLabel="Sign Deposit"
-        approveStepNeeded={false}
         state={TransactionState.SUCCESS}
         callback={console.log}
+        approveStepNeeded
       />
       {/* <TokenMenu /> */}
     </div>

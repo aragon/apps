@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import {ActionListItem, CardWallet, IconTurnOff} from '@aragon/ui-components';
 
-import BottomSheet from '../../components/bottomSheet';
+import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 import {useWalletMenuContext} from 'context/walletMenu';
 import {useWallet, WalletAugmented} from 'context/augmentedWallet';
 
@@ -16,7 +16,11 @@ const WalletMenu: React.FC = () => {
   const {reset, account, ensName, ensAvatarUrl}: useWalletProps = useWallet();
 
   return (
-    <BottomSheet isOpen={isOpen} onClose={close} data-testid="walletCard">
+    <ModalBottomSheetSwitcher
+      isOpen={isOpen}
+      onClose={close}
+      data-testid="walletCard"
+    >
       <Container>
         <CardWallet
           wide
@@ -35,14 +39,14 @@ const WalletMenu: React.FC = () => {
           />
         </ActionContainer>
       </Container>
-    </BottomSheet>
+    </ModalBottomSheetSwitcher>
   );
 };
 
 export default WalletMenu;
 
 const Container = styled.div.attrs({
-  className: 'space-y-3',
+  className: 'space-y-3 p-3',
 })``;
 
 const ActionContainer = styled.div.attrs({

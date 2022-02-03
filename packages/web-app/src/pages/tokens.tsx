@@ -9,7 +9,7 @@ import {TimeFilter} from 'utils/constants';
 import {PageWrapper} from 'components/wrappers';
 import {filterTokens} from 'utils/tokens';
 import {useDaoTreasury} from 'hooks/useDaoTreasury';
-import {useGlobalModalContext} from 'context/transfersModal';
+import {useGlobalModalContext} from 'context/globalModals';
 import type {TreasuryToken} from 'utils/types';
 
 const Tokens: React.FC = () => {
