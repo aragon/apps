@@ -1,4 +1,6 @@
 import {i18n} from '../../i18n.config';
+import {InputTime} from '@aragon/ui-components';
+
 import {ProposalData, VotingData} from './types';
 /**
  * Note: This function will return a list of timestamp that we can use to categorize transfers
@@ -25,6 +27,56 @@ export function getDateSections(): {
     lastMonth,
     lastYear,
   };
+}
+
+/**
+ * Returns the current date as a string with the following format:
+ * "yyyy-mm-dd".
+ *
+ * This date format is necessary when working with html inputs of type "date".
+ */
+export function getCanonicalDate(): string {
+  const currDate = new Date();
+  const currMonth = currDate.getMonth() + 1;
+  const formattedMonth = currMonth > 9 ? '' + currMonth : '0' + currMonth;
+  const currDay = currDate.getDate();
+  const formattedDay = currDay > 9 ? '' + currDay : '0' + currDay;
+  const formattedDate =
+    '' + currDate.getFullYear() + '-' + formattedMonth + '-' + formattedDay;
+  return formattedDate;
+}
+
+/**
+ * Returns the current time as a string with the following format:
+ * "hh:mm".
+ *
+ * This time format is necessary when working with html inputs of type "time".
+ */
+export function getCanonicalTime(): string {
+  const currDate = new Date();
+  let currHours = currDate.getHours();
+  let currMinutes = currDate.getMinutes();
+  const formattedHours = currHours > 9 ? '' + currHours : '0' + currHours;
+  const formattedMinutes =
+    currMinutes > 9 ? '' + currMinutes : '0' + currMinutes;
+
+  return '' + formattedHours + ':' + formattedMinutes;
+}
+
+export function get12HourTime(): InputTime {
+  const currDate = new Date();
+  let meridian = 'am';
+  let currHours = currDate.getHours();
+  if (currDate.getHours() > 12) {
+    currHours = currDate.getHours() - 12;
+    meridian = 'pm';
+  } else {
+    meridian = 'am';
+  }
+  const formattedHours = currHours > 9 ? '' + currHours : '0' + currHours;
+  const currMinutes = currDate.getMinutes();
+  const formattedTime = '' + formattedHours + '-' + currMinutes;
+  return {time: formattedTime, midday: meridian};
 }
 
 /**

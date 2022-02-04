@@ -15,12 +15,15 @@ import {useWalletProps} from 'containers/walletMenu';
 import ConfigureWithdrawForm from 'containers/configureWithdraw';
 import {FullScreenStepper, Step} from 'components/fullScreenStepper';
 import SetupVotingForm from 'containers/setupVotingForm';
+import UtcMenu from 'containers/utcMenu';
 
 export type TransferData = {
   amount: string;
   from: Address;
   to: Address;
   reference?: string;
+  start: number;
+  end: number;
 };
 
 export type TokenFormData = {
@@ -43,6 +46,7 @@ export type WithdrawFormData = TransferFormData & {
 };
 
 const defaultValues = {
+  to: '0x8367dc645e31321CeF3EeD91a10a5b7077e21f70',
   amount: '',
   reference: '',
   tokenAddress: '',
@@ -126,6 +130,7 @@ const NewWithdraw: React.FC = () => {
         onTokenSelect={handleTokenSelect}
         tokenBalances={tokens}
       />
+      <UtcMenu />
     </FormProvider>
   );
 };

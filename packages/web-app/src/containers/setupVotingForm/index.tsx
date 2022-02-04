@@ -18,14 +18,13 @@ import {
 } from 'react-hook-form';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
-import {utils} from 'ethers';
 import React, {useEffect, useState} from 'react';
 
 import {useWallet} from 'context/augmentedWallet';
-import {fetchTokenData} from 'services/prices';
 import {useTransferModalContext} from 'context/transfersModal';
-import {fetchBalance, getTokenInfo, isETH} from 'utils/tokens';
 import {timezones} from 'containers/utcMenu/utcData';
+import {getCanonicalDate, getCanonicalTime} from 'utils/date';
+import {SimplifiedTimeInput} from 'components/inputTime/inputTime';
 
 const SetupVotingForm: React.FC = () => {
   const {t} = useTranslation();
@@ -47,70 +46,18 @@ const SetupVotingForm: React.FC = () => {
    *                    Hooks                      *
    *************************************************/
   useEffect(() => {
-    if (isCustomToken) setFocus('tokenAddress');
-  }, [isCustomToken, setFocus]);
-
-  useEffect(() => {
-    if (!account || !isCustomToken || !tokenAddress) return;
-
-    const fetchTokenInfo = async () => {
-      if (errors.tokenAddress !== undefined) {
-        if (dirtyFields.amount) trigger(['amount', 'tokenSymbol']);
-        return;
-      }
-
-      try {
-        // fetch token balance and token metadata
-        const allTokenInfoPromise = Promise.all([
-          isETH(tokenAddress)
-            ? utils.formatEther(walletBalance)
-            : fetchBalance(tokenAddress, account, provider),
-          fetchTokenData(tokenAddress),
-        ]);
-
-        // use blockchain if api data unavailable
-        const [balance, data] = await allTokenInfoPromise;
-        if (data) {
-          setValue('tokenName', data.name);
-          setValue('tokenSymbol', data.symbol);
-          setValue('tokenImgUrl', data.imgUrl);
-        } else {
-          const {name, symbol} = await getTokenInfo(tokenAddress, provider);
-          setValue('tokenName', name);
-          setValue('tokenSymbol', symbol);
-        }
-        setValue('tokenBalance', balance);
-      } catch (error) {
-        /**
-         * Error is intentionally swallowed. Passing invalid address will
-         * return error, but should not be thrown.
-         * Also, double safeguard. Should not actually fall into here since
-         * tokenAddress should be valid in the first place for balance to be fetched.
-         */
-        console.error(error);
-      }
-      if (dirtyFields.amount) trigger(['amount', 'tokenSymbol']);
-    };
-
-    fetchTokenInfo();
-  }, [
-    account,
-    dirtyFields.amount,
-    errors.tokenAddress,
-    isCustomToken,
-    provider,
-    setValue,
-    tokenAddress,
-    trigger,
-    walletBalance,
-  ]);
+    setDate(getCanonicalDate());
+    console.log(getCanonicalTime());
+    setTime(getCanonicalTime());
+    // const utcOffset = currDate.getTimezoneOffset() / 60;
+  }, []);
 
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDate(event.target.value);
   };
 
-  const handleTimeChange = (data: InputTime) => {
-    setTime(data);
+  const handleTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTime(event.target.value);
   };
 
   /*************************************************
@@ -159,7 +106,7 @@ const SetupVotingForm: React.FC = () => {
             rules={{required: t('errors.required.time')}}
             render={({field: {name, value}, fieldState: {error}}) => (
               <>
-                <DateInput onChange={handleDateChange} />
+                <DateInput value={date} onChange={handleDateChange} />
                 {error?.message && (
                   <AlertInline label={error.message} mode="critical" />
                 )}
@@ -172,7 +119,11 @@ const SetupVotingForm: React.FC = () => {
             rules={{required: t('errors.required.date')}}
             render={({field: {name, value}, fieldState: {error}}) => (
               <>
-                <TimeInput min={'00:00'} getTime={handleTimeChange} />
+                <SimplifiedTimeInput
+                  type="time"
+                  value={time}
+                  onChange={handleTimeChange}
+                />
                 {error?.message && (
                   <AlertInline label={error.message} mode="critical" />
                 )}

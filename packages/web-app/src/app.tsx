@@ -9,7 +9,6 @@ import Navbar from 'containers/navbar';
 import WalletMenu from 'containers/walletMenu';
 // import TokenMenu from 'containers/tokenMenu';
 import TransferMenu from 'containers/transferMenu';
-import UtcMenu from 'containers/utcMenu';
 import {trackPage} from 'services/analytics';
 import '../i18n.config';
 
@@ -62,10 +61,6 @@ function App() {
       <Footer />
       <WalletMenu />
       <TransferMenu />
-      {/* TODO remove this from here and add this to the page(s) on which it is
-      actually needed */}
-      <UtcMenu />
-      {/* <TokenMenu /> */}
     </div>
   );
 }
