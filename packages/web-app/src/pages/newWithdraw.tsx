@@ -21,7 +21,11 @@ export type TransferData = {
   from: Address;
   to: Address;
   reference?: string;
-  start: number;
+  startDate: number;
+  startTime: number;
+  endDate: number;
+  endTime: number;
+  duration: number;
   end: number;
 };
 
@@ -53,6 +57,7 @@ const defaultValues = {
   tokenName: '',
   tokenImgUrl: '',
   isCustomToken: false,
+  duration: 5,
 };
 
 const NewWithdraw: React.FC = () => {
@@ -120,8 +125,18 @@ const NewWithdraw: React.FC = () => {
           wizardTitle={t('newWithdraw.setupVoting.title')}
           wizardDescription={t('newWithdraw.setupVoting.description')}
           nextButtonLabel={t('labels.submitDeposit')}
+          isNextButtonDisabled={!formMethods.formState.isValid}
         >
           <SetupVotingForm />
+        </Step>
+        <Step
+          wizardTitle={t('newWithdraw.setupVoting.title')}
+          wizardDescription={t('newWithdraw.setupVoting.description')}
+          nextButtonLabel={t('labels.submitDeposit')}
+          isNextButtonDisabled={!formMethods.formState.isValid}
+        >
+          {/* TODO replace with next form container */}
+          <p>Step 3</p>
         </Step>
       </FullScreenStepper>
       <TokenMenu

@@ -6,7 +6,6 @@ import {
   IconRadioSelected,
   Label,
   NumberInput,
-  TimeInput,
   ButtonText,
 } from '@aragon/ui-components';
 import {
@@ -19,7 +18,6 @@ import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import React, {useEffect, useState} from 'react';
 
-import {useWallet} from 'context/augmentedWallet';
 import {useTransferModalContext} from 'context/transfersModal';
 import {timezones} from 'containers/utcMenu/utcData';
 import {
@@ -30,29 +28,30 @@ import {
 import {SimplifiedTimeInput} from 'components/inputTime/inputTime';
 import UtcMenu from 'containers/utcMenu';
 
+type EndDateType = 'duration' | 'date';
+
 const SetupVotingForm: React.FC = () => {
   const {t} = useTranslation();
   const {open} = useTransferModalContext();
-  const {account, balance: walletBalance, provider} = useWallet();
-  const {control, resetField, setValue, setFocus, trigger, getValues} =
-    useFormContext();
+  const {control, resetField, setValue, trigger, getValues} = useFormContext();
   const {errors, dirtyFields} = useFormState({control});
-  const [tokenAddress, isCustomToken, tokenBalance, tokenSymbol] = useWatch({
-    name: ['tokenAddress', 'isCustomToken', 'tokenBalance', 'tokenSymbol'],
-  });
-
-  const [time, setTime] = useState('');
-  const [date, setDate] = useState('');
-  const [utc, setUtc] = useState('');
-  type EndDateType = 'duration' | 'date';
-  const [endDateType, setEndDateType] = useState<EndDateType>('duration');
+  const [startDate, endDate] = useWatch({name: ['startDate', 'endDate']});
 
   /*************************************************
-   *                    Hooks                      *
+   *                    STATE & EFFECT             *
    *************************************************/
+
+  const [startTime, setStartTime] = useState('');
+  const [startDateState, setStartDate] = useState('');
+  const [utc, setUtc] = useState('');
+  const [endDateType, setEndDateType] = useState<EndDateType>('date');
+  const [endDateState, setEndDate] = useState('');
+  const [endTime, setEndTime] = useState('');
+
   useEffect(() => {
-    setDate(getCanonicalDate());
-    setTime(getCanonicalTime());
+    setStartDate(getCanonicalDate());
+    setStartTime(getCanonicalTime());
+    setEndTime(getCanonicalTime());
     const currTimezone = timezones.find(tz => tz === getCanonicalUtcOffset());
     if (!currTimezone) {
       setUtc(timezones[13]);
@@ -61,30 +60,65 @@ const SetupVotingForm: React.FC = () => {
     }
   }, []);
 
-  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDate(event.target.value);
-  };
-
-  const handleTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTime(event.target.value);
-  };
-
   /*************************************************
    *                Field Validators               *
    *************************************************/
-  const startDateValidator = date => {
-    //TODO
+
+  const startDateValidator = (date: string) => {
+    const startDate = new Date(date);
+    const todayMidnight = new Date().setHours(0, 0, 0, 0);
+    // TODO remove
+    const currDay = new Date(todayMidnight);
+
+    if (startDate.getTime() < currDay.getTime()) {
+      return t('errors.startDatePast');
+    }
+    return '';
   };
-  const durationValidator = duration => {
-    //TODO
+
+  const startTimeValidator = (time: string) => {
+    const startDateTime = new Date(startDate + ' ' + time);
+    const currDate = new Date();
+
+    if (startDateTime.getTime() < currDate.getTime()) {
+      return t('errors.startTimePast');
+    }
+    return '';
   };
-  const endDateValidator = date => {
-    //TODO
+
+  const durationValidator = (duration: number) => {
+    console.log('hi');
+    if (parseInt(duration) < 5) {
+      return t('errors.durationTooShort');
+    }
+    return '';
+  };
+
+  const endDateValidator = (date: string) => {
+    const endDate = new Date(date);
+    const todayMidnight = new Date().setHours(0, 0, 0, 0);
+    const minMidnight = todayMidnight + 432000000;
+
+    if (endDate.getTime() < minMidnight) {
+      return t('errors.endDatePast');
+    }
+    return '';
+  };
+
+  const endTimeValidator = (time: string) => {
+    const endDateTime = new Date(endDate + ' ' + time);
+    const minEndDateTime = new Date().getTime() + 432000000;
+
+    if (endDateTime.getTime() < minEndDateTime) {
+      return t('errors.endDatePast');
+    }
+    return '';
   };
 
   /*************************************************
    *                    Render                     *
    *************************************************/
+
   return (
     <>
       {/* Voting Type Selection */}
@@ -110,50 +144,53 @@ const SetupVotingForm: React.FC = () => {
         <Label label={t('labels.start')} />
         <HStack>
           <Controller
-            name="utcTimezone"
+            name="startDate"
             control={control}
-            rules={{required: t('errors.required.time')}}
-            render={({field: {name, value}, fieldState: {error}}) => (
-              <>
-                <DateInput value={date} onChange={handleDateChange} />
+            rules={{
+              required: t('errors.required.date'),
+              validate: startDateValidator,
+            }}
+            render={({field: {name, value, onChange}, fieldState: {error}}) => (
+              <div>
+                <DateInput name={name} value={value} onChange={onChange} />
                 {error?.message && (
                   <AlertInline label={error.message} mode="critical" />
                 )}
-              </>
+              </div>
             )}
           />
           <Controller
-            name="utcTimezone"
+            name="startTime"
             control={control}
-            rules={{required: t('errors.required.date')}}
-            render={({field: {name, value}, fieldState: {error}}) => (
-              <>
+            rules={{
+              required: t('errors.required.time'),
+              validate: startTimeValidator,
+            }}
+            render={({field: {name, value, onChange}, fieldState: {error}}) => (
+              <div>
                 <SimplifiedTimeInput
-                  type="time"
-                  value={time}
-                  onChange={handleTimeChange}
+                  name={name}
+                  value={value}
+                  onChange={onChange}
                 />
                 {error?.message && (
                   <AlertInline label={error.message} mode="critical" />
                 )}
-              </>
+              </div>
             )}
           />
           <Controller
             name="utcTimezone"
             control={control}
             rules={{required: t('errors.required.timezone')}}
-            render={({field: {name, value}, fieldState: {error}}) => (
-              <>
+            render={({field: {name, value}}) => (
+              <div>
                 <DropdownInput
                   name={name}
-                  value={utc}
+                  value={value}
                   onClick={() => open('utc')}
                 />
-                {error?.message && (
-                  <AlertInline label={error.message} mode="critical" />
-                )}
-              </>
+              </div>
             )}
           />
         </HStack>
@@ -166,119 +203,101 @@ const SetupVotingForm: React.FC = () => {
           helpText={t('newWithdraw.setupVoting.endDescription')}
         />
         {endDateType === 'duration' ? (
-          <HStackEnd>
-            <NetworkTypeSwitcher>
-              <ButtonText
-                mode="secondary"
-                label={t('labels.days')}
-                isActive={endDateType === 'duration'}
-                onClick={() => setEndDateType('duration')}
-                size="large"
-              />
-              <ButtonText
-                mode="secondary"
-                label={t('labels.dateTime')}
-                isActive={endDateType === 'date'}
-                onClick={() => setEndDateType('date')}
-                size="large"
-              />
-            </NetworkTypeSwitcher>
+          <HStack>
+            <NetworkSwitch value={endDateType} setValue={setEndDateType} />
             <Controller
-              name="tokenAddress"
+              name="duration"
               control={control}
               rules={{
-                required: t('errors.required.address'),
+                required: t('errors.required.duration'),
                 validate: durationValidator,
               }}
               render={({
-                field: {name, onBlur, onChange, value},
+                field: {name, onChange, value},
                 fieldState: {error},
               }) => (
-                <>
+                <div>
                   <NumberInput
                     mode={error ? 'critical' : 'default'}
                     name={name}
                     value={value}
-                    onBlur={onBlur}
+                    min={5}
                     onChange={onChange}
                     width={144}
                   />
                   {error?.message && (
                     <AlertInline label={error.message} mode="critical" />
                   )}
-                </>
+                </div>
               )}
             />
-          </HStackEnd>
+          </HStack>
         ) : (
-          <>
-            <NetworkTypeSwitcher>
-              <ButtonText
-                mode="secondary"
-                label={t('labels.days')}
-                isActive={endDateType === 'duration'}
-                onClick={() => setEndDateType('duration')}
-                size="large"
-              />
-              <ButtonText
-                mode="secondary"
-                label={t('labels.dateTime')}
-                isActive={endDateType === 'date'}
-                onClick={() => setEndDateType('date')}
-                size="large"
-              />
-            </NetworkTypeSwitcher>
+          <div className="block space-y-2">
+            <div>
+              <NetworkSwitch value={endDateType} setValue={setEndDateType} />
+            </div>
             <HStack>
               <Controller
-                name="utcTimezone"
+                name="endDate"
                 control={control}
-                rules={{required: t('errors.required.time')}}
-                render={({field: {name, value}, fieldState: {error}}) => (
-                  <>
-                    <DateInput onChange={handleDateChange} />
+                rules={{
+                  required: t('errors.required.time'),
+                  validate: endDateValidator,
+                }}
+                render={({
+                  field: {name, value, onChange},
+                  fieldState: {error},
+                }) => (
+                  <div>
+                    <DateInput name={name} value={value} onChange={onChange} />
                     {error?.message && (
                       <AlertInline label={error.message} mode="critical" />
                     )}
-                  </>
+                  </div>
                 )}
               />
               <Controller
-                name="utcTimezone"
+                name="endTime"
                 control={control}
-                rules={{required: t('errors.required.date') as string}}
-                render={({field: {name, value}, fieldState: {error}}) => (
-                  <>
+                rules={{
+                  required: t('errors.required.date'),
+                  validate: endTimeValidator,
+                }}
+                render={({
+                  field: {name, value, onChange},
+                  fieldState: {error},
+                }) => (
+                  <div>
                     <SimplifiedTimeInput
-                      type="time"
-                      value={time}
-                      onChange={handleTimeChange}
+                      name={name}
+                      value={value}
+                      onChange={onChange}
                     />
                     {error?.message && (
                       <AlertInline label={error.message} mode="critical" />
                     )}
-                  </>
+                  </div>
                 )}
               />
               <Controller
                 name="utcTimezone"
                 control={control}
                 rules={{required: t('errors.required.timezone')}}
-                render={({field: {name, value}, fieldState: {error}}) => (
-                  <>
+                render={({field: {name, value}}) => (
+                  <div>
                     <DropdownInput
                       name={name}
-                      value={utc}
+                      value={value}
                       onClick={() => open('utc')}
                     />
-                    {error?.message && (
-                      <AlertInline label={error.message} mode="critical" />
-                    )}
-                  </>
+                  </div>
                 )}
               />
             </HStack>
-          </>
+          </div>
         )}
+        <AlertInline label={t('infos.voteDuration')} mode="neutral" />
       </FormSection>
       <UtcMenu onTimezoneSelect={setUtc} />
     </>
@@ -287,18 +306,44 @@ const SetupVotingForm: React.FC = () => {
 
 export default SetupVotingForm;
 
+type NetworkSwitchProps = {
+  value: EndDateType;
+  setValue: (value: EndDateType) => void;
+};
+
+const NetworkSwitch = ({value, setValue}: NetworkSwitchProps) => {
+  const {t} = useTranslation();
+
+  return (
+    <SwitchContainer>
+      <ButtonText
+        mode="secondary"
+        label={t('labels.days')}
+        isActive={value === 'duration'}
+        onClick={() => setValue('duration')}
+        size="large"
+      />
+      <ButtonText
+        mode="secondary"
+        label={t('labels.dateTime')}
+        isActive={value === 'date'}
+        onClick={() => setValue('date')}
+        size="large"
+      />
+    </SwitchContainer>
+  );
+};
+
 const FormSection = styled.div.attrs({
   className: 'space-y-1.5',
 })``;
 
 const HStack = styled.div.attrs({
-  className: 'flex space-x-1',
+  className: 'inline-flex space-x-1',
 })``;
 
-const NetworkTypeSwitcher = styled.div.attrs({
-  className: 'inline-flex p-0.5 space-x-0.25 bg-ui-0 rounded-xl',
-})``;
-
-const HStackEnd = styled.div.attrs({
-  className: 'inline-block space-x-1',
-})``;
+const SwitchContainer = styled.div.attrs({
+  className: 'inline-flex p-0.5 space-x-0.5 bg-ui-0 rounded-xl',
+})`
+  height: fit-content;
+`;

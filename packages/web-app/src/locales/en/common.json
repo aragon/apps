@@ -78,11 +78,14 @@
     "noProposals": "No proposals found!"
   },
   "infos": {
-    "voteDuration": "The minimum duration of 5 days is defined by DAO Governance Settings"
+    "voteDuration": "The minimum duration of 5 days is defined by DAO Governance Settings",
+    "newVotinTypes": "New voting types will be released soon"
   },
   "errors": {
     "amountWithInvalidToken": "Cannot validate amount with invalid token address",
     "defaultAmountValidationError": "Error validating amount",
+    "durationTooShort": "Duration must be at least 5 days",
+    "endDatePast": "Start date must not be before 5 days from now",
     "exceedsFractionalParts": "The number of decimals in the amount must not exceed the number of decimals of the token({{decimals}})",
     "includeDecimals": "Include decimals, e.g. 10.0",
     "includeExactAmount": "The token doesn't contain decimals. Please enter the exact amount",
@@ -94,11 +97,16 @@
     "required": {
       "address": "Token address is required",
       "amount": "Token amount is required",
+      "date": "Date is required",
+      "duration": "Duration is required",
+      "endDate": "End date is required",
       "recipient": "Recipient address is required",
       "token": "Token is required",
-      "timezone": "Timezone is required",
-      "endDate": "End date is required"
-    }
+      "time": "Time is required",
+      "timezone": "Timezone is required"
+    },
+    "startDatePast": "Start date must not be before today",
+    "startTimePast": "Start time must not be before now"
   },
   "warnings": {
     "amountGtDaoToken": "Withdraw amount is greater than the current token balance"
