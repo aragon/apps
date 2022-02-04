@@ -22,7 +22,11 @@ import React, {useEffect, useState} from 'react';
 import {useWallet} from 'context/augmentedWallet';
 import {useTransferModalContext} from 'context/transfersModal';
 import {timezones} from 'containers/utcMenu/utcData';
-import {getCanonicalDate, getCanonicalTime} from 'utils/date';
+import {
+  getCanonicalDate,
+  getCanonicalTime,
+  getCanonicalUtcOffset,
+} from 'utils/date';
 import {SimplifiedTimeInput} from 'components/inputTime/inputTime';
 import UtcMenu from 'containers/utcMenu';
 
@@ -49,7 +53,12 @@ const SetupVotingForm: React.FC = () => {
   useEffect(() => {
     setDate(getCanonicalDate());
     setTime(getCanonicalTime());
-    setUtc(timezones[15]);
+    const currTimezone = timezones.find(tz => tz === getCanonicalUtcOffset());
+    if (!currTimezone) {
+      setUtc(timezones[13]);
+    } else {
+      setUtc(currTimezone);
+    }
   }, []);
 
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {

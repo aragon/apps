@@ -1,5 +1,4 @@
 import {i18n} from '../../i18n.config';
-import {InputTime} from '@aragon/ui-components';
 
 import {ProposalData, VotingData} from './types';
 /**
@@ -63,20 +62,16 @@ export function getCanonicalTime(): string {
   return '' + formattedHours + ':' + formattedMinutes;
 }
 
-export function get12HourTime(): InputTime {
+export function getCanonicalUtcOffset(): string {
   const currDate = new Date();
-  let meridian = 'am';
-  let currHours = currDate.getHours();
-  if (currDate.getHours() > 12) {
-    currHours = currDate.getHours() - 12;
-    meridian = 'pm';
-  } else {
-    meridian = 'am';
-  }
-  const formattedHours = currHours > 9 ? '' + currHours : '0' + currHours;
-  const currMinutes = currDate.getMinutes();
-  const formattedTime = '' + formattedHours + '-' + currMinutes;
-  return {time: formattedTime, midday: meridian};
+  let decimalOffset = currDate.getTimezoneOffset() / 60;
+  const isNegative = decimalOffset < 0;
+  decimalOffset = Math.abs(decimalOffset);
+  const hourOffset = Math.floor(decimalOffset);
+  const minuteOffset = Math.round((decimalOffset - hourOffset) * 60);
+  let formattedOffset = 'UTC' + (isNegative ? '+' : '-') + hourOffset;
+  formattedOffset += minuteOffset > 0 ? ':' + minuteOffset : '';
+  return formattedOffset;
 }
 
 /**
