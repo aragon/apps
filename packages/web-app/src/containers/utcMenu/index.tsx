@@ -11,12 +11,17 @@ import {
 import {useTransferModalContext} from 'context/transfersModal';
 import {timezones} from './utcData';
 
-const UtcMenu: React.FC = () => {
+type UtcMenuProps = {
+  onTimezoneSelect: (timezone: string) => void;
+};
+
+const UtcMenu: React.FC<UtcMenuProps> = ({onTimezoneSelect}) => {
   const {isUtcOpen, close} = useTransferModalContext();
   const [searchTerm, setSearchTerm] = useState<string>('');
   const {t} = useTranslation();
 
-  const handleUtcClick = () => {
+  const handleUtcClick = (tz: string) => {
+    onTimezoneSelect(tz);
     close('utc');
   };
 
@@ -52,7 +57,7 @@ const UtcMenu: React.FC = () => {
                   key={tz}
                   title={tz}
                   iconRight={<IconChevronRight />}
-                  onClick={() => handleUtcClick()}
+                  onClick={() => handleUtcClick(tz)}
                 />
               );
             })}

@@ -4,7 +4,6 @@ import {
   DateInput,
   DropdownInput,
   IconRadioSelected,
-  InputTime,
   Label,
   NumberInput,
   TimeInput,
@@ -25,6 +24,7 @@ import {useTransferModalContext} from 'context/transfersModal';
 import {timezones} from 'containers/utcMenu/utcData';
 import {getCanonicalDate, getCanonicalTime} from 'utils/date';
 import {SimplifiedTimeInput} from 'components/inputTime/inputTime';
+import UtcMenu from 'containers/utcMenu';
 
 const SetupVotingForm: React.FC = () => {
   const {t} = useTranslation();
@@ -36,9 +36,10 @@ const SetupVotingForm: React.FC = () => {
   const [tokenAddress, isCustomToken, tokenBalance, tokenSymbol] = useWatch({
     name: ['tokenAddress', 'isCustomToken', 'tokenBalance', 'tokenSymbol'],
   });
-  const [time, setTime] = useState<InputTime>();
+
+  const [time, setTime] = useState('');
   const [date, setDate] = useState('');
-  const [utc, setUtc] = useState(timezones[15]);
+  const [utc, setUtc] = useState('');
   type EndDateType = 'duration' | 'date';
   const [endDateType, setEndDateType] = useState<EndDateType>('duration');
 
@@ -47,9 +48,8 @@ const SetupVotingForm: React.FC = () => {
    *************************************************/
   useEffect(() => {
     setDate(getCanonicalDate());
-    console.log(getCanonicalTime());
     setTime(getCanonicalTime());
-    // const utcOffset = currDate.getTimezoneOffset() / 60;
+    setUtc(timezones[15]);
   }, []);
 
   const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -236,7 +236,7 @@ const SetupVotingForm: React.FC = () => {
               <Controller
                 name="utcTimezone"
                 control={control}
-                rules={{required: t('errors.required.date')}}
+                rules={{required: t('errors.required.date') as string}}
                 render={({field: {name, value}, fieldState: {error}}) => (
                   <>
                     <TimeInput min={'00:00'} getTime={handleTimeChange} />
@@ -267,6 +267,7 @@ const SetupVotingForm: React.FC = () => {
           </>
         )}
       </FormSection>
+      <UtcMenu onTimezoneSelect={setUtc} />
     </>
   );
 };

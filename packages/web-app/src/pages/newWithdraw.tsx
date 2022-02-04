@@ -15,7 +15,6 @@ import {useWalletProps} from 'containers/walletMenu';
 import ConfigureWithdrawForm from 'containers/configureWithdraw';
 import {FullScreenStepper, Step} from 'components/fullScreenStepper';
 import SetupVotingForm from 'containers/setupVotingForm';
-import UtcMenu from 'containers/utcMenu';
 
 export type TransferData = {
   amount: string;
@@ -130,7 +129,6 @@ const NewWithdraw: React.FC = () => {
         onTokenSelect={handleTokenSelect}
         tokenBalances={tokens}
       />
-      <UtcMenu />
     </FormProvider>
   );
 };
