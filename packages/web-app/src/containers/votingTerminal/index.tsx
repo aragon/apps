@@ -1,13 +1,16 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
 
-import {AlertInline} from '../alerts';
-import {ButtonText} from '../button';
-import {SearchInput} from '../input';
-import {LinearProgress} from '../progress';
-import {ButtonGroup, Option} from '../button';
-import {VotersTable, VoterType} from '../table';
-import {CheckboxListItem} from '../checkbox';
+import {AlertInline} from '@aragon/ui-components/src/components/alerts';
+import {ButtonText} from '@aragon/ui-components/src/components/button';
+import {SearchInput} from '@aragon/ui-components/src/components/input';
+import {LinearProgress} from '@aragon/ui-components/src/components/progress';
+import {ButtonGroup, Option} from '@aragon/ui-components/src/components/button';
+import {
+  VotersTable,
+  VoterType,
+} from '@aragon/ui-components/src/components/table';
+import {CheckboxListItem} from '@aragon/ui-components/src/components/checkbox';
 
 // TODO: Every string and data needed by the component is hardcoded for now.
 
@@ -157,6 +160,7 @@ export const VotingTerminal: React.FC = () => {
             label="Vote now"
             size="large"
             onClick={() => setVotingInProcess(true)}
+            className="w-full tablet:w-max"
           />
           <AlertInline label="Remaining time" mode="neutral" />
         </VoteContainer>
@@ -213,13 +217,7 @@ const CheckboxContainer = styled.div.attrs({
 const VoteContainer = styled.div.attrs({
   className:
     'flex flex-col tablet:flex-row tablet:justify-between items-center tablet:items-center mt-3 space-y-2 tablet:space-y-0',
-})`
-  button {
-    @media (max-width: 767px) {
-      width: 100%;
-    }
-  }
-`;
+})``;
 
 const ButtonWrapper = styled.div.attrs({
   className:
