@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ ! -d "$PWD/build/" ]; then
-  echo "The /build doesn’t exist. Did you run yarn build ?"
+  echo "The /build doesn’t exist. Did you run: yarn build ?"
   exit 1
 fi
 

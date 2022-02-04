@@ -3,7 +3,7 @@
 set -eu
 
 if [ ! -f "./subgraph.yaml" ]; then
-  echo "The file subgraph.yaml doesn’t exist. Did you run yarn manifest-<network>?"
+  echo "The file subgraph.yaml doesn’t exist. Did you run: yarn manifest?"
   exit 1
 fi
 

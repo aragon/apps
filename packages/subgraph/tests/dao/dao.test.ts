@@ -3,28 +3,28 @@ import {
   clearStore,
   test,
   log,
-  logStore
+  logStore,
 } from 'matchstick-as/assembly/index';
 import {Address} from '@graphprotocol/graph-ts';
 import {
   createNewSetMetadataEvent,
   createNewETHDepositedEvent,
   createNewDepositedEvent,
-  createNewWithdrawnEvent
+  createNewWithdrawnEvent,
 } from './utils';
 import {
   daoAddress,
   addressOne,
   daiAddress,
   oneEth,
-  dataString
+  dataString,
 } from '../constants';
 import {runHandleNewDAORegistered} from '../registry/utils';
 import {
   handleSetMetadata,
   handleETHDeposited,
   handleDeposited,
-  handleWithdrawn
+  handleWithdrawn,
 } from '../../src/dao';
 
 test('Run dao (handleSetMetadata) mappings with mock event', () => {
@@ -110,7 +110,7 @@ test('Run dao (handleDeposited) mappings with mock event', () => {
     Address.fromString(daiAddress).toHexString()
   );
   assert.fieldEquals('VaultDeposit', entityID, 'amount', oneEth);
-  assert.fieldEquals('VaultDeposit', entityID, 'reason', dataString);
+  assert.fieldEquals('VaultDeposit', entityID, 'reference', dataString);
 
   clearStore();
 });
@@ -154,7 +154,7 @@ test('Run dao (handleWithdrawn) mappings with mock event', () => {
   );
   assert.fieldEquals('VaultWithdraw', entityID, 'to', addressOne);
   assert.fieldEquals('VaultWithdraw', entityID, 'amount', oneEth);
-  assert.fieldEquals('VaultWithdraw', entityID, 'reason', dataString);
+  assert.fieldEquals('VaultWithdraw', entityID, 'reference', dataString);
 
   clearStore();
 });

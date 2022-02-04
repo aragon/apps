@@ -5,13 +5,14 @@
   "homepage": "https://github.com/aragon/zaragoza",
   "license": "MIT",
   "scripts": {
-    "manifest-arbitrum-rinkeby": "scripts/build-manifest.sh arbitrum-rinkeby",
+    "build:contracts": "lerna run --scope=@aragon/zaragoza-contracts --stream compile",
+    "manifest": "scripts/build-manifest.sh",
     "build": "scripts/build-subgraph.sh",
-    "test": "scripts/test.sh",
+    "test": "scripts/test-subgraph.sh",
     "test:docker": "cp -r ../contracts/artifacts . && docker build --no-cache -t zaragoza-subgraph-tests .; rm -r artifacts",
-    "deploy-arbitrum-rinkeby": "scripts/deploy.sh aragon zaragoza arbitrum-rinkeby",
-    "deploy-local": "LOCAL=true scripts/deploy.sh aragon zaragoza arbitrum-rinkeby",
-    "create-local": "graph create aragon/aragon-zaragoza-arbitrum-rinkeby --node http://localhost:8020",
+    "deploy": "scripts/deploy-subgraph.sh",
+    "deploy:local": "LOCAL=true scripts/deploy-subgraph.sh",
+    "create:local": "graph create aragon/aragon-zaragoza-arbitrum-rinkeby --node http://localhost:8020",
     "coverage": "graph test -c"
   },
   "dependencies": {

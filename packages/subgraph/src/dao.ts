@@ -4,14 +4,13 @@ import {
   Executed,
   Deposited,
   ETHDeposited,
-  Withdrawn
+  Withdrawn,
 } from '../generated/templates/DAO/DAO';
-// import {SimpleVoting} from '../generated/templates';
 import {
   Dao,
   VaultEthDeposit,
   VaultDeposit,
-  VaultWithdraw
+  VaultWithdraw,
 } from '../generated/schema';
 import {DataSourceContext, store} from '@graphprotocol/graph-ts';
 import {log} from 'matchstick-as/assembly/index';
@@ -44,7 +43,7 @@ export function handleDeposited(event: Deposited): void {
   entity.token = event.params.token;
   entity.sender = event.params.sender;
   entity.amount = event.params.amount;
-  entity.reason = event.params._reference;
+  entity.reference = event.params._reference;
   entity.save();
 }
 
@@ -80,6 +79,6 @@ export function handleWithdrawn(event: Withdrawn): void {
   entity.token = event.params.token;
   entity.to = event.params.to;
   entity.amount = event.params.amount;
-  entity.reason = event.params._reference;
+  entity.reference = event.params._reference;
   entity.save();
 }

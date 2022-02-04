@@ -19,7 +19,7 @@ COPY . .
 
 RUN npx rimraf ./**/node_modules
 RUN npm install
-RUN npm run manifest-arbitrum-rinkeby .
+RUN npm run manifest .
 RUN npm run build
 RUN npm run test
 

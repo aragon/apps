@@ -11,11 +11,5 @@
   ],
   "devDependencies": {
     "lerna": "^3.22.1"
-  },
-  "scripts": {
-    "build:contracts": "lerna run --scope=@aragon/zaragoza-contracts --stream compile",
-    "manifest:subgraph:arbitrum:rinkeby": "lerna run --scope=@aragon/zaragoza-subgraph --stream manifest-arbitrum-rinkeby",
-    "build:subgraph": "lerna run --scope=@aragon/zaragoza-subgraph --stream build",
-    "test:subgraph": "cp -r packages/contracts/artifacts packages/subgraph/ && docker build --no-cache -t zaragoza-subgraph-tests packages/subgraph/; rm -r packages/subgraph/artifacts"
   }
 }

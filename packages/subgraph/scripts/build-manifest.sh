@@ -1,16 +1,27 @@
 #!/bin/bash
 
-NETWORK=$1
-FILE=$NETWORK'.json'
+
+if [ -f .env ]
+then
+  export $(cat .env | sed 's/#.*//g' | xargs)
+fi
+
+if [ -z "$NETWORK_NAME" ] 
+then
+    echo "env is not set, exiting..."
+    exit -1
+else
+    echo "env Network is set to: $NETWORK_NAME"
+fi
+
+FILE=$NETWORK_NAME'.json'
 DATA=manifest/data/$FILE
 
-if [ -z "$2" ] 
+if [ -z "$1" ] 
   then
-    echo "No Module argument supplied"
     ZARAGOZA_CONTRACTS_MODULE=$(node -e 'console.log(require("path").dirname(require.resolve("@aragon/zaragoza-contracts/package.json")))')
   else
-    echo "Module argument supplied"
-    ZARAGOZA_CONTRACTS_MODULE=$2
+    ZARAGOZA_CONTRACTS_MODULE=$1
 fi
 
 echo 'Generating manifest from data file: '$DATA

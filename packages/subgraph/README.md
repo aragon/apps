@@ -5,41 +5,39 @@
 Ensure the monorepo’s dependencies are installed:
 
 ```console
-cd ../.. && yarn && cd packages/subgraph
+yarn
 ```
 
 ## Build Contracts
 
-make sure the Contracts package at /root/packages/contracts are compiled:
+make sure the Contracts package is compiled:
 
 ```console
-cd ../.. && yarn build:contracts && cd packages/subgraph
+yarn build:contracts
 ```
 
 ## Build & deploy the subgraph
 
-You can build and deploy the subgraph using a single `yarn deploy-<network>` command:
-
-```console
-GRAPH_KEY=<GRAPH_KEY> yarn deploy-<DESIRED_NETWORK> <THEGRAPH_USERNAME> <SUBGRAPH_NAME> <DESIRED_NETWORK>
-```
-
-Replace the placeholders by the following:
+Make sure proper env variables are provided as explained bellow:
 
 - `<GRAPH_KEY>`: The Graph key (this is only needed when deploying on The Graph).
 - `<THEGRAPH_USERNAME>`: username of your subgraph (usually your GitHub username).
 - `<SUBGRAPH_NAME>`: name of the subgraph.
-- `<DESIRED_NETWORK>`: one of the available networks (see package.json).
+- `<NETWORK_NAME>`: one of the supported networks by subgraph.
+
+You can build and deploy the subgraph using a single `yarn deploy` command:
+
+```console
+yarn deploy
+```
 
 ## Build only
 
 Generate the `subgraph.yaml` file corresponding to your network:
 
 ```console
-yarn manifest-<DESIRED_NETWORK>
+yarn manifest
 ```
-
-Replacing `<DESIRED_NETWORK>` by one of the available networks (see package.json).
 
 You can now run the `build` command, which will generate the types and compile the subgraph:
 
