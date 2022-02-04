@@ -239,7 +239,11 @@ const SetupVotingForm: React.FC = () => {
                 rules={{required: t('errors.required.date') as string}}
                 render={({field: {name, value}, fieldState: {error}}) => (
                   <>
-                    <TimeInput min={'00:00'} getTime={handleTimeChange} />
+                    <SimplifiedTimeInput
+                      type="time"
+                      value={time}
+                      onChange={handleTimeChange}
+                    />
                     {error?.message && (
                       <AlertInline label={error.message} mode="critical" />
                     )}
