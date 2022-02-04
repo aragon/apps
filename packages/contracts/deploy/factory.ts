@@ -9,9 +9,18 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   const registry = await deployments.get('Registry');
 
+  await deploy('TokenFactory', {
+    from: deployer,
+    args: [],
+    log: true,
+    gasLimit: 8000000,
+  });
+
+  const token = await deployments.get('TokenFactory');
+
   await deploy('DAOFactory', {
     from: deployer,
-    args: [registry.address],
+    args: [registry.address, token.address],
     log: true,
   });
 };

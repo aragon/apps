@@ -12,7 +12,7 @@
     "test:docker": "cp -r ../contracts/artifacts . && docker build --no-cache -t zaragoza-subgraph-tests .; rm -r artifacts",
     "deploy": "scripts/deploy-subgraph.sh",
     "deploy:local": "LOCAL=true scripts/deploy-subgraph.sh",
-    "create:local": "graph create aragon/aragon-zaragoza-arbitrum-rinkeby --node http://localhost:8020",
+    "create:local": "graph create aragon/aragon-zaragoza-rinkeby --node http://localhost:8040",
     "coverage": "graph test -c"
   },
   "dependencies": {
