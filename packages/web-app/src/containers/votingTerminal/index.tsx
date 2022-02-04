@@ -11,6 +11,7 @@ import {
   VoterType,
 } from '@aragon/ui-components/src/components/table';
 import {CheckboxListItem} from '@aragon/ui-components/src/components/checkbox';
+import {useTranslation} from 'react-i18next';
 
 // TODO: Every string and data needed by the component is hardcoded for now.
 
@@ -38,19 +39,20 @@ const voters: Array<VoterType> = [
 export const VotingTerminal: React.FC = () => {
   const [buttonGroupState, setButtonGroupState] = useState('info');
   const [votingInProcess, setVotingInProcess] = useState(false);
+  const {t} = useTranslation();
 
   return (
     <Container>
       <Header>
-        <Heading1>Voting</Heading1>
+        <Heading1>{t('votingTerminal.title')}</Heading1>
         <ButtonGroup
           bgWhite
           defaultValue={buttonGroupState}
           onChange={setButtonGroupState}
         >
-          <Option value="breakdown" label="Breakdown" />
-          <Option value="voters" label="Voters" />
-          <Option value="info" label="Info" />
+          <Option value="breakdown" label={t('votingTerminal.breakdown')} />
+          <Option value="voters" label={t('votingTerminal.voters')} />
+          <Option value="info" label={t('votingTerminal.info')} />
         </ButtonGroup>
       </Header>
 
@@ -58,8 +60,12 @@ export const VotingTerminal: React.FC = () => {
         <VStackRelaxed>
           <VStackNormal>
             <HStack>
-              <p className="font-bold text-primary-500">Yes</p>
-              <p className="flex-1 text-right text-ui-600">X Token</p>
+              <p className="font-bold text-primary-500">
+                {t('votingTerminal.yes')}
+              </p>
+              <p className="flex-1 text-right text-ui-600">{`X ${t(
+                'votingTerminal.token'
+              )}`}</p>
               <p className="pl-6 font-bold text-primary-500">0%</p>
             </HStack>
             <LinearProgress max={100} value={1} />
@@ -67,8 +73,12 @@ export const VotingTerminal: React.FC = () => {
 
           <VStackNormal>
             <HStack>
-              <p className="font-bold text-primary-500">No</p>
-              <p className="flex-1 text-right text-ui-600">X Token</p>
+              <p className="font-bold text-primary-500">
+                {t('votingTerminal.no')}
+              </p>
+              <p className="flex-1 text-right text-ui-600">{`X ${t(
+                'votingTerminal.token'
+              )}`}</p>
               <p className="pl-6 font-bold text-primary-500">0%</p>
             </HStack>
             <LinearProgress max={100} value={1} />
@@ -76,7 +86,7 @@ export const VotingTerminal: React.FC = () => {
         </VStackRelaxed>
       ) : buttonGroupState === 'voters' ? (
         <div className="space-y-2">
-          <SearchInput placeholder="Type Address, ENS or E-Mail" />
+          <SearchInput placeholder={t('votingTerminal.inputPlaceholder')} />
           <VotersTable
             voters={voters}
             onLoadMore={() => console.log('load more clicked')}
@@ -86,35 +96,35 @@ export const VotingTerminal: React.FC = () => {
         <VStackRelaxed>
           <VStackNormal>
             <InfoLine>
-              <p>Options</p>
-              <Strong>Yes + No</Strong>
+              <p>{t('votingTerminal.options')}</p>
+              <Strong>{t('votingTerminal.yes+no')}</Strong>
             </InfoLine>
             <InfoLine>
-              <p>Strategy</p>
-              <Strong>{'1 Token -> 1 Vote'}</Strong>
+              <p>{t('votingTerminal.strategy')}</p>
+              <Strong>{t('votingTerminal.tokenVoting')}</Strong>
             </InfoLine>
             <InfoLine>
-              <p>Minimum Approval</p>
+              <p>{t('votingTerminal.minimumApproval')}</p>
               <Strong>420k DNT (15%)</Strong>
             </InfoLine>
             <InfoLine>
-              <p>Participation</p>
+              <p>{t('votingTerminal.participation')}</p>
               <Strong>0 of 3.5M DNT (0%)</Strong>
             </InfoLine>
             <InfoLine>
-              <p>Unique Voters</p>
+              <p>{t('votingTerminal.uniqueVoters')}</p>
               <Strong>0</Strong>
             </InfoLine>
           </VStackNormal>
 
           <VStackNormal>
-            <Strong>Duration</Strong>
+            <Strong>{t('votingTerminal.duration')}</Strong>
             <InfoLine>
-              <p>Start</p>
+              <p>{t('votingTerminal.start')}</p>
               <Strong>2021/11/17 00:00 AM UTC+2</Strong>
             </InfoLine>
             <InfoLine>
-              <p>End</p>
+              <p>{t('votingTerminal.end')}</p>
               <Strong>2021/16/17 00:00 AM UTC+2</Strong>
             </InfoLine>
           </VStackNormal>
@@ -123,46 +133,50 @@ export const VotingTerminal: React.FC = () => {
 
       {votingInProcess ? (
         <VotingContainer>
-          <Heading2>Choose your option</Heading2>
+          <Heading2>{t('votingTerminal.chooseOption')}</Heading2>
           <p className="mt-1 text-ui-500">
-            To vote, you must select one of the following options. Afterwards, a
-            confirmation with your wallet is necessary. Once the transaction is
-            completed, your vote will be counted and displayed.
+            {t('votingTerminal.chooseOptionHelptext')}
           </p>
 
           <CheckboxContainer>
             <CheckboxListItem
-              label="No"
-              helptext="Your choice will be counted for option no"
+              label={t('votingTerminal.no')}
+              helptext={t('votingTerminal.noHelptext')}
             />
             <CheckboxListItem
-              label="Yes"
-              helptext="Your choice will be counted for option yes"
+              label={t('votingTerminal.yes')}
+              helptext={t('votingTerminal.yesHelptext')}
             />
           </CheckboxContainer>
 
           <VoteContainer>
             <ButtonWrapper>
-              <ButtonText label="Submit your vote" size="large" />
+              <ButtonText label={t('votingTerminal.submit')} size="large" />
               <ButtonText
-                label="Cancel"
+                label={t('votingTerminal.cancel')}
                 mode="ghost"
                 size="large"
                 onClick={() => setVotingInProcess(false)}
               />
             </ButtonWrapper>
-            <AlertInline label="Remaining time" mode="neutral" />
+            <AlertInline
+              label={t('votingTerminal.remainingTime')}
+              mode="neutral"
+            />
           </VoteContainer>
         </VotingContainer>
       ) : (
         <VoteContainer>
           <ButtonText
-            label="Vote now"
+            label={t('votingTerminal.voteNow')}
             size="large"
             onClick={() => setVotingInProcess(true)}
             className="w-full tablet:w-max"
           />
-          <AlertInline label="Remaining time" mode="neutral" />
+          <AlertInline
+            label={t('votingTerminal.remainingTime')}
+            mode="neutral"
+          />
         </VoteContainer>
       )}
     </Container>

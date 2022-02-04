@@ -26,7 +26,9 @@ const Home: React.FC = () => {
           onClick={() => navigate('/create-dao')}
         />
       </div>
-      <div className="mx-auto w-11/12 tablet:w-1/2">
+
+      {/* This is just a demo, will be removed before merging */}
+      <div className="my-4 mx-auto w-11/12 tablet:w-1/2">
         <VotingTerminal />
       </div>
     </>
