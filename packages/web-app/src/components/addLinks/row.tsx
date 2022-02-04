@@ -39,9 +39,9 @@ const LinkRow: React.FC<LinkRowProps> = ({control, index, onDelete}) => {
                 mode={error?.message ? 'critical' : 'default'}
               />
               {error?.message && (
-                <div className="mt-0.5">
+                <ErrorContainer>
                   <AlertInline label={error.message} mode="critical" />
-                </div>
+                </ErrorContainer>
               )}
             </>
           )}
@@ -94,9 +94,9 @@ const LinkRow: React.FC<LinkRowProps> = ({control, index, onDelete}) => {
                 mode={error?.message ? 'critical' : 'default'}
               />
               {error?.message && (
-                <div className="mt-0.5">
+                <ErrorContainer>
                   <AlertInline label={error.message} mode="critical" />
-                </div>
+                </ErrorContainer>
               )}
             </>
           )}
