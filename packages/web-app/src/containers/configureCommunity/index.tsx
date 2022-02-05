@@ -1,10 +1,4 @@
-import {
-  AlertInline,
-  InputImageSingle,
-  Label,
-  TextareaSimple,
-  NumberInput,
-} from '@aragon/ui-components';
+import {AlertInline, Label, NumberInput} from '@aragon/ui-components';
 import React from 'react';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
@@ -14,14 +8,6 @@ const ConfigureCommunity: React.FC = () => {
   const {t} = useTranslation();
   const {errors} = useFormState();
   const {control, clearErrors, setError, setValue} = useFormContext();
-
-  const handleImageError = (error: {code: string; message: string}) => {
-    setError('daoLogo', {type: 'manual', message: error.message});
-  };
-  const handleImageChange = (value: File | null) => {
-    setValue('daoLogo', value);
-    clearErrors('daoLogo');
-  };
 
   return (
     <>
@@ -33,25 +19,26 @@ const ConfigureCommunity: React.FC = () => {
         />
 
         <Controller
-          name="daoName"
+          name="minimumApproval"
           control={control}
           defaultValue=""
           render={({
             field: {onBlur, onChange, value, name},
             fieldState: {error},
           }) => (
-            <>
+            <FormWrapper>
               <NumberInput
                 name={name}
                 value={value}
                 onBlur={onBlur}
                 onChange={onChange}
                 placeholder={t('placeHolders.daoName')}
+                percentage={true}
               />
               {error?.message && (
                 <AlertInline label={error.message} mode="critical" />
               )}
-            </>
+            </FormWrapper>
           )}
         />
       </FormItem>
@@ -64,25 +51,26 @@ const ConfigureCommunity: React.FC = () => {
         />
 
         <Controller
-          name="daoName"
+          name="support"
           control={control}
-          defaultValue=""
+          defaultValue="1"
           render={({
             field: {onBlur, onChange, value, name},
             fieldState: {error},
           }) => (
-            <>
+            <FormWrapper>
               <NumberInput
                 name={name}
                 value={value}
                 onBlur={onBlur}
                 onChange={onChange}
                 placeholder={t('placeHolders.daoName')}
+                percentage
               />
               {error?.message && (
                 <AlertInline label={error.message} mode="critical" />
               )}
-            </>
+            </FormWrapper>
           )}
         />
       </FormItem>
@@ -93,28 +81,84 @@ const ConfigureCommunity: React.FC = () => {
           label={t('labels.duration')}
           helpText={t('createDAO.step4.durationSubtitle')}
         />
+        <DurationContainer>
+          <Controller
+            name="days"
+            control={control}
+            defaultValue="1"
+            render={({
+              field: {onBlur, onChange, value, name},
+              fieldState: {error},
+            }) => (
+              <>
+                <NumberInput
+                  name={name}
+                  value={value}
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  placeholder={'0'}
+                  min="0"
+                />
+                {error?.message && (
+                  <AlertInline label={error.message} mode="critical" />
+                )}
+              </>
+            )}
+          />
 
-        <Controller
-          name="daoName"
-          control={control}
-          defaultValue=""
-          render={({
-            field: {onBlur, onChange, value, name},
-            fieldState: {error},
-          }) => (
-            <>
-              <NumberInput
-                name={name}
-                value={value}
-                onBlur={onBlur}
-                onChange={onChange}
-                placeholder={t('placeHolders.daoName')}
-              />
-              {error?.message && (
-                <AlertInline label={error.message} mode="critical" />
-              )}
-            </>
-          )}
+          <Controller
+            name="hours"
+            control={control}
+            defaultValue="0"
+            render={({
+              field: {onBlur, onChange, value, name},
+              fieldState: {error},
+            }) => (
+              <>
+                <NumberInput
+                  name={name}
+                  value={value}
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  placeholder={'0'}
+                  min="0"
+                  max="23"
+                />
+                {error?.message && (
+                  <AlertInline label={error.message} mode="critical" />
+                )}
+              </>
+            )}
+          />
+
+          <Controller
+            name="minutes"
+            control={control}
+            defaultValue="0"
+            render={({
+              field: {onBlur, onChange, value, name},
+              fieldState: {error},
+            }) => (
+              <>
+                <NumberInput
+                  name={name}
+                  value={value}
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  placeholder={'0'}
+                  min="0"
+                  max="59"
+                />
+                {error?.message && (
+                  <AlertInline label={error.message} mode="critical" />
+                )}
+              </>
+            )}
+          />
+        </DurationContainer>
+        <AlertInline
+          label={t('alert.durationAlert') as string}
+          mode="neutral"
         />
       </FormItem>
     </>
@@ -127,6 +171,10 @@ const FormItem = styled.div.attrs({
   className: 'space-y-1.5',
 })``;
 
-const LogoContainer = styled.div.attrs({
-  className: 'pt-0.5',
+const FormWrapper = styled.div.attrs({
+  className: 'w-1/3 pr-1.5',
+})``;
+
+const DurationContainer = styled.div.attrs({
+  className: 'flex space-x-1.5',
 })``;

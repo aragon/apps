@@ -103,6 +103,9 @@
       "token": "Token is required"
     }
   },
+  "alert": {
+    "durationAlert": "We recommend a minimum duration of 1 day if it does not have to be a quick financial decision."
+  },
   "warnings": {
     "amountGtDaoToken": "Withdraw amount is greater than the current token balance"
   },
