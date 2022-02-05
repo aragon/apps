@@ -23,9 +23,9 @@ contract TokenFactory {
     using Address for address;
     using Clones for address;
 
-    address private governanceERC20Base;
-    address private governanceWrappedERC20Base;
-    address private merkleMinterBase;
+    address public governanceERC20Base;
+    address public governanceWrappedERC20Base;
+    address public merkleMinterBase;
 
     MerkleDistributor private distributorBase;
 
