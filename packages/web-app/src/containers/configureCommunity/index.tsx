@@ -6,8 +6,7 @@ import {Controller, useFormContext, useFormState} from 'react-hook-form';
 
 const ConfigureCommunity: React.FC = () => {
   const {t} = useTranslation();
-  const {errors} = useFormState();
-  const {control, clearErrors, setError, setValue} = useFormContext();
+  const {control} = useFormContext();
 
   return (
     <>
@@ -26,19 +25,28 @@ const ConfigureCommunity: React.FC = () => {
             field: {onBlur, onChange, value, name},
             fieldState: {error},
           }) => (
-            <FormWrapper>
-              <NumberInput
-                name={name}
-                value={value}
-                onBlur={onBlur}
-                onChange={onChange}
-                placeholder={t('placeHolders.daoName')}
-                percentage={true}
+            <ApprovalWrapper>
+              <FormWrapper>
+                <NumberInput
+                  name={name}
+                  value={value}
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  placeholder={t('placeHolders.daoName')}
+                  percentage={true}
+                />
+              </FormWrapper>
+              <AlertInline
+                label={t('createDAO.step4.alerts.minimumApprovalAlert', {
+                  amount: value,
+                  symbol: 'ANT',
+                })}
+                mode="neutral"
               />
               {error?.message && (
                 <AlertInline label={error.message} mode="critical" />
               )}
-            </FormWrapper>
+            </ApprovalWrapper>
           )}
         />
       </FormItem>
@@ -90,7 +98,8 @@ const ConfigureCommunity: React.FC = () => {
               field: {onBlur, onChange, value, name},
               fieldState: {error},
             }) => (
-              <>
+              <TimeLabelWrapper>
+                <TimeLabel>{t('createDAO.step4.days')}</TimeLabel>
                 <NumberInput
                   name={name}
                   value={value}
@@ -102,7 +111,7 @@ const ConfigureCommunity: React.FC = () => {
                 {error?.message && (
                   <AlertInline label={error.message} mode="critical" />
                 )}
-              </>
+              </TimeLabelWrapper>
             )}
           />
 
@@ -114,7 +123,8 @@ const ConfigureCommunity: React.FC = () => {
               field: {onBlur, onChange, value, name},
               fieldState: {error},
             }) => (
-              <>
+              <TimeLabelWrapper>
+                <TimeLabel>{t('createDAO.step4.hours')}</TimeLabel>
                 <NumberInput
                   name={name}
                   value={value}
@@ -127,7 +137,7 @@ const ConfigureCommunity: React.FC = () => {
                 {error?.message && (
                   <AlertInline label={error.message} mode="critical" />
                 )}
-              </>
+              </TimeLabelWrapper>
             )}
           />
 
@@ -139,7 +149,8 @@ const ConfigureCommunity: React.FC = () => {
               field: {onBlur, onChange, value, name},
               fieldState: {error},
             }) => (
-              <>
+              <TimeLabelWrapper>
+                <TimeLabel>{t('createDAO.step4.minutes')}</TimeLabel>
                 <NumberInput
                   name={name}
                   value={value}
@@ -152,7 +163,7 @@ const ConfigureCommunity: React.FC = () => {
                 {error?.message && (
                   <AlertInline label={error.message} mode="critical" />
                 )}
-              </>
+              </TimeLabelWrapper>
             )}
           />
         </DurationContainer>
@@ -172,9 +183,21 @@ const FormItem = styled.div.attrs({
 })``;
 
 const FormWrapper = styled.div.attrs({
-  className: 'w-1/3 pr-1.5',
+  className: 'w-full tablet:w-1/3 pr-1.5',
+})``;
+
+const ApprovalWrapper = styled.div.attrs({
+  className: 'flex flex-col tablet:flex-row tablet:space-x-2',
 })``;
 
 const DurationContainer = styled.div.attrs({
-  className: 'flex space-x-1.5',
+  className: 'flex flex-col tablet:flex-row tablet:space-x-1.5',
+})``;
+
+const TimeLabelWrapper = styled.div.attrs({
+  className: 'w-full',
+})``;
+
+const TimeLabel = styled.span.attrs({
+  className: 'text-sm text-bold text-ui-800',
 })``;
