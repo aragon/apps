@@ -195,9 +195,9 @@ const DurationContainer = styled.div.attrs({
 })``;
 
 const TimeLabelWrapper = styled.div.attrs({
-  className: 'w-full',
+  className: 'w-full space-y-0.5',
 })``;
 
 const TimeLabel = styled.span.attrs({
-  className: 'text-sm text-bold text-ui-800',
+  className: 'text-sm font-bold text-ui-800',
 })``;
