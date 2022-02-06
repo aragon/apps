@@ -33,7 +33,7 @@ export const NumberInput: React.FC<NumberInputProps> = ({
       <StyledIconButton
         name="down"
         mode="ghost"
-        size="medium"
+        size="small"
         icon={<IconRemove />}
         disabled={disabled}
         onClick={() => handleChange('up')}
@@ -53,7 +53,7 @@ export const NumberInput: React.FC<NumberInputProps> = ({
       <StyledIconButton
         name="up"
         mode="ghost"
-        size="medium"
+        size="small"
         icon={<IconAdd />}
         disabled={disabled}
         onClick={() => handleChange('down')}
@@ -73,7 +73,7 @@ const Container = styled.div.attrs(
       disabled ? 'bg-ui-100' : 'bg-ui-0'
     } inline-flex p-1 bg-ui-0 ${
       width ? '' : 'w-full'
-    } focus:outline-none items-center
+    } focus:outline-none items-center h-6
       focus-within:ring-2 focus-within:ring-primary-500 justify-between
       rounded-xl hover:border-ui-300 border-2 active:border-primary-500 
     `;
@@ -96,7 +96,7 @@ const Container = styled.div.attrs(
 )<StyledContainerProps>``;
 
 const InputWrapper = styled.div.attrs({
-  className: 'flex justify-center w-full',
+  className: 'flex justify-center w-4/5',
 })``;
 
 export type StyledNumberInputProps = Pick<
