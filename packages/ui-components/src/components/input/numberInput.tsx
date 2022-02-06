@@ -22,14 +22,22 @@ export const NumberInput: React.FC<NumberInputProps> = ({
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const handleChange = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const {name} = e.target as HTMLButtonElement;
+
+    name === 'up' ? inputRef.current?.stepUp() : inputRef.current?.stepDown();
+
+    inputRef.current?.dispatchEvent(new Event('input', {bubbles: true}));
+  };
+
   return (
     <Container data-testid="number-input" {...{mode, disabled, width}}>
-      <ButtonIcon
+      <StyledIconButton
         mode="ghost"
         size="medium"
         icon={<IconRemove />}
         disabled={disabled}
-        onClick={() => inputRef.current?.stepDown()}
+        onClick={handleChange}
       />
       <InputWrapper>
         <StyledNumberInput
@@ -43,12 +51,12 @@ export const NumberInput: React.FC<NumberInputProps> = ({
         />
         {percentage && value !== '' && <Percent disabled={disabled}>%</Percent>}
       </InputWrapper>
-      <ButtonIcon
+      <StyledIconButton
         mode="ghost"
         size="medium"
         icon={<IconAdd />}
         disabled={disabled}
-        onClick={() => inputRef.current?.stepUp()}
+        onClick={handleChange}
       />
     </Container>
   );
@@ -127,3 +135,7 @@ const StyledNumberInput = styled.input.attrs(
   }
   -moz-appearance: textfield;
 `;
+
+const StyledIconButton = styled(ButtonIcon).attrs({
+  className: 'rounded-xl',
+})``;
