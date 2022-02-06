@@ -24,7 +24,7 @@ export const NumberInput: React.FC<NumberInputProps> = ({
 
   return (
     <Container data-testid="number-input" {...{mode, disabled, width}}>
-      <StyledButton
+      <StyledIconButton
         mode="ghost"
         size="medium"
         icon={<IconRemove />}
@@ -43,7 +43,7 @@ export const NumberInput: React.FC<NumberInputProps> = ({
         />
         {percentage && value !== '' && <Percent disabled={disabled}>%</Percent>}
       </InputWrapper>
-      <StyledButton
+      <StyledIconButton
         mode="ghost"
         size="medium"
         icon={<IconAdd />}
@@ -128,6 +128,6 @@ const StyledNumberInput = styled.input.attrs(
   -moz-appearance: textfield;
 `;
 
-const StyledButton = styled(ButtonIcon).attrs({
+const StyledIconButton = styled(ButtonIcon).attrs({
   className: 'rounded-xl',
 })``;
