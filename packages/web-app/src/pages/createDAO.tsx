@@ -43,6 +43,12 @@ const CreateDAO: React.FC = () => {
           <DefineMetadata />
         </Step>
         <Step
+          wizardTitle={t('createDAO.step3.title')}
+          wizardDescription={t('createDAO.step3.description')}
+        >
+          <h1>Step 3</h1>
+        </Step>
+        <Step
           wizardTitle={t('createDAO.step4.title')}
           wizardDescription={t('createDAO.step4.description')}
         >
