@@ -46,7 +46,7 @@ export const NumberInput: React.FC<NumberInputProps> = ({
           ref={inputRef}
           disabled={disabled}
           type={'number'}
-          placeholder={percentage ? '0%' : '0'}
+          placeholder={percentage ? '0 %' : '0'}
         />
         {percentage && value !== '' && <Percent disabled={disabled}>%</Percent>}
       </InputWrapper>
