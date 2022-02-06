@@ -4,6 +4,9 @@ import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import {Controller, useFormContext, useFormState} from 'react-hook-form';
 
+//TODO: This one gonna remove later
+const totalTokens = 1000;
+
 const ConfigureCommunity: React.FC = () => {
   const {t} = useTranslation();
   const {control} = useFormContext();
@@ -38,7 +41,7 @@ const ConfigureCommunity: React.FC = () => {
               </FormWrapper>
               <AlertInline
                 label={t('createDAO.step4.alerts.minimumApprovalAlert', {
-                  amount: value,
+                  amount: Math.round(totalTokens * (value / 100)),
                   symbol: 'ANT',
                 })}
                 mode="neutral"
