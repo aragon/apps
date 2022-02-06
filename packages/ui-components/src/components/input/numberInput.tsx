@@ -22,6 +22,14 @@ export const NumberInput: React.FC<NumberInputProps> = ({
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const handleChange = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const {name} = e.target as HTMLButtonElement;
+
+    name === 'up' ? inputRef.current?.stepUp() : inputRef.current?.stepDown();
+
+    inputRef.current?.dispatchEvent(new Event('input', {bubbles: true}));
+  };
+
   return (
     <Container data-testid="number-input" {...{mode, disabled, width}}>
       <StyledIconButton
@@ -29,7 +37,7 @@ export const NumberInput: React.FC<NumberInputProps> = ({
         size="medium"
         icon={<IconRemove />}
         disabled={disabled}
-        onClick={() => inputRef.current?.stepDown()}
+        onClick={handleChange}
       />
       <InputWrapper>
         <StyledNumberInput
@@ -48,7 +56,7 @@ export const NumberInput: React.FC<NumberInputProps> = ({
         size="medium"
         icon={<IconAdd />}
         disabled={disabled}
-        onClick={() => inputRef.current?.stepUp()}
+        onClick={handleChange}
       />
     </Container>
   );
