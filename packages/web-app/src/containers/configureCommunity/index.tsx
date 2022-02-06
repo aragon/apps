@@ -21,7 +21,7 @@ const ConfigureCommunity: React.FC = () => {
         <Controller
           name="minimumApproval"
           control={control}
-          defaultValue=""
+          defaultValue="15"
           render={({
             field: {onBlur, onChange, value, name},
             fieldState: {error},
@@ -53,7 +53,7 @@ const ConfigureCommunity: React.FC = () => {
         <Controller
           name="support"
           control={control}
-          defaultValue="1"
+          defaultValue="50"
           render={({
             field: {onBlur, onChange, value, name},
             fieldState: {error},
