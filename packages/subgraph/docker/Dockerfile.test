@@ -20,7 +20,7 @@ WORKDIR /matchstick
 
 VOLUME [ "/matchstick" ]
 
-COPY . .
+COPY ../ .
 
 RUN npx rimraf ./**/node_modules
 RUN npm install
