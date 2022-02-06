@@ -2,6 +2,9 @@ FROM ubuntu:20.04
 
 ARG BUILDPLATFORM=linux/x86_64
 
+EXPOSE 9000/udp
+EXPOSE 9000/tcp
+
 ENV ARGS=""
 
 RUN apt update
@@ -14,6 +17,8 @@ RUN apt install -y cmake
 
 RUN mkdir matchstick
 WORKDIR /matchstick
+
+VOLUME [ "/matchstick" ]
 
 COPY . .
 

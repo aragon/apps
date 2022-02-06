@@ -1,9 +1,23 @@
 version: '3'
 services:
+  testnode:
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+    ports:
+      - '9000:9000'
+    volumes:
+      - $PWD/../:/matchstick
+    environment:
+      - NETWORK_NAME=localhost
+      - GRAPH_KEY=somekey
+      - THEGRAPH_USERNAME=aragon
+      - SUBGRAPH_NAME=zaragoza
+    tty: true
   graph-node:
     image: graphprotocol/graph-node
     ports:
-      - '8002:8002'
+      - '8000:8000'
       - '8001:8001'
       - '8020:8020'
       - '8030:8030'
@@ -19,7 +33,7 @@ services:
       postgres_pass: let-me-in
       postgres_db: graph-node
       ipfs: 'ipfs:5001'
-      ethereum: 'rinkeby:http://ganache:8545'
+      ethereum: 'rinkeby:http://ganache:8546'
       RUST_LOG: info
   ipfs:
     image: ipfs/go-ipfs:v0.4.23
@@ -35,7 +49,6 @@ services:
       POSTGRES_USER: graph-node
       POSTGRES_PASSWORD: let-me-in
       POSTGRES_DB: graph-node
-    user: '${HOST_UID}:${HOST_GID}'
     volumes:
       - ./dev-data/postgres:/var/lib/postgresql/data
     command: ['postgres', '-cshared_preload_libraries=pg_stat_statements']
@@ -43,6 +56,7 @@ services:
     image: trufflesuite/ganache-cli
     ports:
       - '8545:8545'
+      - '8546:8546'
     command:
       [
         'ganache-cli',
