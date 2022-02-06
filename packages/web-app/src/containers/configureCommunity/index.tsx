@@ -2,7 +2,7 @@ import {AlertInline, Label, NumberInput} from '@aragon/ui-components';
 import React from 'react';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
-import {Controller, useFormContext, useFormState} from 'react-hook-form';
+import {Controller, useFormContext} from 'react-hook-form';
 
 //TODO: This one gonna remove later
 const totalTokens = 1000;
