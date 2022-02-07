@@ -40,8 +40,6 @@ contract TokenFactory {
         uint256[] amounts;
     }
 
-    event DAOCreated(string name, address indexed token, address indexed voting);
-
     constructor() {
         setupBases();
     }
