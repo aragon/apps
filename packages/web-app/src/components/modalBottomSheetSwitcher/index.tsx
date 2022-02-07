@@ -10,11 +10,11 @@ const ModalBottomSheetSwitcher: React.FC<ModalProps> = ({
   onClose,
   children,
 }) => {
-  const matches = useMediaQuery('(min-width: 1024px)');
+  const isDesktop = useMediaQuery('(min-width: 1024px)');
 
   return (
     <>
-      {matches ? (
+      {isDesktop ? (
         <Modal
           isOpen={isOpen}
           onClose={() => onClose && onClose()}

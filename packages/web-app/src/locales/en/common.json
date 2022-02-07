@@ -166,7 +166,7 @@
   },
   "TransactionModal": {
     "estimatedFees": "Estimated Gas Fees",
-    "synced": "Synced",
+    "synced": "Synced {{time}} sec ag",
     "totalCost": "Total Cost",
     "approveToken": "Approve token",
     "signDeposit": "Sign Deposit",

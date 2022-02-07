@@ -78,9 +78,9 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
         <GasCostEthContainer>
           <VStack>
             <Label>{t('TransactionModal.estimatedFees')}</Label>
-            <p className="text-sm text-ui-500">{`${t(
-              'TransactionModal.synced'
-            )} 30 ${t('labels.sec')} ${t('labels.ago')}`}</p>
+            <p className="text-sm text-ui-500">
+              {`${t('TransactionModal.synced', {time: 30})}`}
+            </p>
           </VStack>
           <VStack>
             <StrongText>{'0.001ETH'}</StrongText>
