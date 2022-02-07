@@ -13,15 +13,13 @@
     "deploy:local": "LOCAL=true scripts/deploy-subgraph.sh",
     "start:dev": "docker-compose -f docker/docker-compose.yml up -d && sleep 15 && yarn create:local && yarn deploy:local",
     "stop:dev": "docker-compose -f docker/docker-compose.yml down",
-    "test": "graph test",
+    "test": "rm -r tests/.bin/**; graph test",
     "coverage": "graph test -c"
   },
-  "dependencies": {
+  "devDependencies": {
     "@graphprotocol/graph-cli": "^0.25.1",
     "@graphprotocol/graph-ts": "^0.24.1",
-    "mustache": "^4.2.0"
-  },
-  "devDependencies": {
+    "mustache": "^4.2.0",
     "matchstick-as": "^0.2.2"
   }
 }
