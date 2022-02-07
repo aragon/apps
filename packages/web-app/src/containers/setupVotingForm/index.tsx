@@ -40,7 +40,7 @@ const SetupVotingForm: React.FC = () => {
    *************************************************/
 
   const [utc, setUtc] = useState('');
-  const [endDateType, setEndDateType] = useState<EndDateType>('date');
+  const [endDateType, setEndDateType] = useState<EndDateType>('duration');
 
   useEffect(() => {
     const currTimezone = timezones.find(tz => tz === getCanonicalUtcOffset());
@@ -150,7 +150,9 @@ const SetupVotingForm: React.FC = () => {
               <div>
                 <DateInput name={name} value={value} onChange={onChange} />
                 {error?.message && (
-                  <AlertInline label={error.message} mode="critical" />
+                  <AlertWrapper>
+                    <AlertInline label={error.message} mode="critical" />
+                  </AlertWrapper>
                 )}
               </div>
             )}
@@ -170,12 +172,16 @@ const SetupVotingForm: React.FC = () => {
                   onChange={onChange}
                 />
                 {error?.message && (
-                  <AlertInline label={error.message} mode="critical" />
+                  <AlertWrapper>
+                    <AlertInline label={error.message} mode="critical" />
+                  </AlertWrapper>
                 )}
               </div>
             )}
           />
-          <DropdownInput value={utc} onClick={() => open('utc')} />
+          <div>
+            <DropdownInput value={utc} onClick={() => open('utc')} />
+          </div>
         </HStack>
       </FormSection>
 
@@ -217,7 +223,9 @@ const SetupVotingForm: React.FC = () => {
                     width={144}
                   />
                   {error?.message && (
-                    <AlertInline label={error.message} mode="critical" />
+                    <AlertWrapper>
+                      <AlertInline label={error.message} mode="critical" />
+                    </AlertWrapper>
                   )}
                 </div>
               )}
@@ -243,7 +251,9 @@ const SetupVotingForm: React.FC = () => {
                   <div>
                     <DateInput name={name} value={value} onChange={onChange} />
                     {error?.message && (
-                      <AlertInline label={error.message} mode="critical" />
+                      <AlertWrapper>
+                        <AlertInline label={error.message} mode="critical" />
+                      </AlertWrapper>
                     )}
                   </div>
                 )}
@@ -266,12 +276,16 @@ const SetupVotingForm: React.FC = () => {
                       onChange={onChange}
                     />
                     {error?.message && (
-                      <AlertInline label={error.message} mode="critical" />
+                      <AlertWrapper>
+                        <AlertInline label={error.message} mode="critical" />
+                      </AlertWrapper>
                     )}
                   </div>
                 )}
               />
-              <DropdownInput value={utc} onClick={() => open('utc')} />
+              <div>
+                <DropdownInput value={utc} onClick={() => open('utc')} />
+              </div>
             </HStack>
           </div>
         )}
@@ -318,6 +332,10 @@ const FormSection = styled.div.attrs({
 
 const HStack = styled.div.attrs({
   className: 'inline-flex space-x-1',
+})``;
+
+const AlertWrapper = styled.div.attrs({
+  className: 'mt-1',
 })``;
 
 const SwitchContainer = styled.div.attrs({
