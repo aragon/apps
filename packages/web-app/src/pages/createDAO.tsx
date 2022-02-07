@@ -13,10 +13,16 @@ import DefineMetadata from 'containers/defineMetadata';
 import SetupCommunity from 'containers/setupCommunity';
 
 type FormData = {
+  tokenName: string;
+  tokenSymbol: string;
+  tokenTotalSupply: string;
   links: {label: string; link: string}[];
 };
 
 const defaultValues = {
+  tokenName: '',
+  tokenSymbol: '',
+  tokenTotalSupply: '',
   links: [{label: '', link: ''}],
 };
 
