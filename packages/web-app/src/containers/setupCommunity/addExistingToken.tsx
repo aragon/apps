@@ -1,18 +1,102 @@
 import {
+  Controller,
+  useFormContext,
+  useFormState,
+  useWatch,
+} from 'react-hook-form';
+
+import {
   AlertInline,
   Label,
   Link,
   SearchInput,
   TextInput,
 } from '@aragon/ui-components';
-import React from 'react';
 import styled from 'styled-components';
+import {chains} from 'use-wallet';
 import {useTranslation} from 'react-i18next';
-import {Controller, useFormContext} from 'react-hook-form';
+import React, {useEffect, useMemo} from 'react';
+
+import {useWallet} from 'context/augmentedWallet';
+import {isAddress} from 'ethers/lib/utils';
+import {formatUnits} from 'utils/library';
+import {getTokenInfo} from 'utils/tokens';
+import {ChainInformation} from 'use-wallet/dist/cjs/types';
+import {validateTokenAddress} from 'utils/validators';
+
+const DEFAULT_BLOCK_EXPLORER = 'https://etherscan.io/';
 
 const AddExistingToken: React.FC = () => {
   const {t} = useTranslation();
-  const {control} = useFormContext();
+  const {account, provider} = useWallet();
+  const {control, resetField, setValue} = useFormContext();
+  const {errors} = useFormState({control});
+
+  const [address, chainId, name, symbol, totalSupply] = useWatch({
+    name: [
+      'tokenAddress',
+      'blockchain',
+      'tokenName',
+      'tokenSymbol',
+      'tokenTotalSupply',
+    ],
+  });
+
+  const explorer = useMemo(() => {
+    if (chainId) {
+      const {explorerUrl} = chains.getChainInformation(
+        chainId
+      ) as ChainInformation;
+      return explorerUrl || DEFAULT_BLOCK_EXPLORER;
+    }
+
+    return DEFAULT_BLOCK_EXPLORER;
+  }, [chainId]);
+
+  /*************************************************
+   *                    Hooks                      *
+   *************************************************/
+  useEffect(() => {
+    if (!account) return;
+
+    const resetTokenFields = () => {
+      resetField('tokenName');
+      resetField('tokenSymbol');
+      resetField('tokenTotalSupply');
+    };
+
+    const fetchContractInfo = async () => {
+      // have to include this to "debounce" network calls
+      if (!isAddress(address)) return;
+
+      try {
+        const {decimals, name, symbol, totalSupply} = await getTokenInfo(
+          address,
+          provider
+        );
+        setValue('tokenName', name);
+        setValue('tokenSymbol', symbol);
+        setValue('tokenTotalSupply', formatUnits(totalSupply, decimals));
+      } catch (error) {
+        console.error('Error fetching token information', error);
+        resetTokenFields();
+      }
+    };
+
+    if (errors.tokenAddress !== undefined && name !== '') {
+      resetTokenFields();
+    } else {
+      fetchContractInfo();
+    }
+  }, [
+    account,
+    address,
+    errors.tokenAddress,
+    name,
+    provider,
+    resetField,
+    setValue,
+  ]);
 
   return (
     <>
@@ -28,7 +112,7 @@ const AddExistingToken: React.FC = () => {
           <Label label={t('labels.address')} />
           <p>
             <span>{t('createDAO.step3.tokenContractSubtitlePart1')}</span>
-            <Link label="block explorer" href="#" />
+            <Link label="block explorer" href={explorer} />
             {'. '}
             <span>{t('createDAO.step3.tokenContractSubtitlePart2')}</span>
           </p>
@@ -37,32 +121,50 @@ const AddExistingToken: React.FC = () => {
           name="tokenAddress"
           control={control}
           defaultValue=""
-          render={({field, fieldState: {error, invalid, isDirty}}) => (
+          rules={{
+            required: t('errors.required.address'),
+            validate: async value =>
+              await validateTokenAddress(value, provider),
+          }}
+          render={({
+            field: {name, value, onBlur, onChange},
+            fieldState: {error, isDirty},
+          }) => (
             <>
-              <SearchInput {...field} placeholder="0x..." />
+              <SearchInput
+                {...{name, value, onBlur, onChange}}
+                placeholder="0x..."
+              />
               {error?.message && (
                 <AlertInline label={error.message} mode="critical" />
               )}
-              {!invalid && isDirty && (
+              {!error?.message && isDirty && (
                 <AlertInline label={t('success.contract')} mode="success" />
               )}
             </>
           )}
         />
-        <TokenInfoContainer>
-          <InfoContainer>
-            <Label label={t('labels.existingTokenName')} />
-            <TextInput disabled value="Aragon" />
-          </InfoContainer>
-          <InfoContainer>
-            <Label label={t('labels.existingTokenSymbol')} />
-            <TextInput disabled value="ANT" />
-          </InfoContainer>
-          <InfoContainer>
-            <Label label={t('labels.existingTokenSupply')} />
-            <TextInput disabled value="43,028,631" />
-          </InfoContainer>
-        </TokenInfoContainer>
+        {name && (
+          <TokenInfoContainer>
+            <InfoContainer>
+              <Label label={t('labels.existingTokenName')} />
+              <TextInput disabled value={name} />
+            </InfoContainer>
+            <InfoContainer>
+              <Label label={t('labels.existingTokenSymbol')} />
+              <TextInput disabled value={symbol} />
+            </InfoContainer>
+            <InfoContainer>
+              <Label label={t('labels.existingTokenSupply')} />
+              <TextInput
+                disabled
+                value={new Intl.NumberFormat('en-US', {
+                  maximumFractionDigits: 4,
+                }).format(totalSupply)}
+              />
+            </InfoContainer>
+          </TokenInfoContainer>
+        )}
       </FormItem>
     </>
   );
