@@ -6,7 +6,6 @@ import {
   IconRadioSelected,
   Label,
   NumberInput,
-  ButtonText,
 } from '@aragon/ui-components';
 import {
   Controller,
@@ -18,13 +17,14 @@ import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import React, {useEffect, useState} from 'react';
 
+import {DateModeSwitch, EndDateType} from './dateModeSwitch';
+import {SimplifiedTimeInput} from 'components/inputTime/inputTime';
 import {useTransferModalContext} from 'context/transfersModal';
+import UtcMenu from 'containers/utcMenu';
 import {timezones} from 'containers/utcMenu/utcData';
 import {daysToMils, getCanonicalUtcOffset} from 'utils/date';
-import {SimplifiedTimeInput} from 'components/inputTime/inputTime';
-import UtcMenu from 'containers/utcMenu';
 
-type EndDateType = 'duration' | 'date';
+type UtcInstance = 'first' | 'second';
 
 const SetupVotingForm: React.FC = () => {
   const {t} = useTranslation();
@@ -39,15 +39,19 @@ const SetupVotingForm: React.FC = () => {
    *                    STATE & EFFECT             *
    *************************************************/
 
-  const [utc, setUtc] = useState('');
+  const [utcStart, setUtcStart] = useState('');
+  const [utcEnd, setUtcEnd] = useState('');
+  const [utcInstance, setUtcInstance] = useState<UtcInstance>('first');
   const [endDateType, setEndDateType] = useState<EndDateType>('duration');
 
   useEffect(() => {
     const currTimezone = timezones.find(tz => tz === getCanonicalUtcOffset());
     if (!currTimezone) {
-      setUtc(timezones[13]);
+      setUtcStart(timezones[13]);
+      setUtcEnd(timezones[13]);
     } else {
-      setUtc(currTimezone);
+      setUtcStart(currTimezone);
+      setUtcEnd(currTimezone);
     }
   }, []);
 
@@ -109,6 +113,14 @@ const SetupVotingForm: React.FC = () => {
       return t('errors.endDatePast');
     }
     return '';
+  };
+
+  const tzSelector = (tz: string) => {
+    if (utcInstance === 'first') {
+      setUtcStart(tz);
+    } else {
+      setUtcEnd(tz);
+    }
   };
 
   /*************************************************
@@ -180,7 +192,13 @@ const SetupVotingForm: React.FC = () => {
             )}
           />
           <div>
-            <DropdownInput value={utc} onClick={() => open('utc')} />
+            <DropdownInput
+              value={utcStart}
+              onClick={() => {
+                setUtcInstance('first');
+                open('utc');
+              }}
+            />
           </div>
         </HStack>
       </FormSection>
@@ -193,7 +211,7 @@ const SetupVotingForm: React.FC = () => {
         />
         {endDateType === 'duration' ? (
           <HStack>
-            <NetworkSwitch value={endDateType} setValue={setEndDateType} />
+            <DateModeSwitch value={endDateType} setValue={setEndDateType} />
             <Controller
               name="duration"
               control={control}
@@ -234,7 +252,7 @@ const SetupVotingForm: React.FC = () => {
         ) : (
           <div className="block space-y-2">
             <div>
-              <NetworkSwitch value={endDateType} setValue={setEndDateType} />
+              <DateModeSwitch value={endDateType} setValue={setEndDateType} />
             </div>
             <HStack>
               <Controller
@@ -284,175 +302,25 @@ const SetupVotingForm: React.FC = () => {
                 )}
               />
               <div>
-                <DropdownInput value={utc} onClick={() => open('utc')} />
+                <DropdownInput
+                  value={utcEnd}
+                  onClick={() => {
+                    setUtcInstance('second');
+                    open('utc');
+                  }}
+                />
               </div>
             </HStack>
           </div>
         )}
         <AlertInline label={t('infos.voteDuration')} mode="neutral" />
       </FormSection>
-      <UtcMenu onTimezoneSelect={setUtc} />
+      <UtcMenu onTimezoneSelect={tzSelector} />
     </>
   );
 };
 
 export default SetupVotingForm;
-
-type DateSectionProps = {
-  isStartDate: boolean;
-};
-
-const DateSection: React.FC<DateSectionProps> = ({isStartDate}) => {
-  const {t} = useTranslation();
-  const {open} = useTransferModalContext();
-  const {control} = useFormContext();
-  const {errors} = useFormState({control});
-  const [startDate, endDate, duration] = useWatch({
-    name: ['startDate', 'endDate', 'duration'],
-  });
-
-  const [utc, setUtc] = useState('');
-
-  useEffect(() => {
-    const currTimezone = timezones.find(tz => tz === getCanonicalUtcOffset());
-    if (!currTimezone) {
-      setUtc(timezones[13]);
-    } else {
-      setUtc(currTimezone);
-    }
-  }, []);
-
-  const startDateValidator = (date: string) => {
-    const startDate = new Date(date);
-    const todayMidnight = new Date().setHours(0, 0, 0, 0);
-    // TODO remove
-    const currDay = new Date(todayMidnight);
-
-    if (startDate.getTime() < currDay.getTime()) {
-      return t('errors.startDatePast');
-    }
-    return '';
-  };
-
-  const startTimeValidator = (time: string) => {
-    const startDateTime = new Date(startDate + ' ' + time);
-    const currDate = new Date();
-
-    if (startDateTime.getTime() < currDate.getTime()) {
-      return t('errors.startTimePast');
-    }
-    return '';
-  };
-
-  const endDateValidator = (date: string) => {
-    const endDate = new Date(date);
-    const todayMidnight = new Date().setHours(0, 0, 0, 0);
-    const daysOffset = daysToMils(5);
-    const minMidnight = todayMidnight + daysOffset;
-
-    if (endDate.getTime() < minMidnight) {
-      return t('errors.endDatePast');
-    }
-    return '';
-  };
-
-  const endTimeValidator = (time: string) => {
-    const endDateTime = new Date(endDate + ' ' + time);
-    const daysOffset = daysToMils(5);
-    const minEndDateTime = new Date().getTime() + daysOffset;
-
-    if (endDateTime.getTime() < minEndDateTime) {
-      return t('errors.endDatePast');
-    }
-    return '';
-  };
-
-  const dateInputName = isStartDate ? 'startDate' : 'endDate';
-  const timeInputName = isStartDate ? 'startTime' : 'endTime';
-  const dateInputValidator = isStartDate
-    ? startDateValidator
-    : endDateValidator;
-  const timeInputValidator = isStartDate
-    ? startTimeValidator
-    : endTimeValidator;
-
-  return (
-    <HStack>
-      <Controller
-        name={dateInputName}
-        control={control}
-        rules={{
-          required: t('errors.required.time'),
-          validate: dateInputValidator,
-        }}
-        render={({field: {name, value, onChange}, fieldState: {error}}) => (
-          <div>
-            <DateInput name={name} value={value} onChange={onChange} />
-            {error?.message && (
-              <AlertWrapper>
-                <AlertInline label={error.message} mode="critical" />
-              </AlertWrapper>
-            )}
-          </div>
-        )}
-      />
-      <Controller
-        name={timeInputName}
-        control={control}
-        rules={{
-          required: t('errors.required.date'),
-          validate: timeInputValidator,
-        }}
-        render={({field: {name, value, onChange}, fieldState: {error}}) => (
-          <div>
-            <SimplifiedTimeInput
-              name={name}
-              value={value}
-              onChange={onChange}
-            />
-            {error?.message && (
-              <AlertWrapper>
-                <AlertInline label={error.message} mode="critical" />
-              </AlertWrapper>
-            )}
-          </div>
-        )}
-      />
-      <div>
-        <DropdownInput value={utc} onClick={() => open('utc')} />
-      </div>
-      <UtcMenu onTimezoneSelect={setUtc} />
-    </HStack>
-  );
-};
-
-type NetworkSwitchProps = {
-  value: EndDateType;
-  setValue: (value: EndDateType) => void;
-};
-
-const NetworkSwitch: React.FC<NetworkSwitchProps> = ({value, setValue}) => {
-  const {t} = useTranslation();
-
-  return (
-    <SwitchContainer>
-      <ButtonText
-        mode="secondary"
-        label={t('labels.days')}
-        isActive={value === 'duration'}
-        onClick={() => setValue('duration')}
-        size="large"
-      />
-      <ButtonText
-        mode="secondary"
-        label={t('labels.dateTime')}
-        isActive={value === 'date'}
-        onClick={() => setValue('date')}
-        size="large"
-      />
-    </SwitchContainer>
-  );
-};
 
 const FormSection = styled.div.attrs({
   className: 'space-y-1.5',
@@ -465,9 +333,3 @@ const HStack = styled.div.attrs({
 const AlertWrapper = styled.div.attrs({
   className: 'mt-1',
 })``;
-
-const SwitchContainer = styled.div.attrs({
-  className: 'inline-flex p-0.5 space-x-0.5 bg-ui-0 rounded-xl',
-})`
-  height: fit-content;
-`;
