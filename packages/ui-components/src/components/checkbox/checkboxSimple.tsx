@@ -4,7 +4,7 @@ import {Icons} from './checkboxListItem';
 
 export type CheckboxSimpleProps = {
   label: string;
-  labelLeft?: boolean;
+  iconLeft?: boolean;
   multiSelect: boolean;
   disabled?: boolean;
   state?: 'default' | 'active' | 'multi';
@@ -13,7 +13,7 @@ export type CheckboxSimpleProps = {
 
 export const CheckboxSimple: React.FC<CheckboxSimpleProps> = ({
   label,
-  labelLeft = false,
+  iconLeft = true,
   multiSelect,
   disabled = false,
   state = 'default',
@@ -24,7 +24,7 @@ export const CheckboxSimple: React.FC<CheckboxSimpleProps> = ({
       data-testid="checkboxSimple"
       disabled={disabled}
       state={state}
-      labelLeft={labelLeft}
+      iconLeft={iconLeft}
       onClick={onClick}
     >
       {Icons[multiSelect ? 'multiSelect' : 'radio'][state]}
@@ -36,19 +36,19 @@ export const CheckboxSimple: React.FC<CheckboxSimpleProps> = ({
 type ContainerTypes = {
   disabled: boolean;
   state: 'default' | 'active' | 'multi';
-  labelLeft: boolean;
+  iconLeft: boolean;
 };
 
 const Container = styled.div.attrs(
-  ({disabled, state, labelLeft}: ContainerTypes) => ({
-    className: `flex w-max space-x-1.5 items-center cursor-pointer hover:text-primary-500 ${
-      labelLeft && 'flex-row-reverse space-x-reverse'
+  ({disabled, state, iconLeft}: ContainerTypes) => ({
+    className: `flex w-max space-x-1.5 items-center ${
+      !iconLeft && 'flex-row-reverse space-x-reverse'
     } ${
       disabled
         ? 'text-ui-300'
-        : state !== 'default'
-        ? 'text-primary-500'
-        : 'text-ui-600'
+        : `cursor-pointer hover:text-primary-500 ${
+            state !== 'default' ? 'text-primary-500' : 'text-ui-600'
+          }`
     }`,
   })
 )<ContainerTypes>``;

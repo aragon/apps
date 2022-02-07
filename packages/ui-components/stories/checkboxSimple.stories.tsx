@@ -14,6 +14,7 @@ const Template: Story<CheckboxSimpleProps> = args => (
 export const Default = Template.bind({});
 Default.args = {
   label: 'Label',
+  iconLeft: true,
   multiSelect: true,
   disabled: false,
   state: 'default',
