@@ -192,131 +192,49 @@ describe('Core: TokenFactory', () => {
       }
     });
 
-    describe('DAO Permissions', () => {
-      it('should grant TOKEN_MINTER_ROLE for TokenFactory', async () => {
-        const config: TokenConfig = {
-          addr: '0x0000000000000000000000000000000000000000',
-          name: 'FakeToken',
-          symbol: 'FT',
-        };
+    it('should grant proper permissions', async () => {
+      const config: TokenConfig = {
+        addr: '0x0000000000000000000000000000000000000000',
+        name: 'FakeToken',
+        symbol: 'FT',
+      };
 
-        const mintConfig: MintConfig = {
-          receivers: ['0x0000000000000000000000000000000000000002'],
-          amounts: [1],
-        };
+      const mintConfig: MintConfig = {
+        receivers: ['0x0000000000000000000000000000000000000002'],
+        amounts: [1],
+      };
 
-        const tx = await tokenFactory.callStatic.newToken(
-          dao.address,
-          config,
-          mintConfig
-        );
+      const tx = await tokenFactory.callStatic.newToken(
+        dao.address,
+        config,
+        mintConfig
+      );
 
-        expect(dao.grant).to.have.been.calledWith(
-          tx[0],
-          tokenFactory.address,
-          TOKEN_MINTER_ROLE
-        );
-      });
-
-      it('should revoke TOKEN_MINTER_ROLE for TokenFactory', async () => {
-        const config: TokenConfig = {
-          addr: '0x0000000000000000000000000000000000000000',
-          name: 'FakeToken',
-          symbol: 'FT',
-        };
-
-        const mintConfig: MintConfig = {
-          receivers: ['0x0000000000000000000000000000000000000002'],
-          amounts: [1],
-        };
-
-        const tx = await tokenFactory.callStatic.newToken(
-          dao.address,
-          config,
-          mintConfig
-        );
-
-        expect(dao.revoke).to.have.been.calledWith(
-          tx[0],
-          tokenFactory.address,
-          TOKEN_MINTER_ROLE
-        );
-      });
-
-      it('should grant TOKEN_MINTER_ROLE for DAO', async () => {
-        const config: TokenConfig = {
-          addr: '0x0000000000000000000000000000000000000000',
-          name: 'FakeToken',
-          symbol: 'FT',
-        };
-
-        const mintConfig: MintConfig = {
-          receivers: ['0x0000000000000000000000000000000000000002'],
-          amounts: [1],
-        };
-
-        const tx = await tokenFactory.callStatic.newToken(
-          dao.address,
-          config,
-          mintConfig
-        );
-
-        expect(dao.grant).to.have.been.calledWith(
-          tx[0],
-          dao.address,
-          TOKEN_MINTER_ROLE
-        );
-      });
-
-      it('should grant TOKEN_MINTER_ROLE for merkleMinter', async () => {
-        const config: TokenConfig = {
-          addr: '0x0000000000000000000000000000000000000000',
-          name: 'FakeToken',
-          symbol: 'FT',
-        };
-
-        const mintConfig: MintConfig = {
-          receivers: ['0x0000000000000000000000000000000000000002'],
-          amounts: [1],
-        };
-
-        const tx = await tokenFactory.callStatic.newToken(
-          dao.address,
-          config,
-          mintConfig
-        );
-
-        expect(dao.grant).to.have.been.calledWith(
-          tx[0],
-          tx[1],
-          TOKEN_MINTER_ROLE
-        );
-      });
-
-      it('should grant MERKLE_MINTER_ROLE for DAO', async () => {
-        const config: TokenConfig = {
-          addr: '0x0000000000000000000000000000000000000000',
-          name: 'FakeToken',
-          symbol: 'FT',
-        };
-
-        const mintConfig: MintConfig = {
-          receivers: ['0x0000000000000000000000000000000000000002'],
-          amounts: [1],
-        };
-
-        const tx = await tokenFactory.callStatic.newToken(
-          dao.address,
-          config,
-          mintConfig
-        );
-
-        expect(dao.grant).to.have.been.calledWith(
-          tx[1],
-          dao.address,
-          MERKLE_MINTER_ROLE
-        );
-      });
+      expect(dao.grant).to.have.been.calledWith(
+        tx[0],
+        tokenFactory.address,
+        TOKEN_MINTER_ROLE
+      );
+      expect(dao.revoke).to.have.been.calledWith(
+        tx[0],
+        tokenFactory.address,
+        TOKEN_MINTER_ROLE
+      );
+      expect(dao.grant).to.have.been.calledWith(
+        tx[0],
+        dao.address,
+        TOKEN_MINTER_ROLE
+      );
+      expect(dao.grant).to.have.been.calledWith(
+        tx[0],
+        tx[1],
+        TOKEN_MINTER_ROLE
+      );
+      expect(dao.grant).to.have.been.calledWith(
+        tx[1],
+        dao.address,
+        MERKLE_MINTER_ROLE
+      );
     });
   });
 });
