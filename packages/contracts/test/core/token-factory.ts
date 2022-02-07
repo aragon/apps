@@ -159,6 +159,23 @@ describe('Core: TokenFactory', () => {
       expect(tx[1]).not.to.be.eq(merkleMinterBase.address);
     });
 
+    it('should emit TokenCreated', async () => {
+      const config: TokenConfig = {
+        addr: '0x0000000000000000000000000000000000000000',
+        name: 'FakeToken',
+        symbol: 'FT',
+      };
+
+      const mintConfig: MintConfig = {
+        receivers: ['0x0000000000000000000000000000000000000002'],
+        amounts: [1],
+      };
+
+      await expect(
+        tokenFactory.newToken(dao.address, config, mintConfig)
+      ).to.emit(tokenFactory, 'TokenCreated');
+    });
+
     it('should mint tokens', async () => {
       const config: TokenConfig = {
         addr: '0x0000000000000000000000000000000000000000',
@@ -176,19 +193,18 @@ describe('Core: TokenFactory', () => {
 
       const tx = await tokenFactory.newToken(dao.address, config, mintConfig);
       const rc = await tx.wait();
-      const IERC20Upgradeable = ERC20Upgradeable__factory.createInterface();
-      const transferTopic = IERC20Upgradeable.getEventTopic('Transfer');
+      const eventArgs =
+        rc.events?.find(e => e.event === 'TokenCreated')?.args || [];
 
-      const filteredLogs = rc.logs.filter(
-        log => log.topics[0] === transferTopic
+      const erc20Contract = await ethers.getContractAt(
+        'ERC20Upgradeable',
+        eventArgs[0]
       );
 
-      expect(filteredLogs.length).to.be.eq(2);
-      for (const i in filteredLogs) {
-        const log = filteredLogs[i];
-        const event = IERC20Upgradeable.parseLog(log);
-        expect(event.args.to).to.be.eq(mintConfig.receivers[i]);
-        expect(event.args.value).to.be.eq(mintConfig.amounts[i]);
+      for (const i in mintConfig.receivers) {
+        expect(
+          await erc20Contract.callStatic.balanceOf(mintConfig.receivers[i])
+        ).to.be.eq(mintConfig.amounts[i]);
       }
     });
 
