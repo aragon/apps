@@ -6,7 +6,7 @@ import {IconAdd, IconClose} from '../icons/interface';
 import {Spinner} from '../spinner';
 import {ButtonIcon} from '../button';
 
-export type InputImageProps = {
+export type InputImageSingleProps = {
   /**
    * onChange Event will fires after uploading a valid image
    */
@@ -29,7 +29,7 @@ export type InputImageProps = {
   maxFileSize: number;
 };
 
-export const InputImage: React.FC<InputImageProps> = ({
+export const InputImageSingle: React.FC<InputImageSingleProps> = ({
   onChange,
   maxDimension = 2400,
   minDimension = 256,
@@ -73,7 +73,7 @@ export const InputImage: React.FC<InputImageProps> = ({
     [maxDimension, minDimension, onChange, onError]
   );
 
-  const {getRootProps, getInputProps} = useDropzone({
+  const {getRootProps, getInputProps, isDragActive} = useDropzone({
     onDrop,
     maxSize: maxFileSize,
     accept: 'image/jpg, image/jpeg, image/png, image/gif, image/svg',
@@ -101,17 +101,29 @@ export const InputImage: React.FC<InputImageProps> = ({
       />
     </ImageContainer>
   ) : (
-    <DefaultContainer data-testid="input-image" {...getRootProps()}>
-      <IconAdd />
+    <DefaultContainer
+      {...{isDragActive}}
+      data-testid="input-image"
+      {...getRootProps()}
+    >
+      <StyledIconAdd {...{isDragActive}} />
       <input {...getInputProps()} />
     </DefaultContainer>
   );
 };
 
-const DefaultContainer = styled.div.attrs({
-  className: `flex items-center justify-center bg-ui-0 text-ui-600 
-  h-8 w-8 border-dashed border-ui-100 border-2 rounded-xl cursor-pointer`,
-})``;
+type DefaultContainerProps = {
+  isDragActive: boolean;
+};
+
+const DefaultContainer = styled.div.attrs(
+  ({isDragActive}: DefaultContainerProps) => ({
+    className: `flex items-center justify-center bg-ui-0
+    h-8 w-8 border-dashed ${
+      isDragActive ? 'border-primary-500' : 'border-ui-100'
+    } border-2 rounded-xl cursor-pointer`,
+  })
+)<DefaultContainerProps>``;
 
 const LoadingContainer = styled.div.attrs({
   className: `flex items-center justify-center bg-ui-0 
@@ -132,3 +144,9 @@ const StyledButton = styled(ButtonIcon).attrs({
   box-shadow: 0px 4px 8px rgba(31, 41, 51, 0.04),
     0px 0px 2px rgba(31, 41, 51, 0.06), 0px 0px 1px rgba(31, 41, 51, 0.04);
 `;
+
+const StyledIconAdd = styled(IconAdd).attrs(
+  ({isDragActive}: DefaultContainerProps) => ({
+    className: `${isDragActive ? 'text-primary-500' : 'text-ui-600'}`,
+  })
+)<DefaultContainerProps>``;
