@@ -202,9 +202,13 @@ describe('Core: TokenFactory', () => {
       );
 
       for (const i in mintConfig.receivers) {
-        expect(
-          await erc20Contract.callStatic.balanceOf(mintConfig.receivers[i])
-        ).to.be.eq(mintConfig.amounts[i]);
+        await expect(tx)
+          .to.emit(erc20Contract, 'Transfer')
+          .withArgs(
+            '0x0000000000000000000000000000000000000000',
+            mintConfig.receivers[i],
+            mintConfig.amounts[i]
+          );
       }
     });
 
