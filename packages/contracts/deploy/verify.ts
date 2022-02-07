@@ -50,7 +50,10 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   await verifyContract(RegistryContract.address, []);
   await verifyContract(TokenFactoryContract.address, []);
-  await verifyContract(DAOFactoryContract.address, [RegistryContract.address]);
+  await verifyContract(DAOFactoryContract.address, [
+    RegistryContract.address,
+    TokenFactoryContract.address,
+  ]);
 
   console.log('Verifying base contracts');
 

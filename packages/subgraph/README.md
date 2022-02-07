@@ -49,53 +49,29 @@ You are now ready to deploy the subgraph using [the `graph deploy` command](http
 
 ### Test the subgraph
 
-build the the contracts as explained above.
-build the subgraph as explained above
+Build the the contracts as explained above.
+Build the subgraph as explained above
 
-run tests via docker:
+run tests:
 
 ```console
-yarn test:docker
+yarn test
 ```
-
-however due to matchstick not supporting monorepo as of now, using docker for testing might not be practical during developing process, a work arround could be copying the entire /node_modules from stand alone subgraph project and pasting it in packages/subgraph only for development purposes.
 
 ### Deploy the subgraph locally
 
 You have the option to deploy your subgraph locally, this is how you can do it.
 
-Clone the Graph node repository somewhere on your computer:
+Make sure u set the env variable `<NETWORK_NAME>` to 'localhost'.
+
+to start:
 
 ```console
-git clone git@github.com:graphprotocol/graph-node.git
+yarn start:dev
 ```
 
-Edit the file `graph-node/docker/docker-compose.yml` to make the [`ethereum` field](https://github.com/graphprotocol/graph-node/blob/ce9aa01dcc18029122f1cf3e8f6941ffffd7653e/docker/docker-compose.yml#L20) point to the Ethereum node of your choice. Make sure this node is connected to the same Ethereum network than the one expected by your subgraph.
-
-Run the Graph node using docker-compose. It will start the Graph node itself, but also a PostgreSQL database and an IPFS, which are used by the Graph node.
+to stop:
 
 ```console
-cd graph-node/docker
-docker-compose up
+yarn stop:dev
 ```
-
-You are now ready to deploy your subgraph.
-
-Go back to the subgraph directory (`packages/zaragoza-subgraph`), and create the subgraph on your local node:
-
-```console
-graph create aragon/aragon-zaragoza-<DESIRED_NETWORK> \
-  --node http://localhost:8020
-```
-
-Then deploy it:
-
-```console
-graph deploy aragon/aragon-zaragoza<DESIRED_NETWORK> \
-  --ipfs http://localhost:5001 \
-  --node http://localhost:8020
-```
-
-To stop the Graph node, go back to its directory and run `docker-compose down`. It will also create a `data` directory: remember to delete it if you want to start again.
-
-See [the Graph documentation](https://thegraph.com/docs/quick-start) for more details on how to run The Graph locally.

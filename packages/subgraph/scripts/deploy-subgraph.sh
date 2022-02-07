@@ -27,6 +27,11 @@ echo ''
 echo '> Generating types'
 graph codegen
 
+if [ "$NETWORK_NAME" == 'localhost' ]
+then
+  NETWORK_NAME='rinkeby'
+fi
+
 # Prepare subgraph name
 FULLNAME=$THEGRAPH_USERNAME/aragon-$SUBGRAPH_NAME-$NETWORK_NAME
 if [ "$STAGING" ]; then
@@ -36,7 +41,8 @@ echo ''
 echo '> Deploying subgraph: '$FULLNAME
 
 # Deploy subgraph
-if [ "$LOCAL" ]; then
+if [ "$LOCAL" ]
+then
     graph deploy $FULLNAME \
         --ipfs http://localhost:5001 \
         --node http://localhost:8020

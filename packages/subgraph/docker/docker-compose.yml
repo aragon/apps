@@ -19,7 +19,7 @@ services:
       postgres_pass: let-me-in
       postgres_db: graph-node
       ipfs: 'ipfs:5001'
-      ethereum: 'rinkeby:http://ganache:8546'
+      ethereum: 'rinkeby:http://ganache:8545'
       RUST_LOG: info
   ipfs:
     image: ipfs/go-ipfs:v0.4.23
@@ -42,7 +42,6 @@ services:
     image: trufflesuite/ganache-cli
     ports:
       - '8545:8545'
-      - '8546:8546'
     command:
       [
         'ganache-cli',
