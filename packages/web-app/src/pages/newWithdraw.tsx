@@ -61,6 +61,7 @@ const defaultValues = {
   duration: 5,
   startDate: getCanonicalDate(),
   startTime: getCanonicalTime(),
+  endDate: getCanonicalDate(5),
   endTime: getCanonicalTime(),
 };
 

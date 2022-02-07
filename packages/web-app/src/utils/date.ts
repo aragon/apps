@@ -28,20 +28,34 @@ export function getDateSections(): {
   };
 }
 
+export function daysToMils(days: number): number {
+  return days * 24 * 60 * 60 * 1000;
+}
+
 /**
- * Returns the current date as a string with the following format:
- * "yyyy-mm-dd".
+ * Returns the either:
+ *
+ *  - the current date
+ *  - or the current date + the number of days passed as offset
+ *
+ * as a string with the following format: "yyyy-mm-dd".
+ *
+ * Note that the offset may be negative. This will return a date in the past.
  *
  * This date format is necessary when working with html inputs of type "date".
  */
-export function getCanonicalDate(): string {
+export function getCanonicalDate(offset?: number): string {
+  console.log('OFFSET ' + offset);
   const currDate = new Date();
-  const currMonth = currDate.getMonth() + 1;
-  const formattedMonth = currMonth > 9 ? '' + currMonth : '0' + currMonth;
-  const currDay = currDate.getDate();
-  const formattedDay = currDay > 9 ? '' + currDay : '0' + currDay;
+  const offsetTime = currDate.getTime() + (offset ? daysToMils(offset) : 0);
+  const offsetDate = new Date(offsetTime);
+  const month = offsetDate.getMonth() + 1;
+  const formattedMonth = month > 9 ? '' + month : '0' + month;
+  const day = offsetDate.getDate();
+  const formattedDay = day > 9 ? '' + day : '0' + day;
   const formattedDate =
-    '' + currDate.getFullYear() + '-' + formattedMonth + '-' + formattedDay;
+    '' + offsetDate.getFullYear() + '-' + formattedMonth + '-' + formattedDay;
+  console.log('formattedDate ' + formattedDate);
   return formattedDate;
 }
 

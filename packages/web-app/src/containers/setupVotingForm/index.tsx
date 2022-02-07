@@ -20,7 +20,7 @@ import React, {useEffect, useState} from 'react';
 
 import {useTransferModalContext} from 'context/transfersModal';
 import {timezones} from 'containers/utcMenu/utcData';
-import {getCanonicalUtcOffset} from 'utils/date';
+import {daysToMils, getCanonicalUtcOffset} from 'utils/date';
 import {SimplifiedTimeInput} from 'components/inputTime/inputTime';
 import UtcMenu from 'containers/utcMenu';
 
@@ -91,7 +91,8 @@ const SetupVotingForm: React.FC = () => {
   const endDateValidator = (date: string) => {
     const endDate = new Date(date);
     const todayMidnight = new Date().setHours(0, 0, 0, 0);
-    const minMidnight = todayMidnight + 432000000;
+    const daysOffset = daysToMils(5);
+    const minMidnight = todayMidnight + daysOffset;
 
     if (endDate.getTime() < minMidnight) {
       return t('errors.endDatePast');
@@ -101,7 +102,8 @@ const SetupVotingForm: React.FC = () => {
 
   const endTimeValidator = (time: string) => {
     const endDateTime = new Date(endDate + ' ' + time);
-    const minEndDateTime = new Date().getTime() + 432000000;
+    const daysOffset = daysToMils(5);
+    const minEndDateTime = new Date().getTime() + daysOffset;
 
     if (endDateTime.getTime() < minEndDateTime) {
       return t('errors.endDatePast');
