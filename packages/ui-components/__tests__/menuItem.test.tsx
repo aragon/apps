@@ -1,9 +1,10 @@
 import React from 'react';
 import {fireEvent, render, screen} from '@testing-library/react';
 
-import {Default as MenuItem} from '../stories/MenuItem.stories';
+import {Default as MenuItem} from '../stories/menuItem.stories';
 
 describe('ActionItem', () => {
+  // eslint-disable-next-line
   function setup(args?: any) {
     render(<MenuItem {...args} />);
     return screen.getByTestId('menuItem');

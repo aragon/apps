@@ -1,9 +1,10 @@
 import React from 'react';
 import {fireEvent, render, screen} from '@testing-library/react';
 
-import {Button} from '../src/components/button';
+import {ButtonBase as Button} from '../src/components/button/buttonBase';
 
 describe('Button', () => {
+  // eslint-disable-next-line
   function setup(args: any) {
     render(<Button label="test" {...args} />);
     return screen.getByRole('button');

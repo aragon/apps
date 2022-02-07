@@ -1,9 +1,10 @@
 import React from 'react';
 import {render, screen} from '@testing-library/react';
 
-import {Default as Backdrop} from '../stories/Backdrop.stories';
+import {Backdrop} from '../src';
 
 describe('Backdrop', () => {
+  // eslint-disable-next-line
   function setup(args: any) {
     render(<Backdrop {...args} />);
     return screen.getByTestId('backdrop-container');

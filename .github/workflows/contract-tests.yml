@@ -1,0 +1,29 @@
+name: Contracts Tests
+on:
+  push:
+    paths:
+      - 'packages/contracts/**'
+      - '.github/workflows/contract-*.yml'
+
+env:
+  working-directory: packages/contracts
+
+jobs:
+  test-hardhat:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{env.working-directory}}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install yarn
+        run: npm i -G yarn
+      - name: Install dependencies
+        run: yarn
+      - name: Compile contracts
+        run: yarn run compile
+      - name: Run Hardhat Tests
+        env:
+          REPORT_GAS: true
+        run: yarn run test
+        

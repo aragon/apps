@@ -25,7 +25,7 @@ export const parameters = {
     values: [
       {
         name: 'neutral-50',
-        value: '#F5F8FF',
+        value: '#F5F7FA',
       },
       {
         name: 'white',
@@ -39,6 +39,6 @@ export const parameters = {
   },
   viewport: {
     viewports: {...MINIMAL_VIEWPORTS, ...customViewports}, // newViewports would be an ViewportMap. (see below for examples)
-    defaultViewport: 'Desktop',
+    defaultViewport: 'desktop',
   },
 };

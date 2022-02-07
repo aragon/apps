@@ -6,26 +6,23 @@ export type ActionListItemProps = {
    * Whether list item is disabled
    */
   disabled?: boolean;
-
   /**
    * Icon to display to the right of the item text
    */
+  // eslint-disable-next-line
   icon: any; // TODO: Set proper type
-
   /**
    * Action subtitle
    */
   subtitle?: string;
-
   /**
    * Action label
    */
   title: string;
-
   /**
-   * Whether item fits its container
+   * Background color
    */
-  wide?: boolean;
+  background?: string;
   onClick?: () => void;
 };
 
@@ -37,14 +34,12 @@ export const ActionListItem: React.FC<ActionListItemProps> = ({
   icon,
   subtitle,
   title,
-  wide = false,
   onClick,
+  background,
 }) => {
   return (
     <Container
-      wide={wide}
-      onClick={onClick}
-      disabled={disabled}
+      {...{onClick, disabled, background}}
       data-testid="actionListItem"
     >
       <TextContainer>
@@ -58,22 +53,30 @@ export const ActionListItem: React.FC<ActionListItemProps> = ({
 
 // TODO: Investigate group flexibility when children have different styles based
 // on parent state
-type ContainerProps = {wide: boolean};
-const Container = styled.button.attrs(({wide}: ContainerProps) => ({
-  className: `${
-    wide && 'w-full'
-  } flex justify-between items-center py-1.5 px-2 space-x-1.5 focus:outline-none focus:ring-2 focus:ring-primary-500 box-border border-2 border-ui-100 active:border-ui-800 hover:border-ui-300 disabled:border-ui-200 disabled:bg-ui-100 rounded-xl`,
-}))<ContainerProps>``;
+type ContainerProps = Pick<ActionListItemProps, 'background'>;
+const Container = styled.button.attrs(({background}: ContainerProps) => ({
+  className: `w-full flex justify-between items-center py-1.5 
+  px-2 space-x-1.5 focus:outline-none focus:ring-2 focus:ring-primary-500 
+  box-border border-ui-100 active:border-ui-800 hover:border-ui-300 
+  disabled:border-ui-200 disabled:bg-ui-100 rounded-xl
+  ${background && `bg-${background}`} `,
+}))``;
 
 const TextContainer = styled.div.attrs({
   className: 'text-left',
 })``;
 
-const Title = styled.p.attrs({})`
+const Title = styled.p.attrs({
+  className: 'font-bold',
+})`
   color: #52606d; //UI-600
 
   ${Container}:active & {
     color: #323f4b; //UI-800
+  }
+
+  ${Container}:hover & {
+    color: #003bf5; //PRIMARY-800
   }
 
   ${Container}:disabled & {
@@ -82,7 +85,7 @@ const Title = styled.p.attrs({})`
 `;
 
 const Subtitle = styled.p.attrs({
-  className: 'text-xs',
+  className: 'text-sm',
 })`
   color: #7b8794; //UI-400
 
