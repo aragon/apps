@@ -4,9 +4,6 @@ This workspace contains all packages related to the Zaragoza project - the human
 
 For more information on the individual packages, please read the respective `Readme.md`.
 
-## Node version
-<= 14
-
 ## Setup
 
 start by running `yarn install` in the root.
