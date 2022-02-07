@@ -50,9 +50,14 @@
     "membership": "Who is eligible to participate in your DAO?",
     "communityToken": "Does your community have a token?",
     "addExistingToken": "Add existing Token",
+    "tokenName": "Name",
+    "tokenSymbol": "Symbol",
     "existingTokenName": "Name",
     "existingTokenSymbol": "Symbol",
-    "existingTokenSupply": "Supply"
+    "existingTokenSupply": "Supply",
+    "distributeTokens": "Distribute Tokens",
+    "createToken": "Create Token",
+    "addressTable": "address"
   },
   "placeHolders": {
     "selectToken": "Select a Token ...",
@@ -198,10 +203,15 @@
       "tokenMembershipSubtitle": "All those who have a token are entitled to participate. 1 token equals 1 vote.",
       "walletMemberShip": "Authorized Wallets",
       "walletMemberShipSubtitle": "Only authorised wallets are entitled to particpiate. 1 Wallet equals 1 vote (coming soon).",
+      "nameSubtitle": "The full name of the token eg. Aragon",
+      "symbolSubtitle": "The symbol of your token e.g. ANT (good practice is to use 3-4 letters)",
       "addExistingTokenHelptext": "Hinterlege einen bestehenden Token, welcher deine Community für die Governance verwendet. To learn more about what it’s important if you use an existing Token, read first the ",
       "tokenHelptextLink": "Token Distribution Guide",
       "tokenContractSubtitlePart1": "Copy the contract address directly from the ",
-      "tokenContractSubtitlePart2": "This way you can ensure that the address is correct."
+      "tokenContractSubtitlePart2": "This way you can ensure that the address is correct.",
+      "distributeTokensHelpertext": "Determine who receives how many tokens. Unless otherwise specified, the treasury receives the rest tokens for the future distribution of tokens (these tokens have no voting rights and do not influence the quorum).",
+      "createTokenHelptext": "Mint a community token on a variable or fixed supply. To learn more about how to mint the token and how to use it, read the ",
+      "createTokenHelplink": "Token Minting Guide."
     },
     "step4": {
       "label": "Step 4",
