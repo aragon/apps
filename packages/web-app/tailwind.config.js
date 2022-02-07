@@ -97,6 +97,9 @@ module.exports = {
         16: '128px',
         25: '200px',
       },
+      borderRadius: {
+        larger: '10px',
+      },
     },
     fontWeight: {
       normal: 500,

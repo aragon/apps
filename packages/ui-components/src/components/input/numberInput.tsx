@@ -23,8 +23,9 @@ export const NumberInput: React.FC<NumberInputProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleChange = (mode: 'up' | 'down') => {
-    mode === 'up' ? inputRef.current?.stepDown() : inputRef.current?.stepUp();
+    mode === 'up' ? inputRef.current?.stepUp() : inputRef.current?.stepDown();
 
+    // For Calling th onChange Function
     inputRef.current?.dispatchEvent(new Event('input', {bubbles: true}));
   };
 
@@ -36,7 +37,7 @@ export const NumberInput: React.FC<NumberInputProps> = ({
         size="small"
         icon={<IconRemove />}
         disabled={disabled}
-        onClick={() => handleChange('up')}
+        onClick={() => handleChange('down')}
       />
       <InputWrapper>
         <StyledNumberInput
@@ -56,7 +57,7 @@ export const NumberInput: React.FC<NumberInputProps> = ({
         size="small"
         icon={<IconAdd />}
         disabled={disabled}
-        onClick={() => handleChange('down')}
+        onClick={() => handleChange('up')}
       />
     </Container>
   );

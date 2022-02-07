@@ -190,11 +190,13 @@ const FormWrapper = styled.div.attrs({
 })``;
 
 const ApprovalWrapper = styled.div.attrs({
-  className: 'flex flex-col tablet:flex-row tablet:space-x-2',
+  className:
+    'flex flex-col tablet:flex-row space-y-1.5 tablet:space-y-0 tablet:space-x-2',
 })``;
 
 const DurationContainer = styled.div.attrs({
-  className: 'flex flex-col tablet:flex-row tablet:space-x-1.5',
+  className:
+    'flex flex-col tablet:flex-row space-y-1.5 tablet:space-y-0 tablet:space-x-1.5',
 })``;
 
 const TimeLabelWrapper = styled.div.attrs({
