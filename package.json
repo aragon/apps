@@ -6,9 +6,19 @@
   "author": "Aragon Association",
   "license": "MIT",
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/@graphprotocol/graph-ts",
+      "**/@graphprotocol/graph-ts/**",
+      "**/@graphprotocol/graph-cli",
+      "**/@graphprotocol/graph-cli/**",
+      "**/matchstick-as",
+      "**/matchstick-as/**"
+    ]
+  },
   "devDependencies": {
     "lerna": "^3.22.1"
   }

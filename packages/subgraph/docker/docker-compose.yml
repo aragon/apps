@@ -1,19 +1,5 @@
 version: '3'
 services:
-  testnode:
-    build:
-      context: ../
-      dockerfile: docker/Dockerfile
-    ports:
-      - '9000:9000'
-    volumes:
-      - $PWD/../:/matchstick
-    environment:
-      - NETWORK_NAME=localhost
-      - GRAPH_KEY=somekey
-      - THEGRAPH_USERNAME=aragon
-      - SUBGRAPH_NAME=zaragoza
-    tty: true
   graph-node:
     image: graphprotocol/graph-node
     ports:

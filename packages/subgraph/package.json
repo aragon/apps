@@ -6,13 +6,15 @@
   "license": "MIT",
   "scripts": {
     "build:contracts": "lerna run --scope=@aragon/zaragoza-contracts --stream compile",
+    "deploy:contracts": "lerna run --scope=@aragon/zaragoza-contracts --stream deploy",
     "manifest": "scripts/build-manifest.sh",
     "build": "scripts/build-subgraph.sh",
-    "test": "scripts/test-subgraph.sh",
-    "test:docker": "cp -r ../contracts/artifacts . && docker build . --no-cache -t zaragoza-subgraph-tests -f docker/Dockerfile.test; rm -r artifacts",
+    "test": "graph test",
     "deploy": "scripts/deploy-subgraph.sh",
-    "deploy:local": "LOCAL=true scripts/deploy-subgraph.sh",
+    "start:dev": "docker-compose -f docker/docker-compose.yml up -d && yarn deploy:contracts -- -- --network localhost --reset",
+    "stop:dev": "docker-compose -f docker/docker-compose.yml down",
     "create:local": "graph create aragon/aragon-zaragoza-rinkeby --node http://localhost:8020",
+    "deploy:local": "LOCAL=true scripts/deploy-subgraph.sh",
     "coverage": "graph test -c"
   },
   "dependencies": {

@@ -17,12 +17,7 @@ fi
 FILE=$NETWORK_NAME'.json'
 DATA=manifest/data/$FILE
 
-if [ -z "$1" ] 
-  then
-    ZARAGOZA_CONTRACTS_MODULE=$(node -e 'console.log(require("path").dirname(require.resolve("@aragon/zaragoza-contracts/package.json")))')
-  else
-    ZARAGOZA_CONTRACTS_MODULE=$1
-fi
+ZARAGOZA_CONTRACTS_MODULE=$(node -e 'console.log(require("path").dirname(require.resolve("@aragon/zaragoza-contracts/package.json")))')
 
 echo 'Generating manifest from data file: '$DATA
 cat $DATA
