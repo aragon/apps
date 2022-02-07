@@ -20,11 +20,7 @@ import React, {useEffect, useState} from 'react';
 
 import {useTransferModalContext} from 'context/transfersModal';
 import {timezones} from 'containers/utcMenu/utcData';
-import {
-  getCanonicalDate,
-  getCanonicalTime,
-  getCanonicalUtcOffset,
-} from 'utils/date';
+import {getCanonicalUtcOffset} from 'utils/date';
 import {SimplifiedTimeInput} from 'components/inputTime/inputTime';
 import UtcMenu from 'containers/utcMenu';
 
@@ -33,25 +29,20 @@ type EndDateType = 'duration' | 'date';
 const SetupVotingForm: React.FC = () => {
   const {t} = useTranslation();
   const {open} = useTransferModalContext();
-  const {control, resetField, setValue, trigger, getValues} = useFormContext();
-  const {errors, dirtyFields} = useFormState({control});
-  const [startDate, endDate] = useWatch({name: ['startDate', 'endDate']});
+  const {control} = useFormContext();
+  const {errors} = useFormState({control});
+  const [startDate, endDate, duration] = useWatch({
+    name: ['startDate', 'endDate', 'duration'],
+  });
 
   /*************************************************
    *                    STATE & EFFECT             *
    *************************************************/
 
-  const [startTime, setStartTime] = useState('');
-  const [startDateState, setStartDate] = useState('');
   const [utc, setUtc] = useState('');
   const [endDateType, setEndDateType] = useState<EndDateType>('date');
-  const [endDateState, setEndDate] = useState('');
-  const [endTime, setEndTime] = useState('');
 
   useEffect(() => {
-    setStartDate(getCanonicalDate());
-    setStartTime(getCanonicalTime());
-    setEndTime(getCanonicalTime());
     const currTimezone = timezones.find(tz => tz === getCanonicalUtcOffset());
     if (!currTimezone) {
       setUtc(timezones[13]);
@@ -59,6 +50,10 @@ const SetupVotingForm: React.FC = () => {
       setUtc(currTimezone);
     }
   }, []);
+
+  useEffect(() => {
+    if (errors.duration && duration > 4) errors.duration = undefined;
+  }, [duration]);
 
   /*************************************************
    *                Field Validators               *
@@ -87,8 +82,7 @@ const SetupVotingForm: React.FC = () => {
   };
 
   const durationValidator = (duration: number) => {
-    console.log('hi');
-    if (parseInt(duration) < 5) {
+    if (duration < 5) {
       return t('errors.durationTooShort');
     }
     return '';
@@ -179,20 +173,7 @@ const SetupVotingForm: React.FC = () => {
               </div>
             )}
           />
-          <Controller
-            name="utcTimezone"
-            control={control}
-            rules={{required: t('errors.required.timezone')}}
-            render={({field: {name, value}}) => (
-              <div>
-                <DropdownInput
-                  name={name}
-                  value={value}
-                  onClick={() => open('utc')}
-                />
-              </div>
-            )}
-          />
+          <DropdownInput value={utc} onClick={() => open('utc')} />
         </HStack>
       </FormSection>
 
@@ -217,8 +198,16 @@ const SetupVotingForm: React.FC = () => {
                 fieldState: {error},
               }) => (
                 <div>
+                  {/* FIXME: this is currently not working properly, because
+                  we're mixing controlled and uncontrolled components. The
+                  buttons inside the numeric input are handled with a ref, which
+                  does not trigger onchange events. This means that we can
+                  detect changes in the input when typing them, but not when
+                  using the buttons. This is an issue when typing 0. This
+                  correctly triggers the error state, but then does not trigger
+                  it again when using the buttons afterwards. */}
                   <NumberInput
-                    mode={error ? 'critical' : 'default'}
+                    mode={error?.message ? 'critical' : 'default'}
                     name={name}
                     value={value}
                     min={5}
@@ -280,20 +269,7 @@ const SetupVotingForm: React.FC = () => {
                   </div>
                 )}
               />
-              <Controller
-                name="utcTimezone"
-                control={control}
-                rules={{required: t('errors.required.timezone')}}
-                render={({field: {name, value}}) => (
-                  <div>
-                    <DropdownInput
-                      name={name}
-                      value={value}
-                      onClick={() => open('utc')}
-                    />
-                  </div>
-                )}
-              />
+              <DropdownInput value={utc} onClick={() => open('utc')} />
             </HStack>
           </div>
         )}

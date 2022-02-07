@@ -15,18 +15,19 @@ import {useWalletProps} from 'containers/walletMenu';
 import ConfigureWithdrawForm from 'containers/configureWithdraw';
 import {FullScreenStepper, Step} from 'components/fullScreenStepper';
 import SetupVotingForm from 'containers/setupVotingForm';
+import {getCanonicalDate, getCanonicalTime} from 'utils/date';
 
 export type TransferData = {
   amount: string;
   from: Address;
   to: Address;
   reference?: string;
-  startDate: number;
-  startTime: number;
-  endDate: number;
-  endTime: number;
-  duration: number;
-  end: number;
+  startDate: string;
+  startTime: string;
+  endDate: string;
+  endTime: string;
+  duration: string;
+  utc: string;
 };
 
 export type TokenFormData = {
@@ -58,6 +59,9 @@ const defaultValues = {
   tokenImgUrl: '',
   isCustomToken: false,
   duration: 5,
+  startDate: getCanonicalDate(),
+  startTime: getCanonicalTime(),
+  endTime: getCanonicalTime(),
 };
 
 const NewWithdraw: React.FC = () => {
