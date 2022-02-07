@@ -164,7 +164,7 @@ const InputWrapper = styled.div.attrs({
 })``;
 
 const LinkContainer = styled.div.attrs({
-  className: 'tablet:order-4 pt-3.5 tablet:pt-0',
+  className: 'tablet:order-4',
 })``;
 
 const ErrorContainer = styled.div.attrs({
