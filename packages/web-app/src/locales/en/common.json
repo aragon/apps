@@ -57,7 +57,10 @@
     "existingTokenSupply": "Supply",
     "distributeTokens": "Distribute Tokens",
     "createToken": "Create Token",
-    "addressTable": "address"
+    "walletList": {
+      "address": "Address",
+      "addresses": "{{count}} Addresses"
+    }
   },
   "placeHolders": {
     "selectToken": "Select a Token ...",

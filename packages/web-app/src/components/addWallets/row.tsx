@@ -24,12 +24,11 @@ type LinkRowProps = {
 
 const LinkRow: React.FC<LinkRowProps> = ({control, index, onDelete}) => {
   const {t} = useTranslation();
-
   return (
     <Container data-testid="link-row">
       <LabelContainer>
         <Controller
-          name={`links.${index}.label`}
+          name={`wallets.${index}.address`}
           control={control}
           render={({field, fieldState: {error}}) => (
             <>
@@ -42,6 +41,7 @@ const LinkRow: React.FC<LinkRowProps> = ({control, index, onDelete}) => {
                 value={field.value}
                 onBlur={field.onBlur}
                 onChange={field.onChange}
+                disabled={index === 0}
                 adornmentText={
                   field.value ? t('labels.copy') : t('labels.paste')
                 }
@@ -89,7 +89,7 @@ const LinkRow: React.FC<LinkRowProps> = ({control, index, onDelete}) => {
 
       <ButtonWrapper>
         <Controller
-          name={`links.${index}.link`}
+          name={`wallets.${index}.amount`}
           control={control}
           render={({field, fieldState: {error}}) => (
             <>
@@ -118,7 +118,7 @@ const LinkRow: React.FC<LinkRowProps> = ({control, index, onDelete}) => {
 
       <InputWrapper>
         <Controller
-          name={`links.${index}.label`}
+          name={`wallets.${index}.share`}
           control={control}
           render={({field, fieldState: {error}}) => (
             <>

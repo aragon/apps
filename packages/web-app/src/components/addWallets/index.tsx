@@ -6,15 +6,23 @@ import {useFormContext, useFieldArray} from 'react-hook-form';
 
 import Row from './row';
 import Header from './header';
+import Footer from './footer';
 
 const AddWallets: React.FC = () => {
   const {t} = useTranslation();
   const {control} = useFormContext();
-  const {fields, append, remove} = useFieldArray({name: 'links', control});
+  const {fields, append, remove} = useFieldArray({name: 'wallets', control});
+
+  if (fields.length === 0) {
+    append([
+      {address: 'DAO Treasury', amount: '0'},
+      {address: 'My Wallet', amount: '0'},
+    ]);
+  }
 
   // TODO: research focus after input refactor
   const handleAddLink = () => {
-    append({label: '', link: ''});
+    append({address: '', amount: ''});
   };
 
   return (
@@ -26,9 +34,10 @@ const AddWallets: React.FC = () => {
             key={field.id}
             index={index}
             control={control}
-            {...(fields.length > 1 ? {onDelete: () => remove(index)} : {})}
+            {...(index === 0 ? {onDelete: () => remove(index)} : {})}
           />
         ))}
+        <Footer />
       </ListGroup>
       <ButtonText
         label={t('labels.addLink')}

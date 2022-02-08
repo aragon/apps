@@ -3,13 +3,13 @@ import styled from 'styled-components';
 import {Label} from '@aragon/ui-components';
 import {useTranslation} from 'react-i18next';
 
-const AddLinksHeader: React.FC = () => {
+const AddWalletsHeader: React.FC = () => {
   const {t} = useTranslation();
 
   return (
     <Container>
       <HeaderItem>
-        <Label label={t('labels.addressTable')} />
+        <Label label={t('labels.walletList.address', {count: 2})} />
       </HeaderItem>
       <HeaderItem>
         <StyledLabel>{t('finance.tokens')}</StyledLabel>
@@ -19,7 +19,7 @@ const AddLinksHeader: React.FC = () => {
   );
 };
 
-export default AddLinksHeader;
+export default AddWalletsHeader;
 
 export const Container = styled.div.attrs({
   className: 'hidden tablet:flex p-2 space-x-2 bg-ui-0',
