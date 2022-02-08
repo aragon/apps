@@ -9,7 +9,7 @@ const AddWalletsHeader: React.FC = () => {
   return (
     <Container>
       <HeaderItem>
-        <Label label={t('labels.walletList.address', {count: 2})} />
+        <Label label={t('labels.walletList.address')} />
       </HeaderItem>
       <HeaderItem>
         <StyledLabel>{t('finance.tokens')}</StyledLabel>

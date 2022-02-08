@@ -3,13 +3,19 @@ import styled from 'styled-components';
 import {Label} from '@aragon/ui-components';
 import {useTranslation} from 'react-i18next';
 
-const AddWalletsFooter: React.FC = () => {
+type WalletsFooterProps = {
+  totalAddresses: number;
+};
+
+const AddWalletsFooter: React.FC<WalletsFooterProps> = ({totalAddresses}) => {
   const {t} = useTranslation();
 
   return (
     <Container>
       <FooterItem1>
-        <Label label={t('labels.walletList.addresses')} />
+        <Label
+          label={t('labels.walletList.addresses', {count: totalAddresses - 1})}
+        />
       </FooterItem1>
       <FooterItem1>
         <StyledLabel>100</StyledLabel>

@@ -8,6 +8,8 @@ import Row from './row';
 import Header from './header';
 import Footer from './footer';
 
+const TOTAL_SUPPLY = 100;
+
 const AddWallets: React.FC = () => {
   const {t} = useTranslation();
   const {control} = useFormContext();
@@ -29,15 +31,18 @@ const AddWallets: React.FC = () => {
     <Container data-testid="add-links">
       <ListGroup>
         <Header />
-        {fields.map((field, index) => (
-          <Row
-            key={field.id}
-            index={index}
-            control={control}
-            {...(index === 0 ? {onDelete: () => remove(index)} : {})}
-          />
-        ))}
-        <Footer />
+        {fields.map((field, index) => {
+          return (
+            <Row
+              key={field.id}
+              index={index}
+              control={control}
+              fieldset={fields}
+              {...(index !== 0 ? {onDelete: () => remove(index)} : {})}
+            />
+          );
+        })}
+        <Footer totalAddresses={fields.length || 0} />
       </ListGroup>
       <ButtonText
         label={t('labels.addLink')}

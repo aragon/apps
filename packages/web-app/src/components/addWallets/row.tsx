@@ -9,7 +9,7 @@ import {
   NumberInput,
   ValueInput,
 } from '@aragon/ui-components';
-import React from 'react';
+import React, {useEffect} from 'react';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import {Control, Controller, FieldValues} from 'react-hook-form';
@@ -20,10 +20,23 @@ type LinkRowProps = {
   control: Control<FieldValues, object>;
   index: number;
   onDelete?: (index: number) => void;
+  fieldset: Record<'id', string>[];
 };
 
-const LinkRow: React.FC<LinkRowProps> = ({control, index, onDelete}) => {
+const LinkRow: React.FC<LinkRowProps> = ({
+  control,
+  index,
+  fieldset,
+  onDelete,
+}) => {
   const {t} = useTranslation();
+
+  useEffect(() => {
+    fieldset.forEach((data, fieldIndex) => {
+      if (fieldIndex !== index) console.log(data);
+    });
+  }, []);
+
   return (
     <Container data-testid="link-row">
       <LabelContainer>
