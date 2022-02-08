@@ -20,6 +20,7 @@ const DefineMetadata: React.FC = () => {
   const handleImageError = (error: {code: string; message: string}) => {
     setError('daoLogo', {type: 'manual', message: error.message});
   };
+
   const handleImageChange = (value: File | null) => {
     setValue('daoLogo', value);
     clearErrors('daoLogo');
@@ -38,6 +39,7 @@ const DefineMetadata: React.FC = () => {
           name="daoName"
           control={control}
           defaultValue=""
+          rules={{required: t('errors.required.name')}}
           render={({
             field: {onBlur, onChange, value, name},
             fieldState: {error},
@@ -89,7 +91,8 @@ const DefineMetadata: React.FC = () => {
           helpText={t('createDAO.step2.descriptionSubtitle')}
         />
         <Controller
-          name="daoName"
+          name="daoSummary"
+          rules={{required: t('errors.required.summary')}}
           control={control}
           render={({field, fieldState: {error}}) => (
             <>
