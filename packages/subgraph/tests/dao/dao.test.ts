@@ -213,7 +213,7 @@ test('Run dao (handleWithdrawn) mappings with mock event', () => {
   clearStore();
 });
 
-test('Run dao (handleETHDeposited and handleWithdrawn for ETH)', () => {
+test('Run dao (handleDeposited and handleWithdrawn for ETH)', () => {
   // create event and run it's handler
   runHandleNewDAORegistered(daoAddress, addressOne, daiAddress, 'mock-Dao');
   // deposit Eth
@@ -254,6 +254,8 @@ test('Run dao (handleETHDeposited and handleWithdrawn for ETH)', () => {
   // handle event
   handleWithdrawn(newEvent);
 
+  // check deposit
+  assert.fieldEquals('VaultDeposit', entityID, 'reference', 'Eth deposit');
   // checks withdraw
   assert.fieldEquals('VaultWithdraw', entityID, 'id', entityID);
   assert.fieldEquals('VaultWithdraw', entityID, 'amount', halfEth);

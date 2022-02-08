@@ -58,7 +58,7 @@ function updateEthBalance(
   daoAddress: Address,
   amount: BigInt,
   timestamp: BigInt,
-  isDeposit: bool
+  isDeposit: boolean
 ): void {
   let daoId = daoAddress.toHexString();
   let balanceId = daoId + '_' + ADDRESS_ZERO;
