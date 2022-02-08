@@ -3,16 +3,10 @@ import {
   CheckboxListItem,
   DateInput,
   DropdownInput,
-  IconRadioSelected,
   Label,
   NumberInput,
 } from '@aragon/ui-components';
-import {
-  Controller,
-  useFormContext,
-  useFormState,
-  useWatch,
-} from 'react-hook-form';
+import {Controller, useFormContext} from 'react-hook-form';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import React, {useEffect, useState} from 'react';
@@ -29,11 +23,7 @@ type UtcInstance = 'first' | 'second';
 const SetupVotingForm: React.FC = () => {
   const {t} = useTranslation();
   const {open} = useTransferModalContext();
-  const {control} = useFormContext();
-  const {errors} = useFormState({control});
-  const [startDate, endDate, duration] = useWatch({
-    name: ['startDate', 'endDate', 'duration'],
-  });
+  const {control, setValue, getValues} = useFormContext();
 
   /*************************************************
    *                    STATE & EFFECT             *
@@ -49,18 +39,18 @@ const SetupVotingForm: React.FC = () => {
     if (!currTimezone) {
       setUtcStart(timezones[13]);
       setUtcEnd(timezones[13]);
+      setValue('startUtc', timezones[13]);
+      setValue('endUtc', timezones[13]);
     } else {
       setUtcStart(currTimezone);
       setUtcEnd(currTimezone);
+      setValue('startUtc', currTimezone);
+      setValue('endUtc', currTimezone);
     }
   }, []);
 
-  useEffect(() => {
-    if (errors.duration && duration > 4) errors.duration = undefined;
-  }, [duration]);
-
   /*************************************************
-   *                Field Validators               *
+   *                Field Validators       <<        *
    *************************************************/
 
   const startDateValidator = (date: string) => {
@@ -76,7 +66,7 @@ const SetupVotingForm: React.FC = () => {
   };
 
   const startTimeValidator = (time: string) => {
-    const startDateTime = new Date(startDate + ' ' + time);
+    const startDateTime = new Date(getValues('startDate') + ' ' + time);
     const currDate = new Date();
 
     if (startDateTime.getTime() < currDate.getTime()) {
@@ -105,7 +95,7 @@ const SetupVotingForm: React.FC = () => {
   };
 
   const endTimeValidator = (time: string) => {
-    const endDateTime = new Date(endDate + ' ' + time);
+    const endDateTime = new Date(getValues('endDate') + ' ' + time);
     const daysOffset = daysToMils(5);
     const minEndDateTime = new Date().getTime() + daysOffset;
 
@@ -118,8 +108,10 @@ const SetupVotingForm: React.FC = () => {
   const tzSelector = (tz: string) => {
     if (utcInstance === 'first') {
       setUtcStart(tz);
+      setValue('startUtc', tz);
     } else {
       setUtcEnd(tz);
+      setValue('endUtc', tz);
     }
   };
 
@@ -139,9 +131,9 @@ const SetupVotingForm: React.FC = () => {
           <CheckboxListItem
             label={t('newWithdraw.setupVoting.yesNoLabel.title')}
             helptext={t('newWithdraw.setupVoting.yesNoLabel.helptext')}
-            iconRight={<IconRadioSelected />}
-            mode="active"
+            state="active"
             multiSelect={false}
+            onClick={() => {}}
           />
           <AlertInline label={t('infos.voteDuration')} mode="neutral" />
         </>

@@ -116,7 +116,7 @@ const DateSection: React.FC<DateSectionProps> = ({isStartDate}) => {
         )}
       />
       <div>
-        <DropdownInput value={utc} onClick={() => open('utc')} />
+        <DropdownInput value={'utc'} onClick={() => open('utc')} />
       </div>
     </HStack>
   );

@@ -26,8 +26,9 @@ export type TransferData = {
   startTime: string;
   endDate: string;
   endTime: string;
-  duration: string;
-  utc: string;
+  duration: number;
+  startUtc: string;
+  endUtc: string;
 };
 
 export type TokenFormData = {
@@ -63,6 +64,8 @@ const defaultValues = {
   startTime: getCanonicalTime(),
   endDate: getCanonicalDate(5),
   endTime: getCanonicalTime(),
+  startUtc: '',
+  endUtc: '',
 };
 
 const NewWithdraw: React.FC = () => {
@@ -119,6 +122,9 @@ const NewWithdraw: React.FC = () => {
         navbarBackUrl="/#/finance"
         wizardProcessName={t('newWithdraw.withdrawAssets')}
       >
+        {/* FIXME: Each step needs to be able to disable the back
+        button. Otherwise, if the user leaves step x in an invalid state and
+        goes back to a step < x, they won't be able to move forward. */}
         <Step
           wizardTitle={t('newWithdraw.configureWithdraw.title')}
           wizardDescription={t('newWithdraw.configureWithdraw.subtitle')}
@@ -140,7 +146,7 @@ const NewWithdraw: React.FC = () => {
           nextButtonLabel={t('labels.submitDeposit')}
           isNextButtonDisabled={!formMethods.formState.isValid}
         >
-          {/* TODO replace with next form container */}
+          {/* TODO replace with next form container, title, etc. */}
           <p>Step 3</p>
         </Step>
       </FullScreenStepper>
