@@ -186,7 +186,7 @@ const FormItem = styled.div.attrs({
 })``;
 
 const FormWrapper = styled.div.attrs({
-  className: 'w-full tablet:w-1/3 pr-1.5',
+  className: 'w-1/2 tablet:w-1/3 pr-1.5',
 })``;
 
 const ApprovalWrapper = styled.div.attrs({
@@ -200,7 +200,7 @@ const DurationContainer = styled.div.attrs({
 })``;
 
 const TimeLabelWrapper = styled.div.attrs({
-  className: 'w-full space-y-0.5',
+  className: 'w-1/2 tablet:w-full space-y-0.5',
 })``;
 
 const TimeLabel = styled.span.attrs({
