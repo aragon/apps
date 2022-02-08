@@ -8,19 +8,29 @@ import {
   OverviewDAOHeader,
   OverviewDAOStep,
 } from 'containers/daoOverview';
+import SelectChain from 'containers/selectChainForm';
 import DefineMetadata from 'containers/defineMetadata';
 import ConfigureCommunity from 'containers/configureCommunity';
 import SetupCommunity from 'containers/setupCommunity';
 
+type FormData = {
+  links: {label: string; link: string}[];
+};
+
+const defaultValues = {
+  links: [{label: '', link: ''}],
+};
+
 const CreateDAO: React.FC = () => {
   const {t} = useTranslation();
-  const formMethods = useForm<FormData>({mode: 'onChange'});
+  const formMethods = useForm<FormData>({mode: 'onChange', defaultValues});
 
   return (
     <FormProvider {...formMethods}>
       <FullScreenStepper
         navbarBackUrl="/"
         navbarLabel={t('createDAO.title')}
+        totalFormSteps={4}
         wizardProcessName={t('createDAO.title')}
       >
         <Step
@@ -35,7 +45,7 @@ const CreateDAO: React.FC = () => {
           wizardTitle={t('createDAO.step1.title')}
           wizardDescription={t('createDAO.step1.description')}
         >
-          <h1>Step 1</h1>
+          <SelectChain />
         </Step>
         <Step
           wizardTitle={t('createDAO.step2.title')}
