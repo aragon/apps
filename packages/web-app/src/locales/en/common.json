@@ -111,12 +111,14 @@
     "notERC20Token": "Token address is not ERC20 compliant",
     "noTokenSelected": "A token must be selected",
     "required": {
-      "address": "Token address is required",
-      "amount": "Token amount is required",
+      "address": "Token address is mandatory",
+      "amount": "Token amount is mandatory",
       "label": "Label is mandatory",
       "link": "Link is mandatory",
-      "recipient": "Recipient address is required",
-      "token": "Token is required"
+      "recipient": "Recipient address is mandatory",
+      "token": "Token is mandatory",
+      "name": "DAO name is mandatory",
+      "summary": "A short summary is mandatory"
     }
   },
   "warnings": {
