@@ -38,11 +38,33 @@
     "submitDeposit": "Submit Deposit",
     "resources": "Resources",
     "submitWithdraw": "Publish Proposal",
+    "sortBy": "Sort by",
+    "mainNet": "Main Net",
+    "testNet": "Test Net",
+    "cheapest": "cheapest",
+    "safest": "safest",
+    "mostPopular": "most popular",
+    "networkCost": "Network Cost",
+    "security": "Security",
+    "popularity": "Popularity",
     "daoName": "Name",
     "description": "Summary",
+    "addLink": "Add Link",
+    "removeLink": "Remove Link",
+    "link": "Link",
     "links": "Links",
+    "label": "Label",
     "logo": "Logo",
-    "optional": "Optional"
+    "optional": "Optional",
+    "minimumApproval": "Minimum approval",
+    "support": "Support",
+    "duration": "Duration",
+    "membership": "Who is eligible to participate in your DAO?",
+    "communityToken": "Does your community have a token?",
+    "addExistingToken": "Add existing Token",
+    "existingTokenName": "Name",
+    "existingTokenSymbol": "Symbol",
+    "existingTokenSupply": "Supply"
   },
   "placeHolders": {
     "selectToken": "Select a Token ...",
@@ -75,7 +97,9 @@
         "read": "Read Proposal",
         "vote": "Vote now",
         "execute": "Execute Now",
-        "edit": "Edit Proposal"
+        "edit": "Edit Proposal",
+        "readFullProposal": "Read Full Proposal",
+        "closeFullProposal": "Close Full Proposal"
       }
     },
     "noProposals": "No proposals found!"
@@ -100,8 +124,14 @@
       "token": "Token is required"
     }
   },
+  "alert": {
+    "durationAlert": "We recommend a minimum duration of 1 day if it does not have to be a quick financial decision."
+  },
   "warnings": {
     "amountGtDaoToken": "Withdraw amount is greater than the current token balance"
+  },
+  "success": {
+    "contract": "Smart Contract Validated"
   },
   "allTransfer": {
     "thisWeek": "This Week",
@@ -176,12 +206,33 @@
     "step3": {
       "label": "Step 3",
       "title": "Setup Community",
-      "description": "Who is eligible to participate in the DAO? Create a token if needed."
+      "newToken": "No",
+      "newTokenSubtitle": "No, I would like to create a token.",
+      "existingToken": "Yes",
+      "existingTokenSubtitle": "Yes, we already have a token.",
+      "description": "Who is eligible to participate in the DAO? Create a token if needed.",
+      "tokenMembership": "Token Holders",
+      "tokenMembershipSubtitle": "All those who have a token are entitled to participate. 1 token equals 1 vote.",
+      "walletMemberShip": "Authorized Wallets",
+      "walletMemberShipSubtitle": "Only authorised wallets are entitled to particpiate. 1 Wallet equals 1 vote (coming soon).",
+      "addExistingTokenHelptext": "Hinterlege einen bestehenden Token, welcher deine Community für die Governance verwendet. To learn more about what it’s important if you use an existing Token, read first the ",
+      "tokenHelptextLink": "Token Distribution Guide",
+      "tokenContractSubtitlePart1": "Copy the contract address directly from the ",
+      "tokenContractSubtitlePart2": "This way you can ensure that the address is correct."
     },
     "step4": {
       "label": "Step 4",
       "title": "Configure Governance",
-      "description": "How are decisions made in the DAO? How long may a proposal be open for voting?"
+      "description": "How are decisions made in the DAO? How long may a proposal be open for voting?",
+      "minimumApprovalSubtitle": "Minimum Approval is the percentage of the total token supply that is required to vote “Yes” on a proposal before it can be approved.",
+      "supportSubtitle": "Support is the relative percentage of tokens or wallets that are required to vote “Yes” for a proposal to be approved.",
+      "durationSubtitle": "Vote Duration is the length of time that the vote will be open for participation. The duration applies to each proposal in the DAO. However, the proposers can extend the time if necessary, but not shorten it!",
+      "days": "Days",
+      "hours": "Hours",
+      "minutes": "Minutes",
+      "alerts": {
+        "minimumApprovalAlert": "{{amount}} {{symbol}} tokens"
+      }
     }
   }
 }
