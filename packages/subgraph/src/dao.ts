@@ -33,7 +33,8 @@ export function handleExecuted(event: Executed): void {
 function updateERC20Balance(
   balanceId: string,
   token: Address,
-  daoAddress: Address
+  daoAddress: Address,
+  timestamp: BigInt
 ): void {
   let daoId = daoAddress.toHexString();
   let entity = ERC20Balance.load(balanceId);
@@ -49,12 +50,14 @@ function updateERC20Balance(
   if (!daoBalance.reverted) {
     entity.balance = daoBalance.value;
   }
+  entity.lastUpdated = timestamp;
   entity.save();
 }
 
 function updateEthBalance(
   daoAddress: Address,
   amount: BigInt,
+  timestamp: BigInt,
   isDeposit: bool
 ): void {
   let daoId = daoAddress.toHexString();
@@ -71,6 +74,7 @@ function updateEthBalance(
     ? entity.balance.plus(amount)
     : entity.balance.minus(amount);
 
+  entity.lastUpdated = timestamp;
   entity.save();
 }
 
@@ -116,7 +120,7 @@ export function handleDeposited(event: Deposited): void {
   // handle token
   handleERC20Token(token);
   // update balance
-  updateERC20Balance(balanceId, token, event.address);
+  updateERC20Balance(balanceId, token, event.address, event.block.timestamp);
 
   let entity = new VaultDeposit(depositId);
   entity.dao = daoId;
@@ -142,7 +146,12 @@ export function handleETHDeposited(event: ETHDeposited): void {
   // handle token
   handleERC20Token(Address.fromString(ADDRESS_ZERO));
   // update Eth balance
-  updateEthBalance(event.address, event.params.amount, true);
+  updateEthBalance(
+    event.address,
+    event.params.amount,
+    event.block.timestamp,
+    true
+  );
 
   entity.dao = daoId;
   entity.token = Address.fromString(ADDRESS_ZERO);
@@ -167,11 +176,16 @@ export function handleWithdrawn(event: Withdrawn): void {
 
   if (token.toHexString() == ADDRESS_ZERO) {
     // update Eth balance
-    updateEthBalance(event.address, event.params.amount, false);
+    updateEthBalance(
+      event.address,
+      event.params.amount,
+      event.block.timestamp,
+      false
+    );
   } else {
     // update balance
     let balanceId = daoId + '_' + token.toHexString();
-    updateERC20Balance(balanceId, token, event.address);
+    updateERC20Balance(balanceId, token, event.address, event.block.timestamp);
   }
 
   entity.dao = daoId;
