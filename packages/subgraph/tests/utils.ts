@@ -1,5 +1,5 @@
 import {Address, ethereum} from '@graphprotocol/graph-ts';
-import {newMockEvent, createMockedFunction} from 'matchstick-as/assembly/index';
+import {createMockedFunction} from 'matchstick-as/assembly/index';
 
 export function createMockGetter(
   contractAddress: string,
