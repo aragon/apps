@@ -10,23 +10,55 @@ import {
 import React from 'react';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
-import {Control, Controller, FieldValues} from 'react-hook-form';
+import {Controller, useFormContext} from 'react-hook-form';
+
+import {URL_PATTERN} from 'utils/constants';
 
 type LinkRowProps = {
-  control: Control<FieldValues, object>;
   index: number;
   onDelete?: (index: number) => void;
 };
 
-const LinkRow: React.FC<LinkRowProps> = ({control, index, onDelete}) => {
+const LinkRow: React.FC<LinkRowProps> = ({index, onDelete}) => {
   const {t} = useTranslation();
+  const {control, formState, clearErrors, getValues, trigger} =
+    useFormContext();
+
+  const validator = (
+    currentValue: string,
+    linkedField: string,
+    isLink?: boolean
+  ) => {
+    const linkFieldValue = getValues(linkedField);
+
+    // Both empty return no errors
+    if (currentValue === '' && linkFieldValue === '') {
+      clearErrors(linkedField);
+      return true;
+    }
+
+    // linked field is empty and has no errors already
+    if (linkFieldValue === '' && formState.errors[linkedField] === undefined) {
+      trigger(linkedField);
+    }
+
+    // return specific error message when one is empty and the other not
+    return currentValue === ''
+      ? isLink
+        ? t('errors.required.link')
+        : t('errors.required.label')
+      : true;
+  };
 
   return (
     <Container data-testid="link-row">
       <LabelContainer>
         <Controller
-          name={`links.${index}.label`}
           control={control}
+          name={`links.${index}.label`}
+          rules={{
+            validate: value => validator(value, `links.${index}.link`),
+          }}
           render={({field, fieldState: {error}}) => (
             <>
               <LabelWrapper>
@@ -80,6 +112,13 @@ const LinkRow: React.FC<LinkRowProps> = ({control, index, onDelete}) => {
         <Controller
           name={`links.${index}.link`}
           control={control}
+          rules={{
+            validate: value => validator(value, `links.${index}.label`, true),
+            pattern: {
+              value: new RegExp(URL_PATTERN),
+              message: t('errors.invalidURL'),
+            },
+          }}
           render={({field, fieldState: {error}}) => (
             <>
               <LabelWrapper>
@@ -91,6 +130,7 @@ const LinkRow: React.FC<LinkRowProps> = ({control, index, onDelete}) => {
                 onBlur={field.onBlur}
                 onChange={field.onChange}
                 placeholder="https://"
+                type="url"
                 mode={error?.message ? 'critical' : 'default'}
               />
               {error?.message && (
