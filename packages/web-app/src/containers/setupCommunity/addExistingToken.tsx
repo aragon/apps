@@ -57,7 +57,11 @@ const AddExistingToken: React.FC = () => {
    *                    Hooks                      *
    *************************************************/
   useEffect(() => {
-    if (!account) return;
+    // (Temporary) complain about wallet
+    if (!account) {
+      alert('Please connect your wallet');
+      return;
+    }
 
     const resetTokenFields = () => {
       resetField('tokenName');
