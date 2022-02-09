@@ -6,4 +6,3 @@ export {TimeInput, TimeInputProps} from './timeInput';
 export {DateInput, DateInputProps} from './dateInput';
 export * from './inputImageSingle';
 export * from './valueInput';
-export * from './dateInput';
