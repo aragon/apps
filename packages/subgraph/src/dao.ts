@@ -68,27 +68,31 @@ function handleERC20Token(token: Address): void {
   let entity = ERC20Token.load(token.toHexString());
   if (!entity) {
     entity = new ERC20Token(token.toHexString());
+
     if (token.toHexString() == ADDRESS_ZERO) {
       entity.name = 'Ethereum (Canonical)';
       entity.symbol = 'ETH';
       entity.decimals = BigInt.fromString('18');
       entity.save();
-    } else {
-      let tokenContract = GovernanceWrappedERC20.bind(token);
-      let tokenName = tokenContract.try_name();
-      let tokenSymbol = tokenContract.try_symbol();
-      let tokenDecimals = tokenContract.try_decimals();
-      if (
-        !tokenName.reverted &&
-        !tokenSymbol.reverted &&
-        !tokenDecimals.reverted
-      ) {
-        entity.name = tokenName.value;
-        entity.symbol = tokenSymbol.value;
-        entity.decimals = BigInt.fromString(tokenDecimals.value.toString());
-      }
-      entity.save();
+      return;
     }
+
+    let tokenContract = GovernanceWrappedERC20.bind(token);
+    let tokenName = tokenContract.try_name();
+    let tokenSymbol = tokenContract.try_symbol();
+    let tokenDecimals = tokenContract.try_decimals();
+
+    if (
+      !tokenName.reverted &&
+      !tokenSymbol.reverted &&
+      !tokenDecimals.reverted
+    ) {
+      entity.name = tokenName.value;
+      entity.symbol = tokenSymbol.value;
+      entity.decimals = BigInt.fromString(tokenDecimals.value.toString());
+    }
+
+    entity.save();
   }
 }
 
