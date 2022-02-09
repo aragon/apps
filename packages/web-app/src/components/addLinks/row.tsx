@@ -7,12 +7,12 @@ import {
   Popover,
   TextInput,
 } from '@aragon/ui-components';
-import React from 'react';
+import React, {useCallback} from 'react';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
-import {Controller, useFormContext} from 'react-hook-form';
+import {Controller, useFormContext, useFormState} from 'react-hook-form';
 
-import {URL_PATTERN} from 'utils/constants';
+import {EMAIL_PATTERN, URL_PATTERN} from 'utils/constants';
 
 type LinkRowProps = {
   index: number;
@@ -21,35 +21,61 @@ type LinkRowProps = {
 
 const LinkRow: React.FC<LinkRowProps> = ({index, onDelete}) => {
   const {t} = useTranslation();
-  const {control, formState, clearErrors, getValues, trigger} =
-    useFormContext();
+  const {control, clearErrors, getValues, trigger} = useFormContext();
+  const {errors} = useFormState();
 
-  const validator = (
-    currentValue: string,
-    linkedField: string,
-    isLink?: boolean
-  ) => {
-    const linkFieldValue = getValues(linkedField);
+  /*************************************************
+   *                Field Validators               *
+   *************************************************/
+  const linkedFieldsAreValid = useCallback(
+    (currentValue: string, linkedField: string) => {
+      const linkedFieldValue = getValues(linkedField);
 
-    // Both empty return no errors
-    if (currentValue === '' && linkFieldValue === '') {
-      clearErrors(linkedField);
-      return true;
-    }
+      // both empty return no errors
+      if (currentValue === '' && linkedFieldValue === '') {
+        clearErrors(linkedField);
+        return true;
+      }
 
-    // linked field is empty and has no errors already
-    if (linkFieldValue === '' && formState.errors[linkedField] === undefined) {
-      trigger(linkedField);
-    }
+      // linked field is empty and has no errors already
+      if (linkedFieldValue === '' && errors[linkedField] === undefined) {
+        trigger(linkedField);
+      }
 
-    // return specific error message when one is empty and the other not
-    return currentValue === ''
-      ? isLink
-        ? t('errors.required.link')
-        : t('errors.required.label')
-      : true;
-  };
+      // further validation necessary
+      return false;
+    },
+    [clearErrors, errors, getValues, trigger]
+  );
 
+  const labelValidator = useCallback(
+    (label: string, index: number) => {
+      if (linkedFieldsAreValid(label, `links.${index}.link`)) return;
+
+      return label === '' ? t('errors.required.label') : true;
+    },
+    [linkedFieldsAreValid, t]
+  );
+
+  const linkValidator = useCallback(
+    (url: string, index: number) => {
+      if (linkedFieldsAreValid(url, `links.${index}.label`)) return;
+
+      // check if url is empty
+      if (url === '') return t('errors.required.link');
+
+      // check if url is email or url || EMAIL_PATTERN.test(url)
+      return new RegExp(URL_PATTERN).test(url) ||
+        RegExp(EMAIL_PATTERN).test(url)
+        ? true
+        : t('errors.invalidURL');
+    },
+    [linkedFieldsAreValid, t]
+  );
+
+  /*************************************************
+   *                    Render                     *
+   *************************************************/
   return (
     <Container data-testid="link-row">
       <LabelContainer>
@@ -57,7 +83,7 @@ const LinkRow: React.FC<LinkRowProps> = ({index, onDelete}) => {
           control={control}
           name={`links.${index}.label`}
           rules={{
-            validate: value => validator(value, `links.${index}.link`),
+            validate: value => labelValidator(value, index),
           }}
           render={({field, fieldState: {error}}) => (
             <>
@@ -113,11 +139,7 @@ const LinkRow: React.FC<LinkRowProps> = ({index, onDelete}) => {
           name={`links.${index}.link`}
           control={control}
           rules={{
-            validate: value => validator(value, `links.${index}.label`, true),
-            pattern: {
-              value: new RegExp(URL_PATTERN),
-              message: t('errors.invalidURL'),
-            },
+            validate: value => linkValidator(value, index),
           }}
           render={({field, fieldState: {error}}) => (
             <>
@@ -130,7 +152,6 @@ const LinkRow: React.FC<LinkRowProps> = ({index, onDelete}) => {
                 onBlur={field.onBlur}
                 onChange={field.onChange}
                 placeholder="https://"
-                type="url"
                 mode={error?.message ? 'critical' : 'default'}
               />
               {error?.message && (
