@@ -133,7 +133,7 @@ const AddExistingToken: React.FC = () => {
           }}
           render={({
             field: {name, value, onBlur, onChange},
-            fieldState: {error, isDirty},
+            fieldState: {error, isDirty, invalid},
           }) => (
             <>
               <SearchInput
@@ -143,7 +143,7 @@ const AddExistingToken: React.FC = () => {
               {error?.message && (
                 <AlertInline label={error.message} mode="critical" />
               )}
-              {!error?.message && isDirty && (
+              {!invalid && isDirty && (
                 <AlertInline label={t('success.contract')} mode="success" />
               )}
             </>
