@@ -92,7 +92,7 @@ describe('Core: TokenFactory', () => {
         dao.address,
         config,
         mintConfig
-      )).to.revertedWith('Address: low-level delegate call failed');
+      )).to.revertedWith('Address: low-level call failed');
     })
 
     it('should create a GovernanceWrappedERC20 clone', async () => {
