@@ -1,16 +1,16 @@
 # Types
 
-# Apps
+# Governances
 
-type DaoApp @entity {
-  id: ID! # Dao + App
-  app: App!
+type DaoGovernance @entity {
+  id: ID! # Dao + Governance
+  governance: Governance!
   dao: Dao!
 }
 
-type App @entity {
+type Governance @entity {
   id: ID! # address
-  daos: [DaoApp!] @derivedFrom(field: "app")
+  daos: [DaoGovernance!] @derivedFrom(field: "governance")
 }
 
 # Token
@@ -94,5 +94,5 @@ type Dao @entity {
   balances: [Balance!] @derivedFrom(field: "dao")
   roles: [Role!]! @derivedFrom(field: "dao")
   permissions: [Permission!]! @derivedFrom(field: "dao")
-  apps: [DaoApp!] @derivedFrom(field: "dao")
+  governances: [DaoGovernance!] @derivedFrom(field: "dao")
 }

@@ -28,7 +28,7 @@ dataSources:
 # templates
 templates:
   # DAO
-  - name: DAO
+  - name: DaoTemplate
     kind: ethereum/contract
     network: {{network}}
     source:
@@ -72,7 +72,7 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      file: ./src/apps/simpleVoting.ts
+      file: ./src/governances/simpleVoting.ts
       entities:
         - Dao
       abis:

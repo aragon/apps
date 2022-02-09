@@ -5,7 +5,7 @@ import {
   ETHDeposited,
   Deposited,
   Withdrawn
-} from '../../generated/templates/DAO/DAO';
+} from '../../generated/templates/DaoTemplate/DAO';
 import {createMockGetter} from '../utils';
 
 export function createNewSetMetadataEvent(
