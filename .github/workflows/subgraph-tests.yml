@@ -12,6 +12,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         network: ['localhost', 'rinkeby', 'arbitrum-rinkeby']
     defaults:
@@ -27,6 +28,8 @@ jobs:
         run: npm i -G yarn
       - name: Install dependencies
         run: yarn
+      - name: Build contracts
+        run: yarn run build:contracts
       - name: Build manifest
         run: yarn run manifest
         env:
