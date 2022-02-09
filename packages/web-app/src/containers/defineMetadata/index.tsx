@@ -5,26 +5,50 @@ import {
   TextareaSimple,
   TextInput,
 } from '@aragon/ui-components';
-import React from 'react';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
-import {Controller, useFormContext, useFormState} from 'react-hook-form';
+import React, {useCallback} from 'react';
+import {Controller, FieldError, useFormContext} from 'react-hook-form';
 
 import AddLinks from 'components/addLinks';
 
+const DAO_LOGO = {
+  maxDimension: 2400,
+  minDimension: 256,
+  maxFileSize: 3000000,
+};
+
 const DefineMetadata: React.FC = () => {
   const {t} = useTranslation();
-  const {errors} = useFormState();
-  const {control, clearErrors, setError, setValue} = useFormContext();
+  const {control, setError} = useFormContext();
 
-  const handleImageError = (error: {code: string; message: string}) => {
-    setError('daoLogo', {type: 'manual', message: error.message});
-  };
+  const handleImageError = useCallback(
+    (error: {code: string; message: string}) => {
+      const imgError: FieldError = {type: 'manual'};
+      const {minDimension, maxDimension, maxFileSize} = DAO_LOGO;
 
-  const handleImageChange = (value: File | null) => {
-    setValue('daoLogo', value);
-    clearErrors('daoLogo');
-  };
+      switch (error.code) {
+        case 'file-invalid-type':
+          imgError.message = t('errors.invalidImageType');
+          break;
+        case 'file-too-large':
+          imgError.message = t('errors.imageTooLarge', {maxFileSize});
+          break;
+        case 'wrong-dimension':
+          imgError.message = t('errors.imageDimensions', {
+            minDimension,
+            maxDimension,
+          });
+          break;
+        default:
+          imgError.message = t('errors.invalidImage');
+          break;
+      }
+
+      setError('daoLogo', imgError);
+    },
+    [setError, t]
+  );
 
   return (
     <>
@@ -46,10 +70,7 @@ const DefineMetadata: React.FC = () => {
           }) => (
             <>
               <TextInput
-                name={name}
-                value={value}
-                onBlur={onBlur}
-                onChange={onChange}
+                {...{name, value, onBlur, onChange}}
                 placeholder={t('placeHolders.daoName')}
               />
               {error?.message && (
@@ -69,19 +90,25 @@ const DefineMetadata: React.FC = () => {
           badgeLabel={t('labels.optional')}
         />
 
-        <LogoContainer>
-          <InputImageSingle
-            onError={handleImageError}
-            onChange={handleImageChange}
-            maxFileSize={3000000}
-            maxDimension={2400}
-            minDimension={256}
-            onlySquare
-          />
-        </LogoContainer>
-        {errors?.daoLogo?.message && (
-          <AlertInline label={errors?.daoLogo?.message} mode="critical" />
-        )}
+        <Controller
+          name="daoLogo"
+          control={control}
+          render={({field: {onChange}, fieldState: {error}}) => (
+            <>
+              <LogoContainer>
+                <InputImageSingle
+                  {...{DAO_LOGO}}
+                  onError={handleImageError}
+                  onChange={onChange}
+                  onlySquare
+                />
+              </LogoContainer>
+              {error?.message && (
+                <AlertInline label={error.message} mode="critical" />
+              )}
+            </>
+          )}
+        />
       </FormItem>
 
       {/* Summary */}
