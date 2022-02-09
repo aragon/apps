@@ -1,7 +1,7 @@
 import React from 'react';
 import {Modal, ModalProps} from '@aragon/ui-components';
 import BottomSheet from 'components/bottomSheet';
-import useMediaQuery from 'hooks/useMediaQuery';
+import useScreen from 'hooks/useScreen';
 
 const ModalBottomSheetSwitcher: React.FC<ModalProps> = ({
   title,
@@ -10,7 +10,7 @@ const ModalBottomSheetSwitcher: React.FC<ModalProps> = ({
   onClose,
   children,
 }) => {
-  const isDesktop = useMediaQuery('(min-width: 1024px)');
+  const {isDesktop} = useScreen();
 
   return (
     <>
