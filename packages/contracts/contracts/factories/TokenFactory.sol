@@ -23,11 +23,13 @@ contract TokenFactory {
     using Address for address;
     using Clones for address;
 
-    address private governanceERC20Base;
-    address private governanceWrappedERC20Base;
-    address private merkleMinterBase;
+    address public governanceERC20Base;
+    address public governanceWrappedERC20Base;
+    address public merkleMinterBase;
 
-    MerkleDistributor private distributorBase;
+    MerkleDistributor public distributorBase;
+
+    event TokenCreated(IERC20Upgradeable token, MerkleMinter minter, MerkleDistributor distributor);
 
     struct TokenConfig {
         address addr;
@@ -39,8 +41,6 @@ contract TokenFactory {
         address[] receivers;
         uint256[] amounts;
     }
-
-    event DAOCreated(string name, address indexed token, address indexed voting);
 
     constructor() {
         setupBases();
@@ -62,6 +62,13 @@ contract TokenFactory {
 
         // deploy token
         if(token != address(0)) {
+            // Validate if token is ERC20
+            // Not Enough Checks, but better than nothing.
+            token.functionCall(abi.encodeWithSelector(
+                IERC20Upgradeable.balanceOf.selector, 
+                address(this)
+            )); 
+            
             token = governanceWrappedERC20Base.clone();
             // user already has a token. we need to wrap it in 
             // GovernanceWrappedERC20 in order to make the token
@@ -91,6 +98,13 @@ contract TokenFactory {
             _dao,
             GovernanceERC20(token),
             distributorBase
+        );
+
+        // emit event for new token
+        emit TokenCreated(
+            IERC20Upgradeable(token),
+            MerkleMinter(merkleMinter),
+            MerkleDistributor(distributorBase)
         );
 
         bytes32 tokenMinterRole  = GovernanceERC20(token).TOKEN_MINTER_ROLE();

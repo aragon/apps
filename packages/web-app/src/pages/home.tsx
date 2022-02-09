@@ -4,10 +4,12 @@ import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
 import {ButtonText} from '@aragon/ui-components';
 import {useNavigate} from 'react-router-dom';
+import {useGlobalModalContext} from 'context/globalModals';
 
 const Home: React.FC = () => {
   const {t} = useTranslation();
   const navigate = useNavigate();
+  const {open} = useGlobalModalContext();
 
   return (
     <>
@@ -18,13 +20,19 @@ const Home: React.FC = () => {
           <Subtitle>{t('title.part2')}</Subtitle>
         </div>
       </div>
-      <div className="flex justify-center">
-        <ButtonText
-          label="Create DAO"
-          size="large"
-          onClick={() => navigate('/create-dao')}
-        />
-      </div>
+
+      <ButtonText
+        label="Create DAO"
+        className="mx-auto"
+        size="large"
+        onClick={() => navigate('/create-dao')}
+      />
+      <ButtonText
+        label="Open Transaction Modal"
+        className="mx-auto mt-3"
+        size="large"
+        onClick={() => open('transaction')}
+      />
     </>
   );
 };
