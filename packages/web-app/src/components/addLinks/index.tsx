@@ -31,7 +31,7 @@ const AddLinks: React.FC<AddLinks> = ({buttonPlusIcon}) => {
               key={field.id}
               index={index}
               control={control}
-              {...(fields.length > 1 ? {onDelete: () => remove(index)} : {})}
+              onDelete={() => remove(index)}
             />
           ))}
         </ListGroup>
