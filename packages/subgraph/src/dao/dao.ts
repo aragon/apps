@@ -1,20 +1,28 @@
 import {
+  DAO as DAOContract,
   SetMetadata,
   Executed,
   Deposited,
   ETHDeposited,
-  Withdrawn
-} from '../generated/templates/DAO/DAO';
-import {GovernanceWrappedERC20} from '../generated/templates/DAO/GovernanceWrappedERC20';
+  Withdrawn,
+  Granted,
+  Frozen,
+  Revoked
+} from '../../generated/templates/DAO/DAO';
+import {GovernanceWrappedERC20} from '../../generated/templates/DAO/GovernanceWrappedERC20';
 import {
   Dao,
   VaultDeposit,
   VaultWithdraw,
   ERC20Token,
-  Balance
-} from '../generated/schema';
-import {Address, BigInt} from '@graphprotocol/graph-ts';
-import {ADDRESS_ZERO} from './utils/constants';
+  Balance,
+  Role,
+  Permission,
+  DaoApp,
+  App
+} from '../../generated/schema';
+import {Address, BigInt, store} from '@graphprotocol/graph-ts';
+import {ADDRESS_ZERO} from '../utils/constants';
 
 export function handleSetMetadata(event: SetMetadata): void {
   let id = event.address.toHexString();
@@ -205,4 +213,100 @@ export function handleWithdrawn(event: Withdrawn): void {
   entity.reference = event.params._reference;
   entity.createdAt = event.block.timestamp;
   entity.save();
+}
+
+function addApp(daoId: string, who: string): void {
+  let daoAppEntityId = daoId + '_' + who;
+  let daoAppEntity = new DaoApp(daoAppEntityId);
+  daoAppEntity.app = who;
+  daoAppEntity.dao = daoId;
+  daoAppEntity.save();
+
+  // app
+  let appEntity = App.load(who);
+  if (!appEntity) {
+    appEntity = new App(who);
+    appEntity.save();
+  }
+}
+
+function removeApp(daoId: string, who: string): void {
+  let daoAppEntityId = daoId + '_' + who;
+  let daoAppEntity = DaoApp.load(daoAppEntityId);
+  if (daoAppEntity) {
+    store.remove('DaoApp', daoAppEntityId);
+  }
+}
+
+export function handleGranted(event: Granted): void {
+  // Role
+  let daoId = event.address.toHexString();
+  let roleEntityId =
+    event.params.where.toHexString() + '_' + event.params.role.toHexString();
+  let roleEntity = Role.load(roleEntityId);
+  if (!roleEntity) {
+    roleEntity = new Role(roleEntityId);
+    roleEntity.dao = daoId;
+    roleEntity.where = event.params.where;
+    roleEntity.role = event.params.role;
+    roleEntity.frozen = false;
+    roleEntity.save();
+  }
+
+  // Permission
+  let permissionId = roleEntityId + '_' + event.params.who.toHexString();
+  let permissionEntity = new Permission(permissionId);
+  permissionEntity.dao = daoId;
+  permissionEntity.role = roleEntityId;
+  permissionEntity.where = event.params.where;
+  permissionEntity.who = event.params.who;
+  permissionEntity.actor = event.params.actor;
+  permissionEntity.oracle = event.params.oracle;
+  permissionEntity.save();
+
+  // App
+  // TODO: rethink this once the market place is ready
+  let daoContract = DAOContract.bind(event.address);
+  let executionRole = daoContract.try_EXEC_ROLE();
+  if (!executionRole.reverted && event.params.role == executionRole.value) {
+    addApp(daoId, event.params.who.toHexString());
+  }
+}
+
+export function handleRevoked(event: Revoked): void {
+  // permission
+  let permissionId =
+    event.params.where.toHexString() +
+    '_' +
+    event.params.role.toHexString() +
+    '_' +
+    event.params.who.toHexString();
+  let permissionEntity = Permission.load(permissionId);
+  if (permissionEntity) {
+    store.remove('Permission', permissionId);
+  }
+
+  // App
+  // TODO: rethink this once the market place is ready
+  let daoId = event.address.toHexString();
+  let daoContract = DAOContract.bind(event.address);
+  let executionRole = daoContract.try_EXEC_ROLE();
+  if (!executionRole.reverted && event.params.role == executionRole.value) {
+    removeApp(daoId, event.params.who.toHexString());
+  }
+}
+
+export function handleFrozen(event: Frozen): void {
+  let daoId = event.address.toHexString();
+  let roleEntityId =
+    event.params.where.toHexString() + '_' + event.params.role.toHexString();
+  let roleEntity = Role.load(roleEntityId);
+  if (!roleEntity) {
+    roleEntity = new Role(roleEntityId);
+    roleEntity.dao = daoId;
+    roleEntity.where = event.params.where;
+    roleEntity.role = event.params.role;
+  }
+  roleEntity.frozen = true;
+  roleEntity.save();
 }
