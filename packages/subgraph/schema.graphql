@@ -8,7 +8,7 @@ type ERC20Token @entity {
   decimals: BigInt!
 }
 
-type ERC20Balance @entity {
+type Balance @entity {
   id: ID! # token address + dao address
   token: ERC20Token! # address(0) will be considered as ETH (or canonical token)
   dao: Dao!
@@ -55,5 +55,5 @@ type Dao @entity {
   actions: [Action!]! @derivedFrom(field: "dao")
   deposits: [VaultDeposit!]! @derivedFrom(field: "dao")
   withdraws: [VaultWithdraw!]! @derivedFrom(field: "dao")
-  balances: [ERC20Balance!] @derivedFrom(field: "dao")
+  balances: [Balance!] @derivedFrom(field: "dao")
 }

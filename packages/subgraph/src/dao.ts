@@ -11,7 +11,7 @@ import {
   VaultDeposit,
   VaultWithdraw,
   ERC20Token,
-  ERC20Balance
+  Balance
 } from '../generated/schema';
 import {Address, BigInt} from '@graphprotocol/graph-ts';
 import {ADDRESS_ZERO} from './utils/constants';
@@ -29,49 +29,36 @@ export function handleExecuted(event: Executed): void {
   // TODO:
 }
 
-function updateERC20Balance(
+function updateBalance(
   balanceId: string,
-  token: Address,
   daoAddress: Address,
+  token: Address,
+  amount: BigInt,
+  isDeposit: boolean,
   timestamp: BigInt
 ): void {
   let daoId = daoAddress.toHexString();
-  let entity = ERC20Balance.load(balanceId);
+  let entity = Balance.load(balanceId);
 
   if (!entity) {
-    entity = new ERC20Balance(balanceId);
+    entity = new Balance(balanceId);
     entity.token = token.toHexString();
     entity.dao = daoId;
   }
 
-  let tokenContract = GovernanceWrappedERC20.bind(token);
-  let daoBalance = tokenContract.try_balanceOf(daoAddress);
-  if (!daoBalance.reverted) {
-    entity.balance = daoBalance.value;
+  if (token.toHexString() == ADDRESS_ZERO) {
+    // ETH
+    entity.balance = isDeposit
+      ? entity.balance.plus(amount)
+      : entity.balance.minus(amount);
+  } else {
+    // ERC20 token
+    let tokenContract = GovernanceWrappedERC20.bind(token);
+    let daoBalance = tokenContract.try_balanceOf(daoAddress);
+    if (!daoBalance.reverted) {
+      entity.balance = daoBalance.value;
+    }
   }
-  entity.lastUpdated = timestamp;
-  entity.save();
-}
-
-function updateEthBalance(
-  daoAddress: Address,
-  amount: BigInt,
-  timestamp: BigInt,
-  isDeposit: boolean
-): void {
-  let daoId = daoAddress.toHexString();
-  let balanceId = daoId + '_' + ADDRESS_ZERO;
-  let entity = ERC20Balance.load(balanceId);
-
-  if (!entity) {
-    entity = new ERC20Balance(balanceId);
-    entity.token = ADDRESS_ZERO;
-    entity.dao = daoId;
-  }
-
-  entity.balance = isDeposit
-    ? entity.balance.plus(amount)
-    : entity.balance.minus(amount);
 
   entity.lastUpdated = timestamp;
   entity.save();
@@ -119,7 +106,14 @@ export function handleDeposited(event: Deposited): void {
   // handle token
   handleERC20Token(token);
   // update balance
-  updateERC20Balance(balanceId, token, event.address, event.block.timestamp);
+  updateBalance(
+    balanceId,
+    event.address,
+    token,
+    event.params.amount,
+    true,
+    event.block.timestamp
+  );
 
   let entity = new VaultDeposit(depositId);
   entity.dao = daoId;
@@ -141,15 +135,18 @@ export function handleETHDeposited(event: ETHDeposited): void {
     event.transactionLogIndex.toHexString();
 
   let entity = new VaultDeposit(id);
+  let balanceId = daoId + '_' + ADDRESS_ZERO;
 
   // handle token
   handleERC20Token(Address.fromString(ADDRESS_ZERO));
   // update Eth balance
-  updateEthBalance(
+  updateBalance(
+    balanceId,
     event.address,
+    Address.fromString(ADDRESS_ZERO),
     event.params.amount,
-    event.block.timestamp,
-    true
+    true,
+    event.block.timestamp
   );
 
   entity.dao = daoId;
@@ -175,16 +172,26 @@ export function handleWithdrawn(event: Withdrawn): void {
 
   if (token.toHexString() == ADDRESS_ZERO) {
     // update Eth balance
-    updateEthBalance(
+    let balanceId = daoId + '_' + ADDRESS_ZERO;
+    updateBalance(
+      balanceId,
       event.address,
+      Address.fromString(ADDRESS_ZERO),
       event.params.amount,
-      event.block.timestamp,
-      false
+      false,
+      event.block.timestamp
     );
   } else {
     // update balance
     let balanceId = daoId + '_' + token.toHexString();
-    updateERC20Balance(balanceId, token, event.address, event.block.timestamp);
+    updateBalance(
+      balanceId,
+      event.address,
+      token,
+      event.params.amount,
+      false,
+      event.block.timestamp
+    );
   }
 
   entity.dao = daoId;

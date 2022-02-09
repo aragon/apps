@@ -115,7 +115,7 @@ test('Run dao (handleDeposited) mappings with mock event', () => {
   );
   // check balance
   assert.fieldEquals(
-    'ERC20Balance',
+    'Balance',
     Address.fromString(daoAddress).toHexString() +
       '_' +
       Address.fromString(daiAddress).toHexString(),
@@ -125,7 +125,7 @@ test('Run dao (handleDeposited) mappings with mock event', () => {
       Address.fromString(daiAddress).toHexString()
   );
   assert.fieldEquals(
-    'ERC20Balance',
+    'Balance',
     Address.fromString(daoAddress).toHexString() +
       '_' +
       Address.fromString(daiAddress).toHexString(),
@@ -133,7 +133,7 @@ test('Run dao (handleDeposited) mappings with mock event', () => {
     Address.fromString(daiAddress).toHexString()
   );
   assert.fieldEquals(
-    'ERC20Balance',
+    'Balance',
     Address.fromString(daoAddress).toHexString() +
       '_' +
       Address.fromString(daiAddress).toHexString(),
@@ -141,7 +141,7 @@ test('Run dao (handleDeposited) mappings with mock event', () => {
     Address.fromString(daoAddress).toHexString()
   );
   assert.fieldEquals(
-    'ERC20Balance',
+    'Balance',
     Address.fromString(daoAddress).toHexString() +
       '_' +
       Address.fromString(daiAddress).toHexString(),
@@ -227,7 +227,7 @@ test('Run dao (handleDeposited and handleWithdrawn for ETH)', () => {
 
   // check balance
   assert.fieldEquals(
-    'ERC20Balance',
+    'Balance',
     Address.fromString(daoAddress).toHexString() +
       '_' +
       Address.fromString(addressZero).toHexString(),
@@ -262,7 +262,7 @@ test('Run dao (handleDeposited and handleWithdrawn for ETH)', () => {
   // check balance again
   // check balance
   assert.fieldEquals(
-    'ERC20Balance',
+    'Balance',
     Address.fromString(daoAddress).toHexString() +
       '_' +
       Address.fromString(addressZero).toHexString(),
@@ -292,7 +292,7 @@ test('Run dao (handleDeposite and handleWithdrawn for token)', () => {
   handleDeposited(newDepositEvent);
 
   assert.fieldEquals(
-    'ERC20Balance',
+    'Balance',
     Address.fromString(daoAddress).toHexString() +
       '_' +
       Address.fromString(daiAddress).toHexString(),
@@ -314,7 +314,7 @@ test('Run dao (handleDeposite and handleWithdrawn for token)', () => {
   handleWithdrawn(newWithdrawEvent);
 
   assert.fieldEquals(
-    'ERC20Balance',
+    'Balance',
     Address.fromString(daoAddress).toHexString() +
       '_' +
       Address.fromString(daiAddress).toHexString(),
