@@ -32,15 +32,17 @@ const AddExistingToken: React.FC = () => {
   const {control, resetField, setValue} = useFormContext();
   const {errors} = useFormState({control});
 
-  const [address, chainId, name, symbol, totalSupply] = useWatch({
-    name: [
-      'tokenAddress',
-      'blockchain',
-      'tokenName',
-      'tokenSymbol',
-      'tokenTotalSupply',
-    ],
-  });
+  const [address, chainId, tokenName, tokenSymbol, tokenTotalSupply] = useWatch(
+    {
+      name: [
+        'tokenAddress',
+        'blockchain',
+        'tokenName',
+        'tokenSymbol',
+        'tokenTotalSupply',
+      ],
+    }
+  );
 
   const explorer = useMemo(() => {
     if (chainId) {
@@ -87,7 +89,7 @@ const AddExistingToken: React.FC = () => {
       }
     };
 
-    if (errors.tokenAddress !== undefined && name !== '') {
+    if (errors.tokenAddress !== undefined && tokenName !== '') {
       resetTokenFields();
     } else {
       fetchContractInfo();
@@ -96,7 +98,7 @@ const AddExistingToken: React.FC = () => {
     account,
     address,
     errors.tokenAddress,
-    name,
+    tokenName,
     provider,
     resetField,
     setValue,
@@ -127,8 +129,7 @@ const AddExistingToken: React.FC = () => {
           defaultValue=""
           rules={{
             required: t('errors.required.address'),
-            validate: async value =>
-              await validateTokenAddress(value, provider),
+            validate: async value => validateTokenAddress(value, provider),
           }}
           render={({
             field: {name, value, onBlur, onChange},
@@ -148,15 +149,15 @@ const AddExistingToken: React.FC = () => {
             </>
           )}
         />
-        {name && (
+        {tokenName && (
           <TokenInfoContainer>
             <InfoContainer>
               <Label label={t('labels.existingTokenName')} />
-              <TextInput disabled value={name} />
+              <TextInput disabled value={tokenName} />
             </InfoContainer>
             <InfoContainer>
               <Label label={t('labels.existingTokenSymbol')} />
-              <TextInput disabled value={symbol} />
+              <TextInput disabled value={tokenSymbol} />
             </InfoContainer>
             <InfoContainer>
               <Label label={t('labels.existingTokenSupply')} />
@@ -164,7 +165,7 @@ const AddExistingToken: React.FC = () => {
                 disabled
                 value={new Intl.NumberFormat('en-US', {
                   maximumFractionDigits: 4,
-                }).format(totalSupply)}
+                }).format(tokenTotalSupply)}
               />
             </InfoContainer>
           </TokenInfoContainer>
