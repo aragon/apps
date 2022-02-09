@@ -12,30 +12,34 @@ import {
 import React, {useEffect} from 'react';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
-import {Control, Controller, FieldValues} from 'react-hook-form';
+import {
+  Control,
+  Controller,
+  FieldValues,
+  useFormContext,
+} from 'react-hook-form';
 
 import {handleClipboardActions} from 'utils/library';
+import {useWallet} from 'context/augmentedWallet';
 
 type LinkRowProps = {
   control: Control<FieldValues, object>;
   index: number;
   onDelete?: (index: number) => void;
   fieldset: Record<'id', string>[];
+  totalTokenSupply: number;
 };
 
 const LinkRow: React.FC<LinkRowProps> = ({
   control,
   index,
   fieldset,
+  totalTokenSupply,
   onDelete,
 }) => {
+  let sharePercentage: number;
   const {t} = useTranslation();
-
-  useEffect(() => {
-    fieldset.forEach((data, fieldIndex) => {
-      if (fieldIndex !== index) console.log(data);
-    });
-  }, []);
+  const {account} = useWallet();
 
   return (
     <Container data-testid="link-row">
@@ -51,7 +55,7 @@ const LinkRow: React.FC<LinkRowProps> = ({
               <ValueInput
                 mode={error ? 'critical' : 'default'}
                 name={field.name}
-                value={field.value}
+                value={field.value === account ? 'My Wallet' : field.value}
                 onBlur={field.onBlur}
                 onChange={field.onChange}
                 disabled={index === 0}
@@ -59,7 +63,10 @@ const LinkRow: React.FC<LinkRowProps> = ({
                   field.value ? t('labels.copy') : t('labels.paste')
                 }
                 onAdornmentClick={() =>
-                  handleClipboardActions(field.value, field.onChange)
+                  handleClipboardActions(
+                    field.value === account ? account : field.value,
+                    field.onChange
+                  )
                 }
               />
               {error?.message && (
@@ -142,6 +149,7 @@ const LinkRow: React.FC<LinkRowProps> = ({
                 name={field.name}
                 onBlur={field.onBlur}
                 onChange={field.onChange}
+                value={sharePercentage}
                 mode="default"
                 disabled
               />

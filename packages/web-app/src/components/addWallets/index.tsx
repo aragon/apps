@@ -8,12 +8,25 @@ import Row from './row';
 import Header from './header';
 import Footer from './footer';
 
-const TOTAL_SUPPLY = 100;
-
 const AddWallets: React.FC = () => {
   const {t} = useTranslation();
-  const {control} = useFormContext();
+  const {control, watch, setValue} = useFormContext();
   const {fields, append, remove} = useFieldArray({name: 'wallets', control});
+  const walletFieldArray = watch('wallets');
+  let totalSupply = 0;
+
+  const totalTokenSupply = () => {
+    totalSupply = 0;
+    if (walletFieldArray) {
+      walletFieldArray.forEach(
+        (wallet: any) => (totalSupply = parseInt(wallet.amount) + totalSupply)
+      );
+    }
+    // setValue('totalTokenSupply', totalSupply);
+    // return totalSupply;
+  };
+
+  totalTokenSupply();
 
   if (fields.length === 0) {
     append([
@@ -24,7 +37,7 @@ const AddWallets: React.FC = () => {
 
   // TODO: research focus after input refactor
   const handleAddLink = () => {
-    append({address: '', amount: ''});
+    append({address: '', amount: '0'});
   };
 
   return (
@@ -38,11 +51,15 @@ const AddWallets: React.FC = () => {
               index={index}
               control={control}
               fieldset={fields}
+              totalTokenSupply={totalSupply}
               {...(index !== 0 ? {onDelete: () => remove(index)} : {})}
             />
           );
         })}
-        <Footer totalAddresses={fields.length || 0} />
+        <Footer
+          totalAddresses={fields.length || 0}
+          totalTokenSupply={totalSupply}
+        />
       </ListGroup>
       <ButtonText
         label={t('labels.addLink')}

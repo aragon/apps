@@ -1,13 +1,18 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import styled from 'styled-components';
 import {Label} from '@aragon/ui-components';
 import {useTranslation} from 'react-i18next';
+import {useFormContext} from 'react-hook-form';
 
 type WalletsFooterProps = {
   totalAddresses: number;
+  totalTokenSupply: number;
 };
 
-const AddWalletsFooter: React.FC<WalletsFooterProps> = ({totalAddresses}) => {
+const AddWalletsFooter: React.FC<WalletsFooterProps> = ({
+  totalAddresses,
+  totalTokenSupply,
+}) => {
   const {t} = useTranslation();
 
   return (
@@ -18,7 +23,7 @@ const AddWalletsFooter: React.FC<WalletsFooterProps> = ({totalAddresses}) => {
         />
       </FooterItem1>
       <FooterItem1>
-        <StyledLabel>100</StyledLabel>
+        <StyledLabel>{totalTokenSupply}</StyledLabel>
       </FooterItem1>
       <FooterItem2>
         <StyledLabel>100%</StyledLabel>
