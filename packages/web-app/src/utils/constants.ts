@@ -25,6 +25,9 @@ export const enum TransferTypes {
   Withdraw = 'Withdraw',
 }
 
+export const URL_PATTERN =
+  '((http|https)://)(www.)?[a-zA-Z0-9@:%._\\+~#?&//=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%._\\+~#?&//=]*)';
+
 export const CHAIN_METADATA = {
   main: {
     42161: {
