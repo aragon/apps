@@ -61,10 +61,8 @@ const LinkRow: React.FC<LinkRowProps> = ({index, onDelete}) => {
     (url: string, index: number) => {
       if (linkedFieldsAreValid(url, `links.${index}.label`)) return;
 
-      // check if url is empty
       if (url === '') return t('errors.required.link');
 
-      // check if url is email or url || EMAIL_PATTERN.test(url)
       return new RegExp(URL_PATTERN).test(url) ||
         RegExp(EMAIL_PATTERN).test(url)
         ? true
