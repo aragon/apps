@@ -1,16 +1,16 @@
 # Types
 
-# Governances
+# Packages
 
-type DaoGovernance @entity {
-  id: ID! # Dao + Governance
-  governance: Governance!
+type DaoPackage @entity {
+  id: ID! # Dao + Package
+  pkg: Package!
   dao: Dao!
 }
 
-type Governance @entity {
+type Package @entity {
   id: ID! # address
-  daos: [DaoGovernance!] @derivedFrom(field: "governance")
+  daos: [DaoPackage!] @derivedFrom(field: "pkg")
 }
 
 # Token
@@ -94,5 +94,5 @@ type Dao @entity {
   balances: [Balance!] @derivedFrom(field: "dao")
   roles: [Role!]! @derivedFrom(field: "dao")
   permissions: [Permission!]! @derivedFrom(field: "dao")
-  governances: [DaoGovernance!] @derivedFrom(field: "dao")
+  packages: [DaoPackage!] @derivedFrom(field: "dao")
 }

@@ -1,10 +1,5 @@
 import {GovernanceWrappedERC20} from '../../generated/templates/DaoTemplate/GovernanceWrappedERC20';
-import {
-  ERC20Token,
-  Balance,
-  DaoGovernance,
-  Governance
-} from '../../generated/schema';
+import {ERC20Token, Balance, DaoPackage, Package} from '../../generated/schema';
 import {Address, BigInt, store} from '@graphprotocol/graph-ts';
 import {ADDRESS_ZERO} from '../utils/constants';
 
@@ -75,25 +70,25 @@ export function handleERC20Token(token: Address): void {
   }
 }
 
-export function addGovernance(daoId: string, who: string): void {
-  let daoGovernanceEntityId = daoId + '_' + who;
-  let daoGovernanceEntity = new DaoGovernance(daoGovernanceEntityId);
-  daoGovernanceEntity.governance = who;
-  daoGovernanceEntity.dao = daoId;
-  daoGovernanceEntity.save();
+export function addPackage(daoId: string, who: string): void {
+  let daoPackageEntityId = daoId + '_' + who;
+  let daoPackageEntity = new DaoPackage(daoPackageEntityId);
+  daoPackageEntity.pkg = who;
+  daoPackageEntity.dao = daoId;
+  daoPackageEntity.save();
 
-  // governance
-  let governanceEntity = Governance.load(who);
-  if (!governanceEntity) {
-    governanceEntity = new Governance(who);
-    governanceEntity.save();
+  // package
+  let packageEntity = Package.load(who);
+  if (!packageEntity) {
+    packageEntity = new Package(who);
+    packageEntity.save();
   }
 }
 
-export function removeGovernance(daoId: string, who: string): void {
-  let daoGovernanceEntityId = daoId + '_' + who;
-  let daoGovernanceEntity = DaoGovernance.load(daoGovernanceEntityId);
-  if (daoGovernanceEntity) {
-    store.remove('DaoGovernance', daoGovernanceEntityId);
+export function removePackage(daoId: string, who: string): void {
+  let daoPackageEntityId = daoId + '_' + who;
+  let daoPackageEntity = DaoPackage.load(daoPackageEntityId);
+  if (daoPackageEntity) {
+    store.remove('DaoPackage', daoPackageEntityId);
   }
 }

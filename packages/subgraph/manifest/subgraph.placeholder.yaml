@@ -72,7 +72,7 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
-      file: ./src/governances/simpleVoting.ts
+      file: ./src/packages/simpleVoting.ts
       entities:
         - Dao
       abis:

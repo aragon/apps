@@ -74,16 +74,16 @@ test('Run dao (handleGranted) mappings with mock event', () => {
   );
 
   // governance
-  let daoGovernanceEntityID =
+  let daoPackageEntityID =
     Address.fromString(daoAddress).toHexString() +
     '_' +
     Address.fromString(votingAddress).toHexString();
 
   assert.fieldEquals(
-    'DaoGovernance',
-    daoGovernanceEntityID,
+    'DaoPackage',
+    daoPackageEntityID,
     'id',
-    daoGovernanceEntityID
+    daoPackageEntityID
   );
 
   clearStore();
@@ -117,12 +117,12 @@ test('Run dao (handleGranted) mappings with reverted mocke call', () => {
   assert.fieldEquals('Role', roleEntityID, 'id', roleEntityID);
 
   // governance
-  let daoGovernanceEntityID =
+  let daoPackageEntityID =
     Address.fromString(daoAddress).toHexString() +
     '_' +
     Address.fromString(votingAddress).toHexString();
 
-  assert.notInStore('DaoGovernance', daoGovernanceEntityID);
+  assert.notInStore('DaoPackage', daoPackageEntityID);
 
   clearStore();
 });

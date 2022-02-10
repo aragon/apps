@@ -21,8 +21,8 @@ import {ADDRESS_ZERO} from '../utils/constants';
 import {
   updateBalance,
   handleERC20Token,
-  addGovernance,
-  removeGovernance
+  addPackage,
+  removePackage
 } from './utils';
 
 export function handleSetMetadata(event: SetMetadata): void {
@@ -175,12 +175,12 @@ export function handleGranted(event: Granted): void {
   permissionEntity.oracle = event.params.oracle;
   permissionEntity.save();
 
-  // Governance
+  // Package
   // TODO: rethink this once the market place is ready
   let daoContract = DAOContract.bind(event.address);
   let executionRole = daoContract.try_EXEC_ROLE();
   if (!executionRole.reverted && event.params.role == executionRole.value) {
-    addGovernance(daoId, event.params.who.toHexString());
+    addPackage(daoId, event.params.who.toHexString());
   }
 }
 
@@ -197,13 +197,13 @@ export function handleRevoked(event: Revoked): void {
     store.remove('Permission', permissionId);
   }
 
-  // Governance
+  // Package
   // TODO: rethink this once the market place is ready
   let daoId = event.address.toHexString();
   let daoContract = DAOContract.bind(event.address);
   let executionRole = daoContract.try_EXEC_ROLE();
   if (!executionRole.reverted && event.params.role == executionRole.value) {
-    removeGovernance(daoId, event.params.who.toHexString());
+    removePackage(daoId, event.params.who.toHexString());
   }
 }
 
