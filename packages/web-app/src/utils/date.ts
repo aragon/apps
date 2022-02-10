@@ -76,7 +76,40 @@ export function getCanonicalTime(): string {
   return '' + formattedHours + ':' + formattedMinutes;
 }
 
-export function getCanonicalUtcOffset(): string {
+/**
+ * This method returns a UTC offset with the following format:
+ * "[+|-]hh:mm".
+ *
+ * This format is necessary to construct dates based on a particular timezone
+ * offset using the date-fns library.
+ *
+ * If a formatted offset is provided, it will be mapped to its canonical form.
+ * If none is provided, the current timezone offset will be used.
+ */
+export function getCanonicalUtcOffset(formattedUtcOffset?: string): string {
+  let formattedOffset = formattedUtcOffset || getFormattedUtcOffset();
+  const noLettersOffset = formattedOffset.slice(3);
+  const sign = noLettersOffset.slice(0, 1);
+  const time = noLettersOffset.slice(1);
+  let canonicalOffset;
+  if (time.includes(':')) {
+    // if colon present only hours might need padding
+    const [hours, minutes] = time.split(':');
+    canonicalOffset = (hours.length === 1 && '0') + hours + ':' + minutes;
+  } else {
+    // if no colon, need to add :00 and maybe padding to hours
+    canonicalOffset = (time.length === 1 && '0') + time + ':00';
+  }
+  return sign + canonicalOffset;
+}
+
+/**
+ * This method returns the user's UTC offset with the following format:
+ * "UTC[+|-](h)?h(:mm)?" (E.g., either UTC+10, UTC-9:30).
+ *
+ * This format is used to display offsets in the UI.
+ */
+export function getFormattedUtcOffset(): string {
   const currDate = new Date();
   let decimalOffset = currDate.getTimezoneOffset() / 60;
   const isNegative = decimalOffset < 0;
