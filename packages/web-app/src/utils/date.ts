@@ -32,6 +32,28 @@ export function daysToMills(days: number): number {
   return days * 24 * 60 * 60 * 1000;
 }
 
+export function hoursToMills(hours: number): number {
+  return hours * 60 * 60 * 1000;
+}
+
+export function minutesToMills(minutes: number): number {
+  return minutes * 60 * 1000;
+}
+
+type Offset = {
+  days?: number;
+  hours?: number;
+  minutes?: number;
+};
+
+function offsetToMills(offset: Offset) {
+  return (
+    (offset.days ? daysToMills(offset.days) : 0) +
+    (offset.hours ? hoursToMills(offset.hours) : 0) +
+    (offset.minutes ? minutesToMills(offset.minutes) : 0)
+  );
+}
+
 /**
  * Returns the either:
  *
@@ -44,19 +66,28 @@ export function daysToMills(days: number): number {
  *
  * This date format is necessary when working with html inputs of type "date".
  */
-export function getCanonicalDate(offset?: number): string {
-  console.log('OFFSET ' + offset);
+export function getCanonicalDate(offset?: Offset): string {
   const currDate = new Date();
-  const offsetTime = currDate.getTime() + (offset ? daysToMills(offset) : 0);
-  const offsetDate = new Date(offsetTime);
-  const month = offsetDate.getMonth() + 1;
+
+  //add offset
+  const offsetMills = offset ? offsetToMills(offset) : 0;
+  const offsetTime = currDate.getTime() + offsetMills;
+  const offsetDateTime = new Date(offsetTime);
+
+  //format date
+  const month = offsetDateTime.getMonth() + 1;
   const formattedMonth = month > 9 ? '' + month : '0' + month;
-  const day = offsetDate.getDate();
+  const day = offsetDateTime.getDate();
   const formattedDay = day > 9 ? '' + day : '0' + day;
-  const formattedDate =
-    '' + offsetDate.getFullYear() + '-' + formattedMonth + '-' + formattedDay;
-  console.log('formattedDate ' + formattedDate);
-  return formattedDate;
+  const formattedDateTime =
+    '' +
+    offsetDateTime.getFullYear() +
+    '-' +
+    formattedMonth +
+    '-' +
+    formattedDay;
+  console.log('formattedDate ' + formattedDateTime);
+  return formattedDateTime;
 }
 
 /**
@@ -65,10 +96,17 @@ export function getCanonicalDate(offset?: number): string {
  *
  * This time format is necessary when working with html inputs of type "time".
  */
-export function getCanonicalTime(): string {
+export function getCanonicalTime(offset?: Offset): string {
   const currDate = new Date();
-  let currHours = currDate.getHours();
-  let currMinutes = currDate.getMinutes();
+
+  //add offset
+  const offsetMills = offset ? offsetToMills(offset) : 0;
+  const offsetTime = currDate.getTime() + offsetMills;
+  const offsetDateTime = new Date(offsetTime);
+
+  //format time
+  let currHours = offsetDateTime.getHours();
+  let currMinutes = offsetDateTime.getMinutes();
   const formattedHours = currHours > 9 ? '' + currHours : '0' + currHours;
   const formattedMinutes =
     currMinutes > 9 ? '' + currMinutes : '0' + currMinutes;
