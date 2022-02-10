@@ -17,22 +17,23 @@ import {useTransferModalContext} from 'context/transfersModal';
 import UtcMenu from 'containers/utcMenu';
 import {timezones} from 'containers/utcMenu/utcData';
 import {daysToMils, getCanonicalUtcOffset} from 'utils/date';
+import {DateTimeErrors} from './dateTimeErrors';
 
 type UtcInstance = 'first' | 'second';
 
 const SetupVotingForm: React.FC = () => {
   const {t} = useTranslation();
   const {open} = useTransferModalContext();
-  const {control, setValue, getValues} = useFormContext();
+  const {control, setValue, getValues, formState} = useFormContext();
 
   /*************************************************
    *                    STATE & EFFECT             *
    *************************************************/
 
+  const [endDateType, setEndDateType] = useState<EndDateType>('duration');
+  const [utcInstance, setUtcInstance] = useState<UtcInstance>('first');
   const [utcStart, setUtcStart] = useState('');
   const [utcEnd, setUtcEnd] = useState('');
-  const [utcInstance, setUtcInstance] = useState<UtcInstance>('first');
-  const [endDateType, setEndDateType] = useState<EndDateType>('duration');
 
   useEffect(() => {
     const currTimezone = timezones.find(tz => tz === getCanonicalUtcOffset());
@@ -50,7 +51,7 @@ const SetupVotingForm: React.FC = () => {
   }, []);
 
   /*************************************************
-   *                Field Validators       <<        *
+   *                Field Validators               *
    *************************************************/
 
   const startDateValidator = (date: string) => {
@@ -73,6 +74,10 @@ const SetupVotingForm: React.FC = () => {
       return t('errors.startTimePast');
     }
     return '';
+  };
+
+  const startDateTimeValidator = (input: string) => {
+    // TODO
   };
 
   const durationValidator = (duration: number) => {
@@ -148,16 +153,11 @@ const SetupVotingForm: React.FC = () => {
             control={control}
             rules={{
               required: t('errors.required.date'),
-              validate: startDateValidator,
+              validate: startDateTimeValidator,
             }}
             render={({field: {name, value, onChange}, fieldState: {error}}) => (
               <div>
                 <DateInput name={name} value={value} onChange={onChange} />
-                {error?.message && (
-                  <AlertWrapper>
-                    <AlertInline label={error.message} mode="critical" />
-                  </AlertWrapper>
-                )}
               </div>
             )}
           />
@@ -166,7 +166,7 @@ const SetupVotingForm: React.FC = () => {
             control={control}
             rules={{
               required: t('errors.required.time'),
-              validate: startTimeValidator,
+              validate: startDateTimeValidator,
             }}
             render={({field: {name, value, onChange}, fieldState: {error}}) => (
               <div>
@@ -175,11 +175,6 @@ const SetupVotingForm: React.FC = () => {
                   value={value}
                   onChange={onChange}
                 />
-                {error?.message && (
-                  <AlertWrapper>
-                    <AlertInline label={error.message} mode="critical" />
-                  </AlertWrapper>
-                )}
               </div>
             )}
           />
@@ -193,6 +188,7 @@ const SetupVotingForm: React.FC = () => {
             />
           </div>
         </HStack>
+        <DateTimeErrors mode={'start'} />
       </FormSection>
 
       {/* End date */}
@@ -251,20 +247,12 @@ const SetupVotingForm: React.FC = () => {
                 name="endDate"
                 control={control}
                 rules={{
-                  required: t('errors.required.time'),
+                  required: t('errors.required.date'),
                   validate: endDateValidator,
                 }}
-                render={({
-                  field: {name, value, onChange},
-                  fieldState: {error},
-                }) => (
+                render={({field: {name, value, onChange}}) => (
                   <div>
                     <DateInput name={name} value={value} onChange={onChange} />
-                    {error?.message && (
-                      <AlertWrapper>
-                        <AlertInline label={error.message} mode="critical" />
-                      </AlertWrapper>
-                    )}
                   </div>
                 )}
               />
@@ -272,24 +260,16 @@ const SetupVotingForm: React.FC = () => {
                 name="endTime"
                 control={control}
                 rules={{
-                  required: t('errors.required.date'),
+                  required: t('errors.required.time'),
                   validate: endTimeValidator,
                 }}
-                render={({
-                  field: {name, value, onChange},
-                  fieldState: {error},
-                }) => (
+                render={({field: {name, value, onChange}}) => (
                   <div>
                     <SimplifiedTimeInput
                       name={name}
                       value={value}
                       onChange={onChange}
                     />
-                    {error?.message && (
-                      <AlertWrapper>
-                        <AlertInline label={error.message} mode="critical" />
-                      </AlertWrapper>
-                    )}
                   </div>
                 )}
               />
@@ -305,6 +285,7 @@ const SetupVotingForm: React.FC = () => {
             </HStack>
           </div>
         )}
+        <DateTimeErrors mode={'end'} />
         <AlertInline label={t('infos.voteDuration')} mode="neutral" />
       </FormSection>
       <UtcMenu onTimezoneSelect={tzSelector} />
