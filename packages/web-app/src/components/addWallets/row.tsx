@@ -66,7 +66,7 @@ const LinkRow: React.FC<LinkRowProps> = ({control, index, onDelete}) => {
           render={({field, fieldState: {error}}) => (
             <>
               <LabelWrapper>
-                <Label label={t('labels.label')} />
+                <Label label={t('labels.walletList.address')} />
               </LabelWrapper>
               <ValueInput
                 mode={error ? 'critical' : 'default'}
@@ -103,7 +103,7 @@ const LinkRow: React.FC<LinkRowProps> = ({control, index, onDelete}) => {
           content={
             <div className="p-1.5">
               <ListItemText
-                title={t('labels.removeLink')}
+                title={t('labels.removeWallet')}
                 {...(typeof onDelete === 'function'
                   ? {mode: 'default', onClick: () => onDelete(index)}
                   : {mode: 'disabled'})}
@@ -130,7 +130,7 @@ const LinkRow: React.FC<LinkRowProps> = ({control, index, onDelete}) => {
           <>
             <ButtonWrapper>
               <LabelWrapper>
-                <Label label={t('labels.link')} />
+                <Label label={t('labels.amount')} />
               </LabelWrapper>
 
               <NumberInput
@@ -149,9 +149,6 @@ const LinkRow: React.FC<LinkRowProps> = ({control, index, onDelete}) => {
               )}
             </ButtonWrapper>
             <InputWrapper>
-              <LabelWrapper>
-                <Label label={t('labels.label')} />
-              </LabelWrapper>
               <TextInput
                 name={field.name}
                 value={totalTokenSupply(field.value)}
@@ -186,7 +183,7 @@ const LabelWrapper = styled.div.attrs({
 })``;
 
 const InputWrapper = styled.div.attrs({
-  className: 'tablet:order-3 tablet:pt-0 w-10',
+  className: 'flex items-end tablet:order-3 tablet:pt-0 w-10',
 })``;
 
 const LinkContainer = styled.div.attrs({
