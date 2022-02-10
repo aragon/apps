@@ -8,14 +8,22 @@ import {
   OverviewDAOHeader,
   OverviewDAOStep,
 } from 'containers/daoOverview';
+import SelectChain from 'containers/selectChainForm';
 import DefineMetadata from 'containers/defineMetadata';
+import ConfigureCommunity from 'containers/configureCommunity';
 import SetupCommunity from 'containers/setupCommunity';
 
 type FormData = {
+  tokenName: string;
+  tokenSymbol: string;
+  tokenTotalSupply: string;
   links: {label: string; link: string}[];
 };
 
 const defaultValues = {
+  tokenName: '',
+  tokenSymbol: '',
+  tokenTotalSupply: '',
   links: [{label: '', link: ''}],
 };
 
@@ -28,6 +36,7 @@ const CreateDAO: React.FC = () => {
       <FullScreenStepper
         navbarBackUrl="/"
         navbarLabel={t('createDAO.title')}
+        totalFormSteps={4}
         wizardProcessName={t('createDAO.title')}
       >
         <Step
@@ -42,7 +51,7 @@ const CreateDAO: React.FC = () => {
           wizardTitle={t('createDAO.step1.title')}
           wizardDescription={t('createDAO.step1.description')}
         >
-          <h1>Step 1</h1>
+          <SelectChain />
         </Step>
         <Step
           wizardTitle={t('createDAO.step2.title')}
@@ -55,6 +64,12 @@ const CreateDAO: React.FC = () => {
           wizardDescription={t('createDAO.step3.description')}
         >
           <SetupCommunity />
+        </Step>
+        <Step
+          wizardTitle={t('createDAO.step4.title')}
+          wizardDescription={t('createDAO.step4.description')}
+        >
+          <ConfigureCommunity />
         </Step>
       </FullScreenStepper>
     </FormProvider>
