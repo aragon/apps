@@ -10,23 +10,9 @@ import Footer from './footer';
 
 const AddWallets: React.FC = () => {
   const {t} = useTranslation();
-  const {control, watch, setValue} = useFormContext();
+  const {control, watch} = useFormContext();
+  const watchFieldArray = watch('wallets');
   const {fields, append, remove} = useFieldArray({name: 'wallets', control});
-  const walletFieldArray = watch('wallets');
-  let totalSupply = 0;
-
-  const totalTokenSupply = () => {
-    totalSupply = 0;
-    if (walletFieldArray) {
-      walletFieldArray.forEach(
-        (wallet: any) => (totalSupply = parseInt(wallet.amount) + totalSupply)
-      );
-    }
-    // setValue('totalTokenSupply', totalSupply);
-    // return totalSupply;
-  };
-
-  totalTokenSupply();
 
   if (fields.length === 0) {
     append([
@@ -50,16 +36,12 @@ const AddWallets: React.FC = () => {
               key={field.id}
               index={index}
               control={control}
-              fieldset={fields}
-              totalTokenSupply={totalSupply}
+              fieldset={watchFieldArray[index]}
               {...(index !== 0 ? {onDelete: () => remove(index)} : {})}
             />
           );
         })}
-        <Footer
-          totalAddresses={fields.length || 0}
-          totalTokenSupply={totalSupply}
-        />
+        <Footer totalAddresses={fields.length || 0} />
       </ListGroup>
       <ButtonText
         label={t('labels.addLink')}

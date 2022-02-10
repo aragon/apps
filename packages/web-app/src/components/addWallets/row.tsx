@@ -9,7 +9,7 @@ import {
   NumberInput,
   ValueInput,
 } from '@aragon/ui-components';
-import React, {useEffect} from 'react';
+import React, {useMemo} from 'react';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import {
@@ -27,19 +27,29 @@ type LinkRowProps = {
   index: number;
   onDelete?: (index: number) => void;
   fieldset: Record<'id', string>[];
-  totalTokenSupply: number;
 };
 
 const LinkRow: React.FC<LinkRowProps> = ({
   control,
   index,
   fieldset,
-  totalTokenSupply,
   onDelete,
 }) => {
-  let sharePercentage: number;
   const {t} = useTranslation();
   const {account} = useWallet();
+  const {getValues, setValue} = useFormContext();
+  const walletFieldArray = getValues('wallets');
+
+  const totalTokenSupply = (value: number) => {
+    let totalSupply = 0;
+    if (walletFieldArray) {
+      walletFieldArray.forEach(
+        (wallet: any) => (totalSupply = parseInt(wallet.amount) + totalSupply)
+      );
+    }
+    setValue('totalTokenSupply', totalSupply);
+    return value && Math.floor((value / totalSupply) * 100) + '%';
+  };
 
   return (
     <Container data-testid="link-row">
@@ -107,12 +117,12 @@ const LinkRow: React.FC<LinkRowProps> = ({
 
       <Break />
 
-      <ButtonWrapper>
-        <Controller
-          name={`wallets.${index}.amount`}
-          control={control}
-          render={({field, fieldState: {error}}) => (
-            <>
+      <Controller
+        name={`wallets.${index}.amount`}
+        control={control}
+        render={({field, fieldState: {error}}) => (
+          <>
+            <ButtonWrapper>
               <LabelWrapper>
                 <Label label={t('labels.link')} />
               </LabelWrapper>
@@ -131,25 +141,14 @@ const LinkRow: React.FC<LinkRowProps> = ({
                   <AlertInline label={error.message} mode="critical" />
                 </ErrorContainer>
               )}
-            </>
-          )}
-        />
-      </ButtonWrapper>
-
-      <InputWrapper>
-        <Controller
-          name={`wallets.${index}.share`}
-          control={control}
-          render={({field, fieldState: {error}}) => (
-            <>
+            </ButtonWrapper>
+            <InputWrapper>
               <LabelWrapper>
                 <Label label={t('labels.label')} />
               </LabelWrapper>
               <TextInput
                 name={field.name}
-                onBlur={field.onBlur}
-                onChange={field.onChange}
-                value={sharePercentage}
+                value={totalTokenSupply(field.value)}
                 mode="default"
                 disabled
               />
@@ -158,10 +157,10 @@ const LinkRow: React.FC<LinkRowProps> = ({
                   <AlertInline label={error.message} mode="critical" />
                 </ErrorContainer>
               )}
-            </>
-          )}
-        />
-      </InputWrapper>
+            </InputWrapper>
+          </>
+        )}
+      />
     </Container>
   );
 };

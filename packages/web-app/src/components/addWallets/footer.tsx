@@ -6,14 +6,12 @@ import {useFormContext} from 'react-hook-form';
 
 type WalletsFooterProps = {
   totalAddresses: number;
-  totalTokenSupply: number;
 };
 
-const AddWalletsFooter: React.FC<WalletsFooterProps> = ({
-  totalAddresses,
-  totalTokenSupply,
-}) => {
+const AddWalletsFooter: React.FC<WalletsFooterProps> = ({totalAddresses}) => {
   const {t} = useTranslation();
+  const {getValues} = useFormContext();
+  const TotalSupply = getValues('totalTokenSupply');
 
   return (
     <Container>
@@ -23,7 +21,7 @@ const AddWalletsFooter: React.FC<WalletsFooterProps> = ({
         />
       </FooterItem1>
       <FooterItem1>
-        <StyledLabel>{totalTokenSupply}</StyledLabel>
+        <StyledLabel>{TotalSupply}</StyledLabel>
       </FooterItem1>
       <FooterItem2>
         <StyledLabel>100%</StyledLabel>
