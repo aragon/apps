@@ -105,8 +105,7 @@
       "time": "Time is required",
       "timezone": "Timezone is required"
     },
-    "startDatePast": "Start date must not be before today",
-    "startTimePast": "Start time must not be before now"
+    "startPast": "Process must not start in the past"
   },
   "warnings": {
     "amountGtDaoToken": "Withdraw amount is greater than the current token balance"

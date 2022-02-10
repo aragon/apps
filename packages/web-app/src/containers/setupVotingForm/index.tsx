@@ -6,7 +6,8 @@ import {
   Label,
   NumberInput,
 } from '@aragon/ui-components';
-import {Controller, useFormContext} from 'react-hook-form';
+import {toDate} from 'date-fns-tz';
+import {Controller, FieldError, useFormContext} from 'react-hook-form';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import React, {useEffect, useState} from 'react';
@@ -16,7 +17,11 @@ import {SimplifiedTimeInput} from 'components/inputTime/inputTime';
 import {useTransferModalContext} from 'context/transfersModal';
 import UtcMenu from 'containers/utcMenu';
 import {timezones} from 'containers/utcMenu/utcData';
-import {daysToMils, getCanonicalUtcOffset} from 'utils/date';
+import {
+  daysToMils,
+  getCanonicalUtcOffset,
+  getFormattedUtcOffset,
+} from 'utils/date';
 import {DateTimeErrors} from './dateTimeErrors';
 
 type UtcInstance = 'first' | 'second';
@@ -24,7 +29,7 @@ type UtcInstance = 'first' | 'second';
 const SetupVotingForm: React.FC = () => {
   const {t} = useTranslation();
   const {open} = useTransferModalContext();
-  const {control, setValue, getValues, formState} = useFormContext();
+  const {control, setValue, getValues, setError, formState} = useFormContext();
 
   /*************************************************
    *                    STATE & EFFECT             *
@@ -36,7 +41,7 @@ const SetupVotingForm: React.FC = () => {
   const [utcEnd, setUtcEnd] = useState('');
 
   useEffect(() => {
-    const currTimezone = timezones.find(tz => tz === getCanonicalUtcOffset());
+    const currTimezone = timezones.find(tz => tz === getFormattedUtcOffset());
     if (!currTimezone) {
       setUtcStart(timezones[13]);
       setUtcEnd(timezones[13]);
@@ -50,34 +55,51 @@ const SetupVotingForm: React.FC = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const fieldErrors: FieldError[] = Object.values(formState.errors);
+    const hasEmptyFields = fieldErrors.some(
+      e =>
+        e.type === 'validate' &&
+        (e.ref?.name === 'startDate' || e.ref?.name === 'startTime')
+    );
+    if (!hasEmptyFields) {
+      const error = startDateTimeValidator('');
+      if (error) {
+        setError('startTime', {
+          type: 'validate',
+          message: t('errors.startPast'),
+        });
+      }
+    }
+  }, [utcStart]);
+
+  useEffect(() => {
+    const error = startDateTimeValidator('');
+    if (error) {
+      setError('endTime', {type: 'validate', message: t('errors.startPast')});
+    }
+  }, [utcEnd]);
+
   /*************************************************
    *                Field Validators               *
    *************************************************/
 
-  const startDateValidator = (date: string) => {
-    const startDate = new Date(date);
-    const todayMidnight = new Date().setHours(0, 0, 0, 0);
-    // TODO remove
-    const currDay = new Date(todayMidnight);
-
-    if (startDate.getTime() < currDay.getTime()) {
-      return t('errors.startDatePast');
-    }
-    return '';
-  };
-
-  const startTimeValidator = (time: string) => {
-    const startDateTime = new Date(getValues('startDate') + ' ' + time);
-    const currDate = new Date();
-
-    if (startDateTime.getTime() < currDate.getTime()) {
-      return t('errors.startTimePast');
-    }
-    return '';
-  };
-
   const startDateTimeValidator = (input: string) => {
-    // TODO
+    //Build input date
+    const sDate = getValues('startDate');
+    const sTime = getValues('startTime');
+    const sUtc = getValues('startUtc');
+    const canonicalSUtc = getCanonicalUtcOffset(sUtc);
+    const startDateTime = toDate(sDate + 'T' + sTime + canonicalSUtc);
+    const startMills = startDateTime.valueOf();
+
+    const currDateTime = new Date();
+    const currMills = currDateTime.getTime();
+
+    if (startMills < currMills) {
+      return t('errors.startPast');
+    }
+    return '';
   };
 
   const durationValidator = (duration: number) => {
