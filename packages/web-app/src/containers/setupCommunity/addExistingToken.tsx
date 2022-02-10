@@ -128,7 +128,7 @@ const AddExistingToken: React.FC = () => {
           control={control}
           defaultValue=""
           rules={{
-            required: t('errors.required.address'),
+            required: t('errors.required.tokenAddress'),
             validate: async value => validateTokenAddress(value, provider),
           }}
           render={({

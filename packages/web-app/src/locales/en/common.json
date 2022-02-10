@@ -131,7 +131,10 @@
     "notERC20Token": "Token address is not ERC20 compliant",
     "noTokenSelected": "A token must be selected",
     "required": {
-      "address": "Token address is required",
+      "tokenAddress": "Token address is required",
+      "tokenName": "Token name is required",
+      "tokenSymbol": "Token symbol is required",
+      "walletAddress": "Wallet address is required",
       "amount": "Token amount is required",
       "label": "Label is mandatory",
       "link": "Link is mandatory",

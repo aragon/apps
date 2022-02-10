@@ -21,6 +21,7 @@ import {
 
 import {handleClipboardActions} from 'utils/library';
 import {useWallet} from 'context/augmentedWallet';
+import {validateAddress} from 'utils/validators';
 
 type LinkRowProps = {
   control: Control<FieldValues, object>;
@@ -58,6 +59,10 @@ const LinkRow: React.FC<LinkRowProps> = ({control, index, onDelete}) => {
         <Controller
           name={`wallets.${index}.address`}
           control={control}
+          rules={{
+            required: t('errors.required.walletAddress') as string,
+            validate: validateAddress,
+          }}
           render={({field, fieldState: {error}}) => (
             <>
               <LabelWrapper>
@@ -181,11 +186,12 @@ const LabelWrapper = styled.div.attrs({
 })``;
 
 const InputWrapper = styled.div.attrs({
-  className: 'tablet:order-3 pt-3.5 tablet:pt-0 w-10',
+  className: 'tablet:order-3 tablet:pt-0 w-10',
 })``;
 
 const LinkContainer = styled.div.attrs({
-  className: 'tablet:order-4',
+  className:
+    'flex items-start tablet:items-start tablet:order-4 mt-3 tablet:mt-0',
 })``;
 
 const ErrorContainer = styled.div.attrs({

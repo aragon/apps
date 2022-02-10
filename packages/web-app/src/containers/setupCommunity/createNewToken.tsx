@@ -28,6 +28,9 @@ const CreateNewToken: React.FC = () => {
           name="tokenName"
           control={control}
           defaultValue=""
+          rules={{
+            required: t('errors.required.tokenName') as string,
+          }}
           render={({
             field: {onBlur, onChange, value, name},
             fieldState: {error},
@@ -56,6 +59,9 @@ const CreateNewToken: React.FC = () => {
           name="tokenSymbol"
           control={control}
           defaultValue=""
+          rules={{
+            required: t('errors.required.tokenSymbol') as string,
+          }}
           render={({
             field: {onBlur, onChange, value, name},
             fieldState: {error},
