@@ -18,7 +18,7 @@ import {useTransferModalContext} from 'context/transfersModal';
 import UtcMenu from 'containers/utcMenu';
 import {timezones} from 'containers/utcMenu/utcData';
 import {
-  daysToMils,
+  daysToMills,
   getCanonicalUtcOffset,
   getFormattedUtcOffset,
 } from 'utils/date';
@@ -55,6 +55,8 @@ const SetupVotingForm: React.FC = () => {
     }
   }, []);
 
+  console.log(JSON.stringify(formState.errors, null, 2));
+
   useEffect(() => {
     const fieldErrors: FieldError[] = Object.values(formState.errors);
     const hasEmptyFields = fieldErrors.some(
@@ -62,6 +64,7 @@ const SetupVotingForm: React.FC = () => {
         e.type === 'validate' &&
         (e.ref?.name === 'startDate' || e.ref?.name === 'startTime')
     );
+
     if (!hasEmptyFields) {
       const error = startDateTimeValidator('');
       if (error) {
@@ -74,9 +77,21 @@ const SetupVotingForm: React.FC = () => {
   }, [utcStart]);
 
   useEffect(() => {
-    const error = startDateTimeValidator('');
-    if (error) {
-      setError('endTime', {type: 'validate', message: t('errors.startPast')});
+    const fieldErrors: FieldError[] = Object.values(formState.errors);
+    const hasEmptyFields = fieldErrors.some(
+      e =>
+        e.type === 'validate' &&
+        (e.ref?.name === 'endDate' || e.ref?.name === 'endTime')
+    );
+
+    if (!hasEmptyFields) {
+      const error = endDateTimeValidator('');
+      if (error) {
+        setError('endTime', {
+          type: 'validate',
+          message: t('errors.endPast'),
+        });
+      }
     }
   }, [utcEnd]);
 
@@ -85,7 +100,6 @@ const SetupVotingForm: React.FC = () => {
    *************************************************/
 
   const startDateTimeValidator = (input: string) => {
-    //Build input date
     const sDate = getValues('startDate');
     const sTime = getValues('startTime');
     const sUtc = getValues('startUtc');
@@ -102,32 +116,33 @@ const SetupVotingForm: React.FC = () => {
     return '';
   };
 
+  const endDateTimeValidator = (input: string) => {
+    const eDate = getValues('endDate');
+    const eTime = getValues('endTime');
+    const eUtc = getValues('endUtc');
+    const canonicalEUtc = getCanonicalUtcOffset(eUtc);
+    const endDateTime = toDate(eDate + 'T' + eTime + canonicalEUtc);
+    // console.log(endDateTime);
+    const endMills = endDateTime.valueOf();
+
+    const sDate = getValues('startDate');
+    const sTime = getValues('startTime');
+    const sUtc = getValues('startUtc');
+    const canonicalSUtc = getCanonicalUtcOffset(sUtc);
+    const startDateTime = toDate(sDate + 'T' + sTime + canonicalSUtc);
+    // console.log(startDateTime);
+    const startMills = startDateTime.valueOf();
+    const minEndDateTimeMills = startMills + daysToMills(5);
+
+    if (endMills < minEndDateTimeMills) {
+      return t('errors.endPast');
+    }
+    return '';
+  };
+
   const durationValidator = (duration: number) => {
     if (duration < 5) {
       return t('errors.durationTooShort');
-    }
-    return '';
-  };
-
-  const endDateValidator = (date: string) => {
-    const endDate = new Date(date);
-    const todayMidnight = new Date().setHours(0, 0, 0, 0);
-    const daysOffset = daysToMils(5);
-    const minMidnight = todayMidnight + daysOffset;
-
-    if (endDate.getTime() < minMidnight) {
-      return t('errors.endDatePast');
-    }
-    return '';
-  };
-
-  const endTimeValidator = (time: string) => {
-    const endDateTime = new Date(getValues('endDate') + ' ' + time);
-    const daysOffset = daysToMils(5);
-    const minEndDateTime = new Date().getTime() + daysOffset;
-
-    if (endDateTime.getTime() < minEndDateTime) {
-      return t('errors.endDatePast');
     }
     return '';
   };
@@ -177,9 +192,14 @@ const SetupVotingForm: React.FC = () => {
               required: t('errors.required.date'),
               validate: startDateTimeValidator,
             }}
-            render={({field: {name, value, onChange}, fieldState: {error}}) => (
+            render={({field: {name, value, onChange, onBlur}}) => (
               <div>
-                <DateInput name={name} value={value} onChange={onChange} />
+                <DateInput
+                  name={name}
+                  value={value}
+                  onChange={onChange}
+                  onBlur={onBlur}
+                />
               </div>
             )}
           />
@@ -190,12 +210,13 @@ const SetupVotingForm: React.FC = () => {
               required: t('errors.required.time'),
               validate: startDateTimeValidator,
             }}
-            render={({field: {name, value, onChange}, fieldState: {error}}) => (
+            render={({field: {name, value, onChange, onBlur}}) => (
               <div>
                 <SimplifiedTimeInput
                   name={name}
                   value={value}
                   onChange={onChange}
+                  onBlur={onBlur}
                 />
               </div>
             )}
@@ -270,11 +291,16 @@ const SetupVotingForm: React.FC = () => {
                 control={control}
                 rules={{
                   required: t('errors.required.date'),
-                  validate: endDateValidator,
+                  validate: endDateTimeValidator,
                 }}
-                render={({field: {name, value, onChange}}) => (
+                render={({field: {name, value, onChange, onBlur}}) => (
                   <div>
-                    <DateInput name={name} value={value} onChange={onChange} />
+                    <DateInput
+                      name={name}
+                      value={value}
+                      onChange={onChange}
+                      onBlur={onBlur}
+                    />
                   </div>
                 )}
               />
@@ -283,14 +309,15 @@ const SetupVotingForm: React.FC = () => {
                 control={control}
                 rules={{
                   required: t('errors.required.time'),
-                  validate: endTimeValidator,
+                  validate: endDateTimeValidator,
                 }}
-                render={({field: {name, value, onChange}}) => (
+                render={({field: {name, value, onChange, onBlur}}) => (
                   <div>
                     <SimplifiedTimeInput
                       name={name}
                       value={value}
                       onChange={onChange}
+                      onBlur={onBlur}
                     />
                   </div>
                 )}

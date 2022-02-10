@@ -85,7 +85,7 @@
     "amountWithInvalidToken": "Cannot validate amount with invalid token address",
     "defaultAmountValidationError": "Error validating amount",
     "durationTooShort": "Duration must be at least 5 days",
-    "endDatePast": "Start date must not be before 5 days from now",
+    "endPast": "End date must be more then 5 days from the start",
     "exceedsFractionalParts": "The number of decimals in the amount must not exceed the number of decimals of the token({{decimals}})",
     "includeDecimals": "Include decimals, e.g. 10.0",
     "includeExactAmount": "The token doesn't contain decimals. Please enter the exact amount",

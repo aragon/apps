@@ -28,7 +28,7 @@ export function getDateSections(): {
   };
 }
 
-export function daysToMils(days: number): number {
+export function daysToMills(days: number): number {
   return days * 24 * 60 * 60 * 1000;
 }
 
@@ -47,7 +47,7 @@ export function daysToMils(days: number): number {
 export function getCanonicalDate(offset?: number): string {
   console.log('OFFSET ' + offset);
   const currDate = new Date();
-  const offsetTime = currDate.getTime() + (offset ? daysToMils(offset) : 0);
+  const offsetTime = currDate.getTime() + (offset ? daysToMills(offset) : 0);
   const offsetDate = new Date(offsetTime);
   const month = offsetDate.getMonth() + 1;
   const formattedMonth = month > 9 ? '' + month : '0' + month;

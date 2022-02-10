@@ -41,11 +41,9 @@ export function DateTimeErrors({mode}: DateTimeErrorsProps) {
     setValidatedErrors(validatedErrors);
   }, [formState]);
 
-  // console.log('DateTimeErrors', {requiredErrors, validatedErrors});
-
   if (requiredErrors.length > 0) {
     return (
-      <div className="text-red-500">
+      <div>
         {requiredErrors.map((msg, i) => (
           <AlertInline key={i} label={msg} mode="critical" />
         ))}
@@ -55,13 +53,11 @@ export function DateTimeErrors({mode}: DateTimeErrorsProps) {
 
   if (validatedErrors.length > 0) {
     return (
-      <div className="text-red-500">
-        {validatedErrors.map((msg, i) => (
-          <AlertInline key={i} label={msg} mode="critical" />
-        ))}
+      <div>
+        <AlertInline label={validatedErrors[0]} mode="critical" />
       </div>
     );
   }
 
-  return <div>all good.</div>;
+  return null;
 }
