@@ -28,10 +28,10 @@ describe('AddWallets', () => {
       </RenderWithForm>
     );
 
-    const element = screen.getByText('Add Link');
+    const element = screen.getByText('Add Wallet');
     fireEvent.click(element);
 
-    const rows = screen.getAllByTestId('link-row');
-    expect(rows.length).toBe(1);
+    const rows = screen.getAllByTestId('wallet-row');
+    expect(rows.length).toBe(3);
   });
 });

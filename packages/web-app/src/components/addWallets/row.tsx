@@ -54,7 +54,7 @@ const LinkRow: React.FC<LinkRowProps> = ({control, index, onDelete}) => {
   };
 
   return (
-    <Container data-testid="link-row">
+    <Container data-testid="wallet-row">
       <LabelContainer>
         <Controller
           name={`wallets.${index}.address`}

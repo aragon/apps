@@ -17,7 +17,7 @@ const AddWallets: React.FC = () => {
   const controlledFields = fields.map((field, index) => {
     return {
       ...field,
-      ...watchFieldArray[index],
+      ...(watchFieldArray && {...watchFieldArray[index]}),
     };
   });
 
@@ -50,7 +50,7 @@ const AddWallets: React.FC = () => {
         <Footer totalAddresses={fields.length || 0} />
       </ListGroup>
       <ButtonText
-        label={t('labels.addWallet')}
+        label={t('labels.addWallet') as string}
         mode="secondary"
         size="large"
         onClick={handleAddWallet}
