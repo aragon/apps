@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import {Label} from '@aragon/ui-components';
 import {useTranslation} from 'react-i18next';

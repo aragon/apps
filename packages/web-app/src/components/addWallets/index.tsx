@@ -14,6 +14,13 @@ const AddWallets: React.FC = () => {
   const watchFieldArray = watch('wallets');
   const {fields, append, remove} = useFieldArray({name: 'wallets', control});
 
+  const controlledFields = fields.map((field, index) => {
+    return {
+      ...field,
+      ...watchFieldArray[index],
+    };
+  });
+
   if (fields.length === 0) {
     append([
       {address: 'DAO Treasury', amount: '0'},
@@ -22,21 +29,20 @@ const AddWallets: React.FC = () => {
   }
 
   // TODO: research focus after input refactor
-  const handleAddLink = () => {
+  const handleAddWallet = () => {
     append({address: '', amount: '0'});
   };
 
   return (
-    <Container data-testid="add-links">
+    <Container data-testid="add-wallets">
       <ListGroup>
         <Header />
-        {fields.map((field, index) => {
+        {controlledFields.map((field, index) => {
           return (
             <Row
               key={field.id}
               index={index}
               control={control}
-              fieldset={watchFieldArray[index]}
               {...(index !== 0 ? {onDelete: () => remove(index)} : {})}
             />
           );
@@ -44,10 +50,10 @@ const AddWallets: React.FC = () => {
         <Footer totalAddresses={fields.length || 0} />
       </ListGroup>
       <ButtonText
-        label={t('labels.addLink')}
+        label={t('labels.addWallet')}
         mode="secondary"
         size="large"
-        onClick={handleAddLink}
+        onClick={handleAddWallet}
       />
     </Container>
   );

@@ -51,6 +51,7 @@
     "daoName": "Name",
     "description": "Summary",
     "addLink": "Add Link",
+    "addWallet": "add Wallet",
     "removeLink": "Remove Link",
     "link": "Link",
     "links": "Links",
@@ -73,7 +74,7 @@
     "walletList": {
       "address": "Address",
       "addresses": "{{count}} Addresses"
-    }
+    },
     "author": "Author",
     "sec": "sec",
     "ago": "ago",

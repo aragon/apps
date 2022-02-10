@@ -100,12 +100,3 @@ const DescriptionContainer = styled.div.attrs({
 const Title = styled.p.attrs({className: 'text-lg font-bold text-ui-800'})``;
 
 const Subtitle = styled.p.attrs({className: 'text-ui-600 text-bold'})``;
-
-const TokenInfoContainer = styled.div.attrs({
-  className:
-    'flex justify-between items-center p-2 space-x-2 bg-ui-0 rounded-xl',
-})``;
-
-const InfoContainer = styled.div.attrs({
-  className: 'space-y-1',
-})``;

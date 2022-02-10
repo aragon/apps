@@ -9,7 +9,7 @@ import {
   NumberInput,
   ValueInput,
 } from '@aragon/ui-components';
-import React, {useMemo} from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import {
@@ -26,15 +26,15 @@ type LinkRowProps = {
   control: Control<FieldValues, object>;
   index: number;
   onDelete?: (index: number) => void;
-  fieldset: Record<'id', string>[];
 };
 
-const LinkRow: React.FC<LinkRowProps> = ({
-  control,
-  index,
-  fieldset,
-  onDelete,
-}) => {
+export type WalletField = {
+  id: string;
+  address: string;
+  amount: string;
+};
+
+const LinkRow: React.FC<LinkRowProps> = ({control, index, onDelete}) => {
   const {t} = useTranslation();
   const {account} = useWallet();
   const {getValues, setValue} = useFormContext();
@@ -44,11 +44,12 @@ const LinkRow: React.FC<LinkRowProps> = ({
     let totalSupply = 0;
     if (walletFieldArray) {
       walletFieldArray.forEach(
-        (wallet: any) => (totalSupply = parseInt(wallet.amount) + totalSupply)
+        (wallet: WalletField) =>
+          (totalSupply = parseInt(wallet.amount) + totalSupply)
       );
     }
     setValue('totalTokenSupply', totalSupply);
-    return value && Math.floor((value / totalSupply) * 100) + '%';
+    return totalSupply && Math.floor((value / totalSupply) * 100) + '%';
   };
 
   return (
