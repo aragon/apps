@@ -12,12 +12,7 @@ import {
 import React, {useState} from 'react';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
-import {
-  Control,
-  Controller,
-  FieldValues,
-  useFormContext,
-} from 'react-hook-form';
+import {Controller, useFormContext} from 'react-hook-form';
 
 import {handleClipboardActions} from 'utils/library';
 import {useWallet} from 'context/augmentedWallet';

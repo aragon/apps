@@ -45,6 +45,7 @@ const AddWallets: React.FC = () => {
     append({address: '', amount: '0'});
   };
 
+  //TODO: restrict user from going to next step with validation errors on this step
   return (
     <Container data-testid="add-wallets">
       <ListGroup>
