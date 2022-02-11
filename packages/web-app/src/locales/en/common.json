@@ -240,7 +240,8 @@
       "summaryPlaceholder": "Type your description ...",
       "proposal": "Proposal",
       "proposalPlaceholder": "Type your proposal ..."
-    },
+    }
+  },
   "createDAO": {
     "title": "Create your DAO",
     "overview": {

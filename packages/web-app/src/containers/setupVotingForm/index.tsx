@@ -14,7 +14,6 @@ import React, {useEffect, useState} from 'react';
 
 import {DateModeSwitch, EndDateType} from './dateModeSwitch';
 import {SimplifiedTimeInput} from 'components/inputTime/inputTime';
-import {useTransferModalContext} from 'context/transfersModal';
 import UtcMenu from 'containers/utcMenu';
 import {timezones} from 'containers/utcMenu/utcData';
 import {
@@ -25,12 +24,13 @@ import {
   getFormattedUtcOffset,
 } from 'utils/date';
 import {DateTimeErrors} from './dateTimeErrors';
+import {useGlobalModalContext} from 'context/globalModals';
 
 type UtcInstance = 'first' | 'second';
 
 const SetupVotingForm: React.FC = () => {
   const {t} = useTranslation();
-  const {open} = useTransferModalContext();
+  const {open} = useGlobalModalContext();
   const {control, setValue, getValues, setError, formState, clearErrors} =
     useFormContext();
 
@@ -68,7 +68,7 @@ const SetupVotingForm: React.FC = () => {
       setValue('startUtc', currTimezone);
       setValue('endUtc', currTimezone);
     }
-  }, []);
+  }, []); //eslint-disable-line
 
   // validate start time on UTC changes
   // (Doing this in a separate hook is necessary since the UTC selector is
@@ -82,7 +82,7 @@ const SetupVotingForm: React.FC = () => {
     );
 
     if (!hasEmptyFields) {
-      const error = startDateTimeValidator('');
+      const error = startDateTimeValidator();
       if (error) {
         setError('startTime', {
           type: 'validate',
@@ -90,7 +90,7 @@ const SetupVotingForm: React.FC = () => {
         });
       }
     }
-  }, [utcStart]);
+  }, [utcStart]); //eslint-disable-line
 
   // validate end time on UTC changes
   // (Doing this in a separate hook is necessary since the UTC selector is
@@ -104,7 +104,7 @@ const SetupVotingForm: React.FC = () => {
     );
 
     if (!hasEmptyFields) {
-      const error = endDateTimeValidator('');
+      const error = endDateTimeValidator();
       if (error) {
         setError('endTime', {
           type: 'validate',
@@ -112,7 +112,7 @@ const SetupVotingForm: React.FC = () => {
         });
       }
     }
-  }, [utcEnd]);
+  }, [utcEnd]); //eslint-disable-line
 
   /*************************************************
    *                Field Validators               *
@@ -129,7 +129,9 @@ const SetupVotingForm: React.FC = () => {
     return startDateTime.valueOf();
   }
 
-  const startDateTimeValidator = (input: string) => {
+  // validates the start time and date. Does not take and argument, as it is not
+  // tied to a single input.
+  const startDateTimeValidator = () => {
     const startMills = buildStartDateTime();
 
     const currDateTime = new Date();
@@ -144,7 +146,9 @@ const SetupVotingForm: React.FC = () => {
     }
   };
 
-  const endDateTimeValidator = (input: string) => {
+  // validates the end time and date. Does not take and argument, as it is not
+  // tied to a single input.
+  const endDateTimeValidator = () => {
     const eDate = getValues('endDate');
     const eTime = getValues('endTime');
     const eUtc = getValues('endUtc');
@@ -164,6 +168,7 @@ const SetupVotingForm: React.FC = () => {
     }
   };
 
+  // sets the UTC values for the start and end date/time
   const tzSelector = (tz: string) => {
     if (utcInstance === 'first') {
       setUtcStart(tz);
@@ -279,16 +284,6 @@ const SetupVotingForm: React.FC = () => {
                   required: t('errors.required.duration'),
                 }}
                 render={({field: {name, onChange, value}}) => {
-                  {
-                    /* FIXME: this is currently not working properly, because
-                  we're mixing controlled and uncontrolled components. The
-                  buttons inside the numeric input are handled with a ref, which
-                  does not trigger onchange events. This means that we can
-                  detect changes in the input when typing them, but not when
-                  using the buttons. This is an issue when typing 0. This
-                  correctly triggers the error state, but then does not trigger
-                  it again when using the buttons afterwards. */
-                  }
                   return (
                     <NumberInput
                       name={name}

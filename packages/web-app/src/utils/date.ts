@@ -105,8 +105,8 @@ export function getCanonicalTime(offset?: Offset): string {
   const offsetDateTime = new Date(offsetTime);
 
   //format time
-  let currHours = offsetDateTime.getHours();
-  let currMinutes = offsetDateTime.getMinutes();
+  const currHours = offsetDateTime.getHours();
+  const currMinutes = offsetDateTime.getMinutes();
   const formattedHours = currHours > 9 ? '' + currHours : '0' + currHours;
   const formattedMinutes =
     currMinutes > 9 ? '' + currMinutes : '0' + currMinutes;
@@ -125,7 +125,7 @@ export function getCanonicalTime(offset?: Offset): string {
  * If none is provided, the current timezone offset will be used.
  */
 export function getCanonicalUtcOffset(formattedUtcOffset?: string): string {
-  let formattedOffset = formattedUtcOffset || getFormattedUtcOffset();
+  const formattedOffset = formattedUtcOffset || getFormattedUtcOffset();
   const noLettersOffset = formattedOffset.slice(3);
   const sign = noLettersOffset.slice(0, 1);
   const time = noLettersOffset.slice(1);
