@@ -1,11 +1,13 @@
 import {AlertInline, DateInput, DropdownInput} from '@aragon/ui-components';
-import {SimplifiedTimeInput} from 'components/inputTime/inputTime';
-import {useTransferModalContext} from 'context/transfersModal';
+import {toDate} from 'date-fns-tz';
 import React from 'react';
-import {Controller, useFormContext, useWatch} from 'react-hook-form';
+import {Controller, useFormContext} from 'react-hook-form';
 import {useTranslation} from 'react-i18next';
 import styled from 'styled-components';
-import {daysToMils} from 'utils/date';
+
+import {SimplifiedTimeInput} from 'components/inputTime/inputTime';
+import {useTransferModalContext} from 'context/transfersModal';
+import {daysToMills, getCanonicalUtcOffset} from 'utils/date';
 
 type DateSectionProps = {
   isStartDate: boolean;
@@ -14,64 +16,57 @@ type DateSectionProps = {
 const DateSection: React.FC<DateSectionProps> = ({isStartDate}) => {
   const {t} = useTranslation();
   const {open} = useTransferModalContext();
-  const {control} = useFormContext();
-  const [startDate, endDate] = useWatch({
-    name: ['startDate', 'endDate', 'duration'],
-  });
+  const {control, getValues} = useFormContext();
 
-  const startDateValidator = (date: string) => {
-    const startDate = new Date(date);
-    const todayMidnight = new Date().setHours(0, 0, 0, 0);
-    // TODO remove
-    const currDay = new Date(todayMidnight);
+  /*************************************************
+   *                Field Validators               *
+   *************************************************/
 
-    if (startDate.getTime() < currDay.getTime()) {
-      return t('errors.startDatePast');
+  const startDateTimeValidator = (input: string) => {
+    const sDate = getValues('startDate');
+    const sTime = getValues('startTime');
+    const sUtc = getValues('startUtc');
+    const canonicalSUtc = getCanonicalUtcOffset(sUtc);
+    const startDateTime = toDate(sDate + 'T' + sTime + canonicalSUtc);
+    const startMills = startDateTime.valueOf();
+
+    const currDateTime = new Date();
+    const currMills = currDateTime.getTime();
+
+    if (startMills < currMills) {
+      return t('errors.startPast');
     }
     return '';
   };
 
-  const startTimeValidator = (time: string) => {
-    const startDateTime = new Date(startDate + ' ' + time);
-    const currDate = new Date();
+  const endDateTimeValidator = (input: string) => {
+    const eDate = getValues('endDate');
+    const eTime = getValues('endTime');
+    const eUtc = getValues('endUtc');
+    const canonicalEUtc = getCanonicalUtcOffset(eUtc);
+    const endDateTime = toDate(eDate + 'T' + eTime + canonicalEUtc);
+    const endMills = endDateTime.valueOf();
 
-    if (startDateTime.getTime() < currDate.getTime()) {
-      return t('errors.startTimePast');
-    }
-    return '';
-  };
+    const sDate = getValues('startDate');
+    const sTime = getValues('startTime');
+    const sUtc = getValues('startUtc');
+    const canonicalSUtc = getCanonicalUtcOffset(sUtc);
+    const startDateTime = toDate(sDate + 'T' + sTime + canonicalSUtc);
+    const startMills = startDateTime.valueOf();
+    const minEndDateTimeMills = startMills + daysToMills(5);
 
-  const endDateValidator = (date: string) => {
-    const endDate = new Date(date);
-    const todayMidnight = new Date().setHours(0, 0, 0, 0);
-    const daysOffset = daysToMils(5);
-    const minMidnight = todayMidnight + daysOffset;
-
-    if (endDate.getTime() < minMidnight) {
-      return t('errors.endDatePast');
-    }
-    return '';
-  };
-
-  const endTimeValidator = (time: string) => {
-    const endDateTime = new Date(endDate + ' ' + time);
-    const daysOffset = daysToMils(5);
-    const minEndDateTime = new Date().getTime() + daysOffset;
-
-    if (endDateTime.getTime() < minEndDateTime) {
-      return t('errors.endDatePast');
+    if (endMills < minEndDateTimeMills) {
+      console.log('TRACING end < start + 5 days');
+      return t('errors.endPast');
     }
     return '';
   };
 
   const dateInputName = isStartDate ? 'startDate' : 'endDate';
   const timeInputName = isStartDate ? 'startTime' : 'endTime';
-  const dateInputValidator = isStartDate
-    ? startDateValidator
-    : endDateValidator;
-  const timeInputValidator = isStartDate
-    ? startTimeValidator
-    : endTimeValidator;
+  const dateTimeInputValidator = isStartDate
+    ? startDateTimeValidator
+    : endDateTimeValidator;
 
   return (
     <HStack>
@@ -80,7 +75,7 @@ const DateSection: React.FC<DateSectionProps> = ({isStartDate}) => {
         control={control}
         rules={{
           required: t('errors.required.time'),
-          validate: dateInputValidator,
+          validate: dateTimeInputValidator,
         }}
         render={({field: {name, value, onChange}, fieldState: {error}}) => (
           <div>
@@ -98,7 +93,7 @@ const DateSection: React.FC<DateSectionProps> = ({isStartDate}) => {
         control={control}
         rules={{
           required: t('errors.required.date'),
-          validate: timeInputValidator,
+          validate: dateTimeInputValidator,
         }}
         render={({field: {name, value, onChange}, fieldState: {error}}) => (
           <div>
