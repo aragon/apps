@@ -52,6 +52,7 @@
     "description": "Summary",
     "addLink": "Add Link",
     "removeLink": "Remove Link",
+    "addResource": "Add Resource",
     "link": "Link",
     "links": "Links",
     "label": "Label",

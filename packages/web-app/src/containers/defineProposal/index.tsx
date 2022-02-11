@@ -120,7 +120,7 @@ const DefineProposal: React.FC = () => {
           helpText={t('labels.resourcesHelptext')}
           isOptional
         />
-        <AddLinks buttonPlusIcon />
+        <AddLinks buttonPlusIcon buttonLabel={t('labels.addResource')} />
       </FormItem>
     </>
   );
