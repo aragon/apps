@@ -153,7 +153,6 @@ const SetupVotingForm: React.FC = () => {
 
     //check end constraints
     if (endMills < minEndDateTimeMills) {
-      console.log('TRACING end date error ');
       setError('endTime', {
         type: 'validate',
         message: t('errors.endPast') as string,

@@ -86,7 +86,6 @@ export function getCanonicalDate(offset?: Offset): string {
     formattedMonth +
     '-' +
     formattedDay;
-  console.log('formattedDate ' + formattedDateTime);
   return formattedDateTime;
 }
 
