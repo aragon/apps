@@ -15,6 +15,7 @@ import {useWalletProps} from 'containers/walletMenu';
 import ConfigureWithdrawForm from 'containers/configureWithdraw';
 import {FullScreenStepper, Step} from 'components/fullScreenStepper';
 import SetupVotingForm from 'containers/setupVotingForm';
+import DefineProposal from 'containers/defineProposal';
 
 export type TransferData = {
   amount: string;
@@ -140,13 +141,10 @@ const NewWithdraw: React.FC = () => {
           <SetupVotingForm />
         </Step>
         <Step
-          wizardTitle={t('newWithdraw.setupVoting.title')}
-          wizardDescription={t('newWithdraw.setupVoting.description')}
-          nextButtonLabel={t('labels.submitDeposit')}
-          isNextButtonDisabled={!formMethods.formState.isValid}
+          wizardTitle={t('newWithdraw.defineProposal.heading')}
+          wizardDescription={t('newWithdraw.defineProposal.description')}
         >
-          {/* TODO replace with next form container, title, etc. */}
-          <p>Step 3</p>
+          <DefineProposal />
         </Step>
       </FullScreenStepper>
       <TokenMenu

@@ -9,7 +9,7 @@ import {
 } from '@aragon/ui-components';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
-import React, {createContext, useCallback, useContext} from 'react';
+import React, {createContext, useCallback, useContext, useMemo} from 'react';
 
 import {useWallet} from 'context/augmentedWallet';
 import {useStepper} from 'hooks/useStepper';
@@ -17,16 +17,21 @@ import {NavigationBar} from 'containers/navbar';
 import {useWalletProps} from 'containers/walletMenu';
 import {useWalletMenuContext} from 'context/walletMenu';
 import {StepProps} from './step';
+import {Link} from 'react-router-dom';
 
 export type FullScreenStepperProps = {
   navbarLabel: string;
   navbarBackUrl: string;
   wizardProcessName: string;
+  totalFormSteps?: number;
   children: React.FunctionComponentElement<StepProps>[];
 };
 
 type FullScreenStepperContextType = {
+  currentStep: number;
   setStep: React.Dispatch<React.SetStateAction<number>>;
+  prev: () => void;
+  next: () => void;
 };
 
 const FullScreenStepperContext = createContext<
@@ -39,6 +44,7 @@ export const useFormStep = () =>
 export const FullScreenStepper: React.FC<FullScreenStepperProps> = ({
   navbarLabel,
   navbarBackUrl,
+  totalFormSteps,
   wizardProcessName,
   children,
 }) => {
@@ -57,6 +63,9 @@ export const FullScreenStepper: React.FC<FullScreenStepperProps> = ({
     wizardTitle,
     wizardDescription,
     hideWizard,
+    fullWidth,
+    customHeader,
+    customFooter,
     backButtonLabel,
     nextButtonLabel,
     isNextButtonDisabled,
@@ -64,12 +73,20 @@ export const FullScreenStepper: React.FC<FullScreenStepperProps> = ({
     onNextButtonClicked,
   } = children[currentIndex].props;
 
+  const value = {currentStep, setStep, prev, next};
+
+  const currentFormStep = useMemo(() => {
+    return !totalFormSteps || totalFormSteps === children.length
+      ? currentStep
+      : currentStep - (children.length - totalFormSteps);
+  }, [children.length, currentStep, totalFormSteps]);
+
   return (
-    <FullScreenStepperContext.Provider value={{setStep}}>
+    <FullScreenStepperContext.Provider value={value}>
       <NavigationBar>
         <HStack>
           <InsetButton>
-            <InsetIconContainer href={navbarBackUrl}>
+            <InsetIconContainer to={navbarBackUrl}>
               <IconChevronLeft />
             </InsetIconContainer>
             <InsetButtonText>{navbarLabel}</InsetButtonText>
@@ -97,36 +114,41 @@ export const FullScreenStepper: React.FC<FullScreenStepperProps> = ({
         {!hideWizard && (
           <Wizard
             processName={wizardProcessName}
-            title={wizardTitle}
-            description={wizardDescription}
-            totalSteps={children.length}
-            currentStep={currentStep}
+            title={wizardTitle || ''}
+            description={wizardDescription || ''}
+            totalSteps={totalFormSteps || children.length}
+            currentStep={currentFormStep}
           />
         )}
-        <FormLayout>
+        {customHeader}
+        <FormLayout fullWidth={fullWidth || false}>
           {children[currentIndex]}
-          <FormFooter>
-            {/* Should change this to secondary on gray which is unsupported now */}
-            <ButtonText
-              mode="secondary"
-              size="large"
-              label={backButtonLabel || t('labels.back')}
-              onClick={() =>
-                onBackButtonClicked ? onBackButtonClicked() : prev()
-              }
-              disabled={currentStep === 1}
-              iconLeft={<IconChevronLeft />}
-            />
-            <ButtonText
-              label={nextButtonLabel || t('labels.continue')}
-              size="large"
-              onClick={() =>
-                onNextButtonClicked ? onNextButtonClicked() : next()
-              }
-              disabled={isNextButtonDisabled}
-              iconRight={<IconChevronRight />}
-            />
-          </FormFooter>
+          {customFooter ? (
+            <>{customFooter}</>
+          ) : (
+            <FormFooter>
+              {/* Should change this to secondary on gray which is unsupported now */}
+              <ButtonText
+                mode="secondary"
+                size="large"
+                label={backButtonLabel || t('labels.back')}
+                onClick={() =>
+                  onBackButtonClicked ? onBackButtonClicked() : prev()
+                }
+                disabled={currentStep === 1}
+                iconLeft={<IconChevronLeft />}
+              />
+              <ButtonText
+                label={nextButtonLabel || t('labels.continue')}
+                size="large"
+                onClick={() =>
+                  onNextButtonClicked ? onNextButtonClicked() : next()
+                }
+                disabled={isNextButtonDisabled}
+                iconRight={<IconChevronRight />}
+              />
+            </FormFooter>
+          )}
         </FormLayout>
       </Layout>
     </FullScreenStepperContext.Provider>
@@ -134,12 +156,18 @@ export const FullScreenStepper: React.FC<FullScreenStepperProps> = ({
 };
 
 const Layout = styled.div.attrs({
-  className: 'm-auto mt-3 w-8/12 font-medium text-ui-600',
+  className: 'tablet:m-auto tablet:mt-3 tablet:w-8/12 font-medium text-ui-600',
 })``;
 
-const FormLayout = styled.div.attrs({
-  className: 'my-8 mx-auto space-y-5 w-3/4',
-})``;
+type FormLayoutProps = {
+  fullWidth: boolean;
+};
+
+const FormLayout = styled.div.attrs(({fullWidth}: FormLayoutProps) => ({
+  className: `my-5 px-2 tablet:px-0 tablet:my-8 tablet:mx-auto space-y-5 ${
+    !fullWidth && 'tablet:w-3/4'
+  }`,
+}))<FormLayoutProps>``;
 
 const HStack = styled.div.attrs({
   className: 'flex space-x-1.5',
@@ -149,7 +177,7 @@ const InsetButton = styled.div.attrs({
   className: 'flex items-center p-0.5 rounded-xl bg-ui-0',
 })``;
 
-const InsetIconContainer = styled.a.attrs({
+const InsetIconContainer = styled(Link).attrs({
   className: 'p-1.5 rounded-lg bg-ui-50',
 })``;
 
@@ -158,5 +186,5 @@ const InsetButtonText = styled.div.attrs({
 })``;
 
 const FormFooter = styled.div.attrs({
-  className: 'flex justify-between mt-8',
+  className: 'flex justify-between pt-8',
 })``;

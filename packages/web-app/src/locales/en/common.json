@@ -37,16 +37,51 @@
     "continue": "Continue",
     "submitDeposit": "Submit Deposit",
     "resources": "Resources",
-    "submitWithdraw": "Publish Proposal",
     "start": "Start",
     "end": "End",
     "days": "Days",
-    "dateTime": "Date + Time"
+    "dateTime": "Date + Time",
+    "resourcesHelptext": "Link to external resources, such as documents, forum links, chats or similar.",
+    "submitWithdraw": "Publish Proposal",
+    "sortBy": "Sort by",
+    "mainNet": "Main Net",
+    "testNet": "Test Net",
+    "cheapest": "cheapest",
+    "safest": "safest",
+    "mostPopular": "most popular",
+    "networkCost": "Network Cost",
+    "security": "Security",
+    "popularity": "Popularity",
+    "daoName": "Name",
+    "description": "Summary",
+    "addLink": "Add Link",
+    "removeLink": "Remove Link",
+    "link": "Link",
+    "links": "Links",
+    "label": "Label",
+    "logo": "Logo",
+    "optional": "Optional",
+    "minimumApproval": "Minimum approval",
+    "support": "Support",
+    "duration": "Duration",
+    "membership": "Who is eligible to participate in your DAO?",
+    "communityToken": "Does your community have a token?",
+    "addExistingToken": "Add existing Token",
+    "existingTokenName": "Name",
+    "existingTokenSymbol": "Symbol",
+    "existingTokenSupply": "Supply",
+    "author": "Author",
+    "sec": "sec",
+    "ago": "ago",
+    "step": "Step",
+    "of": "of"
   },
   "placeHolders": {
     "selectToken": "Select a Token ...",
     "walletOrEns": "Type wallet address or ENS ...",
-    "searchTokens": "Type to search ..."
+    "searchTokens": "Type to search ...",
+    "daoName": "Type your DAOs name ...",
+    "daoDescription": "Type your summary ..."
   },
   "finance": {
     "tokenSection": "Tokens",
@@ -72,7 +107,9 @@
         "read": "Read Proposal",
         "vote": "Vote now",
         "execute": "Execute Now",
-        "edit": "Edit Proposal"
+        "edit": "Edit Proposal",
+        "readFullProposal": "Read Full Proposal",
+        "closeFullProposal": "Close Full Proposal"
       }
     },
     "noProposals": "No proposals found!"
@@ -100,6 +137,8 @@
       "date": "Date is required",
       "duration": "Duration is required",
       "endDate": "End date is required",
+      "label": "Label is mandatory",
+      "link": "Link is mandatory",
       "recipient": "Recipient address is required",
       "token": "Token is required",
       "time": "Time is required",
@@ -107,8 +146,14 @@
     },
     "startPast": "Process must not start in the past"
   },
+  "alert": {
+    "durationAlert": "We recommend a minimum duration of 1 day if it does not have to be a quick financial decision."
+  },
   "warnings": {
     "amountGtDaoToken": "Withdraw amount is greater than the current token balance"
+  },
+  "success": {
+    "contract": "Smart Contract Validated"
   },
   "allTransfer": {
     "thisWeek": "This Week",
@@ -134,6 +179,18 @@
     "tokenNotFoundSubtitleDao": "Add custom token to withdraw",
     "tokenNotAvailableSubtitle": "Check your wallet, update the tokens or add a custom token to transfer",
     "tokenNotAvailableSubtitleDao": "Update the tokens or add a custom token to transfer."
+  },
+  "TransactionModal": {
+    "estimatedFees": "Estimated Gas Fees",
+    "synced": "Synced {{time}} sec ag",
+    "totalCost": "Total Cost",
+    "approveToken": "Approve token",
+    "signDeposit": "Sign Deposit",
+    "approveSubtitle": "To sign your first transaction, you must approve Aragon Zaragoza to make a transaction with your token.",
+    "dismiss": "Dismiss",
+    "tryAgain": "Try Again",
+    "errorLabel": "Error while confirmation",
+    "successLabel": "Transaction successful"
   },
   "newDeposit": {
     "depositAssets": "Deposit Assets",
@@ -171,6 +228,97 @@
         "helptext": "Let users vote for or against."
       },
       "endDescription": "Define how long the voting should last in days or exact date and time."
+    },
+    "defineProposal": {
+      "heading": "Define Proposal",
+      "description": "A proposal is necessary so that the community understands why you want to execute this withdraw. Fill in the necessary fields and be as detailed but as concise as possible.",
+      "title": "Title",
+      "titleHelptext": "Define a custom title if needed",
+      "titlePlaceholder": "Type meaningful title",
+      "summary": "Summary",
+      "summaryHelptext": "Describe this proposal in 2-3 short sentences as a summary. This information will be presented in the sharing and overview.",
+      "summaryPlaceholder": "Type your description ...",
+      "proposal": "Proposal",
+      "proposalPlaceholder": "Type your proposal ..."
+    },
+  "createDAO": {
+    "title": "Create your DAO",
+    "overview": {
+      "title": "Get started with your DAO",
+      "description": "Create your own DAO in 4 easy steps + [TBD more helptext] Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum scelerisque quam a quam molestie, vel euismod massa maximus. Duis mattis justo risus, nec sollicitudin leo mollis ac. Nulla orci tellus, hendrerit eu metus eget, dictum placerat sapien."
+    },
+    "step1": {
+      "label": "Step 1",
+      "title": "Select Blockchain",
+      "description": "Decide which blockchain the DAO should be at home on."
+    },
+    "step2": {
+      "label": "Step 2",
+      "title": "Define Metadata",
+      "description": "Define important data for the DAO so that it can be easily found.",
+      "nameSubtitle": "Define a custom title if needed",
+      "logoSubtitle": "This is the logo which represents your DAO. Supports SVG, JPG, PNG or GIFs with max 3MB in size and must be 1:1 ratio. Suggested dimensions 1024x1024.",
+      "descriptionSubtitle": "Describe your DAO in 2-3 short sentences as a summary. This information will be presented in the sharing, in the overview, and helps people to understand what's your DAO about.",
+      "linksSubtitle": "Link to external resources, such as documents, forum links, chats or similar."
+    },
+    "step3": {
+      "label": "Step 3",
+      "title": "Setup Community",
+      "newToken": "No",
+      "newTokenSubtitle": "No, I would like to create a token.",
+      "existingToken": "Yes",
+      "existingTokenSubtitle": "Yes, we already have a token.",
+      "description": "Who is eligible to participate in the DAO? Create a token if needed.",
+      "tokenMembership": "Token Holders",
+      "tokenMembershipSubtitle": "All those who have a token are entitled to participate. 1 token equals 1 vote.",
+      "walletMemberShip": "Authorized Wallets",
+      "walletMemberShipSubtitle": "Only authorised wallets are entitled to particpiate. 1 Wallet equals 1 vote (coming soon).",
+      "addExistingTokenHelptext": "Hinterlege einen bestehenden Token, welcher deine Community für die Governance verwendet. To learn more about what it’s important if you use an existing Token, read first the ",
+      "tokenHelptextLink": "Token Distribution Guide",
+      "tokenContractSubtitlePart1": "Copy the contract address directly from the ",
+      "tokenContractSubtitlePart2": "This way you can ensure that the address is correct."
+    },
+    "step4": {
+      "label": "Step 4",
+      "title": "Configure Governance",
+      "description": "How are decisions made in the DAO? How long may a proposal be open for voting?",
+      "minimumApprovalSubtitle": "Minimum Approval is the percentage of the total token supply that is required to vote “Yes” on a proposal before it can be approved.",
+      "supportSubtitle": "Support is the relative percentage of tokens or wallets that are required to vote “Yes” for a proposal to be approved.",
+      "durationSubtitle": "Vote Duration is the length of time that the vote will be open for participation. The duration applies to each proposal in the DAO. However, the proposers can extend the time if necessary, but not shorten it!",
+      "days": "Days",
+      "hours": "Hours",
+      "minutes": "Minutes",
+      "alerts": {
+        "minimumApprovalAlert": "{{amount}} {{symbol}} tokens"
+      }
     }
+  },
+  "votingTerminal": {
+    "title": "Voting",
+    "breakdown": "Breakdown",
+    "voters": "Voters",
+    "info": "Info",
+    "yes": "Yes",
+    "no": "No",
+    "yesHelptext": "Your choice will be counted for option yes",
+    "noHelptext": "Your choice will be counted for option no",
+    "token": "Token",
+    "inputPlaceholder": "Type Address, ENS or E-Mail",
+    "options": "Options",
+    "yes+no": "Yes + No",
+    "strategy": "Strategy",
+    "tokenVoting": "1 Token -> 1 Vote",
+    "minimumApproval": "Minimum Approval",
+    "participation": "Participation",
+    "uniqueVoters": "Unique Voters",
+    "duration": "Duration",
+    "start": "Start",
+    "end": "End",
+    "chooseOption": "Choose your option",
+    "chooseOptionHelptext": "To vote, you must select one of the following options. Afterwards, a confirmation with your wallet is necessary. Once the transaction is completed, your vote will be counted and displayed.",
+    "submit": "Submit your vote",
+    "cancel": "Cancel",
+    "remainingTime": "Remaining time",
+    "voteNow": "Vote now"
   }
 }

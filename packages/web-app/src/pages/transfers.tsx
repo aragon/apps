@@ -8,11 +8,11 @@ import TransferList from 'components/transferList';
 import {PageWrapper} from 'components/wrappers';
 import useCategorizedTransfers from 'hooks/useCategorizedTransfers';
 import {TransferSectionWrapper} from 'components/wrappers';
-import {useTransferModalContext} from 'context/transfersModal';
+import {useGlobalModalContext} from 'context/globalModals';
 
 const Transfers: React.FC = () => {
   const {t} = useTranslation();
-  const {open} = useTransferModalContext();
+  const {open} = useGlobalModalContext();
   const [filterValue, setFilterValue] = useState('');
   const {data: categorizedTransfers} = useCategorizedTransfers();
 
@@ -51,16 +51,18 @@ const Transfers: React.FC = () => {
       >
         <div className="space-y-1.5">
           <SearchInput placeholder="Type to filter" />
-          <ButtonGroup
-            bgWhite
-            defaultValue="all"
-            onChange={handleButtonGroupChange}
-          >
-            <Option value="all" label="All" />
-            <Option value="deposit" label="Deposit" />
-            <Option value="withdraw" label="Withdraw" />
-            <Option value="externalContract" label="External Contract" />
-          </ButtonGroup>
+          <div className="flex">
+            <ButtonGroup
+              bgWhite
+              defaultValue="all"
+              onChange={handleButtonGroupChange}
+            >
+              <Option value="all" label="All" />
+              <Option value="deposit" label="Deposit" />
+              <Option value="withdraw" label="Withdraw" />
+              <Option value="externalContract" label="External Contract" />
+            </ButtonGroup>
+          </div>
         </div>
         <SectionContainer>
           <TransferSectionWrapper title={t('allTransfer.thisWeek') as string}>

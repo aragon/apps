@@ -46,7 +46,7 @@ const Navbar: React.FC = () => {
    ************************************/
   const {t} = useTranslation();
   const breadcrumbs = useBreadcrumbs(undefined, {
-    excludePaths: [Dashboard, NotFound],
+    excludePaths: [Dashboard, NotFound, 'governance/proposals'],
   });
 
   const {open} = useWalletMenuContext();
@@ -186,12 +186,8 @@ const Navbar: React.FC = () => {
       </NavContainer>
 
       {/* ------- NavLinks (Mobile) ------- */}
-      <BottomSheet
-        isOpen={showMobileMenu}
-        onOpen={handleShowMobileMenu}
-        onClose={handleHideMobileMenu}
-      >
-        <div className="space-y-3">
+      <BottomSheet isOpen={showMobileMenu} onClose={handleHideMobileMenu}>
+        <div className="p-3 space-y-3">
           <CardDao
             daoAddress="bushido.aragonid.eth"
             daoName="Bushido DAO"

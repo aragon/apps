@@ -9,6 +9,7 @@ import Navbar from 'containers/navbar';
 import WalletMenu from 'containers/walletMenu';
 // import TokenMenu from 'containers/tokenMenu';
 import TransferMenu from 'containers/transferMenu';
+import TransactionModal, {TransactionState} from 'containers/transactionModal';
 import {trackPage} from 'services/analytics';
 import '../i18n.config';
 
@@ -24,9 +25,10 @@ const NotFoundPage = lazy(() => import('pages/notFound'));
 const CommunityPage = lazy(() => import('pages/community'));
 const TransfersPage = lazy(() => import('pages/transfers'));
 const GovernancePage = lazy(() => import('pages/governance'));
-const ProposalsPage = lazy(() => import('pages/proposals'));
+const ProposalPage = lazy(() => import('pages/proposal'));
 const NewDepositPage = lazy(() => import('pages/newDeposit'));
 const NewWithdrawPage = lazy(() => import('pages/newWithdraw'));
+const CreateDAOPage = lazy(() => import('pages/createDAO'));
 
 function App() {
   const {pathname} = useLocation();
@@ -37,19 +39,20 @@ function App() {
   }, [pathname]);
 
   return (
-    <div className="bg-primary-50">
+    <div className="bg-ui-50">
       <div className="min-h-screen">
         <Suspense fallback={null}>
           <Routes>
             <Route path={paths.NewDeposit} element={<NewDepositPage />} />
             <Route path={paths.NewWithDraw} element={<NewWithdrawPage />} />
+            <Route path={paths.CreateDAO} element={<CreateDAOPage />} />
 
             <Route element={<Layout />}>
               <Route path={paths.Dashboard} element={<HomePage />} />
               <Route path={paths.Community} element={<CommunityPage />} />
               <Route path={paths.Finance} element={<FinancePage />} />
               <Route path={paths.Governance} element={<GovernancePage />} />
-              <Route path={paths.Proposals} element={<ProposalsPage />} />
+              <Route path={paths.Proposal} element={<ProposalPage />} />
               <Route path={paths.AllTokens} element={<TokensPage />} />
               <Route path={paths.AllTransfers} element={<TransfersPage />} />
               <Route path={paths.NotFound} element={<NotFoundPage />} />
@@ -61,6 +64,15 @@ function App() {
       <Footer />
       <WalletMenu />
       <TransferMenu />
+      <TransactionModal
+        title="Sign Deposit"
+        subtitle="To register your deposit, you need to submit a transaction which costs you following."
+        footerButtonLabel="Sign Deposit"
+        state={TransactionState.SUCCESS}
+        callback={console.log}
+        approveStepNeeded
+      />
+      {/* <TokenMenu /> */}
     </div>
   );
 }
