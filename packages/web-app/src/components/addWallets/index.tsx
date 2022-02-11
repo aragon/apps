@@ -1,6 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import {ButtonText} from '@aragon/ui-components';
+import {
+  ButtonText,
+  Popover,
+  ListItemText,
+  IconMenuVertical,
+  ButtonIcon,
+} from '@aragon/ui-components';
 import {useTranslation} from 'react-i18next';
 import {useFormContext, useFieldArray} from 'react-hook-form';
 
@@ -10,7 +16,7 @@ import Footer from './footer';
 
 const AddWallets: React.FC = () => {
   const {t} = useTranslation();
-  const {control, watch} = useFormContext();
+  const {control, watch, setValue} = useFormContext();
   const watchFieldArray = watch('wallets');
   const {fields, append, remove} = useFieldArray({name: 'wallets', control});
 
@@ -27,6 +33,12 @@ const AddWallets: React.FC = () => {
       {address: 'My Wallet', amount: '0'},
     ]);
   }
+
+  const resetDistribution = () => {
+    controlledFields.forEach((_, index) => {
+      setValue(`wallets.${index}.amount`, '0');
+    });
+  };
 
   // TODO: research focus after input refactor
   const handleAddWallet = () => {
@@ -48,12 +60,44 @@ const AddWallets: React.FC = () => {
         })}
         <Footer totalAddresses={fields.length || 0} />
       </ListGroup>
-      <ButtonText
-        label={t('labels.addWallet') as string}
-        mode="secondary"
-        size="large"
-        onClick={handleAddWallet}
-      />
+      <ActionsWrapper>
+        <ButtonText
+          label={t('labels.addWallet') as string}
+          mode="secondary"
+          size="large"
+          onClick={handleAddWallet}
+        />
+        <Popover
+          side="bottom"
+          align="end"
+          width={156}
+          content={
+            <div className="p-1.5">
+              <ListItemText
+                mode="default"
+                title={t('labels.resetDistribution')}
+                onClick={resetDistribution}
+              />
+              <ListItemText
+                mode="default"
+                title={t('labels.deleteAllAddresses')}
+                onClick={() => {
+                  remove();
+                  append([{address: 'DAO Treasury', amount: '0'}]);
+                }}
+              />
+            </div>
+          }
+        >
+          <ButtonIcon
+            mode="ghost"
+            size="large"
+            bgWhite
+            icon={<IconMenuVertical />}
+            data-testid="trigger"
+          />
+        </Popover>
+      </ActionsWrapper>
     </Container>
   );
 };
@@ -61,6 +105,11 @@ const AddWallets: React.FC = () => {
 export default AddWallets;
 
 const Container = styled.div.attrs({className: 'space-y-1.5'})``;
+
 const ListGroup = styled.div.attrs({
   className: 'flex flex-col overflow-hidden space-y-0.25 rounded-xl',
+})``;
+
+const ActionsWrapper = styled.div.attrs({
+  className: 'flex justify-between',
 })``;

@@ -38,7 +38,7 @@ const LinkRow: React.FC<LinkRowProps> = ({index, onDelete}) => {
   const {t} = useTranslation();
   const [isDuplicate, setIsDuplicate] = useState<boolean>(false);
   const {account} = useWallet();
-  const {control, getValues, setValue} = useFormContext();
+  const {control, getValues, setValue, trigger} = useFormContext();
   const walletFieldArray = getValues('wallets');
 
   const totalTokenSupply = (value: number) => {
@@ -65,6 +65,12 @@ const LinkRow: React.FC<LinkRowProps> = ({index, onDelete}) => {
       });
     }
     return validationResult;
+  };
+
+  const amountValidation = (index: number) => {
+    const address = getValues(`wallets.${index}.address`);
+    if (address === '') trigger(`wallets.${index}.address`);
+    return true;
   };
 
   return (
@@ -140,6 +146,9 @@ const LinkRow: React.FC<LinkRowProps> = ({index, onDelete}) => {
       <Controller
         name={`wallets.${index}.amount`}
         control={control}
+        rules={{
+          validate: () => amountValidation(index),
+        }}
         render={({field, fieldState: {error}}) => (
           <>
             <ButtonWrapper>
