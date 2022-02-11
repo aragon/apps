@@ -64,7 +64,7 @@ const LinkRow: React.FC<LinkRowProps> = ({index, onDelete}) => {
       if (url === '') return t('errors.required.link');
 
       return new RegExp(URL_PATTERN).test(url) ||
-        RegExp(EMAIL_PATTERN).test(url)
+        new RegExp(EMAIL_PATTERN).test(url)
         ? true
         : t('errors.invalidURL');
     },
