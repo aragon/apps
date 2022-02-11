@@ -19,6 +19,8 @@ import UtcMenu from 'containers/utcMenu';
 import {timezones} from 'containers/utcMenu/utcData';
 import {
   daysToMills,
+  getCanonicalDate,
+  getCanonicalTime,
   getCanonicalUtcOffset,
   getFormattedUtcOffset,
 } from 'utils/date';
@@ -41,7 +43,19 @@ const SetupVotingForm: React.FC = () => {
   const [utcStart, setUtcStart] = useState('');
   const [utcEnd, setUtcEnd] = useState('');
 
+  // Initializes values for the form
+  // This is done here rather than in the defaulValues object as time can
+  // ellapse between the creation of the form context and this stage of the form.
   useEffect(() => {
+    if (!getValues('startTime'))
+      setValue('startTime', getCanonicalTime({minutes: 10}));
+    if (!getValues('startDate'))
+      setValue('startDate', getCanonicalDate({minutes: 10}));
+    if (!getValues('endTime'))
+      setValue('endTime', getCanonicalTime({days: 5, minutes: 10}));
+    if (!getValues('endDate'))
+      setValue('endDate', getCanonicalDate({days: 5, minutes: 10}));
+
     const currTimezone = timezones.find(tz => tz === getFormattedUtcOffset());
     if (!currTimezone) {
       setUtcStart(timezones[13]);
@@ -56,6 +70,9 @@ const SetupVotingForm: React.FC = () => {
     }
   }, []);
 
+  // validate start time on UTC changes
+  // (Doing this in a separate hook is necessary since the UTC selector is
+  // currently not controllable using the the form conroller)
   useEffect(() => {
     const fieldErrors: FieldError[] = Object.values(formState.errors);
     const hasEmptyFields = fieldErrors.some(
@@ -75,6 +92,9 @@ const SetupVotingForm: React.FC = () => {
     }
   }, [utcStart]);
 
+  // validate end time on UTC changes
+  // (Doing this in a separate hook is necessary since the UTC selector is
+  // currently not controllable using the the form conroller)
   useEffect(() => {
     const fieldErrors: FieldError[] = Object.values(formState.errors);
     const hasEmptyFields = fieldErrors.some(
@@ -98,6 +118,7 @@ const SetupVotingForm: React.FC = () => {
    *                Field Validators               *
    *************************************************/
 
+  // computes start time in UTC milliseconds from available inputs
   function buildStartDateTime(): number {
     const sDate = getValues('startDate');
     const sTime = getValues('startTime');
@@ -109,7 +130,6 @@ const SetupVotingForm: React.FC = () => {
   }
 
   const startDateTimeValidator = (input: string) => {
-    console.log("TRACING location: 'startDateTimeValidator'");
     const startMills = buildStartDateTime();
 
     const currDateTime = new Date();
@@ -136,7 +156,6 @@ const SetupVotingForm: React.FC = () => {
     const minEndDateTimeMills = startMills + daysToMills(5);
 
     if (endMills < minEndDateTimeMills) {
-      console.log("TRACING location: 'endDateTimeValidator' error");
       return t('errors.endPast');
     } else {
       clearErrors('endDate');
@@ -206,9 +225,13 @@ const SetupVotingForm: React.FC = () => {
             control={control}
             rules={{
               required: t('errors.required.time'),
+              // FIXME this triggers the validators, but for some reason they do
+              // not assign the error to the correct field
               validate: {
                 endTime: endDateTimeValidator,
+                endDate: endDateTimeValidator,
                 startTime: startDateTimeValidator,
+                startDate: startDateTimeValidator,
               },
             }}
             render={({field: {name, value, onChange, onBlur}}) => (

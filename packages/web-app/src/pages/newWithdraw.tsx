@@ -15,7 +15,6 @@ import {useWalletProps} from 'containers/walletMenu';
 import ConfigureWithdrawForm from 'containers/configureWithdraw';
 import {FullScreenStepper, Step} from 'components/fullScreenStepper';
 import SetupVotingForm from 'containers/setupVotingForm';
-import {getCanonicalDate, getCanonicalTime} from 'utils/date';
 
 export type TransferData = {
   amount: string;
@@ -60,10 +59,10 @@ const defaultValues = {
   tokenImgUrl: '',
   isCustomToken: false,
   duration: 5,
-  startDate: getCanonicalDate({minutes: 10}),
-  startTime: getCanonicalTime({minutes: 10}),
-  endDate: getCanonicalDate({days: 5, minutes: 10}),
-  endTime: getCanonicalTime({days: 5, minutes: 10}),
+  startDate: '',
+  startTime: '',
+  endDate: '',
+  endTime: '',
   startUtc: '',
   endUtc: '',
 };
