@@ -9,7 +9,7 @@ import {
   NumberInput,
   ValueInput,
 } from '@aragon/ui-components';
-import React from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import {
@@ -24,7 +24,6 @@ import {useWallet} from 'context/augmentedWallet';
 import {validateAddress} from 'utils/validators';
 
 type LinkRowProps = {
-  control: Control<FieldValues, object>;
   index: number;
   onDelete?: (index: number) => void;
 };
@@ -35,10 +34,11 @@ export type WalletField = {
   amount: string;
 };
 
-const LinkRow: React.FC<LinkRowProps> = ({control, index, onDelete}) => {
+const LinkRow: React.FC<LinkRowProps> = ({index, onDelete}) => {
   const {t} = useTranslation();
+  const [isDuplicate, setIsDuplicate] = useState<boolean>(false);
   const {account} = useWallet();
-  const {getValues, setValue} = useFormContext();
+  const {control, getValues, setValue} = useFormContext();
   const walletFieldArray = getValues('wallets');
 
   const totalTokenSupply = (value: number) => {
@@ -53,6 +53,20 @@ const LinkRow: React.FC<LinkRowProps> = ({control, index, onDelete}) => {
     return totalSupply && Math.floor((value / totalSupply) * 100) + '%';
   };
 
+  const addressValidator = (address: string, index: number) => {
+    let validationResult = validateAddress(address);
+    setIsDuplicate(false);
+    if (walletFieldArray) {
+      walletFieldArray.forEach((wallet: WalletField, walletIndex: number) => {
+        if (address === wallet.address && index !== walletIndex) {
+          validationResult = t('errors.duplicateAddress') as string;
+          setIsDuplicate(true);
+        }
+      });
+    }
+    return validationResult;
+  };
+
   return (
     <Container data-testid="wallet-row">
       <LabelContainer>
@@ -61,7 +75,7 @@ const LinkRow: React.FC<LinkRowProps> = ({control, index, onDelete}) => {
           control={control}
           rules={{
             required: t('errors.required.walletAddress') as string,
-            validate: validateAddress,
+            validate: value => addressValidator(value, index),
           }}
           render={({field, fieldState: {error}}) => (
             <>
@@ -139,6 +153,7 @@ const LinkRow: React.FC<LinkRowProps> = ({control, index, onDelete}) => {
                 onChange={field.onChange}
                 placeholder="0"
                 min={0}
+                disabled={isDuplicate}
                 mode={error?.message ? 'critical' : 'default'}
                 value={field.value}
               />

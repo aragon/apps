@@ -42,7 +42,6 @@ const AddWallets: React.FC = () => {
             <Row
               key={field.id}
               index={index}
-              control={control}
               {...(index !== 0 ? {onDelete: () => remove(index)} : {})}
             />
           );
