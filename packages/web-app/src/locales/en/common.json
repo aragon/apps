@@ -56,6 +56,7 @@
     "description": "Summary",
     "addLink": "Add Link",
     "removeLink": "Remove Link",
+    "addResource": "Add Resource",
     "link": "Link",
     "links": "Links",
     "label": "Label",
@@ -142,7 +143,9 @@
       "recipient": "Recipient address is required",
       "token": "Token is required",
       "time": "Time is required",
-      "timezone": "Timezone is required"
+      "timezone": "Timezone is required",
+      "title": "Title is required",
+      "summary": "Summary is required"
     },
     "startPast": "Process must not start in the past"
   },
