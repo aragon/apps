@@ -183,7 +183,8 @@ const LabelWrapper = styled.div.attrs({
 })``;
 
 const InputWrapper = styled.div.attrs({
-  className: 'flex items-end tablet:order-3 tablet:pt-0 w-10',
+  className:
+    'flex items-end tablet:items-start tablet:order-3 tablet:pt-0 w-10',
 })``;
 
 const LinkContainer = styled.div.attrs({
