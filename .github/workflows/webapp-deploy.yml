@@ -5,7 +5,7 @@ on:
       - 'packages/web-app/**'
     branches:
       - 'develop'
-      - 'feature/prod_deployment'
+      - 'main'
 
 env:
   working-directory: packages/web-app
@@ -14,15 +14,15 @@ jobs:
   set-environment:
     runs-on: ubuntu-latest
     outputs:
-      environment: ${{ steps.env.outputs.environment }}
+      environment: ${{ steps.envdev.outputs.environment }}${{ steps.envprod.outputs.environment }}
     steps:
       - name: Set environment to staging
         if: endsWith(github.ref, '/develop')
-        id: env
+        id: envdev
         run: echo "::set-output name=environment::staging"
       - name: Set environment to prod
-        if: endsWith(github.ref, '/feature/prod_deployment')
-        id: env
+        if: endsWith(github.ref, '/main')
+        id: envprod
         run: echo "::set-output name=environment::prod"
   build-deploy:
     runs-on: ubuntu-latest
