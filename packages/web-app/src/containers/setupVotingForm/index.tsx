@@ -82,13 +82,7 @@ const SetupVotingForm: React.FC = () => {
     );
 
     if (!hasEmptyFields) {
-      const error = startDateTimeValidator();
-      if (error) {
-        setError('startTime', {
-          type: 'validate',
-          message: t('errors.startPast'),
-        });
-      }
+      dateTimeValidator();
     }
   }, [utcStart]); //eslint-disable-line
 
@@ -104,13 +98,7 @@ const SetupVotingForm: React.FC = () => {
     );
 
     if (!hasEmptyFields) {
-      const error = endDateTimeValidator();
-      if (error) {
-        setError('endTime', {
-          type: 'validate',
-          message: t('errors.endPast'),
-        });
-      }
+      dateTimeValidator();
     }
   }, [utcEnd]); //eslint-disable-line
 
@@ -118,37 +106,26 @@ const SetupVotingForm: React.FC = () => {
    *                Field Validators               *
    *************************************************/
 
-  // computes start time in UTC milliseconds from available inputs
-  function buildStartDateTime(): number {
+  // validates both start time and date. This validator checks all constraints
+  // on the start and end date/time at once. This is necessary, as time date and
+  // times validity are tied to each other. If any constraint is violated, an
+  // error is constructed and passed to the form state.
+  //
+  // Note: does not take and argument, as it is not tied to any individual input.
+  const dateTimeValidator = () => {
+    //build start date/time in utc mills
     const sDate = getValues('startDate');
     const sTime = getValues('startTime');
     const sUtc = getValues('startUtc');
 
     const canonicalSUtc = getCanonicalUtcOffset(sUtc);
     const startDateTime = toDate(sDate + 'T' + sTime + canonicalSUtc);
-    return startDateTime.valueOf();
-  }
-
-  // validates the start time and date. Does not take and argument, as it is not
-  // tied to a single input.
-  const startDateTimeValidator = () => {
-    const startMills = buildStartDateTime();
+    const startMills = startDateTime.valueOf();
 
     const currDateTime = new Date();
     const currMills = currDateTime.getTime();
 
-    if (startMills < currMills) {
-      return t('errors.startPast');
-    } else {
-      clearErrors('startDate');
-      clearErrors('startTime');
-      return '';
-    }
-  };
-
-  // validates the end time and date. Does not take and argument, as it is not
-  // tied to a single input.
-  const endDateTimeValidator = () => {
+    //build end date/time in utc mills
     const eDate = getValues('endDate');
     const eTime = getValues('endTime');
     const eUtc = getValues('endUtc');
@@ -156,16 +133,42 @@ const SetupVotingForm: React.FC = () => {
     const endDateTime = toDate(eDate + 'T' + eTime + canonicalEUtc);
     const endMills = endDateTime.valueOf();
 
-    const startMills = buildStartDateTime();
     const minEndDateTimeMills = startMills + daysToMills(5);
 
+    // check start constraints
+    if (startMills < currMills) {
+      setError('startTime', {
+        type: 'validate',
+        message: t('errors.startPast') as string,
+      });
+      setError('startDate', {
+        type: 'validate',
+        message: t('errors.startPast') as string,
+      });
+    }
+    if (startMills >= currMills) {
+      clearErrors('startDate');
+      clearErrors('startTime');
+    }
+
+    //check end constraints
     if (endMills < minEndDateTimeMills) {
-      return t('errors.endPast');
-    } else {
+      console.log('TRACING end date error ');
+      setError('endTime', {
+        type: 'validate',
+        message: t('errors.endPast') as string,
+      });
+      setError('endDate', {
+        type: 'validate',
+        message: t('errors.endPast') as string,
+      });
+    }
+    if (endMills >= minEndDateTimeMills) {
       clearErrors('endDate');
       clearErrors('endTime');
-      return '';
     }
+
+    return '';
   };
 
   // sets the UTC values for the start and end date/time
@@ -212,7 +215,7 @@ const SetupVotingForm: React.FC = () => {
             control={control}
             rules={{
               required: t('errors.required.date'),
-              validate: startDateTimeValidator,
+              validate: dateTimeValidator,
             }}
             render={({field: {name, value, onChange, onBlur}}) => (
               <div>
@@ -232,12 +235,7 @@ const SetupVotingForm: React.FC = () => {
               required: t('errors.required.time'),
               // FIXME this triggers the validators, but for some reason they do
               // not assign the error to the correct field
-              validate: {
-                endTime: endDateTimeValidator,
-                endDate: endDateTimeValidator,
-                startTime: startDateTimeValidator,
-                startDate: startDateTimeValidator,
-              },
+              validate: dateTimeValidator,
             }}
             render={({field: {name, value, onChange, onBlur}}) => (
               <div>
@@ -315,7 +313,7 @@ const SetupVotingForm: React.FC = () => {
                   control={control}
                   rules={{
                     required: t('errors.required.date'),
-                    validate: endDateTimeValidator,
+                    validate: dateTimeValidator,
                   }}
                   render={({field: {name, value, onChange, onBlur}}) => (
                     <div>
@@ -333,7 +331,7 @@ const SetupVotingForm: React.FC = () => {
                   control={control}
                   rules={{
                     required: t('errors.required.time'),
-                    validate: endDateTimeValidator,
+                    validate: dateTimeValidator,
                   }}
                   render={({field: {name, value, onChange, onBlur}}) => (
                     <div>
