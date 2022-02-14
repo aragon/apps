@@ -90,6 +90,7 @@ const LinkRow: React.FC<LinkRowProps> = ({index, onDelete}) => {
               </LabelWrapper>
               <TextInput
                 name={field.name}
+                value={field.value}
                 onBlur={field.onBlur}
                 onChange={field.onChange}
                 mode={error?.message ? 'critical' : 'default'}
@@ -119,6 +120,7 @@ const LinkRow: React.FC<LinkRowProps> = ({index, onDelete}) => {
 
               <TextInput
                 name={field.name}
+                value={field.value}
                 onBlur={field.onBlur}
                 onChange={field.onChange}
                 placeholder="https://"
