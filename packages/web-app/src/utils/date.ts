@@ -79,14 +79,14 @@ export function getCanonicalDate(offset?: Offset): string {
   const formattedMonth = month > 9 ? '' + month : '0' + month;
   const day = offsetDateTime.getDate();
   const formattedDay = day > 9 ? '' + day : '0' + day;
-  const formattedDateTime =
+  return (
     '' +
     offsetDateTime.getFullYear() +
     '-' +
     formattedMonth +
     '-' +
-    formattedDay;
-  return formattedDateTime;
+    formattedDay
+  );
 }
 
 /**

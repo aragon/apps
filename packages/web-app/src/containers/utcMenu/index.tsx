@@ -39,7 +39,7 @@ const UtcMenu: React.FC<UtcMenuProps> = ({onTimezoneSelect}) => {
     <ModalBottomSheetSwitcher
       isOpen={isUtcOpen}
       onClose={() => close('utc')}
-      title={t('newWithdraw.configureWithdraw.utcMenu.title') as string}
+      title={t('newWithdraw.configureWithdraw.utcMenu.title')}
     >
       <ModalBody>
         <SearchInput

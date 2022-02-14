@@ -13,8 +13,8 @@ export function DateTimeErrors({mode}: DateTimeErrorsProps) {
   const [validatedErrors, setValidatedErrors] = useState<string[]>([]);
 
   useEffect(() => {
-    const validatedErrors: string[] = [];
-    const requiredErrors: string[] = [];
+    const reqErrors: string[] = [];
+    const valErrors: string[] = [];
 
     // filter for errors that target the current mode
     const fieldErrors: FieldError[] = Object.values(formState.errors);
@@ -27,18 +27,18 @@ export function DateTimeErrors({mode}: DateTimeErrorsProps) {
 
       switch (e.type) {
         case 'required':
-          requiredErrors.push(e.message);
+          reqErrors.push(e.message);
           break;
         case 'validate':
-          validatedErrors.push(e.message);
+          valErrors.push(e.message);
           break;
         default:
           break;
       }
     });
 
-    setRequiredErrors(requiredErrors);
-    setValidatedErrors(validatedErrors);
+    setRequiredErrors(reqErrors);
+    setValidatedErrors(valErrors);
   }, [formState]); //eslint-disable-line
 
   if (requiredErrors.length > 0) {

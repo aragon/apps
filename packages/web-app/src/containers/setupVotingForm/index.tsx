@@ -139,11 +139,11 @@ const SetupVotingForm: React.FC = () => {
     if (startMills < currMills) {
       setError('startTime', {
         type: 'validate',
-        message: t('errors.startPast') as string,
+        message: t('errors.startPast'),
       });
       setError('startDate', {
         type: 'validate',
-        message: t('errors.startPast') as string,
+        message: t('errors.startPast'),
       });
     }
     if (startMills >= currMills) {
@@ -155,11 +155,11 @@ const SetupVotingForm: React.FC = () => {
     if (endMills < minEndDateTimeMills) {
       setError('endTime', {
         type: 'validate',
-        message: t('errors.endPast') as string,
+        message: t('errors.endPast'),
       });
       setError('endDate', {
         type: 'validate',
-        message: t('errors.endPast') as string,
+        message: t('errors.endPast'),
       });
     }
     if (endMills >= minEndDateTimeMills) {
@@ -199,7 +199,6 @@ const SetupVotingForm: React.FC = () => {
             helptext={t('newWithdraw.setupVoting.yesNoLabel.helptext')}
             state="active"
             multiSelect={false}
-            onClick={() => {}}
           />
           <AlertInline label={t('infos.voteDuration')} mode="neutral" />
         </>
