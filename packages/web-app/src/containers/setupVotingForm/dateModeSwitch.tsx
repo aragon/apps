@@ -23,14 +23,12 @@ export const DateModeSwitch: React.FC<DateModeSwitchProps> = ({
         label={t('labels.days')}
         isActive={value === 'duration'}
         onClick={() => setValue('duration')}
-        size="large"
       />
       <ButtonText
         mode="secondary"
         label={t('labels.dateTime')}
         isActive={value === 'date'}
         onClick={() => setValue('date')}
-        size="large"
       />
     </SwitchContainer>
   );

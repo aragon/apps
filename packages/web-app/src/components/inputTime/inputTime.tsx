@@ -15,19 +15,10 @@ export const SimplifiedTimeInput = styled.input.attrs({
     display: none;
   }
   ::-webkit-datetime-edit-fields-wrapper {
-    height: fit-content;
-  }
-  ::-webkit-datetime-edit-text {
-    display: inline-block;
-    padding-right: 2px;
-    padding-left: 2px;
+    padding: 0;
   }
   ::-webkit-datetime-edit-ampm-field {
     font-size: 12px;
     font-weight: bold;
-    background-color: #cbd2d9;
-    border-radius: 8px;
-    padding: 4px 10px;
-    color: #323f4b;
   }
 `;

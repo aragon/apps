@@ -54,7 +54,12 @@ const StyledInput = styled.input.attrs(() => {
   const className = `${baseClasses}`;
 
   return {className};
-})<DateInputProps>``;
+})<DateInputProps>`
+  ::-webkit-calendar-picker-indicator {
+    margin-top: 4px;
+    margin-bottom: 4px;
+  }
+`;
 
 const IconContainer = styled.div.attrs(({disabled}: InputContainerProps) => {
   return {className: ` p-1 rounded-xl ${disabled ? 'bg-ui-100' : 'bg-ui-50'}`};
