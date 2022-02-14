@@ -48,7 +48,6 @@ const AddLinks: React.FC<AddLinks> = ({buttonPlusIcon, buttonLabel}) => {
         onClick={handleAddLink}
         {...(buttonPlusIcon ? {iconLeft: <IconAdd />} : {})}
       />
-      <pre>{JSON.stringify(links, null, 2)}</pre>
     </Container>
   );
 };
