@@ -216,8 +216,6 @@ test('Run dao (handleWithdrawn) mappings with mock event', () => {
 });
 
 test('Run dao (handleDeposited and handleWithdrawn for ETH)', () => {
-  createTokenCalls(addressZero, 'Ethereum', 'ETH', '18');
-
   // create event and run it's handler
   runHandleNewDAORegistered(daoAddress, addressOne, daiAddress, 'mock-Dao');
   // deposit Eth
@@ -227,6 +225,7 @@ test('Run dao (handleDeposited and handleWithdrawn for ETH)', () => {
     oneEth,
     daoAddress
   );
+  createTokenCalls(addressZero, 'Ethereum', 'ETH', '18');
   handleETHDeposited(newDepositEvent);
 
   // check balance
@@ -256,6 +255,7 @@ test('Run dao (handleDeposited and handleWithdrawn for ETH)', () => {
     newEvent.transactionLogIndex.toHexString();
 
   // handle event
+  createTokenCalls(addressZero, 'Ethereum', 'ETH', '18');
   handleWithdrawn(newEvent);
 
   // check deposit
@@ -313,6 +313,7 @@ test('Run dao (handleDeposite and handleWithdrawn for token)', () => {
     daoAddress
   );
 
+  createTokenCalls(daiAddress, 'Dai Token', 'DAI', '6');
   getBalanceOf(daiAddress, daoAddress, halfEth);
   // handle event
   handleWithdrawn(newWithdrawEvent);
