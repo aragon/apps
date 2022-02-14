@@ -85,7 +85,7 @@ templates:
       eventHandlers:
         - event: CastVote(indexed uint256,indexed address,bool,uint256)
           handler: handleCastVote
-        - event: ExecuteVote(indexed uint256)
+        - event: ExecuteVote(indexed uint256,bytes[])
           handler: handleExecuteVote
         - event: StartVote(indexed uint256,indexed address,bytes)
           handler: handleStartVote
