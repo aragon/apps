@@ -105,34 +105,6 @@ const LinkRow: React.FC<LinkRowProps> = ({index, onDelete}) => {
       </LabelContainer>
 
       <LinkContainer>
-        <Popover
-          side="bottom"
-          align="end"
-          width={156}
-          content={
-            <div className="p-1.5">
-              <ListItemText
-                title={t('labels.removeLink')}
-                {...(typeof onDelete === 'function'
-                  ? {mode: 'default', onClick: () => onDelete(index)}
-                  : {mode: 'disabled'})}
-              />
-            </div>
-          }
-        >
-          <ButtonIcon
-            mode="ghost"
-            size="large"
-            bgWhite
-            icon={<IconMenuVertical />}
-            data-testid="trigger"
-          />
-        </Popover>
-      </LinkContainer>
-
-      <Break />
-
-      <ButtonWrapper>
         <Controller
           name={`links.${index}.link`}
           control={control}
@@ -160,7 +132,34 @@ const LinkRow: React.FC<LinkRowProps> = ({index, onDelete}) => {
             </>
           )}
         />
-      </ButtonWrapper>
+      </LinkContainer>
+
+      <Break />
+      <ButtonContainer>
+        <Popover
+          side="bottom"
+          align="end"
+          width={156}
+          content={
+            <div className="p-1.5">
+              <ListItemText
+                title={t('labels.removeLink')}
+                {...(typeof onDelete === 'function'
+                  ? {mode: 'default', onClick: () => onDelete(index)}
+                  : {mode: 'disabled'})}
+              />
+            </div>
+          }
+        >
+          <ButtonIcon
+            mode="ghost"
+            size="large"
+            bgWhite
+            icon={<IconMenuVertical />}
+            data-testid="trigger"
+          />
+        </Popover>
+      </ButtonContainer>
     </Container>
   );
 };
@@ -172,23 +171,25 @@ const Container = styled.div.attrs({
 })``;
 
 const LabelContainer = styled.div.attrs({
-  className: 'flex-1 tablet:order-1 h-full',
+  className: 'flex-1 order-1 h-full',
 })``;
 
 const LabelWrapper = styled.div.attrs({
   className: 'tablet:hidden mb-0.5',
 })``;
 
-const LinkContainer = styled.div.attrs({
-  className: 'tablet:order-3 pt-3.5 tablet:pt-0',
+const ButtonContainer = styled.div.attrs({
+  className: 'pt-3.5 order-2 tablet:order-3 tablet:pt-0',
 })``;
 
 const ErrorContainer = styled.div.attrs({
   className: 'mt-0.5',
 })``;
 
-const Break = styled.hr.attrs({className: 'tablet:hidden w-full border-0'})``;
+const Break = styled.hr.attrs({
+  className: 'tablet:hidden w-full border-0 order-3',
+})``;
 
-const ButtonWrapper = styled.div.attrs({
-  className: 'flex-1 tablet:order-2 h-full',
+const LinkContainer = styled.div.attrs({
+  className: 'flex-1 order-4 tablet:order-2 h-full',
 })``;
