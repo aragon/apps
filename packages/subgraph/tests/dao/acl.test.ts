@@ -155,7 +155,9 @@ test('Run dao (handleRevoked) mappings with mock event', () => {
     daoAddress
   );
   // launch calls
+  createTokenCalls(daiAddress, 'Dai Token', 'DAI', '6');
   getEXEC_ROLE(daoAddress, role);
+
   // handle event
   handleGranted(grantedEvent);
 
@@ -210,6 +212,7 @@ test('Run dao (handleFrozen) mappings with mock event', () => {
   // launch calls
   createTokenCalls(daiAddress, 'Dai Token', 'DAI', '6');
   getEXEC_ROLE(daoAddress, role);
+
   // handle event
   handleGranted(grantedEvent);
 
