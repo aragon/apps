@@ -52,8 +52,6 @@ templates:
       eventHandlers:
         - event: SetMetadata(bytes)
           handler: handleSetMetadata
-        - event : Executed(indexed address,(address,uint256,bytes)[],bytes[])
-          handler: handleExecuted
         - event: Deposited(indexed address,indexed address,uint256,string)
           handler: handleDeposited
         - event: ETHDeposited(address,uint256)

@@ -30,10 +30,6 @@ export function handleSetMetadata(event: SetMetadata): void {
   }
 }
 
-export function handleExecuted(event: Executed): void {
-  // TODO:
-}
-
 export function handleDeposited(event: Deposited): void {
   let daoId = event.address.toHexString();
   let depositId =

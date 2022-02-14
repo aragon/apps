@@ -50,13 +50,12 @@ export function _handleStartVote(event: StartVote, daoId: string): void {
     for (let index = 0; index < actions.length; index++) {
       const action = actions[index];
 
-      let hashInput = action.to
-        .toHex()
-        .concat(action.value.toHex().concat(action.data.toHex()));
       let actionId =
         event.address.toHexString() +
         '_' +
-        crypto.keccak256(ByteArray.fromUTF8(hashInput)).toHexString();
+        event.params.voteId.toHexString() +
+        '_' +
+        index.toString();
 
       let actionEntity = new Action(actionId);
       actionEntity.to = action.to;
@@ -123,6 +122,29 @@ export function handleExecuteVote(event: ExecuteVote): void {
   if (proposalEntity) {
     proposalEntity.executed = true;
     proposalEntity.save();
+  }
+
+  // update actions
+  let contract = SimpleVoting.bind(event.address);
+  let vote = contract.try_getVote(event.params.voteId);
+  if (!vote.reverted) {
+    let actions = vote.value.value9;
+    for (let index = 0; index < actions.length; index++) {
+      const action = actions[index];
+
+      let actionId =
+        event.address.toHexString() +
+        '_' +
+        event.params.voteId.toHexString() +
+        '_' +
+        index.toString();
+
+      let actionEntity = Action.load(actionId);
+      if (actionEntity) {
+        actionEntity.execResult = event.params.execResults[index];
+        actionEntity.save();
+      }
+    }
   }
 }
 
