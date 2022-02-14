@@ -131,12 +131,12 @@ const AddExistingToken: React.FC = () => {
           control={control}
           defaultValue=""
           rules={{
-            required: t('errors.required.address'),
+            required: t('errors.required.tokenAddress'),
             validate: async value => validateTokenAddress(value, provider),
           }}
           render={({
             field: {name, value, onBlur, onChange},
-            fieldState: {error, isDirty},
+            fieldState: {error, isDirty, invalid},
           }) => (
             <>
               <SearchInput
@@ -146,7 +146,7 @@ const AddExistingToken: React.FC = () => {
               {error?.message && (
                 <AlertInline label={error.message} mode="critical" />
               )}
-              {!error?.message && isDirty && (
+              {!invalid && isDirty && (
                 <AlertInline label={t('success.contract')} mode="success" />
               )}
             </>
