@@ -27,7 +27,7 @@ abstract contract IDAO {
     /// @dev Sets a new IPFS hash
     /// @param _metadata The IPFS hash of the new metadata object
     function setMetadata(bytes calldata _metadata) virtual external;
-    event SetMetadata(bytes indexed metadata);
+    event SetMetadata(bytes metadata);
 
     /// @notice If called, the list of provided actions will be executed.
     /// @dev It run a loop through the array of acctions and execute one by one.

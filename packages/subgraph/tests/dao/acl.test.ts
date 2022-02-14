@@ -1,11 +1,16 @@
 import {assert, clearStore, test, logStore} from 'matchstick-as/assembly/index';
-import {Address, ByteArray, Bytes} from '@graphprotocol/graph-ts';
+import {Address, BigInt, ByteArray, Bytes} from '@graphprotocol/graph-ts';
 import {
   createNewFrozenEvent,
   createNewGrantedEvent,
   createNewRevokedEvent,
   getEXEC_ROLE,
-  getEXEC_ROLEreverted
+  getEXEC_ROLEreverted,
+  getMinAcceptQuorumPct,
+  getSupportRequiredPct,
+  getSVToken,
+  getVotesLength,
+  getVoteTime
 } from './utils';
 import {
   daoAddress,
@@ -20,6 +25,7 @@ import {
 } from '../constants';
 import {handleFrozen, handleGranted, handleRevoked} from '../../src/dao/dao';
 import {crypto} from '@graphprotocol/graph-ts';
+import {createTokenCalls} from '../utils';
 
 test('Run dao (handleGranted) mappings with mock event', () => {
   // create event and run it's handler
@@ -36,7 +42,13 @@ test('Run dao (handleGranted) mappings with mock event', () => {
   );
 
   // launch calls
+  createTokenCalls(daiAddress, 'Dai Token', 'DAI', '6');
   getEXEC_ROLE(daoAddress, role);
+  getSupportRequiredPct(votingAddress, BigInt.fromString(oneEth));
+  getMinAcceptQuorumPct(votingAddress, BigInt.fromString(oneEth));
+  getVoteTime(votingAddress, BigInt.fromString(oneEth));
+  getVotesLength(votingAddress, BigInt.fromString(oneEth));
+  getSVToken(votingAddress, daiAddress);
 
   // handle event
   handleGranted(grantedEvent);

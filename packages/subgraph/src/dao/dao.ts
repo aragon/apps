@@ -18,12 +18,8 @@ import {
 } from '../../generated/schema';
 import {Address, store} from '@graphprotocol/graph-ts';
 import {ADDRESS_ZERO} from '../utils/constants';
-import {
-  updateBalance,
-  handleERC20Token,
-  addPackage,
-  removePackage
-} from './utils';
+import {addPackage, removePackage} from './utils';
+import {handleERC20Token, updateBalance} from '../utils/tokens';
 
 export function handleSetMetadata(event: SetMetadata): void {
   let id = event.address.toHexString();
@@ -50,7 +46,7 @@ export function handleDeposited(event: Deposited): void {
   let balanceId = daoId + '_' + token.toHexString();
 
   // handle token
-  handleERC20Token(token);
+  let tokenId = handleERC20Token(token);
   // update balance
   updateBalance(
     balanceId,
@@ -63,7 +59,7 @@ export function handleDeposited(event: Deposited): void {
 
   let entity = new VaultDeposit(depositId);
   entity.dao = daoId;
-  entity.token = token;
+  entity.token = tokenId;
   entity.sender = event.params.sender;
   entity.amount = event.params.amount;
   entity.reference = event.params._reference;
@@ -84,7 +80,7 @@ export function handleETHDeposited(event: ETHDeposited): void {
   let balanceId = daoId + '_' + ADDRESS_ZERO;
 
   // handle token
-  handleERC20Token(Address.fromString(ADDRESS_ZERO));
+  let tokenId = handleERC20Token(Address.fromString(ADDRESS_ZERO));
   // update Eth balance
   updateBalance(
     balanceId,
@@ -96,7 +92,7 @@ export function handleETHDeposited(event: ETHDeposited): void {
   );
 
   entity.dao = daoId;
-  entity.token = Address.fromString(ADDRESS_ZERO);
+  entity.token = tokenId;
   entity.sender = event.params.sender;
   entity.amount = event.params.amount;
   entity.reference = 'Eth deposit';
@@ -140,8 +136,12 @@ export function handleWithdrawn(event: Withdrawn): void {
     );
   }
 
+  // handle token
+  // in case the original deposit was not via deposit funtion of the dao
+  let tokenId = handleERC20Token(token);
+
   entity.dao = daoId;
-  entity.token = token;
+  entity.token = tokenId;
   entity.to = event.params.to;
   entity.amount = event.params.amount;
   entity.reference = event.params._reference;
@@ -180,7 +180,7 @@ export function handleGranted(event: Granted): void {
   let daoContract = DAOContract.bind(event.address);
   let executionRole = daoContract.try_EXEC_ROLE();
   if (!executionRole.reverted && event.params.role == executionRole.value) {
-    addPackage(daoId, event.params.who.toHexString());
+    addPackage(daoId, event.params.who);
   }
 }
 
