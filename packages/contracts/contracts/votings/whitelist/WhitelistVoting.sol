@@ -36,7 +36,7 @@ contract WhitelistVoting is Component, TimeHelpers {
     uint256 public votesLength;
 
     mapping(address => bool) public whitelisted;
-    
+
     string private constant ERROR_NO_VOTE = "VOTING_NO_VOTE";
     string private constant ERROR_INIT_PCTS = "VOTING_INIT_PCTS";
     string private constant ERROR_CHANGE_SUPPORT_PCTS = "VOTING_CHANGE_SUPPORT_PCTS";
@@ -48,8 +48,10 @@ contract WhitelistVoting is Component, TimeHelpers {
 
     event StartVote(uint256 indexed voteId, address indexed creator, bytes description);
     event CastVote(uint256 indexed voteId, address indexed voter, bool voterSupports);
-    event ExecuteVote(uint256 indexed voteId);
+    event ExecuteVote(uint256 indexed voteId, bytes[] execResults);
     event UpdateConfig(uint64 supportRequiredPct);
+    event AddUsers(address[] users);
+    event RemoveUsers(address[] users);
 
     /// @dev describes the version and contract for GSN compatibility.
     function versionRecipient() external virtual override view returns (string memory) {
@@ -59,24 +61,21 @@ contract WhitelistVoting is Component, TimeHelpers {
     /// @dev Used for UUPS upgradability pattern
     /// @param _dao The DAO contract of the current DAO
     function initialize(
-        IDAO _dao, 
+        IDAO _dao,
+        address _gsnForwarder,
         address[] calldata _whitelisted,
         uint64 _supportRequiredPct,
         uint64 _voteTime
-    ) public initializer { 
+    ) public initializer {
         require(_supportRequiredPct < PCT_BASE, ERROR_INIT_SUPPORT_TOO_BIG);
 
-        supportRequiredPct = _supportRequiredPct; 
+        supportRequiredPct = _supportRequiredPct;
         voteTime = _voteTime;
-        
+
         // add whitelisted users.
-        for(uint256 i = 0; i < _whitelisted.length; i++) {
-            whitelisted[_whitelisted[i]] = true;
-        }
+        _addWhitelistedUsers(_whitelisted);
 
-        whitelistedLength = uint64(_whitelisted.length);
-
-        Component.initialize(_dao, address(0));
+        Component.initialize(_dao, _gsnForwarder);
         
         emit UpdateConfig(_supportRequiredPct);
     }
@@ -86,11 +85,21 @@ contract WhitelistVoting is Component, TimeHelpers {
     * @param _users addresses of users to add
     */
     function addWhitelistedUsers(address[] calldata _users) external auth(MODIFY_WHITELIST) {
+        _addWhitelistedUsers(_users);
+    }
+
+    /**
+    * @dev Internal function to add new users to the whitelist.
+    * @param _users addresses of users to add
+    */
+    function _addWhitelistedUsers(address[] calldata _users) internal {
         for(uint256 i = 0; i < _users.length; i++) {
             whitelisted[_users[i]] = true;
         }
 
         whitelistedLength += uint64(_users.length);
+
+        emit AddUsers(_users);
     }
 
     /**
@@ -103,6 +112,8 @@ contract WhitelistVoting is Component, TimeHelpers {
         }
 
         whitelistedLength -= uint64(_users.length);
+
+        emit RemoveUsers(_users);
     }
 
     /**
@@ -126,11 +137,11 @@ contract WhitelistVoting is Component, TimeHelpers {
     function newVote(
         bytes calldata proposalMetadata,
         IDAO.Action[] calldata _actions,
-        bool executeIfDecided, 
+        bool executeIfDecided,
         bool castVote
     ) external returns (uint256 voteId) {
         require(whitelisted[msg.sender], ERROR_CAN_NOT_CREATE_VOTE);
-        
+
         voteId = votesLength++;
 
         Vote storage vote_ = votes[voteId];
@@ -143,7 +154,7 @@ contract WhitelistVoting is Component, TimeHelpers {
         }
 
         emit StartVote(voteId, msg.sender, proposalMetadata);
-    
+
         if (castVote && canVote(voteId, msg.sender)) {
             _vote(voteId, true, msg.sender, executeIfDecided);
         }
@@ -161,7 +172,7 @@ contract WhitelistVoting is Component, TimeHelpers {
     }
 
     /**
-    * @dev Internal function to cast a vote. It assumes the queried vote exists. 
+    * @dev Internal function to cast a vote. It assumes the queried vote exists.
     * @param _voteId voteId
     * @param _supports whether user supports the decision or not
     * @param _executesIfDecided if true, and it's the last vote required, immediatelly executes a vote.
@@ -207,13 +218,13 @@ contract WhitelistVoting is Component, TimeHelpers {
     * @param _voteId the vote Id
     */
     function _execute(uint256 _voteId) internal {
-        dao.execute(votes[_voteId].actions);
+        bytes[] memory execResults = dao.execute(votes[_voteId].actions);
 
         votes[_voteId].executed = true;
 
-        emit ExecuteVote(_voteId);
+        emit ExecuteVote(_voteId, execResults);
     }
-    
+
     /**
     * @dev Return the state of a voter for a given vote by its ID
     * @param _voteId Vote identifier
@@ -270,7 +281,7 @@ contract WhitelistVoting is Component, TimeHelpers {
         )
     {
         Vote storage vote_ = votes[_voteId];
-        
+
         open = _isVoteOpen(vote_);
         executed = vote_.executed;
         startDate = vote_.startDate;
@@ -322,7 +333,7 @@ contract WhitelistVoting is Component, TimeHelpers {
         if (_isVoteOpen(vote_)) {
             return false;
         }
-        
+
         // Has enough support?
         uint256 totalVotes = vote_.yea + vote_.nay;
         if (_isValuePct(vote_.yea, totalVotes, vote_.supportRequiredPct)) {
@@ -334,16 +345,16 @@ contract WhitelistVoting is Component, TimeHelpers {
 
     /**
     * @dev Calculates whether `_value` is more than a percentage `_pct` of `_total`
-    * @param _value the current value 
+    * @param _value the current value
     * @param _total the total value
     * @param _pct the required support percentage
-    * @return returns if the _value is _pct or more percentage of _total. 
+    * @return returns if the _value is _pct or more percentage of _total.
     */
     function _isValuePct(uint256 _value, uint256 _total, uint256 _pct) internal pure returns (bool) {
        if (_total == 0) {
            return false;
        }
-    
+
        uint256 computedPct = _value * PCT_BASE / _total;
        return computedPct > _pct;
     }
