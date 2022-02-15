@@ -16,6 +16,7 @@ export const SimplifiedTimeInput = styled.input.attrs({
   }
   ::-webkit-datetime-edit-fields-wrapper {
     padding: 0;
+    width: 101%; // necessary to make the "M" in AM/PM not be cropped
   }
   ::-webkit-datetime-edit-ampm-field {
     font-size: 12px;
