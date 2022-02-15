@@ -1,7 +1,7 @@
 import {DaoPackage, ERC20VotingPackage} from '../../generated/schema';
 import {Address, DataSourceContext, store} from '@graphprotocol/graph-ts';
-import {SimpleVoting} from '../../generated/templates';
-import {SimpleVoting as SimpleVotingContract} from '../../generated/templates/SimpleVoting/SimpleVoting';
+import {ERC20Voting} from '../../generated/templates';
+import {ERC20Voting as ERC20VotingContract} from '../../generated/templates/ERC20Voting/ERC20Voting';
 import {handleERC20Token} from '../utils/tokens';
 
 export function addPackage(daoId: string, who: Address): void {
@@ -16,7 +16,7 @@ export function addPackage(daoId: string, who: Address): void {
   let packageEntity = ERC20VotingPackage.load(who.toHexString());
   if (!packageEntity) {
     packageEntity = new ERC20VotingPackage(who.toHexString());
-    let contract = SimpleVotingContract.bind(who);
+    let contract = ERC20VotingContract.bind(who);
     let supportRequiredPct = contract.try_supportRequiredPct();
     let minAcceptQuorumPct = contract.try_minAcceptQuorumPct();
     let voteTime = contract.try_voteTime();
@@ -37,7 +37,7 @@ export function addPackage(daoId: string, who: Address): void {
     // Create template
     let context = new DataSourceContext();
     context.setString('daoAddress', daoId);
-    SimpleVoting.createWithContext(who, context);
+    ERC20Voting.createWithContext(who, context);
 
     packageEntity.save();
   }

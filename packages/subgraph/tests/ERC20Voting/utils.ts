@@ -5,7 +5,7 @@ import {
   CastVote,
   ExecuteVote,
   UpdateConfig
-} from '../../generated/templates/SimpleVoting/SimpleVoting';
+} from '../../generated/templates/ERC20Voting/ERC20Voting';
 
 export function createNewStartVoteEvent(
   voteId: string,

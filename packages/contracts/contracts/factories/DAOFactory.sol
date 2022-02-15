@@ -7,7 +7,7 @@ pragma solidity 0.8.10;
 import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20VotesUpgradeable.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
-import "./../votings/simple/SimpleVoting.sol";
+import "./../votings/simple/ERC20Voting.sol";
 import "./../tokens/GovernanceERC20.sol";
 import "./../tokens/GovernanceWrappedERC20.sol";
 import "./../registry/Registry.sol";
@@ -57,7 +57,7 @@ contract DAOFactory {
     /// @param _mintConfig the addresses and amounts to where to mint tokens.
     /// @param _votingSettings settings for the voting contract.
     /// @return dao DAO address.
-    /// @return voting The SimpleVoting address
+    /// @return voting The ERC20Voting address
     /// @return token The token address(wrapped one or the new one)
     /// @return minter Merkle Minter contract address
     function newDAO(
@@ -67,7 +67,7 @@ contract DAOFactory {
         uint256[3] calldata _votingSettings
     ) external returns (
         DAO dao, 
-        SimpleVoting voting, 
+        ERC20Voting voting, 
         ERC20VotesUpgradeable token,
         MerkleMinter minter
     ) {
@@ -92,11 +92,11 @@ contract DAOFactory {
         registry.register(_daoConfig.name, dao, msg.sender, address(token));
         
         // create voting and initialize right away.
-        voting = SimpleVoting(
+        voting = ERC20Voting(
             createProxy(
                 votingBase,
                 abi.encodeWithSelector(
-                    SimpleVoting.initialize.selector,
+                    ERC20Voting.initialize.selector,
                     dao,
                     token,
                     _votingSettings[0],
@@ -132,7 +132,7 @@ contract DAOFactory {
 
     // @dev Internal helper method to set up the required base contracts on DAOFactory deployment.
     function setupBases() private {
-        votingBase = address(new SimpleVoting());
+        votingBase = address(new ERC20Voting());
         daoBase = address(new DAO());
     }
 }

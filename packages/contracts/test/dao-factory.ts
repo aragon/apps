@@ -38,7 +38,7 @@ async function getDeployments(tx: any) {
     return {
       token: await ethers.getContractAt('GovernanceERC20', token),
       dao: await ethers.getContractAt('DAO', dao),
-      SimpleVoting: await ethers.getContractAt('SimpleVoting', voting),
+      ERC20Voting: await ethers.getContractAt('ERC20Voting', voting),
       creator,
       name
     }
@@ -63,7 +63,7 @@ describe('DAOFactory: ', function () {
         // @ts-ignore
         const DAOFactoryArtifact = await hre.artifacts.readArtifact('DAOFactory');
         // @ts-ignore
-        const SimpleVoting = await hre.artifacts.readArtifact('SimpleVoting');
+        const ERC20Voting = await hre.artifacts.readArtifact('ERC20Voting');
         // @ts-ignore
         const Token = await hre.artifacts.readArtifact('GovernanceERC20');
 
@@ -71,7 +71,7 @@ describe('DAOFactory: ', function () {
             abi: [
                 ...DAOFactoryArtifact.abi,
                 ...RegistryArtifact.abi.filter((f: any) => f.type === 'event'),
-                ...SimpleVoting.abi.filter((f: any) => f.type === 'event'),
+                ...ERC20Voting.abi.filter((f: any) => f.type === 'event'),
                 ...Token.abi.filter((f: any) => f.type === 'event'),
             ],
             bytecode: DAOFactoryArtifact.bytecode
@@ -133,7 +133,7 @@ describe('DAOFactory: ', function () {
         // get block that tx was mined
         const blockNum = await ethers.provider.getBlockNumber();
 
-        const { name, dao, token, creator, SimpleVoting } = await getDeployments(tx);
+        const { name, dao, token, creator, ERC20Voting } = await getDeployments(tx);
     
         expect(name).to.equal(daoDummyName);
         expect(creator).to.equal(ownerAddress);
@@ -144,7 +144,7 @@ describe('DAOFactory: ', function () {
             await token.getPastVotes(ownerAddress, blockNum)
         ).to.equal(mintAmount);
         
-        const MODIFY_CONFIG_ROLE = await SimpleVoting.MODIFY_CONFIG();
+        const MODIFY_CONFIG_ROLE = await ERC20Voting.MODIFY_CONFIG();
         const EXEC_ROLE = await dao.EXEC_ROLE();
 
         const DAORoles = await Promise.all([
@@ -162,7 +162,7 @@ describe('DAOFactory: ', function () {
         // Check if correct ACL events are thrown.
         tx = tx.to.emit(dao, EVENTS.SetMetadata)
             .withArgs(daoDummyMetadata)
-            .to.emit(SimpleVoting, EVENTS.UpdateConfig)
+            .to.emit(ERC20Voting, EVENTS.UpdateConfig)
             .withArgs(dummyVoteSettings[1], dummyVoteSettings[0])
         
 
@@ -182,7 +182,7 @@ describe('DAOFactory: ', function () {
                 MODIFY_CONFIG_ROLE, 
                 daoFactory.address, 
                 dao.address, 
-                SimpleVoting.address, 
+                ERC20Voting.address, 
                 ACLAllowFlagAddress
             )
             .to.emit(dao, EVENTS.Revoked)
@@ -196,7 +196,7 @@ describe('DAOFactory: ', function () {
             .withArgs(
                 EXEC_ROLE, 
                 daoFactory.address, 
-                SimpleVoting.address, 
+                ERC20Voting.address, 
                 dao.address, 
                 ACLAllowFlagAddress
             );
@@ -204,13 +204,13 @@ describe('DAOFactory: ', function () {
         
         // ===== Test if user can create a vote and execute it ======
 
-        // should be only callable by simplevoting
+        // should be only callable by ERC20Voting
         await expect(
             dao.execute([])
         ).to.be.revertedWith(ERRORS.ACLAuth);
         
         await expect(
-            SimpleVoting.changeVoteConfig(1, 2)
+            ERC20Voting.changeVoteConfig(1, 2)
         ).to.be.revertedWith(ERRORS.ComponentAuth);
 
         const actions = [
@@ -223,21 +223,21 @@ describe('DAOFactory: ', function () {
                 )
             },
             {
-                to: SimpleVoting.address,
+                to: ERC20Voting.address,
                 value: 0,
-                data: SimpleVoting.interface.encodeFunctionData(
+                data: ERC20Voting.interface.encodeFunctionData(
                     'changeVoteConfig',
                     [5, 4]
                 )
             }
         ];
 
-        await SimpleVoting.newVote("0x", actions, false, false);
+        await ERC20Voting.newVote("0x", actions, false, false);
         
-        expect(await SimpleVoting.vote(0, true, true))
+        expect(await ERC20Voting.vote(0, true, true))
             .to.emit(dao, EVENTS.EXECUTED)
-            .withArgs(SimpleVoting.address, [], [])
-            .to.emit(SimpleVoting, EVENTS.UpdateConfig)
+            .withArgs(ERC20Voting.address, [], [])
+            .to.emit(ERC20Voting, EVENTS.UpdateConfig)
             .withArgs(5, 4);
 
         expect(await actionExecuteContract.test()).to.equal(true);

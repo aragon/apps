@@ -3,8 +3,8 @@ import {
   StartVote,
   ExecuteVote,
   UpdateConfig,
-  SimpleVoting
-} from '../../../generated/templates/SimpleVoting/SimpleVoting';
+  ERC20Voting
+} from '../../../generated/templates/ERC20Voting/ERC20Voting';
 import {
   Action,
   ERC20VotingPackage,
@@ -34,7 +34,7 @@ export function _handleStartVote(event: StartVote, daoId: string): void {
   proposalEntity.description = event.params.description.toString();
   proposalEntity.createdAt = event.block.timestamp;
 
-  let contract = SimpleVoting.bind(event.address);
+  let contract = ERC20Voting.bind(event.address);
   let vote = contract.try_getVote(event.params.voteId);
 
   if (!vote.reverted) {
@@ -105,7 +105,7 @@ export function handleCastVote(event: CastVote): void {
   // update count
   let proposalEntity = ERC20VotingProposal.load(proposalId);
   if (proposalEntity) {
-    let contract = SimpleVoting.bind(event.address);
+    let contract = ERC20Voting.bind(event.address);
     let vote = contract.try_getVote(event.params.voteId);
     if (!vote.reverted) {
       proposalEntity.yea = vote.value.value6;
@@ -125,7 +125,7 @@ export function handleExecuteVote(event: ExecuteVote): void {
   }
 
   // update actions
-  let contract = SimpleVoting.bind(event.address);
+  let contract = ERC20Voting.bind(event.address);
   let vote = contract.try_getVote(event.params.voteId);
   if (!vote.reverted) {
     let actions = vote.value.value9;
