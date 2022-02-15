@@ -5,9 +5,6 @@ import {daoAddress, addressOne, daiAddress} from '../constants';
 import {createTokenCalls} from '../utils';
 
 test('Run registry mappings with mock event', () => {
-  // create contract calls
-  createTokenCalls(daiAddress, 'Dai Token', 'DAI', '6');
-
   // create event and run it's handler
   runHandleNewDAORegistered(daoAddress, addressOne, daiAddress, 'mock-Dao');
 
