@@ -28,7 +28,7 @@ export function _handleStartVote(event: StartVote, daoId: string): void {
   let proposalEntity = new ERC20VotingProposal(proposalId);
   proposalEntity.dao = daoId;
   proposalEntity.pkg = event.address.toHexString();
-  proposalEntity.evPkg = event.address.toHexString();
+  proposalEntity.erc20VotingPkg = event.address.toHexString();
   proposalEntity.voteId = event.params.voteId;
   proposalEntity.creator = event.params.creator;
   proposalEntity.description = event.params.description.toString();

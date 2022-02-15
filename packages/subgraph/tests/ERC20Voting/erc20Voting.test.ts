@@ -76,7 +76,12 @@ test('Run ERC Voting (handleStartVote) mappings with mock event', () => {
   assert.fieldEquals('ERC20VotingProposal', entityID, 'id', entityID);
   assert.fieldEquals('ERC20VotingProposal', entityID, 'dao', DAO_ADDRESS);
   assert.fieldEquals('ERC20VotingProposal', entityID, 'pkg', packageId);
-  assert.fieldEquals('ERC20VotingProposal', entityID, 'evPkg', packageId);
+  assert.fieldEquals(
+    'ERC20VotingProposal',
+    entityID,
+    'erc20VotingPkg',
+    packageId
+  );
   assert.fieldEquals('ERC20VotingProposal', entityID, 'voteId', voteId);
   assert.fieldEquals('ERC20VotingProposal', entityID, 'creator', ADDRESS_ONE);
   assert.fieldEquals(
