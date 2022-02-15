@@ -1,6 +1,6 @@
 import {assert, clearStore, test, logStore} from 'matchstick-as/assembly/index';
 import {Address, BigInt} from '@graphprotocol/graph-ts';
-import {EVPackage, EVProposal} from '../../generated/schema';
+import {ERC20VotingPackage, ERC20VotingProposal} from '../../generated/schema';
 import {
   addressOne,
   daiAddress,
@@ -22,14 +22,14 @@ import {
   handleExecuteVote,
   handleUpdateConfig,
   _handleStartVote
-} from '../../src/packages/SimpleVoting/simpleVoting';
+} from '../../src/packages/ERC20Voting/erc20Voting';
 
 test('Run ERC Voting (handleStartVote) mappings with mock event', () => {
   // create state
-  let evPackage = new EVPackage(
+  let erc20VotingPackage = new ERC20VotingPackage(
     Address.fromString(votingAddress).toHexString()
   );
-  evPackage.save();
+  erc20VotingPackage.save();
 
   // create calls
   let voteId = '0';
@@ -73,39 +73,54 @@ test('Run ERC Voting (handleStartVote) mappings with mock event', () => {
   let packageId = Address.fromString(votingAddress).toHexString();
 
   // checks
-  assert.fieldEquals('EVProposal', entityID, 'id', entityID);
-  assert.fieldEquals('EVProposal', entityID, 'dao', daoAddress);
-  assert.fieldEquals('EVProposal', entityID, 'pkg', packageId);
-  assert.fieldEquals('EVProposal', entityID, 'evPkg', packageId);
-  assert.fieldEquals('EVProposal', entityID, 'voteId', voteId);
-  assert.fieldEquals('EVProposal', entityID, 'creator', addressOne);
-  assert.fieldEquals('EVProposal', entityID, 'description', dataString);
+  assert.fieldEquals('ERC20VotingProposal', entityID, 'id', entityID);
+  assert.fieldEquals('ERC20VotingProposal', entityID, 'dao', daoAddress);
+  assert.fieldEquals('ERC20VotingProposal', entityID, 'pkg', packageId);
+  assert.fieldEquals('ERC20VotingProposal', entityID, 'evPkg', packageId);
+  assert.fieldEquals('ERC20VotingProposal', entityID, 'voteId', voteId);
+  assert.fieldEquals('ERC20VotingProposal', entityID, 'creator', addressOne);
   assert.fieldEquals(
-    'EVProposal',
+    'ERC20VotingProposal',
+    entityID,
+    'description',
+    dataString
+  );
+  assert.fieldEquals(
+    'ERC20VotingProposal',
     entityID,
     'createdAt',
     event.block.timestamp.toString()
   );
-  assert.fieldEquals('EVProposal', entityID, 'startDate', startDate);
-  assert.fieldEquals('EVProposal', entityID, 'snapshotBlock', snapshotBlock);
+  assert.fieldEquals('ERC20VotingProposal', entityID, 'startDate', startDate);
   assert.fieldEquals(
-    'EVProposal',
+    'ERC20VotingProposal',
+    entityID,
+    'snapshotBlock',
+    snapshotBlock
+  );
+  assert.fieldEquals(
+    'ERC20VotingProposal',
     entityID,
     'supportRequiredPct',
     supportRequiredPct
   );
   assert.fieldEquals(
-    'EVProposal',
+    'ERC20VotingProposal',
     entityID,
     'minAcceptQuorumPct',
     minAcceptQuorumPct
   );
-  assert.fieldEquals('EVProposal', entityID, 'votingPower', votingPower);
-  assert.fieldEquals('EVProposal', entityID, 'executed', 'false');
-
-  // chack EVPackage
   assert.fieldEquals(
-    'EVPackage',
+    'ERC20VotingProposal',
+    entityID,
+    'votingPower',
+    votingPower
+  );
+  assert.fieldEquals('ERC20VotingProposal', entityID, 'executed', 'false');
+
+  // chack ERC20VotingPackage
+  assert.fieldEquals(
+    'ERC20VotingPackage',
     Address.fromString(votingAddress).toHexString(),
     'votesLength',
     '1'
@@ -118,8 +133,8 @@ test('Run ERC Voting (handleCastVote) mappings with mock event', () => {
   // create state
   let proposalId =
     Address.fromString(votingAddress).toHexString() + '_' + '0x0';
-  let evProposal = new EVProposal(proposalId);
-  evProposal.save();
+  let erc20VotingProposal = new ERC20VotingProposal(proposalId);
+  erc20VotingProposal.save();
 
   // create calls
   let voteId = '0';
@@ -157,13 +172,13 @@ test('Run ERC Voting (handleCastVote) mappings with mock event', () => {
 
   // checks
   let entityID = addressOne + '_' + proposalId;
-  assert.fieldEquals('EVVoterProposal', entityID, 'id', entityID);
+  assert.fieldEquals('ERC20VotingVoterProposal', entityID, 'id', entityID);
 
   // check voter
-  assert.fieldEquals('EVVoter', addressOne, 'id', addressOne);
+  assert.fieldEquals('ERC20VotingVoter', addressOne, 'id', addressOne);
 
   // check proposal
-  assert.fieldEquals('EVProposal', proposalId, 'yea', '1');
+  assert.fieldEquals('ERC20VotingProposal', proposalId, 'yea', '1');
 
   clearStore();
 });
@@ -171,8 +186,8 @@ test('Run ERC Voting (handleCastVote) mappings with mock event', () => {
 test('Run ERC Voting (handleExecuteVote) mappings with mock event', () => {
   // create state
   let entityID = Address.fromString(votingAddress).toHexString() + '_' + '0x0';
-  let evProposal = new EVProposal(entityID);
-  evProposal.save();
+  let erc20VotingProposal = new ERC20VotingProposal(entityID);
+  erc20VotingProposal.save();
 
   // create event
   let event = createNewExecuteVoteEvent('0', votingAddress);
@@ -181,8 +196,8 @@ test('Run ERC Voting (handleExecuteVote) mappings with mock event', () => {
   handleExecuteVote(event);
 
   // checks
-  assert.fieldEquals('EVProposal', entityID, 'id', entityID);
-  assert.fieldEquals('EVProposal', entityID, 'executed', 'true');
+  assert.fieldEquals('ERC20VotingProposal', entityID, 'id', entityID);
+  assert.fieldEquals('ERC20VotingProposal', entityID, 'executed', 'true');
 
   clearStore();
 });
@@ -190,8 +205,8 @@ test('Run ERC Voting (handleExecuteVote) mappings with mock event', () => {
 test('Run ERC Voting (handleUpdateConfig) mappings with mock event', () => {
   // create state
   let entityID = Address.fromString(votingAddress).toHexString();
-  let evPackage = new EVPackage(entityID);
-  evPackage.save();
+  let erc20VotingPackage = new ERC20VotingPackage(entityID);
+  erc20VotingPackage.save();
 
   // create event
   let event = createNewUpdateConfigEvent('1', '2', votingAddress);
@@ -200,9 +215,9 @@ test('Run ERC Voting (handleUpdateConfig) mappings with mock event', () => {
   handleUpdateConfig(event);
 
   // checks
-  assert.fieldEquals('EVPackage', entityID, 'id', entityID);
-  assert.fieldEquals('EVPackage', entityID, 'supportRequiredPct', '1');
-  assert.fieldEquals('EVPackage', entityID, 'minAcceptQuorumPct', '2');
+  assert.fieldEquals('ERC20VotingPackage', entityID, 'id', entityID);
+  assert.fieldEquals('ERC20VotingPackage', entityID, 'supportRequiredPct', '1');
+  assert.fieldEquals('ERC20VotingPackage', entityID, 'minAcceptQuorumPct', '2');
 
   clearStore();
 });
