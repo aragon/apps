@@ -16,12 +16,12 @@ import ConfigureWithdrawForm from 'containers/configureWithdraw';
 import {FullScreenStepper, Step} from 'components/fullScreenStepper';
 import SetupVotingForm from 'containers/setupVotingForm';
 import DefineProposal from 'containers/defineProposal';
+import ReviewWithdraw from 'containers/reviewWithdraw';
 
 export type TransferData = {
   amount: string;
   from: Address;
   to: Address;
-  reference?: string;
   startDate: string;
   startTime: string;
   endDate: string;
@@ -51,9 +51,8 @@ export type WithdrawFormData = TransferFormData & {
 };
 
 const defaultValues = {
-  to: '0x8367dc645e31321CeF3EeD91a10a5b7077e21f70',
+  to: '',
   amount: '',
-  reference: '',
   tokenAddress: '',
   tokenSymbol: '',
   tokenName: '',
@@ -128,23 +127,32 @@ const NewWithdraw: React.FC = () => {
         <Step
           wizardTitle={t('newWithdraw.configureWithdraw.title')}
           wizardDescription={t('newWithdraw.configureWithdraw.subtitle')}
-          isNextButtonDisabled={!formMethods.formState.isValid}
+          // isNextButtonDisabled={!formMethods.formState.isValid}
         >
           <ConfigureWithdrawForm />
         </Step>
         <Step
           wizardTitle={t('newWithdraw.setupVoting.title')}
           wizardDescription={t('newWithdraw.setupVoting.description')}
-          nextButtonLabel={t('labels.submitDeposit')}
-          isNextButtonDisabled={!formMethods.formState.isValid}
+          // isNextButtonDisabled={!formMethods.formState.isValid}
         >
           <SetupVotingForm />
         </Step>
         <Step
           wizardTitle={t('newWithdraw.defineProposal.heading')}
           wizardDescription={t('newWithdraw.defineProposal.description')}
+          // isNextButtonDisabled={!formMethods.formState.isValid}
         >
           <DefineProposal />
+        </Step>
+        <Step
+          wizardTitle={t('newWithdraw.reviewProposal.heading')}
+          wizardDescription={t('newWithdraw.reviewProposal.description')}
+          nextButtonLabel={t('labels.submitWithdraw')}
+          isNextButtonDisabled
+          fullWidth
+        >
+          <ReviewWithdraw />
         </Step>
       </FullScreenStepper>
       <TokenMenu
