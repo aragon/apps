@@ -17,22 +17,25 @@ const persistor = new CachePersistor({
   maxSize: 5242880, // 5 MiB
   storage: new LocalStorageWrapper(window.localStorage),
   debug: process.env.NODE_ENV === 'development',
-  persistenceMapper: async (data: any) => {
+  persistenceMapper: async (data: string) => {
     const parsed = JSON.parse(data);
 
-    const mapped: any = {};
-    const persistEntities: any[] = [];
+    const mapped: Record<string, unknown> = {};
+    const persistEntities: string[] = [];
     const rootQuery = parsed['ROOT_QUERY'];
 
     mapped['ROOT_QUERY'] = Object.keys(rootQuery).reduce(
-      (obj: any, key: string) => {
+      (obj: Record<string, unknown>, key: string) => {
         if (key === '__typename') return obj;
 
-        if (entitiesToPersist.includes(key)) {
+        const keyWithoutArgs = key.substring(0, key.indexOf('('));
+        if (entitiesToPersist.includes(keyWithoutArgs)) {
           obj[key] = rootQuery[key];
 
           if (Array.isArray(rootQuery[key])) {
-            const entities = rootQuery[key].map((item: any) => item.__ref);
+            const entities = rootQuery[key].map(
+              (item: Record<string, unknown>) => item.__ref
+            );
             persistEntities.push(...entities);
           } else {
             const entity = rootQuery[key].__ref;
