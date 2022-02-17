@@ -7,7 +7,7 @@ type CustomButtonProps = Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
   'disabled'
 >;
-export type ListItemTextProps = CustomButtonProps & {
+export type ListItemActionProps = CustomButtonProps & {
   /**
    * Parent background color
    */
@@ -33,7 +33,7 @@ export type ListItemTextProps = CustomButtonProps & {
   iconRight?: React.FunctionComponentElement<IconType>;
 };
 
-export const ListItemText: React.FC<ListItemTextProps> = ({
+export const ListItemAction: React.FC<ListItemActionProps> = ({
   title,
   subtitle,
   iconLeft,
@@ -63,7 +63,7 @@ export const ListItemText: React.FC<ListItemTextProps> = ({
   );
 };
 
-type InputContainerProps = Pick<ListItemTextProps, 'mode' | 'bgWhite'>;
+type InputContainerProps = Pick<ListItemActionProps, 'mode' | 'bgWhite'>;
 
 const Container = styled.button.attrs(
   ({mode, bgWhite = false}: InputContainerProps) => {

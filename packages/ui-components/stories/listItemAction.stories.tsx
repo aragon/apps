@@ -1,15 +1,17 @@
 import React from 'react';
 import {Meta, Story} from '@storybook/react';
 
-import {ListItemText, ListItemTextProps} from '../src/components/listItem';
+import {ListItemAction, ListItemActionProps} from '../src/components/listItem';
 import {IconAdd, IconChevronRight} from '../src';
 
 export default {
-  title: 'Components/ListItem/Text',
-  component: ListItemText,
+  title: 'Components/ListItem/Action',
+  component: ListItemAction,
 } as Meta;
 
-const Template: Story<ListItemTextProps> = args => <ListItemText {...args} />;
+const Template: Story<ListItemActionProps> = args => (
+  <ListItemAction {...args} />
+);
 
 export const TwoIcons = Template.bind({});
 TwoIcons.args = {
