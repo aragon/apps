@@ -124,6 +124,8 @@ const NewWithdraw: React.FC = () => {
         {/* FIXME: Each step needs to be able to disable the back
         button. Otherwise, if the user leaves step x in an invalid state and
         goes back to a step < x, they won't be able to move forward. */}
+
+        {/* TODO: Removing isNextButtonDisabled is disabled till the above is fixed */}
         <Step
           wizardTitle={t('newWithdraw.configureWithdraw.title')}
           wizardDescription={t('newWithdraw.configureWithdraw.subtitle')}

@@ -64,7 +64,6 @@ const ReviewWithdraw: React.FC = () => {
 
       <ContentContainer expandedProposal={expandedProposal}>
         <ProposalContainer>
-          {/* TODO: Render content using Tiptap https://tiptap.dev/guide/output#option-1-read-only-instance-of-tiptap */}
           {expandedProposal && (
             <>
               <EditorContent editor={editor} />
