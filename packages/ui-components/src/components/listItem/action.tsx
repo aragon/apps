@@ -19,6 +19,8 @@ export type ListItemActionProps = CustomButtonProps & {
    * mark it selected.
    */
   mode?: 'default' | 'disabled' | 'selected';
+  /** Set to shrink component to hug contents instead of being full width */
+  shrink?: boolean; //Probably Temporary
   /**
    * Bold text, left aligned. Mandatory
    */
@@ -39,16 +41,10 @@ export const ListItemAction: React.FC<ListItemActionProps> = ({
   iconLeft,
   iconRight,
   mode = 'default',
-  bgWhite = false,
   ...props
 }) => {
   return (
-    <Container
-      {...props}
-      mode={mode}
-      bgWhite={bgWhite}
-      data-testid="listItem-text"
-    >
+    <Container {...props} mode={mode} data-testid="listItem-action">
       <LeftContent>
         {iconLeft && <span>{iconLeft}</span>}
         {/* This could be done with label. However, I can't get the label's text
@@ -58,16 +54,21 @@ export const ListItemAction: React.FC<ListItemActionProps> = ({
           {subtitle && <p className="text-sm">{subtitle}</p>}
         </LabelContainer>
       </LeftContent>
-      <div>{iconRight && <span>{iconRight}</span>}</div>
+      {iconRight && <span>{iconRight}</span>}
     </Container>
   );
 };
 
-type InputContainerProps = Pick<ListItemActionProps, 'mode' | 'bgWhite'>;
+type InputContainerProps = Pick<
+  ListItemActionProps,
+  'mode' | 'bgWhite' | 'shrink'
+>;
 
 const Container = styled.button.attrs(
-  ({mode, bgWhite = false}: InputContainerProps) => {
-    const baseLayoutClasses = 'flex justify-between items-center w-full';
+  ({mode, bgWhite = false, shrink = false}: InputContainerProps) => {
+    let baseLayoutClasses = 'flex items-center gap-x-1.5';
+    baseLayoutClasses += shrink ? ' w-auto' : ' w-full';
+
     const baseStyleClasses = 'py-1.5 px-2 rounded-xl font-normal';
     let className:
       | string
@@ -104,5 +105,5 @@ const Container = styled.button.attrs(
 
 const LabelContainer = styled.div.attrs({className: 'text-left'})``;
 const LeftContent = styled.div.attrs({
-  className: 'flex items-center space-x-2',
+  className: 'flex items-center space-x-1.5 flex-1',
 })``;

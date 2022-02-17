@@ -18,7 +18,6 @@ TwoIcons.args = {
   mode: 'default',
   title: 'My Title',
   bgWhite: false,
-  disabled: false,
   subtitle: 'My subtitle',
   iconLeft: <IconAdd />,
   iconRight: <IconChevronRight />,
