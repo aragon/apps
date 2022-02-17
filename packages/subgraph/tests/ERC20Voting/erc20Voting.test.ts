@@ -76,12 +76,6 @@ test('Run ERC Voting (handleStartVote) mappings with mock event', () => {
   assert.fieldEquals('ERC20VotingProposal', entityID, 'id', entityID);
   assert.fieldEquals('ERC20VotingProposal', entityID, 'dao', DAO_ADDRESS);
   assert.fieldEquals('ERC20VotingProposal', entityID, 'pkg', packageId);
-  assert.fieldEquals(
-    'ERC20VotingProposal',
-    entityID,
-    'erc20VotingPkg',
-    packageId
-  );
   assert.fieldEquals('ERC20VotingProposal', entityID, 'voteId', voteId);
   assert.fieldEquals('ERC20VotingProposal', entityID, 'creator', ADDRESS_ONE);
   assert.fieldEquals(
@@ -177,7 +171,7 @@ test('Run ERC Voting (handleCastVote) mappings with mock event', () => {
 
   // checks
   let entityID = ADDRESS_ONE + '_' + proposalId;
-  assert.fieldEquals('ERC20VotingVoterProposal', entityID, 'id', entityID);
+  assert.fieldEquals('ERC20Vote', entityID, 'id', entityID);
 
   // check voter
   assert.fieldEquals('ERC20VotingVoter', ADDRESS_ONE, 'id', ADDRESS_ONE);

@@ -10,7 +10,7 @@ import {
   ERC20VotingPackage,
   ERC20VotingProposal,
   ERC20VotingVoter,
-  ERC20VotingVoterProposal
+  ERC20Vote
 } from '../../../generated/schema';
 import {BigInt, ByteArray, crypto, dataSource} from '@graphprotocol/graph-ts';
 
@@ -28,7 +28,6 @@ export function _handleStartVote(event: StartVote, daoId: string): void {
   let proposalEntity = new ERC20VotingProposal(proposalId);
   proposalEntity.dao = daoId;
   proposalEntity.pkg = event.address.toHexString();
-  proposalEntity.erc20VotingPkg = event.address.toHexString();
   proposalEntity.voteId = event.params.voteId;
   proposalEntity.creator = event.params.creator;
   proposalEntity.description = event.params.description.toString();
@@ -84,9 +83,9 @@ export function handleCastVote(event: CastVote): void {
   let proposalId =
     event.address.toHexString() + '_' + event.params.voteId.toHexString();
   let voterProposalId = event.params.voter.toHexString() + '_' + proposalId;
-  let voterProposalEntity = ERC20VotingVoterProposal.load(voterProposalId);
+  let voterProposalEntity = ERC20Vote.load(voterProposalId);
   if (!voterProposalEntity) {
-    voterProposalEntity = new ERC20VotingVoterProposal(voterProposalId);
+    voterProposalEntity = new ERC20Vote(voterProposalId);
     voterProposalEntity.voter = event.params.voter.toHexString();
     voterProposalEntity.proposal = proposalId;
   }
