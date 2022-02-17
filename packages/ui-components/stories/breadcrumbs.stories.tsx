@@ -1,13 +1,13 @@
 import React from 'react';
 import {Meta, Story} from '@storybook/react';
-import {Badge, Breadcrumbs, BreadcrumbsProps} from '../src';
+import {Badge, Breadcrumb, BreadcrumbProps} from '../src';
 
 export default {
-  title: 'Components/Breadcrumbs',
-  component: Breadcrumbs,
+  title: 'Components/Breadcrumb',
+  component: Breadcrumb,
 } as Meta;
 
-const Template: Story<BreadcrumbsProps> = args => <Breadcrumbs {...args} />;
+const Template: Story<BreadcrumbProps> = args => <Breadcrumb {...args} />;
 
 export const Default = Template.bind({});
 export const NoTag = Template.bind({});
