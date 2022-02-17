@@ -1,22 +1,21 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import {IconHome} from '../icons';
 import {BadgeProps} from '../badge';
-import {IconDashboard, IconHome} from '../icons';
 
 type CrumbProps = {
   first?: boolean;
   label: string;
   last?: boolean;
-  path: string;
   tag?: React.FunctionComponentElement<BadgeProps>;
-  onClick?: (to: string) => void;
+  onClick?: React.MouseEventHandler;
 };
 
 const Crumb: React.FC<CrumbProps> = props => {
   return (
     <CrumbContainer
-      {...(props.last ? {} : {onClick: () => props.onClick?.(props.path)})}
+      onClick={props.onClick}
       className={props.last ? 'text-ui-600 cursor-default' : 'text-primary-500'}
     >
       {props.first && <IconHome className="desktop:w-2.5 desktop:h-2.5" />}
