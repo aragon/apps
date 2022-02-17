@@ -61,12 +61,13 @@ contract DAOFactory {
         DAOConfig calldata _daoConfig,
         TokenFactory.TokenConfig calldata _tokenConfig,
         TokenFactory.MintConfig calldata _mintConfig,
-        uint256[3] calldata _votingSettings
+        uint256[3] calldata _votingSettings,
+        address _gsnForwarder
     )
         external
         returns (
             DAO dao,
-            ERC20Voting voting,
+            SimpleVoting voting,
             ERC20VotesUpgradeable token,
             MerkleMinter minter
         )
@@ -95,6 +96,7 @@ contract DAOFactory {
                     ERC20Voting.initialize.selector,
                     dao,
                     token,
+                    _gsnForwarder,
                     _votingSettings[0],
                     _votingSettings[1],
                     _votingSettings[2]

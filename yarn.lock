@@ -3545,10 +3545,22 @@
   dependencies:
     "@octokit/openapi-types" "^11.2.0"
 
+"@opengsn/contracts@^2.2.5":
+  version "2.2.5"
+  resolved "https://registry.yarnpkg.com/@opengsn/contracts/-/contracts-2.2.5.tgz#24a61799649548d2b356efcfe0cb6d0c307cb516"
+  integrity sha512-o0z8b1A7D0cYMQ+gIxM1YKJ2uV25jcrfItu7ABeQBwbaeG0NBEhXHM6Z+rnsqLJvl3RJcKmHfxaFNCk3b3bzOQ==
+  dependencies:
+    "@openzeppelin/contracts" "^4.2.0"
+
 "@openzeppelin/contracts-upgradeable@^4.3.3":
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/@openzeppelin/contracts-upgradeable/-/contracts-upgradeable-4.4.0.tgz#85161d87c840c5bce2b6ed0c727b407e774852ae"
   integrity sha512-hIEyWJHu7bDTv6ckxOaV+K3+7mVzhjtyvp3QSaz56Rk5PscXtPAbkiNTb3yz6UJCWHPWpxVyULVgZ6RubuFEZg==
+
+"@openzeppelin/contracts@^4.2.0":
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-4.5.0.tgz#3fd75d57de172b3743cdfc1206883f56430409cc"
+  integrity sha512-fdkzKPYMjrRiPK6K4y64e6GzULR7R7RwxSigHS8DDp7aWDeoReqsQI+cxHV1UuhAqX69L1lAaWDxenfP+xiqzA==
 
 "@openzeppelin/contracts@^4.3.3":
   version "4.4.0"
@@ -11099,6 +11111,16 @@ data-urls@^2.0.0:
     abab "^2.0.3"
     whatwg-mimetype "^2.3.0"
     whatwg-url "^8.0.0"
+
+date-fns-tz@1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/date-fns-tz/-/date-fns-tz-1.2.2.tgz#89432b54ce3fa7d050a2039e997e5b6a96df35dd"
+  integrity sha512-vWtn44eEqnLbkACb7T5G5gPgKR4nY8NkNMOCyoY49NsRGHrcDmY2aysCyzDeA+u+vcDBn/w6nQqEDyouRs4m8w==
+
+date-fns@2.28.0:
+  version "2.28.0"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.28.0.tgz#9570d656f5fc13143e50c975a3b6bbeb46cd08b2"
+  integrity sha512-8d35hViGYx/QH0icHYCeLmsLmMUheMmTyV9Fcm6gvNwdw31yXXH+O85sOBJ+OLnLQMKZowvpKb6FgMIQjcpvQw==
 
 dateformat@^3.0.0:
   version "3.0.3"
