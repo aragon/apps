@@ -3,7 +3,7 @@ import {render, screen} from '@testing-library/react';
 
 import {AlertBanner} from '../src';
 
-describe('AlertInline', () => {
+describe('AlertBanner', () => {
   // eslint-disable-next-line
   function setup(args: any) {
     render(<AlertBanner {...args} />);

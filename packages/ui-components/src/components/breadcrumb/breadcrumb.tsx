@@ -11,14 +11,29 @@ export type Crumbs = {
   path: string;
 }[];
 
-export type BreadcrumbsProps = {
+export type BreadcrumbProps = {
+  /**
+   * Array of breadcrumbs to be displayed; each breadcrumb should
+   * include a label and its corresponding path
+   */
   crumbs: Crumbs;
+
+  /**
+   * Whether breadcrumbs are being displayed in a process flow.
+   * If more than one breadcrumb is given when inside a process flow,
+   * only the first crumb will be shown
+   */
   process?: boolean;
+
+  /** Tag shown at the end of the list of breadcrumbs */
   tag?: React.FunctionComponentElement<BadgeProps>;
+
+  /** Callback returning the path value of the breadcrumb clicked */
   onClick?: (path: string) => void;
 };
 
-export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({
+/** Component displaying given list as breadcrumbs. */
+export const Breadcrumb: React.FC<BreadcrumbProps> = ({
   crumbs,
   process,
   tag,
@@ -26,7 +41,7 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({
 }) => {
   if (process) {
     return (
-      <ProcessContainer>
+      <ProcessContainer data-testid="breadcrumbs">
         <ProcessCrumbContainer>
           <ButtonIcon
             mode="secondary"
@@ -47,9 +62,8 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({
       {crumbs.map(({label, path}, index) => {
         isLast = index === crumbs.length - 1;
         return (
-          <>
+          <div key={index}>
             <Crumb
-              key={index}
               first={index === 0}
               label={label}
               last={isLast}
@@ -57,7 +71,7 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({
               {...(isLast ? {} : {onClick: () => onClick?.(path)})}
             />
             {!isLast && <IconChevronRight className="text-ui-300" />}
-          </>
+          </div>
         );
       })}
     </Container>
