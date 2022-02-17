@@ -87,5 +87,5 @@ templates:
           handler: handleExecuteVote
         - event: StartVote(indexed uint256,indexed address,bytes)
           handler: handleStartVote
-        - event: UpdateConfig(uint64,uint64)
+        - event: UpdateConfig(uint64,uint64,uint64)
           handler: handleUpdateConfig

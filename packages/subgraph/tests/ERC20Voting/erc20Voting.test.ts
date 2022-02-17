@@ -34,6 +34,7 @@ test('Run ERC Voting (handleStartVote) mappings with mock event', () => {
   // create calls
   let voteId = '0';
   let startDate = '1644851000';
+  let endDate = '1644852000';
   let snapshotBlock = '100';
   let supportRequiredPct = '1000';
   let minAcceptQuorumPct = '500';
@@ -46,6 +47,7 @@ test('Run ERC Voting (handleStartVote) mappings with mock event', () => {
     true,
     false,
     startDate,
+    endDate,
     snapshotBlock,
     supportRequiredPct,
     minAcceptQuorumPct,
@@ -138,6 +140,7 @@ test('Run ERC Voting (handleCastVote) mappings with mock event', () => {
   // create calls
   let voteId = '0';
   let startDate = '1644851000';
+  let endDate = '1644852000';
   let snapshotBlock = '100';
   let supportRequiredPct = '1000';
   let minAcceptQuorumPct = '500';
@@ -149,6 +152,7 @@ test('Run ERC Voting (handleCastVote) mappings with mock event', () => {
     true,
     false,
     startDate,
+    endDate,
     snapshotBlock,
     supportRequiredPct,
     minAcceptQuorumPct,
@@ -209,7 +213,12 @@ test('Run ERC Voting (handleUpdateConfig) mappings with mock event', () => {
   erc20VotingPackage.save();
 
   // create event
-  let event = createNewUpdateConfigEvent('1', '2', ERC20_VOTING_ADDRESS);
+  let event = createNewUpdateConfigEvent(
+    '1',
+    '2',
+    '3600',
+    ERC20_VOTING_ADDRESS
+  );
 
   // handle event
   handleUpdateConfig(event);
@@ -218,6 +227,7 @@ test('Run ERC Voting (handleUpdateConfig) mappings with mock event', () => {
   assert.fieldEquals('ERC20VotingPackage', entityID, 'id', entityID);
   assert.fieldEquals('ERC20VotingPackage', entityID, 'supportRequiredPct', '1');
   assert.fieldEquals('ERC20VotingPackage', entityID, 'minAcceptQuorumPct', '2');
+  assert.fieldEquals('ERC20VotingPackage', entityID, 'minDuration', '3600');
 
   clearStore();
 });

@@ -127,7 +127,7 @@ type ERC20VotingPackage implements Package @entity {
   proposals: [ERC20VotingProposal!]! @derivedFrom(field: "pkg")
   supportRequiredPct: BigInt
   minAcceptQuorumPct: BigInt
-  voteTime: BigInt
+  minDuration: BigInt
   votesLength: BigInt
   token: ERC20Token
 }
@@ -156,6 +156,7 @@ type ERC20VotingProposal implements Proposal @entity {
   creator: Bytes!
   description: String!
   startDate: BigInt!
+  endDate: BigInt!
   snapshotBlock: BigInt!
   supportRequiredPct: BigInt!
   minAcceptQuorumPct: BigInt!

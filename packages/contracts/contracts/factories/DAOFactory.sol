@@ -67,7 +67,7 @@ contract DAOFactory {
         external
         returns (
             DAO dao,
-            SimpleVoting voting,
+            ERC20Voting voting,
             ERC20VotesUpgradeable token,
             MerkleMinter minter
         )

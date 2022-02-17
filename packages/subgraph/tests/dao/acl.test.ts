@@ -10,7 +10,7 @@ import {
   getSupportRequiredPct,
   getSVToken,
   getVotesLength,
-  getVoteTime
+  getMinDuration
 } from './utils';
 import {
   DAO_ADDRESS,
@@ -46,7 +46,7 @@ test('Run dao (handleGranted) mappings with mock event', () => {
   getEXEC_ROLE(DAO_ADDRESS, role);
   getSupportRequiredPct(ERC20_VOTING_ADDRESS, BigInt.fromString(ONE_ETH));
   getMinAcceptQuorumPct(ERC20_VOTING_ADDRESS, BigInt.fromString(ONE_ETH));
-  getVoteTime(ERC20_VOTING_ADDRESS, BigInt.fromString(ONE_ETH));
+  getMinDuration(ERC20_VOTING_ADDRESS, BigInt.fromString(ONE_ETH));
   getVotesLength(ERC20_VOTING_ADDRESS, BigInt.fromString(ONE_ETH));
   getSVToken(ERC20_VOTING_ADDRESS, DAO_TOKEN_ADDRESS);
 

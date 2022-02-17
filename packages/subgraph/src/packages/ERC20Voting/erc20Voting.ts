@@ -38,14 +38,15 @@ export function _handleStartVote(event: StartVote, daoId: string): void {
 
   if (!vote.reverted) {
     proposalEntity.startDate = vote.value.value2;
-    proposalEntity.snapshotBlock = vote.value.value3;
-    proposalEntity.supportRequiredPct = vote.value.value4;
-    proposalEntity.minAcceptQuorumPct = vote.value.value5;
-    proposalEntity.votingPower = vote.value.value8;
+    proposalEntity.endDate = vote.value.value3;
+    proposalEntity.snapshotBlock = vote.value.value4;
+    proposalEntity.supportRequiredPct = vote.value.value5;
+    proposalEntity.minAcceptQuorumPct = vote.value.value6;
+    proposalEntity.votingPower = vote.value.value9;
     proposalEntity.executed = vote.value.value1;
 
     // actions
-    let actions = vote.value.value9;
+    let actions = vote.value.value10;
     for (let index = 0; index < actions.length; index++) {
       const action = actions[index];
 
@@ -107,8 +108,8 @@ export function handleCastVote(event: CastVote): void {
     let contract = ERC20Voting.bind(event.address);
     let vote = contract.try_getVote(event.params.voteId);
     if (!vote.reverted) {
-      proposalEntity.yea = vote.value.value6;
-      proposalEntity.nay = vote.value.value7;
+      proposalEntity.yea = vote.value.value7;
+      proposalEntity.nay = vote.value.value8;
       proposalEntity.save();
     }
   }
@@ -152,6 +153,7 @@ export function handleUpdateConfig(event: UpdateConfig): void {
   if (packageEntity) {
     packageEntity.supportRequiredPct = event.params.supportRequiredPct;
     packageEntity.minAcceptQuorumPct = event.params.minAcceptQuorumPct;
+    packageEntity.minDuration = event.params.minDuration;
     packageEntity.save();
   }
 }

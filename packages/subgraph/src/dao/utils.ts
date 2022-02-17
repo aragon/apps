@@ -19,7 +19,7 @@ export function addPackage(daoId: string, who: Address): void {
     let contract = ERC20VotingContract.bind(who);
     let supportRequiredPct = contract.try_supportRequiredPct();
     let minAcceptQuorumPct = contract.try_minAcceptQuorumPct();
-    let voteTime = contract.try_voteTime();
+    let minDuration = contract.try_minDuration();
     let token = contract.try_token();
 
     packageEntity.supportRequiredPct = supportRequiredPct.reverted
@@ -28,7 +28,7 @@ export function addPackage(daoId: string, who: Address): void {
     packageEntity.minAcceptQuorumPct = minAcceptQuorumPct.reverted
       ? null
       : minAcceptQuorumPct.value;
-    packageEntity.voteTime = voteTime.reverted ? null : voteTime.value;
+    packageEntity.minDuration = minDuration.reverted ? null : minDuration.value;
 
     let tokenId = handleERC20Token(token.value);
 
