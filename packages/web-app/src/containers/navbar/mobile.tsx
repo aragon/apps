@@ -110,5 +110,6 @@ const Menu = styled.nav.attrs({
 })``;
 
 const ProcessMenuItems = styled.nav.attrs({
-  className: 'flex justify-between items-center px-2 pt-2 bg-ui-0',
+  className:
+    'flex justify-between items-center px-2 pt-2 pb-0.25 tablet:pb-2 bg-ui-0',
 })``;

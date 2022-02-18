@@ -1,115 +1,98 @@
-import {
-  ActionItem,
-  MenuItem,
-  IconFinance,
-  IconCommunity,
-  IconDashboard,
-  IconGovernance,
-} from '@aragon/ui-components';
 import React from 'react';
+import styled from 'styled-components';
+import {useNavigate} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
 
 import NavLink from 'components/navLink';
 import {Dashboard, Community, Finance, Governance} from 'utils/paths';
 
 type NavLinksProps = {
-  isDropdown?: boolean;
-  selected?: string;
+  selected?: string; //todo Remove
+  isDropdown?: boolean; //todo Remove
+
+  parent?: 'nav' | 'modal' | 'dropdown';
   onItemClick?: () => void;
 };
 
-const NavLinks: React.FC<NavLinksProps> = ({
-  isDropdown = false,
-  selected,
-  onItemClick,
-}) => {
+const styles = {
+  nav: 'flex space-x-1.5 items-center',
+  dropdown: 'space-y-1.5 p-2',
+  modal: 'p-2 space-y-1',
+};
+
+const NavLinks: React.FC<NavLinksProps> = props => {
   const {t} = useTranslation();
+  const navigate = useNavigate();
+
+  const handleOnClick = (to: string) => {
+    navigate(to);
+  };
 
   // TODO: Investigate string interpolation with react-i18next
   return (
-    <div
-      data-testid="navLinks"
-      className={
-        isDropdown
-          ? 'flex flex-col space-y-1.5'
-          : 'flex space-x-1.5 items-center'
-      }
-    >
+    <ul data-testid="navLinks" className={styles[props.parent!]}>
       <NavLink
         to={Dashboard}
-        onClick={onItemClick}
-        selected={selected}
-        component={
-          isDropdown ? (
-            <ActionItem
-              wide
-              icon={<IconDashboard />}
-              label={t('navLinks.dashboard')}
-            />
-          ) : (
-            <MenuItem
-              icon={<IconDashboard />}
-              label={t('navLinks.dashboard')}
-            />
-          )
-        }
+        matchEnd={props.parent !== 'modal'}
+        render={isSelected => (
+          <NavItem
+            isSelected={isSelected}
+            onClick={() => handleOnClick(Dashboard)}
+          >
+            {t('navLinks.dashboard')}
+          </NavItem>
+        )}
       />
       <NavLink
         to={Governance}
-        onClick={onItemClick}
-        selected={selected}
-        component={
-          isDropdown ? (
-            <ActionItem
-              wide
-              icon={<IconGovernance />}
-              label={t('navLinks.governance')}
-            />
-          ) : (
-            <MenuItem
-              icon={<IconGovernance />}
-              label={t('navLinks.governance')}
-            />
-          )
-        }
+        matchEnd={props.parent !== 'modal'}
+        render={isSelected => (
+          <NavItem
+            isSelected={isSelected}
+            onClick={() => handleOnClick(Governance)}
+          >
+            {t('navLinks.governance')}
+          </NavItem>
+        )}
       />
       <NavLink
         to={Finance}
-        onClick={onItemClick}
-        selected={selected}
-        component={
-          isDropdown ? (
-            <ActionItem
-              wide
-              icon={<IconFinance />}
-              label={t('navLinks.finance')}
-            />
-          ) : (
-            <MenuItem icon={<IconFinance />} label={t('navLinks.finance')} />
-          )
-        }
+        matchEnd={props.parent !== 'modal'}
+        render={isSelected => (
+          <NavItem
+            isSelected={isSelected}
+            onClick={() => handleOnClick(Finance)}
+          >
+            {t('navLinks.finance')}
+          </NavItem>
+        )}
       />
       <NavLink
         to={Community}
-        onClick={onItemClick}
-        selected={selected}
-        component={
-          isDropdown ? (
-            <ActionItem
-              wide
-              icon={<IconCommunity />}
-              label={t('navLinks.community')}
-            />
-          ) : (
-            <MenuItem
-              icon={<IconCommunity />}
-              label={t('navLinks.community')}
-            />
-          )
-        }
+        matchEnd={props.parent !== 'modal'}
+        render={isSelected => (
+          <NavItem
+            isSelected={isSelected}
+            onClick={() => handleOnClick(Community)}
+          >
+            {t('navLinks.community')}
+          </NavItem>
+        )}
       />
-    </div>
+    </ul>
   );
 };
+
+const NavItem = styled.button.attrs(({isSelected}: {isSelected: boolean}) => {
+  let className =
+    'py-1.5 px-2 rounded-xl font-bold hover:text-primary-500 ' +
+    'active:text-primary-700 disabled:text-ui-300 focus:bg-ui-50 ' +
+    'disabled:bg-ui-50 focus:ring-2 focus:ring-primary-500 focus:outline-none ';
+
+  isSelected
+    ? (className += 'text-primary-500 bg-ui-0')
+    : (className += 'text-ui-600');
+  return {className};
+})<{isSelected: boolean}>``;
 
 export default NavLinks;
