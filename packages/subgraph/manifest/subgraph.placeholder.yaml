@@ -89,3 +89,32 @@ templates:
           handler: handleStartVote
         - event: UpdateConfig(uint64,uint64,uint64)
           handler: handleUpdateConfig
+  # WhitelistVoting (package)
+  - name: WhitelistVoting
+    kind: ethereum/contract
+    network: {{network}}
+    source:
+      abi: WhitelistVoting
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      file: ./src/packages/whitelist/whitelistVoting.ts
+      entities:
+        - Dao
+      abis:
+        - name: WhitelistVoting
+          file: $ZARAGOZA_CONTRACTS_MODULE/artifacts/contracts/votings/whitelist/WhitelistVoting.sol/WhitelistVoting.json
+      eventHandlers:
+        - event: CastVote(indexed uint256,indexed address,bool)
+          handler: handleCastVote
+        - event: ExecuteVote(indexed uint256,bytes[])
+          handler: handleExecuteVote
+        - event: StartVote(indexed uint256,indexed address,bytes)
+          handler: handleStartVote
+        - event: UpdateConfig(uint64,uint64)
+          handler: handleUpdateConfig
+        - event: AddUsers(address[])
+          handler: handleAddUsers
+        - event: RemoveUsers(address[])
+          handler: handleRemoveUsers

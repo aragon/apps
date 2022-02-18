@@ -32,7 +32,7 @@ contract WhitelistVoting is Component, TimeHelpers {
     mapping (uint256 => Vote) internal votes;
 
     uint64 public supportRequiredPct;
-    uint64 private whitelistedLength;
+    uint64 public whitelistedLength;
     uint64 public minDuration;
 
     uint256 public votesLength;

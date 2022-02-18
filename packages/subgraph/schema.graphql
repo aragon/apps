@@ -167,3 +167,48 @@ type ERC20VotingProposal implements Proposal @entity {
   executed: Boolean!
   createdAt: BigInt!
 }
+
+# WhitelistVoting
+
+type WhitelistPackage implements Package @entity {
+  id: ID!
+  daos: [DaoPackage!] @derivedFrom(field: "pkg")
+  proposals: [WhitelistProposal!]! @derivedFrom(field: "pkg")
+  supportRequiredPct: BigInt
+  whitelistedLength: BigInt
+  minDuration: BigInt
+  votesLength: BigInt
+}
+
+type WhitelistVoter implements Voter @entity {
+  id: ID! # address
+  proposals: [WhitelistVote!]! @derivedFrom(field: "voter")
+}
+
+type WhitelistVote @entity {
+  "VoterProposal for Many-to-Many"
+  id: ID! # voter + proposal
+  voter: WhitelistVoter!
+  proposal: WhitelistProposal!
+  vote: Boolean!
+  createdAt: BigInt!
+}
+
+type WhitelistProposal implements Proposal @entity {
+  id: ID! # package + voteId
+  dao: Dao!
+  actions: [Action!]! @derivedFrom(field: "proposal")
+  pkg: WhitelistPackage!
+  voteId: BigInt!
+  creator: Bytes!
+  description: String!
+  startDate: BigInt!
+  endDate: BigInt!
+  supportRequiredPct: BigInt!
+  votingPower: BigInt!
+  yea: BigInt
+  nay: BigInt
+  voters: [WhitelistVote!]! @derivedFrom(field: "proposal")
+  executed: Boolean!
+  createdAt: BigInt!
+}
