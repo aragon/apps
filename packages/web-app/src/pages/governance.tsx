@@ -15,6 +15,7 @@ import NoProposals from 'public/noProposals.svg';
 import {useDaoProposals} from '../hooks/useDaoProposals';
 import {ProposalData} from 'utils/types';
 import {useTranslation} from 'react-i18next';
+import {Link} from '@aragon/ui-components/src';
 
 const Governance: React.FC = () => {
   // TODO: toggle empty state based on graph query
@@ -56,12 +57,10 @@ const Governance: React.FC = () => {
           <EmptyStateHeading>
             {t('governance.emptyState.title')}
           </EmptyStateHeading>
-          <p className="mt-1.5">{t('governance.emptyState.subtitleLine1')}</p>
-          <p>
+          <p className="mt-1.5 lg:w-1/2 text-center">
+            {t('governance.emptyState.subtitleLine1')}{' '}
             {t('governance.emptyState.subtitleLine2')}{' '}
-            <a className="font-bold text-primary-500">
-              {t('governance.emptyState.proposalGuide')}
-            </a>
+            <Link label={t('governance.emptyState.proposalGuide')} />
           </p>
           <ButtonText
             size="large"
@@ -153,7 +152,7 @@ const PaginationWrapper = styled.div.attrs({
 
 const EmptyStateContainer = styled.div.attrs({
   className:
-    'flex flex-col items-center py-8 px-6 mx-auto mt-5 w-3/4 text-lg bg-white rounded-xl text-ui-500',
+    'flex flex-col items-center py-4 px-3 tablet:py-8 tablet:px-6 mx-auto mt-3 tablet:mt-5 w-11/12 tablet:w-3/4 text-lg bg-white rounded-xl text-ui-500',
 })``;
 
 const ImageContainer = styled.img.attrs({
@@ -161,5 +160,5 @@ const ImageContainer = styled.img.attrs({
 })``;
 
 const EmptyStateHeading = styled.h1.attrs({
-  className: 'mt-4 text-2xl font-bold text-ui-800',
+  className: 'mt-4 text-2xl font-bold text-ui-800 text-center',
 })``;
