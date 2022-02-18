@@ -17,9 +17,11 @@ import {FullScreenStepper, Step} from 'components/fullScreenStepper';
 import SetupVotingForm from 'containers/setupVotingForm';
 import DefineProposal from 'containers/defineProposal';
 import ReviewWithdraw from 'containers/reviewWithdraw';
+import {fetchTokenPrice} from 'services/prices';
 
 export type TransferData = {
   amount: string;
+  tokenPrice: number | undefined;
   from: Address;
   to: Address;
   startDate: string;
@@ -57,6 +59,7 @@ const defaultValues = {
   tokenSymbol: '',
   tokenName: '',
   tokenImgUrl: '',
+  tokenPrice: undefined,
   isCustomToken: false,
   duration: 5,
   startDate: '',
@@ -109,6 +112,10 @@ const NewWithdraw: React.FC = () => {
       'tokenBalance',
       formatUnits(token.count, token.decimals)
     );
+
+    fetchTokenPrice(token.address).then(price => {
+      formMethods.setValue('tokenPrice', price);
+    });
   };
 
   /*************************************************

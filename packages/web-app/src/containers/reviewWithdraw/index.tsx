@@ -1,8 +1,9 @@
-import {useEditor, EditorContent} from '@tiptap/react';
+import {EditorContent, useEditor} from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import TipTapLink from '@tiptap/extension-link';
 import {useTranslation} from 'react-i18next';
 import {useFormContext} from 'react-hook-form';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 
 import {
@@ -18,14 +19,25 @@ import {VotingTerminal} from 'containers/votingTerminal';
 
 const ReviewWithdraw: React.FC = () => {
   const [expandedProposal, setExpandedProposal] = useState(false);
-  const {getValues} = useFormContext();
+  const {getValues, setValue} = useFormContext();
   const {t} = useTranslation();
   const values = getValues();
   const editor = useEditor({
     editable: false,
     content: values.proposal,
-    extensions: [StarterKit],
+    extensions: [
+      StarterKit,
+      TipTapLink.configure({
+        openOnClick: false,
+      }),
+    ],
   });
+
+  useEffect(() => {
+    if (values.proposal === '<p></p>') {
+      setValue('proposal', '');
+    }
+  }, [setValue, values.proposal]);
 
   if (!editor) {
     return null;
@@ -52,7 +64,7 @@ const ReviewWithdraw: React.FC = () => {
 
       <SummaryText>{values.proposalSummary}</SummaryText>
 
-      {!expandedProposal && (
+      {values.proposal && !expandedProposal && (
         <ButtonText
           className="mt-3 w-full tablet:w-max"
           label={t('governance.proposals.buttons.readFullProposal')}
@@ -64,9 +76,9 @@ const ReviewWithdraw: React.FC = () => {
 
       <ContentContainer expandedProposal={expandedProposal}>
         <ProposalContainer>
-          {expandedProposal && (
+          {values.proposal && expandedProposal && (
             <>
-              <EditorContent editor={editor} />
+              <StyledEditorContent editor={editor} />
 
               <ButtonText
                 className="mt-3 w-full tablet:w-max"
@@ -81,17 +93,17 @@ const ReviewWithdraw: React.FC = () => {
           <VotingTerminal />
 
           <CardExecution
-            title="Execution"
-            description="These smart actions are executed when the proposal reaches sufficient support. Find out which actions are executed."
+            title={t('governance.executionCard.title')}
+            description={t('governance.executionCard.description')}
             to={values.to}
             from={values.from}
-            toLabel="To"
-            fromLabel="From"
+            toLabel={t('labels.to')}
+            fromLabel={t('labels.from')}
             tokenName={values.tokenName}
             tokenImageUrl={values.tokenImgUrl}
             tokenSymbol={values.tokenSymbol}
             tokenCount={values.amount}
-            treasuryShare="$TODO:"
+            treasuryShare={`$${values.tokenPrice * values.amount}`}
           />
         </ProposalContainer>
 
@@ -138,3 +150,33 @@ const ContentContainer = styled.div.attrs(
     } mt-3 tablet:flex tablet:space-x-3 space-y-3 tablet:space-y-0`,
   })
 )<ContentContainerProps>``;
+
+const StyledEditorContent = styled(EditorContent)`
+  flex: 1;
+
+  .ProseMirror {
+    :focus {
+      outline: none;
+    }
+
+    ul {
+      list-style-type: decimal;
+      padding: 0 1rem;
+    }
+
+    ol {
+      list-style-type: disc;
+      padding: 0 1rem;
+    }
+
+    a {
+      color: #003bf5;
+      cursor: pointer;
+      font-weight: 700;
+
+      :hover {
+        color: #0031ad;
+      }
+    }
+  }
+`;
