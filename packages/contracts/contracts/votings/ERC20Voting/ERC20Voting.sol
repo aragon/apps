@@ -39,7 +39,7 @@ contract ERC20Voting is Component, TimeHelpers {
     uint256 public votesLength;
 
     ERC20VotesUpgradeable public token;
-    
+
     string private constant ERROR_NO_VOTE = "VOTING_NO_VOTE";
     string private constant ERROR_INIT_PCTS = "VOTING_INIT_PCTS";
     string private constant ERROR_CHANGE_SUPPORT_PCTS = "VOTING_CHANGE_SUPPORT_PCTS";
@@ -62,28 +62,28 @@ contract ERC20Voting is Component, TimeHelpers {
     function versionRecipient() external override virtual view returns (string memory){
         return "0.0.1+opengsn.recipient.SimpleVoting";
     }
-    
+
     /// @dev Used for UUPS upgradability pattern
     /// @param _dao The DAO contract of the current DAO
     function initialize(
-        IDAO _dao, 
+        IDAO _dao,
         ERC20VotesUpgradeable _token,
         address _gsnForwarder,
         uint64 _minAcceptQuorumPct,
         uint64 _supportRequiredPct,
         uint64 _minDuration
-    ) public initializer { 
+    ) public initializer {
         require(_minAcceptQuorumPct <= _supportRequiredPct, ERROR_INIT_PCTS);
         require(_supportRequiredPct < PCT_BASE, ERROR_INIT_SUPPORT_TOO_BIG);
         require(_minDuration > 0, ERROR_CHANGE_MIN_DURATION_NO_ZERO);
 
         token = _token;
         minAcceptQuorumPct = _minAcceptQuorumPct;
-        supportRequiredPct = _supportRequiredPct; 
+        supportRequiredPct = _supportRequiredPct;
         minDuration = _minDuration;
 
         Component.initialize(_dao, _gsnForwarder);
-        
+
         emit UpdateConfig(_minAcceptQuorumPct, _supportRequiredPct, _minDuration);
     }
 
@@ -94,14 +94,14 @@ contract ERC20Voting is Component, TimeHelpers {
     * @param _minDuration each vote's minimum duration
     */
     function changeVoteConfig(
-        uint64 _minAcceptQuorumPct, 
+        uint64 _minAcceptQuorumPct,
         uint64 _supportRequiredPct,
         uint64 _minDuration
     ) external auth(MODIFY_CONFIG) {
         require(_minAcceptQuorumPct <= _supportRequiredPct, ERROR_CHANGE_SUPPORT_PCTS);
         require(_supportRequiredPct < PCT_BASE, ERROR_CHANGE_SUPPORT_TOO_BIG);
         require(_minDuration > 0, ERROR_CHANGE_MIN_DURATION_NO_ZERO);
-        
+
         minAcceptQuorumPct = _minAcceptQuorumPct;
         supportRequiredPct = _supportRequiredPct;
         minDuration = _minDuration;
@@ -126,19 +126,19 @@ contract ERC20Voting is Component, TimeHelpers {
         bool _executeIfDecided,
         bool _castVote
     ) external returns (uint256 voteId) {
-        uint64 snapshotBlock = getBlockNumber64() - 1; 
-        
+        uint64 snapshotBlock = getBlockNumber64() - 1;
+
         uint256 votingPower = token.getPastTotalSupply(snapshotBlock);
         require(votingPower > 0, ERROR_NO_VOTING_POWER);
 
         voteId = votesLength++;
-        
+
         // calculate start and end time for the vote
         uint64 currentTimestamp = getTimestamp64();
 
         if(_startDate == 0) _startDate = currentTimestamp;
         if(_endDate == 0) _endDate = _startDate + minDuration;
-        
+
         require(
             _endDate - _startDate >= minDuration ||
             _startDate >= currentTimestamp,
@@ -159,7 +159,7 @@ contract ERC20Voting is Component, TimeHelpers {
         }
 
         emit StartVote(voteId, _msgSender(), _proposalMetadata);
-    
+
         if (_castVote && canVote(voteId, _msgSender())) {
             _vote(voteId, true, _msgSender(), _executeIfDecided);
         }
@@ -177,7 +177,7 @@ contract ERC20Voting is Component, TimeHelpers {
     }
 
     /**
-    * @dev Internal function to cast a vote. It assumes the queried vote exists. 
+    * @dev Internal function to cast a vote. It assumes the queried vote exists.
     * @param _voteId voteId
     * @param _supports whether user supports the decision or not
     * @param _executesIfDecided if true, and it's the last vote required, immediatelly executes a vote.
@@ -225,13 +225,13 @@ contract ERC20Voting is Component, TimeHelpers {
     * @param _voteId the vote Id
     */
     function _execute(uint256 _voteId) internal {
-        bytes[] memory execResults = dao.execute(votes[_voteId].actions);
+        bytes[] memory execResults = dao.execute(_voteId, votes[_voteId].actions);
 
         votes[_voteId].executed = true;
 
         emit ExecuteVote(_voteId, execResults);
     }
-    
+
     /**
     * @dev Return the state of a voter for a given vote by its ID
     * @param _voteId Vote identifier
@@ -294,7 +294,7 @@ contract ERC20Voting is Component, TimeHelpers {
         )
     {
         Vote storage vote_ = votes[_voteId];
-        
+
         open = _isVoteOpen(vote_);
         executed = vote_.executed;
         startDate = vote_.startDate;
@@ -365,16 +365,16 @@ contract ERC20Voting is Component, TimeHelpers {
 
     /**
     * @dev Calculates whether `_value` is more than a percentage `_pct` of `_total`
-    * @param _value the current value 
+    * @param _value the current value
     * @param _total the total value
     * @param _pct the required support percentage
-    * @return returns if the _value is _pct or more percentage of _total. 
+    * @return returns if the _value is _pct or more percentage of _total.
     */
     function _isValuePct(uint256 _value, uint256 _total, uint256 _pct) internal pure returns (bool) {
        if (_total == 0) {
            return false;
        }
-    
+
        uint256 computedPct = _value * PCT_BASE / _total;
        return computedPct > _pct;
     }

@@ -81,7 +81,7 @@ contract WhitelistVoting is Component, TimeHelpers {
         _addWhitelistedUsers(_whitelisted);
 
         Component.initialize(_dao, _gsnForwarder);
-        
+
         emit UpdateConfig(_supportRequiredPct, _minDuration);
     }
 
@@ -159,7 +159,7 @@ contract WhitelistVoting is Component, TimeHelpers {
 
         if(_startDate == 0) _startDate = currentTimestamp;
         if(_endDate == 0) _endDate = _startDate + minDuration;
-        
+
         require(
             _endDate - _startDate >= minDuration ||
             _startDate >= currentTimestamp,
@@ -244,7 +244,7 @@ contract WhitelistVoting is Component, TimeHelpers {
     * @param _voteId the vote Id
     */
     function _execute(uint256 _voteId) internal {
-        bytes[] memory execResults = dao.execute(votes[_voteId].actions);
+        bytes[] memory execResults = dao.execute(_voteId, votes[_voteId].actions);
 
         votes[_voteId].executed = true;
 

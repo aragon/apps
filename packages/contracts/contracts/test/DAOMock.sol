@@ -15,11 +15,11 @@ contract DAOMock is IDAO, ACL {
     constructor(address initialOwner) {
         ACL.initACL(initialOwner);
     }
-    
+
     function hasPermission(
-        address /* _where */ , 
-        address /* _who */, 
-        bytes32 /* _role */ , 
+        address /* _where */ ,
+        address /* _who */,
+        bytes32 /* _role */ ,
         bytes memory /* _data */
     ) public pure override returns(bool) {
         return true;
@@ -29,27 +29,28 @@ contract DAOMock is IDAO, ACL {
 
     }
 
-    function execute(Action[] memory  _actions) external override returns (bytes[] memory){
+    function execute(uint256 callId, Action[] memory  _actions) external override returns (bytes[] memory){
         bytes[] memory results;
-        emit Executed(msg.sender, _actions, results);
+        uint256 executionId;
+        emit Executed(msg.sender, callId, executionId, _actions, results);
         return results;
     }
 
     function deposit(
-        address /* _token */, 
-        uint256 /* _amount */, 
+        address /* _token */,
+        uint256 /* _amount */,
         string calldata /* _reference */
     ) external override payable {
-        
+
     }
 
     function withdraw(
-        address /* _token */, 
-        address /* _to */, 
-        uint256 /* _amount */, 
+        address /* _token */,
+        address /* _to */,
+        uint256 /* _amount */,
         string memory  /* _reference */
     ) public override {
-       
+
     }
 
 }

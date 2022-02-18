@@ -49,24 +49,24 @@ describe('WhitelistVoting', function () {
             data: '0x00000000',
             value: 0
         }];
-        
+
         const DAOMock = await ethers.getContractFactory('DAOMock');
         daoMock = await DAOMock.deploy(ownerAddress);
     })
 
-    beforeEach(async () => {        
+    beforeEach(async () => {
         const WhitelistVoting = await ethers.getContractFactory('WhitelistVoting');
         voting = await WhitelistVoting.deploy();
     })
 
     function initializeVoting(
         whitelisted: Array<string>,
-        supportRequired: any, 
+        supportRequired: any,
         minDuration: any
     ) {
         return voting['initialize(address,address,address[],uint64,uint64)']
             (
-                daoMock.address, 
+                daoMock.address,
                 ethers.constants.AddressZero,
                 whitelisted,
                 supportRequired,
@@ -93,7 +93,7 @@ describe('WhitelistVoting', function () {
             // TODO: Waffle's calledOnContractWith is not supported by Hardhat
             // await voting['initialize(address,address,uint64[3],bytes[])']
             //          (daoMock.address, erc20VoteMock.address, [1, 2, 3], [])
-            
+
             // expect('initialize').to.be.calledOnContractWith(voting, [daoMock.address]);
         })
     })
@@ -198,7 +198,7 @@ describe('WhitelistVoting', function () {
             expect(vote.open).to.equal(true);
             expect(vote.executed).to.equal(false);
             expect(vote.supportRequired).to.equal(2);
-           
+
             expect(vote.yea).to.equal(1);
             expect(vote.nay).to.equal(0);
         })
@@ -210,7 +210,7 @@ describe('WhitelistVoting', function () {
 
         beforeEach(async () => {
             const addresses = [];
-            
+
             for(let i = 0; i < 10; i++) {
                 const addr = await signers[i].getAddress();
                 addresses.push(addr);
@@ -219,7 +219,7 @@ describe('WhitelistVoting', function () {
             // voting will be initialized with 10 whitelisted addresses
             // Which means votingPower = 10 at this point.
             await initializeVoting(addresses, supportRequired, minDuration);
-            
+
             await voting.newVote('0x00', dummyActions, 0, 0, false, false);
         })
 
@@ -256,9 +256,9 @@ describe('WhitelistVoting', function () {
         })
 
         it("makes executable if enough yea is given from on voting power", async () => {
-            // Since voting power is set to 29%, and 
-            // whitelised is 10 addresses, voting yea 
-            // from 3 addresses should be enough to 
+            // Since voting power is set to 29%, and
+            // whitelised is 10 addresses, voting yea
+            // from 3 addresses should be enough to
             // make vote executable
             await voting.vote(0, true, false);
             await voting.connect(signers[1]).vote(0, true, false);
@@ -267,10 +267,10 @@ describe('WhitelistVoting', function () {
             expect(await voting.canExecute(0)).to.equal(false);
             // // 3rd votes, enough.
             await voting.connect(signers[2]).vote(0, true, false);
-            
+
             expect(await voting.canExecute(0)).to.equal(true);
         })
-        
+
         it("makes executable if enough yea is given depending on yea + nay total", async () => {
             // 1 supports
             await voting.vote(0, true, false);
@@ -284,21 +284,23 @@ describe('WhitelistVoting', function () {
             // makes the voting closed.
             await ethers.provider.send('evm_increaseTime', [minDuration + 10]);
             await ethers.provider.send('evm_mine', []);
-            
+
             // 3 voted no, 2 voted yea. Enough to surpass supportedRequired percentage
             expect(await voting.canExecute(0)).to.equal(true);
         })
-        
+
         it("executes the vote immediatelly while final yea is given", async () => {
             // 2 votes in favor of yea
             await voting.connect(signers[0]).vote(0, true, false);
             await voting.connect(signers[1]).vote(0, true, false);
-            
+
             // 3th supports(which is enough) and should execute right away.
             expect(await voting.connect(signers[3]).vote(0, true, true))
                 .to.emit(daoMock, EVENTS.EXECUTED)
                 .withArgs(
-                    voting.address, 
+                    voting.address,
+                    0,
+                    0,
                     [
                         [
                           dummyActions[0].to,
