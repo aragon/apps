@@ -10,17 +10,12 @@ type NavLinksProps = {
   selected?: string; //todo Remove
   isDropdown?: boolean; //todo Remove
 
-  parent?: 'nav' | 'modal' | 'dropdown';
+  parent?: 'modal' | 'nav' | 'dropdown';
   onItemClick?: () => void;
 };
 
-const styles = {
-  nav: 'flex space-x-1.5 items-center',
-  dropdown: 'space-y-1.5 p-2',
-  modal: 'p-2 space-y-1',
-};
-
-const NavLinks: React.FC<NavLinksProps> = props => {
+// TODO: Investigate string interpolation with react-i18next
+const NavLinks: React.FC<NavLinksProps> = ({parent = 'nav', ...props}) => {
   const {t} = useTranslation();
   const navigate = useNavigate();
 
@@ -28,60 +23,92 @@ const NavLinks: React.FC<NavLinksProps> = props => {
     navigate(to);
   };
 
-  // TODO: Investigate string interpolation with react-i18next
+  if (parent === 'nav')
+    return (
+      <StyledNavList data-testid="navLinks" parent={parent}>
+        <li>
+          <NavLink
+            to={Dashboard}
+            render={isSelected => (
+              <NavItem
+                isSelected={isSelected}
+                onClick={() => handleOnClick(Dashboard)}
+              >
+                {t('navLinks.dashboard')}
+              </NavItem>
+            )}
+          />
+        </li>
+        <li>
+          <NavLink
+            to={Governance}
+            render={isSelected => (
+              <NavItem
+                isSelected={isSelected}
+                onClick={() => handleOnClick(Governance)}
+              >
+                {t('navLinks.governance')}
+              </NavItem>
+            )}
+          />
+        </li>
+        <li>
+          <NavLink
+            to={Finance}
+            render={isSelected => (
+              <NavItem
+                isSelected={isSelected}
+                onClick={() => handleOnClick(Finance)}
+              >
+                {t('navLinks.finance')}
+              </NavItem>
+            )}
+          />
+        </li>
+        <li>
+          <NavLink
+            to={Community}
+            render={isSelected => (
+              <NavItem
+                isSelected={isSelected}
+                onClick={() => handleOnClick(Community)}
+              >
+                {t('navLinks.community')}
+              </NavItem>
+            )}
+          />
+        </li>
+      </StyledNavList>
+    );
+
   return (
-    <ul data-testid="navLinks" className={styles[props.parent!]}>
-      <NavLink
-        to={Dashboard}
-        matchEnd={props.parent !== 'modal'}
-        render={isSelected => (
-          <NavItem
-            isSelected={isSelected}
-            onClick={() => handleOnClick(Dashboard)}
-          >
-            {t('navLinks.dashboard')}
-          </NavItem>
-        )}
-      />
-      <NavLink
-        to={Governance}
-        matchEnd={props.parent !== 'modal'}
-        render={isSelected => (
-          <NavItem
-            isSelected={isSelected}
-            onClick={() => handleOnClick(Governance)}
-          >
-            {t('navLinks.governance')}
-          </NavItem>
-        )}
-      />
-      <NavLink
-        to={Finance}
-        matchEnd={props.parent !== 'modal'}
-        render={isSelected => (
-          <NavItem
-            isSelected={isSelected}
-            onClick={() => handleOnClick(Finance)}
-          >
-            {t('navLinks.finance')}
-          </NavItem>
-        )}
-      />
-      <NavLink
-        to={Community}
-        matchEnd={props.parent !== 'modal'}
-        render={isSelected => (
-          <NavItem
-            isSelected={isSelected}
-            onClick={() => handleOnClick(Community)}
-          >
-            {t('navLinks.community')}
-          </NavItem>
-        )}
-      />
-    </ul>
+    <StyledNavList parent={parent}>
+      <li>abc</li>
+      <li>abc</li>
+      <li>abc</li>
+      <li>abc</li>
+    </StyledNavList>
   );
 };
+
+type ParentProps = NonNullable<Pick<NavLinksProps, 'parent'>>;
+const StyledNavList = styled.ul.attrs(({parent}: ParentProps) => {
+  let className = '';
+
+  switch (parent) {
+    case 'nav':
+      className = 'flex space-x-1.5 items-center';
+      break;
+    case 'modal':
+      className = 'space-y-1';
+      break;
+    case 'dropdown':
+      className = 'space-y-1 p-1.5  ';
+      break;
+  }
+
+  return {className};
+})<ParentProps>``;
 
 const NavItem = styled.button.attrs(({isSelected}: {isSelected: boolean}) => {
   let className =

@@ -20,7 +20,7 @@ const MobileNavMenu: React.FC<MobileNavMenuProps> = props => {
           src="d"
           wide
         />
-        <NavLinks onItemClick={props.onClose} />
+        <NavLinks parent="modal" />
       </div>
     </BottomSheet>
   );

@@ -92,7 +92,7 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
                   side="bottom"
                   align="start"
                   width={240}
-                  content={<NavLinks />}
+                  content={<NavLinks parent="dropdown" />}
                 >
                   <ButtonIcon
                     mode="secondary"
