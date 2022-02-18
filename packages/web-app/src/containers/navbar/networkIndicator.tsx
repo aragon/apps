@@ -4,8 +4,10 @@ import {useTranslation} from 'react-i18next';
 // TODO: replace with AlertBanner
 import {AlertInline} from '@aragon/ui-components';
 
+import {NetworkIndicatorStatus} from 'utils/types';
+
 type IndicatorProps = {
-  status?: 'default' | 'testnet' | 'unsupported';
+  status?: NetworkIndicatorStatus;
 };
 
 const NetworkIndicator: React.FC<IndicatorProps> = ({status = 'default'}) => {

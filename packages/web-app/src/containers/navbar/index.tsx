@@ -1,13 +1,14 @@
+import styled from 'styled-components';
 import React, {useMemo} from 'react';
+import {matchRoutes, useLocation} from 'react-router-dom';
 
 import MobileNav from './mobile';
 import useScreen from 'hooks/useScreen';
+import DesktopNav from './desktop';
 import {useWallet} from 'context/augmentedWallet';
 import {useWalletMenuContext} from 'context/walletMenu';
-import {matchRoutes, useLocation} from 'react-router-dom';
 import {CHAIN_METADATA as chains} from 'utils/constants';
 import {NewDeposit, NewWithDraw, CreateDAO} from 'utils/paths';
-import styled from 'styled-components';
 
 type NumberIndexed = {[key: number]: {}};
 type StringIndexed = {[key: string]: {processLabel: string; returnURL: string}};
@@ -50,7 +51,11 @@ const Navbar: React.FC = () => {
   };
 
   return isDesktop ? (
-    <div>Desktop Menu</div>
+    <DesktopNav
+      status={status}
+      {...(processName ? {...processes[processName]} : {})}
+      onWalletClick={handleWalletButtonClick}
+    />
   ) : (
     <MobileNav
       status={status}

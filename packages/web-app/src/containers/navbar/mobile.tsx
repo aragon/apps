@@ -15,9 +15,10 @@ import MobileMenu from './mobileMenu';
 import {useWallet} from 'context/augmentedWallet';
 import {useWalletProps} from 'containers/walletMenu';
 import NetworkIndicator from './networkIndicator';
+import {NetworkIndicatorStatus} from 'utils/types';
 
 type MobileNavProps = {
-  status?: 'default' | 'testnet' | 'unsupported';
+  status?: NetworkIndicatorStatus;
   returnURL?: string;
   processLabel?: string;
   onWalletClick: () => void;
