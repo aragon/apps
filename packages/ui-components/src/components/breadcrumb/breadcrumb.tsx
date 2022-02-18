@@ -6,6 +6,7 @@ import {BadgeProps} from '../badge';
 import {ButtonIcon} from '../button';
 import {IconChevronLeft, IconChevronRight} from '../icons';
 
+// TODO: Use discrimination unions when refactoring
 export type Crumbs = {
   label: string;
   path: string;

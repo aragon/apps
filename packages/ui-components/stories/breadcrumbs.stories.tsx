@@ -17,6 +17,7 @@ Default.args = {
   crumbs: [
     {label: 'Finance', to: '/abc'},
     {label: 'Tokens', to: '/abc'},
+    {label: 'Third Level', to: '/abc'},
   ],
   tag: <Badge label="Tagging" />,
 };
