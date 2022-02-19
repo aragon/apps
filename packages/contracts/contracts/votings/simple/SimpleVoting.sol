@@ -15,7 +15,9 @@ contract SimpleVoting is Component, TimeHelpers {
 
     uint64 public constant PCT_BASE = 10 ** 18; // 0% = 0; 1% = 10^16; 100% = 10^18
 
-    enum VoterState { Absent, Yea, Nay }
+    enum VoterState { None, Refused, Yea, Nay }
+
+    bool public gio;
 
     struct Vote {
         bool executed;
@@ -26,6 +28,7 @@ contract SimpleVoting is Component, TimeHelpers {
         uint64 minAcceptQuorumPct;
         uint256 yea;
         uint256 nay;
+        uint256 refused;
         uint256 votingPower;
         mapping (address => VoterState) voters;
         IDAO.Action[] actions;
@@ -54,7 +57,7 @@ contract SimpleVoting is Component, TimeHelpers {
     string private constant ERROR_NO_VOTING_POWER = "VOTING_NO_VOTING_POWER";
 
     event StartVote(uint256 indexed voteId, address indexed creator, bytes description);
-    event CastVote(uint256 indexed voteId, address indexed voter, bool voterSupports, uint256 stake);
+    event CastVote(uint256 indexed voteId, address indexed voter, uint8 VoterState, uint256 stake);
     event ExecuteVote(uint256 indexed voteId, bytes[] execResults);
     event UpdateConfig(uint64 minAcceptQuorumPct, uint64 supportRequiredPct, uint64 minDuration);
 
@@ -161,28 +164,28 @@ contract SimpleVoting is Component, TimeHelpers {
         emit StartVote(voteId, _msgSender(), _proposalMetadata);
     
         if (_castVote && canVote(voteId, _msgSender())) {
-            _vote(voteId, true, _msgSender(), _executeIfDecided);
+            _vote(voteId, VoterState.Yea, _msgSender(), _executeIfDecided);
         }
     }
 
     /**
-    * @notice Vote `_supports ? 'yes' : 'no'` in vote #`_voteId`
+    * @notice Vote `[outcome = 1 = refuse], [outcome = 2 = supports], [outcome = 1 = not supports]
     * @param _voteId Id for vote
-    * @param _supports Whether voter supports the vote
+    * @param _outcome Whether voter refuses, supports or not supports to vote.
     * @param _executesIfDecided Whether the vote should execute its action if it becomes decided
     */
-    function vote(uint256 _voteId, bool _supports, bool _executesIfDecided) external {
+    function vote(uint256 _voteId, VoterState _outcome, bool _executesIfDecided) external {
         require(_canVote(_voteId, _msgSender()), ERROR_CAN_NOT_VOTE);
-        _vote(_voteId, _supports, _msgSender(), _executesIfDecided);
+        _vote(_voteId, _outcome, _msgSender(), _executesIfDecided);
     }
 
     /**
     * @dev Internal function to cast a vote. It assumes the queried vote exists. 
     * @param _voteId voteId
-    * @param _supports whether user supports the decision or not
+    * @param _outcome Whether voter refuses, supports or not supports to vote.
     * @param _executesIfDecided if true, and it's the last vote required, immediatelly executes a vote.
     */
-    function _vote(uint256 _voteId, bool _supports, address _voter, bool _executesIfDecided) internal {
+    function _vote(uint256 _voteId, VoterState _outcome, address _voter, bool _executesIfDecided) internal {
         Vote storage vote_ = votes[_voteId];
 
         // This could re-enter, though we can assume the governance token is not malicious
@@ -194,17 +197,22 @@ contract SimpleVoting is Component, TimeHelpers {
             vote_.yea = vote_.yea - voterStake;
         } else if (state == VoterState.Nay) {
             vote_.nay = vote_.nay - voterStake;
+        } else if (state == VoterState.Refused) {
+            vote_.refused = vote_.refused - voterStake;
         }
 
-        if (_supports) {
+        // write the updated/new vote for the voter.
+        if (_outcome == VoterState.Yea) {
             vote_.yea = vote_.yea + voterStake;
-        } else {
+        } else if (_outcome == VoterState.Nay) {
             vote_.nay = vote_.nay + voterStake;
+        } else if (_outcome == VoterState.Refused) {
+            vote_.refused = vote_.refused + voterStake;
         }
 
-        vote_.voters[_voter] = _supports ? VoterState.Yea : VoterState.Nay;
+        vote_.voters[_voter] = _outcome;
 
-        emit CastVote(_voteId, _voter, _supports, voterStake);
+        emit CastVote(_voteId, _voter, uint8(_outcome), voterStake);
 
         if (_executesIfDecided && _canExecute(_voteId)) {
            _execute(_voteId);
@@ -273,6 +281,7 @@ contract SimpleVoting is Component, TimeHelpers {
     * @return minAcceptQuorum minimum acceptance quorum
     * @return yea yeas amount
     * @return nay nays amount
+    * @return refused refused amount
     * @return votingPower power
     * @return actions Actions
     */
@@ -289,6 +298,7 @@ contract SimpleVoting is Component, TimeHelpers {
             uint64 minAcceptQuorum,
             uint256 yea,
             uint256 nay,
+            uint256 refused,
             uint256 votingPower,
             IDAO.Action[] memory actions
         )
@@ -304,6 +314,7 @@ contract SimpleVoting is Component, TimeHelpers {
         minAcceptQuorum = vote_.minAcceptQuorumPct;
         yea = vote_.yea;
         nay = vote_.nay;
+        refused = vote_.refused;
         votingPower = vote_.votingPower;
         actions = vote_.actions;
     }
@@ -350,7 +361,7 @@ contract SimpleVoting is Component, TimeHelpers {
             return false;
         }
         // Has enough support?
-        uint256 totalVotes = vote_.yea + vote_.nay;
+        uint256 totalVotes = vote_.yea + vote_.nay + vote_.refused;
         if (!_isValuePct(vote_.yea, totalVotes, vote_.supportRequiredPct)) {
             return false;
         }

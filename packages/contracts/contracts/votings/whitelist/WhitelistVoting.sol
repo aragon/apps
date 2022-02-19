@@ -15,16 +15,18 @@ contract WhitelistVoting is Component, TimeHelpers {
 
     uint64 public constant PCT_BASE = 10 ** 18; // 0% = 0; 1% = 10^16; 100% = 10^18
 
-    enum VoterState { Absent, Yea, Nay }
+    enum VoterState { None, Refused, Yea, Nay }
 
     struct Vote {
         bool executed;
         uint64 startDate;
         uint64 endDate;
         uint64 supportRequiredPct;
+        uint64 minAcceptQuorumPct;
         uint64 votingPower;
         uint256 yea;
         uint256 nay;
+        uint256 refused;
         mapping (address => VoterState) voters;
         IDAO.Action[] actions;
     }
@@ -32,8 +34,10 @@ contract WhitelistVoting is Component, TimeHelpers {
     mapping (uint256 => Vote) internal votes;
 
     uint64 public supportRequiredPct;
-    uint64 private whitelistedLength;
+    uint64 public minAcceptQuorumPct;
     uint64 public minDuration;
+
+    uint64 private whitelistedLength;
 
     uint256 public votesLength;
 
@@ -51,9 +55,9 @@ contract WhitelistVoting is Component, TimeHelpers {
     string private constant ERROR_CAN_NOT_CREATE_VOTE = "VOTING_CAN_NOT_CREATE_VOTE";
 
     event StartVote(uint256 indexed voteId, address indexed creator, bytes description);
-    event CastVote(uint256 indexed voteId, address indexed voter, bool voterSupports);
+    event CastVote(uint256 indexed voteId, address indexed voter, uint8 VoterState);
     event ExecuteVote(uint256 indexed voteId, bytes[] execResults);
-    event UpdateConfig(uint64 supportRequiredPct, uint64 minDuration);
+    event UpdateConfig(uint64 minAcceptQuorumPct, uint64 supportRequiredPct, uint64 minDuration);
     event AddUsers(address[] users);
     event RemoveUsers(address[] users);
 
@@ -68,21 +72,24 @@ contract WhitelistVoting is Component, TimeHelpers {
         IDAO _dao,
         address _gsnForwarder,
         address[] calldata _whitelisted,
+        uint64 _minAcceptQuorumPct,
         uint64 _supportRequiredPct,
         uint64 _minDuration
     ) public initializer {
+        require(_minAcceptQuorumPct <= _supportRequiredPct, ERROR_INIT_PCTS);
         require(_supportRequiredPct < PCT_BASE, ERROR_INIT_SUPPORT_TOO_BIG);
         require(_minDuration > 0, ERROR_CHANGE_MIN_DURATION_NO_ZERO);
 
         supportRequiredPct = _supportRequiredPct;
+        minAcceptQuorumPct = _minAcceptQuorumPct;
         minDuration = _minDuration;
-
+        
         // add whitelisted users.
         _addWhitelistedUsers(_whitelisted);
 
         Component.initialize(_dao, _gsnForwarder);
         
-        emit UpdateConfig(_supportRequiredPct, _minDuration);
+        emit UpdateConfig(_minAcceptQuorumPct, _supportRequiredPct, _minDuration);
     }
 
     /**
@@ -124,15 +131,19 @@ contract WhitelistVoting is Component, TimeHelpers {
     /**
     * @notice Change required support and minQuorum
     * @param _supportRequiredPct New required support
+    * @param _minAcceptQuorumPct New acceptance quorum
     * @param _minDuration each vote's minimum duration
     */
-    function changeVoteConfig(uint64 _supportRequiredPct, uint64 _minDuration) external auth(MODIFY_CONFIG) {
+    function changeVoteConfig(uint64 _minAcceptQuorumPct, uint64 _supportRequiredPct, uint64 _minDuration) external auth(MODIFY_CONFIG) {
+        require(_minAcceptQuorumPct <= _supportRequiredPct, ERROR_CHANGE_SUPPORT_PCTS);
         require(_supportRequiredPct < PCT_BASE, ERROR_CHANGE_SUPPORT_TOO_BIG);
         require(_minDuration > 0, ERROR_CHANGE_MIN_DURATION_NO_ZERO);
 
+        minAcceptQuorumPct = _minAcceptQuorumPct;
         supportRequiredPct = _supportRequiredPct;
+        minDuration = _minDuration;
 
-        emit UpdateConfig(_supportRequiredPct, _minDuration);
+        emit UpdateConfig(_minAcceptQuorumPct, _supportRequiredPct, _minDuration);
     }
 
      /**
@@ -173,6 +184,7 @@ contract WhitelistVoting is Component, TimeHelpers {
         vote_.startDate = _startDate;
         vote_.endDate = _endDate;
         vote_.supportRequiredPct = supportRequiredPct;
+        vote_.minAcceptQuorumPct = minAcceptQuorumPct;
         vote_.votingPower = whitelistedLength;
 
         for (uint256 i; i < _actions.length; i++) {
@@ -182,28 +194,28 @@ contract WhitelistVoting is Component, TimeHelpers {
         emit StartVote(voteId, msg.sender, _proposalMetadata);
 
         if (_castVote && canVote(voteId, msg.sender)) {
-            _vote(voteId, true, msg.sender, _executeIfDecided);
+            _vote(voteId, VoterState.Yea, msg.sender, _executeIfDecided);
         }
     }
 
     /**
     * @notice Vote `_supports ? 'yes' : 'no'` in vote #`_voteId`
     * @param _voteId Id for vote
-    * @param _supports Whether voter supports the vote
+    * @param _outcome Whether voter refuses, supports or not supports to vote.
     * @param _executesIfDecided Whether the vote should execute its action if it becomes decided
     */
-    function vote(uint256 _voteId, bool _supports, bool _executesIfDecided) external {
+    function vote(uint256 _voteId, VoterState _outcome, bool _executesIfDecided) external {
         require(_canVote(_voteId, msg.sender), ERROR_CAN_NOT_VOTE);
-        _vote(_voteId, _supports, msg.sender, _executesIfDecided);
+        _vote(_voteId, _outcome, msg.sender, _executesIfDecided);
     }
 
     /**
     * @dev Internal function to cast a vote. It assumes the queried vote exists.
     * @param _voteId voteId
-    * @param _supports whether user supports the decision or not
+    * @param _outcome Whether voter refuses, supports or not supports to vote.
     * @param _executesIfDecided if true, and it's the last vote required, immediatelly executes a vote.
     */
-    function _vote(uint256 _voteId, bool _supports, address _voter, bool _executesIfDecided) internal {
+    function _vote(uint256 _voteId, VoterState _outcome, address _voter, bool _executesIfDecided) internal {
         Vote storage vote_ = votes[_voteId];
 
         VoterState state = vote_.voters[_voter];
@@ -213,17 +225,22 @@ contract WhitelistVoting is Component, TimeHelpers {
             vote_.yea = vote_.yea - 1;
         } else if (state == VoterState.Nay) {
             vote_.nay = vote_.nay - 1;
+        } else if (state == VoterState.Refused) {
+            vote_.refused = vote_.refused - 1;
         }
 
-        if (_supports) {
+        // write the updated/new vote for the voter.
+        if (_outcome == VoterState.Yea) {
             vote_.yea = vote_.yea + 1;
-        } else {
+        } else if (_outcome == VoterState.Nay) {
             vote_.nay = vote_.nay + 1;
+        } else if (_outcome == VoterState.Refused) {
+            vote_.refused = vote_.refused + 1;
         }
 
-        vote_.voters[_voter] = _supports ? VoterState.Yea : VoterState.Nay;
+        vote_.voters[_voter] = _outcome;
 
-        emit CastVote(_voteId, _voter, _supports);
+        emit CastVote(_voteId, _voter, uint8(_outcome));
 
         if (_executesIfDecided && _canExecute(_voteId)) {
            _execute(_voteId);
@@ -288,9 +305,11 @@ contract WhitelistVoting is Component, TimeHelpers {
     * @return startDate start date
     * @return endDate end date
     * @return supportRequired support required
+    * @return minAcceptQuorum minimum acceptance quorum
     * @return votingPower power
     * @return yea yeas amount
     * @return nay nays amount
+    * @return refused refused amount
     * @return actions Actions
     */
     function getVote(uint256 _voteId)
@@ -302,9 +321,11 @@ contract WhitelistVoting is Component, TimeHelpers {
             uint64 startDate,
             uint64 endDate,
             uint64 supportRequired,
+            uint64 minAcceptQuorum,
             uint64 votingPower,
             uint256 yea,
             uint256 nay,
+            uint256 refused,
             IDAO.Action[] memory actions
         )
     {
@@ -315,9 +336,11 @@ contract WhitelistVoting is Component, TimeHelpers {
         startDate = vote_.startDate;
         endDate = vote_.endDate;
         supportRequired = vote_.supportRequiredPct;
+        minAcceptQuorum = vote_.minAcceptQuorumPct;
         votingPower = vote_.votingPower;
         yea = vote_.yea;
         nay = vote_.nay;
+        refused = vote_.refused;
         actions = vote_.actions;
     }
 
@@ -364,12 +387,17 @@ contract WhitelistVoting is Component, TimeHelpers {
         }
 
         // Has enough support?
-        uint256 totalVotes = vote_.yea + vote_.nay;
-        if (_isValuePct(vote_.yea, totalVotes, vote_.supportRequiredPct)) {
-            return true;
+        uint256 totalVotes = vote_.yea + vote_.nay + vote_.refused;
+        if (!_isValuePct(vote_.yea, totalVotes, vote_.supportRequiredPct)) {
+            return false;
         }
 
-        return false;
+        // Has min quorum?
+        if (!_isValuePct(vote_.yea, vote_.votingPower, vote_.minAcceptQuorumPct)) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
