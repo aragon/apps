@@ -4,7 +4,7 @@ import {ERC20VotingPackage, ERC20VotingProposal} from '../../generated/schema';
 import {
   ADDRESS_ONE,
   DAO_TOKEN_ADDRESS,
-  ERC20_VOTING_ADDRESS,
+  VOTING_ADDRESS,
   STRING_DATA,
   DAO_ADDRESS
 } from '../constants';
@@ -27,7 +27,7 @@ import {
 test('Run ERC Voting (handleStartVote) mappings with mock event', () => {
   // create state
   let erc20VotingPackage = new ERC20VotingPackage(
-    Address.fromString(ERC20_VOTING_ADDRESS).toHexString()
+    Address.fromString(VOTING_ADDRESS).toHexString()
   );
   erc20VotingPackage.save();
 
@@ -39,10 +39,10 @@ test('Run ERC Voting (handleStartVote) mappings with mock event', () => {
   let supportRequiredPct = '1000';
   let minAcceptQuorumPct = '500';
   let votingPower = '1000';
-  getVotesLengthCall(ERC20_VOTING_ADDRESS, '1');
+  getVotesLengthCall(VOTING_ADDRESS, '1');
   let actions = createDummyAcctions(DAO_TOKEN_ADDRESS, '0', '0x00000000');
   createGetVoteCall(
-    ERC20_VOTING_ADDRESS,
+    VOTING_ADDRESS,
     voteId,
     true,
     false,
@@ -62,17 +62,17 @@ test('Run ERC Voting (handleStartVote) mappings with mock event', () => {
     voteId,
     ADDRESS_ONE,
     STRING_DATA,
-    ERC20_VOTING_ADDRESS
+    VOTING_ADDRESS
   );
 
   // handle event
   _handleStartVote(event, DAO_ADDRESS);
 
   let entityID =
-    Address.fromString(ERC20_VOTING_ADDRESS).toHexString() +
+    Address.fromString(VOTING_ADDRESS).toHexString() +
     '_' +
     BigInt.fromString(voteId).toHexString();
-  let packageId = Address.fromString(ERC20_VOTING_ADDRESS).toHexString();
+  let packageId = Address.fromString(VOTING_ADDRESS).toHexString();
 
   // checks
   assert.fieldEquals('ERC20VotingProposal', entityID, 'id', entityID);
@@ -122,7 +122,7 @@ test('Run ERC Voting (handleStartVote) mappings with mock event', () => {
   // chack ERC20VotingPackage
   assert.fieldEquals(
     'ERC20VotingPackage',
-    Address.fromString(ERC20_VOTING_ADDRESS).toHexString(),
+    Address.fromString(VOTING_ADDRESS).toHexString(),
     'votesLength',
     '1'
   );
@@ -133,7 +133,7 @@ test('Run ERC Voting (handleStartVote) mappings with mock event', () => {
 test('Run ERC Voting (handleCastVote) mappings with mock event', () => {
   // create state
   let proposalId =
-    Address.fromString(ERC20_VOTING_ADDRESS).toHexString() + '_' + '0x0';
+    Address.fromString(VOTING_ADDRESS).toHexString() + '_' + '0x0';
   let erc20VotingProposal = new ERC20VotingProposal(proposalId);
   erc20VotingProposal.save();
 
@@ -147,7 +147,7 @@ test('Run ERC Voting (handleCastVote) mappings with mock event', () => {
   let votingPower = '1000';
   let actions = createDummyAcctions(DAO_TOKEN_ADDRESS, '0', '0x00000000');
   createGetVoteCall(
-    ERC20_VOTING_ADDRESS,
+    VOTING_ADDRESS,
     voteId,
     true,
     false,
@@ -168,7 +168,7 @@ test('Run ERC Voting (handleCastVote) mappings with mock event', () => {
     ADDRESS_ONE,
     true,
     '10000',
-    ERC20_VOTING_ADDRESS
+    VOTING_ADDRESS
   );
 
   handleCastVote(event);
@@ -188,13 +188,12 @@ test('Run ERC Voting (handleCastVote) mappings with mock event', () => {
 
 test('Run ERC Voting (handleExecuteVote) mappings with mock event', () => {
   // create state
-  let entityID =
-    Address.fromString(ERC20_VOTING_ADDRESS).toHexString() + '_' + '0x0';
+  let entityID = Address.fromString(VOTING_ADDRESS).toHexString() + '_' + '0x0';
   let erc20VotingProposal = new ERC20VotingProposal(entityID);
   erc20VotingProposal.save();
 
   // create event
-  let event = createNewExecuteVoteEvent('0', ERC20_VOTING_ADDRESS);
+  let event = createNewExecuteVoteEvent('0', VOTING_ADDRESS);
 
   // handle event
   handleExecuteVote(event);
@@ -208,17 +207,12 @@ test('Run ERC Voting (handleExecuteVote) mappings with mock event', () => {
 
 test('Run ERC Voting (handleUpdateConfig) mappings with mock event', () => {
   // create state
-  let entityID = Address.fromString(ERC20_VOTING_ADDRESS).toHexString();
+  let entityID = Address.fromString(VOTING_ADDRESS).toHexString();
   let erc20VotingPackage = new ERC20VotingPackage(entityID);
   erc20VotingPackage.save();
 
   // create event
-  let event = createNewUpdateConfigEvent(
-    '1',
-    '2',
-    '3600',
-    ERC20_VOTING_ADDRESS
-  );
+  let event = createNewUpdateConfigEvent('1', '2', '3600', VOTING_ADDRESS);
 
   // handle event
   handleUpdateConfig(event);

@@ -178,11 +178,13 @@ type WhitelistPackage implements Package @entity {
   whitelistedLength: BigInt
   minDuration: BigInt
   votesLength: BigInt
+  users: [WhitelistVoter!]! @derivedFrom(field: "pkg")
 }
 
 type WhitelistVoter implements Voter @entity {
   id: ID! # address
   proposals: [WhitelistVote!]! @derivedFrom(field: "voter")
+  pkg: WhitelistPackage!
 }
 
 type WhitelistVote @entity {

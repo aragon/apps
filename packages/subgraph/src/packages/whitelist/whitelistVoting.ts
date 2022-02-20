@@ -12,7 +12,7 @@ import {
   WhitelistPackage,
   WhitelistProposal,
   WhitelistVoter,
-  ERC20Vote
+  WhitelistVote
 } from '../../../generated/schema';
 import {dataSource, store} from '@graphprotocol/graph-ts';
 
@@ -84,9 +84,9 @@ export function handleCastVote(event: CastVote): void {
   let proposalId =
     event.address.toHexString() + '_' + event.params.voteId.toHexString();
   let voterProposalId = event.params.voter.toHexString() + '_' + proposalId;
-  let voterProposalEntity = ERC20Vote.load(voterProposalId);
+  let voterProposalEntity = WhitelistVote.load(voterProposalId);
   if (!voterProposalEntity) {
-    voterProposalEntity = new ERC20Vote(voterProposalId);
+    voterProposalEntity = new WhitelistVote(voterProposalId);
     voterProposalEntity.voter = event.params.voter.toHexString();
     voterProposalEntity.proposal = proposalId;
   }
@@ -156,6 +156,7 @@ export function handleAddUsers(event: AddUsers): void {
     let voterEntity = WhitelistVoter.load(user.toHexString());
     if (!voterEntity) {
       voterEntity = new WhitelistVoter(user.toHexString());
+      voterEntity.pkg = event.address.toHexString();
       voterEntity.save();
     }
   }
