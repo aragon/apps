@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import styled from 'styled-components';
 
 export type AvatarDaoProps = {
@@ -14,17 +14,15 @@ export const AvatarDao: React.FC<AvatarDaoProps> = ({
 }) => {
   const [error, setError] = useState(false);
 
-  const getDaoInitials = useCallback(() => {
+  const daoInitials = useMemo(() => {
     const arr = daoName.trim().split(' ');
-
-    // one name, append D for dao to first letter
-    if (arr.length === 1) return arr[0][0] + 'D';
+    if (arr.length === 1) return arr[0][0];
     else return arr[0][0] + arr[1][0];
   }, [daoName]);
 
-  return error === true || !src ? (
+  return error || !src ? (
     <FallBackAvatar onClick={onClick}>
-      <DaoInitials>{getDaoInitials()}</DaoInitials>
+      <DaoInitials>{daoInitials}</DaoInitials>
     </FallBackAvatar>
   ) : (
     <Avatar

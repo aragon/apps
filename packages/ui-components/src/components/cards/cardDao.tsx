@@ -64,11 +64,11 @@ const Card = styled.div.attrs(() => ({
 }))``;
 
 const LeftContent = styled.div.attrs({
-  className: 'inline-flex flex-1',
+  className: 'inline-flex flex-1 space-x-1.5',
 })``;
 
 const TextContainer = styled.div.attrs({
-  className: 'pl-1.5 pr-2',
+  className: 'flex flex-col justify-center',
 })``;
 
 const DaoName = styled.p.attrs({
@@ -77,5 +77,5 @@ const DaoName = styled.p.attrs({
 
 // FIXME: temporarily changed font weight
 const DaoAddress = styled.p.attrs({
-  className: 'text-ui-500 text-sm',
+  className: 'text-ui-500 text-sm desktop:hidden',
 })``;
