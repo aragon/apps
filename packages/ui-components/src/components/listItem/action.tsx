@@ -19,8 +19,6 @@ export type ListItemActionProps = CustomButtonProps & {
    * mark it selected.
    */
   mode?: 'default' | 'disabled' | 'selected';
-  /** Set to shrink component to hug contents instead of being full width */
-  shrink?: boolean; //Probably Temporary
   /**
    * Bold text, left aligned. Mandatory
    */
@@ -59,16 +57,11 @@ export const ListItemAction: React.FC<ListItemActionProps> = ({
   );
 };
 
-type InputContainerProps = Pick<
-  ListItemActionProps,
-  'mode' | 'bgWhite' | 'shrink'
->;
+type InputContainerProps = Pick<ListItemActionProps, 'mode' | 'bgWhite'>;
 
 const Container = styled.button.attrs(
-  ({mode, bgWhite = false, shrink = false}: InputContainerProps) => {
-    let baseLayoutClasses = 'flex items-center gap-x-1.5';
-    baseLayoutClasses += shrink ? ' w-auto' : ' w-full';
-
+  ({mode, bgWhite = false}: InputContainerProps) => {
+    const baseLayoutClasses = 'flex items-center gap-x-1.5 w-full';
     const baseStyleClasses = 'py-1.5 px-2 rounded-xl font-normal';
     let className:
       | string
