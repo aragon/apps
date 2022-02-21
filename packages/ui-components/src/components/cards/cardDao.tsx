@@ -32,7 +32,7 @@ export const CardDao: React.FC<CardDaoProps> = ({
   return (
     <Card data-testid="cardDao">
       <LeftContent>
-        <AvatarDao label={daoName} contentMode="none" src={src} />
+        <AvatarDao daoName={daoName} src={src} />
         <TextContainer>
           <DaoName>{daoName}</DaoName>
           <DaoAddress>{shortenAddress(daoAddress)}</DaoAddress>
