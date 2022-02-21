@@ -21,7 +21,7 @@ const processPaths = [
 
 const processes: StringIndexed = {
   [CreateDAO]: {processLabel: 'Create your DAO', returnURL: '/'},
-  [NewDeposit]: {processLabel: 'New Transfer', returnURL: '/ab'},
+  [NewDeposit]: {processLabel: 'New Transfer', returnURL: '/'},
   [NewWithDraw]: {processLabel: 'New Transfer', returnURL: '/'},
 };
 

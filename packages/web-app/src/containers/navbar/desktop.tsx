@@ -1,4 +1,5 @@
 import {
+  Breadcrumb,
   ButtonIcon,
   ButtonWallet,
   CardDao,
@@ -9,16 +10,17 @@ import {
 } from '@aragon/ui-components';
 import styled from 'styled-components';
 import NavLinks from 'components/navLinks';
+import {useNavigate} from 'react-router-dom';
 import useBreadcrumbs from 'use-react-router-breadcrumbs';
 import {useTranslation} from 'react-i18next';
 import React, {useMemo, useState} from 'react';
 
 import {useWallet} from 'context/augmentedWallet';
-import Breadcrumbs from 'components/breadcrumbs';
 import {useWalletProps} from 'containers/walletMenu';
 import NetworkIndicator from './networkIndicator';
 import {Dashboard, NotFound} from 'utils/paths';
 import {NetworkIndicatorStatus} from 'utils/types';
+import {BreadcrumbDropdown} from './breadcrumbDropdown';
 
 const MIN_ROUTE_DEPTH_FOR_BREADCRUMBS = 2;
 
@@ -31,6 +33,7 @@ type DesktopNavProp = {
 
 const DesktopNav: React.FC<DesktopNavProp> = props => {
   const {t} = useTranslation();
+  const navigate = useNavigate();
   const [showCrumbMenu, setShowCrumbMenu] = useState(false);
   const {isConnected, account, ensName, ensAvatarUrl}: useWalletProps =
     useWallet();
@@ -42,7 +45,10 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
 
   const breadcrumbs = useBreadcrumbs(undefined, {
     excludePaths: [Dashboard, NotFound, 'governance/proposals'],
-  });
+  }).map(item => ({
+    path: item.match.pathname,
+    label: item.breadcrumb as string,
+  }));
 
   if (isProcess) {
     return (
@@ -50,7 +56,11 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
         <NetworkIndicator status={props.status} />
         <Menu>
           <ProcessMenuItems>
-            <div>Bread crumb</div>
+            <Breadcrumb
+              process
+              crumbs={[{label: props.processLabel!, path: props.returnURL!}]}
+              onClick={path => navigate(path)}
+            />
             <ButtonIcon
               mode="secondary"
               size="large"
@@ -83,30 +93,18 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
               src="https://banner2.cleanpng.com/20180325/sxw/kisspng-computer-icons-avatar-avatar-5ab7529a8e4e14.9936310115219636745829.jpg"
             />
           </div>
-          <div className="flex items-center space-x-1.5">
-            {breadcrumbs.length >= MIN_ROUTE_DEPTH_FOR_BREADCRUMBS ? (
-              <>
-                <Popover
-                  open={showCrumbMenu}
-                  onOpenChange={setShowCrumbMenu}
-                  side="bottom"
-                  align="start"
-                  width={240}
-                  content={<NavLinks parent="dropdown" />}
-                >
-                  <ButtonIcon
-                    mode="secondary"
-                    size="large"
-                    icon={showCrumbMenu ? <IconClose /> : <IconMenu />}
-                    isActive={showCrumbMenu}
-                  />
-                </Popover>
-                <Breadcrumbs breadcrumbs={breadcrumbs} />
-              </>
-            ) : (
+          <LinksWrapper>
+            {breadcrumbs.length < MIN_ROUTE_DEPTH_FOR_BREADCRUMBS ? (
               <NavLinks />
+            ) : (
+              <BreadcrumbDropdown
+                open={showCrumbMenu}
+                crumbs={breadcrumbs}
+                onOpenChange={setShowCrumbMenu}
+                onCrumbClick={path => navigate(path)}
+              />
             )}
-          </div>
+          </LinksWrapper>
         </div>
 
         <ButtonWallet
@@ -135,4 +133,8 @@ const Menu = styled.nav.attrs({
 
 const ProcessMenuItems = styled.div.attrs({
   className: 'flex space-x-1.5',
+})``;
+
+const LinksWrapper = styled.div.attrs({
+  className: 'flex items-center space-x-1.5',
 })``;

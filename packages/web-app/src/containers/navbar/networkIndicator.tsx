@@ -1,8 +1,6 @@
 import React from 'react';
+import {AlertBanner} from '@aragon/ui-components';
 import {useTranslation} from 'react-i18next';
-
-// TODO: replace with AlertBanner
-import {AlertInline} from '@aragon/ui-components';
 
 import {NetworkIndicatorStatus} from 'utils/types';
 
@@ -15,9 +13,9 @@ const NetworkIndicator: React.FC<IndicatorProps> = ({status = 'default'}) => {
 
   switch (status) {
     case 'testnet':
-      return <AlertInline label={t('alert.testNet')} />;
+      return <AlertBanner label={t('alert.testNet')} />;
     case 'unsupported':
-      return <AlertInline label={t('alert.unsupportedNet')} mode="critical" />;
+      return <AlertBanner label={t('alert.unsupportedNet')} mode="critical" />;
     default:
       return null;
   }
