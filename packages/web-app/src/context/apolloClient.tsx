@@ -14,6 +14,7 @@ const entitiesToPersist = ['tokenData'];
 
 const persistor = new CachePersistor({
   cache,
+  // TODO: Check and update the size needed for the cache
   maxSize: 5242880, // 5 MiB
   storage: new LocalStorageWrapper(window.localStorage),
   debug: process.env.NODE_ENV === 'development',
