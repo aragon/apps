@@ -3,28 +3,44 @@
 //
 // When running the script with `npx hardhat run <script>` you'll find the Hardhat
 // Runtime Environment's members available in the global scope.
-import { ethers } from "hardhat";
+import {ethers} from 'hardhat';
+import {verifyContract} from '../utils/etherscan'
 
 async function main() {
-  // Hardhat always runs the compile task when running scripts with its command
-  // line interface.
-  //
-  // If this script is run directly using `node` you may want to call compile
-  // manually to make sure everything is compiled
-  // await hre.run('compile');
+  console.log('Deploying Registry...');
+  const RegistryFactory = await ethers.getContractFactory('Registry');
+  const Registry = await RegistryFactory.deploy();
+  console.log('Registry deployed at', Registry.address);
 
-  // We get the contract to deploy
-  //const Greeter = await ethers.getContractFactory("Greeter");
-  //const greeter = await Greeter.deploy("Hello, Hardhat!");
+  console.log('Deploying TokenFactory...');
+  const TokenFactoryFactory = await ethers.getContractFactory('TokenFactory');
+  const TokenFactory = await TokenFactoryFactory.deploy();
+  console.log('TokenFactory deployed at', TokenFactory.address);
 
-  //await greeter.deployed();
+  console.log('Deploying DAOFactory...');
+  const DAOFactoryFactory = await ethers.getContractFactory('DAOFactory');
+  const DAOFactory = await DAOFactoryFactory.deploy(
+    Registry.address,
+    TokenFactory.address
+  );
+  console.log('DAOFactory deployed at', DAOFactory.address);
 
-  //console.log("Greeter deployed to:", greeter.address);
+  console.log('Verifying contracts');
+  const verifyPromises = []
+  verifyPromises.push(verifyContract(Registry.address, []));
+  verifyPromises.push(verifyContract(TokenFactory.address, []));
+  verifyPromises.push(verifyContract(DAOFactory.address, [Registry.address, TokenFactory.address]));
+  await Promise.all(verifyPromises);
+
+  console.log('Deployed & verfied contracts');
+  console.log('Registry:', Registry.address);
+  console.log('TokenFactory:', TokenFactory.address);
+  console.log('DAOFactory:', DAOFactory.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
 // and properly handle errors.
-main().catch((error) => {
+main().catch(error => {
   console.error(error);
   process.exitCode = 1;
 });
