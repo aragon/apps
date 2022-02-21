@@ -13,6 +13,6 @@ const Template: Story<ListItemDaoProps> = args => <ListItemDao {...args} />;
 export const Dao = Template.bind({});
 
 Dao.args = {
-  daoName: 'ABC',
+  daoName: 'ABC Very long long dao name ',
   daoAddress: 'abc.dao.eth',
 };

@@ -1,27 +1,79 @@
 import React from 'react';
 import styled from 'styled-components';
-import {Address} from '../../utils/addresses';
-import {AvatarDao} from '../avatar';
 
-import {IconCheckboxDefault, IconCheckboxSelected} from '../icons';
+import {AvatarDao} from '../avatar';
+import {Address, shortenAddress} from '../../utils/addresses';
+import {IconRadioDefault, IconRadioSelected} from '../icons';
 
 export type ListItemDaoProps = {
+  /** Dao's ethereum address **or** ENS name */
   daoAddress: Address;
   daoLogo?: string;
   daoName: string;
+  /** ListItem value; defaults to daoName if not provided */
   value?: string | Address;
   selected?: boolean;
-  onClick: (value: string) => void;
+  /** Handler for ListItem selection */
+  onItemSelect?: (value: string) => void;
 };
 
-export const ListItemDao: React.FC<ListItemDaoProps> = ({...props}) => {
+/**
+ * List item for DAO selection. Used for switching to different DAO.
+ */
+export const ListItemDao: React.FC<ListItemDaoProps> = props => {
   return (
-    <button className="flex items-center p-2 space-x-2 rounded-xl border">
+    <Container
+      selected={props.selected}
+      onClick={() => props.onItemSelect?.(props.value || props.daoName)}
+    >
       <AvatarDao daoName={props.daoName} src={props.daoLogo} />
-    </button>
+      <Content>
+        <DaoName selected={props.selected}>{props.daoName}</DaoName>
+        <Domain>{shortenAddress(props.daoAddress)}</Domain>
+      </Content>
+      <IconContainer selected={props.selected}>
+        {props.selected ? <IconRadioSelected /> : <IconRadioDefault />}
+      </IconContainer>
+    </Container>
   );
 };
 
-const Container = styled.button.attrs({
-  className: 'w-full',
+type Selectable = Pick<ListItemDaoProps, 'selected'>;
+
+const Container = styled.button.attrs(({selected}: Selectable) => {
+  const baseClasses =
+    'group flex items-center p-2 space-x-2  w-full rounded-xl focus:ring-2 focus:ring-primary-500 focus:outline-none';
+
+  return selected
+    ? {className: baseClasses + ' bg-ui-0'}
+    : {
+        className:
+          baseClasses + ' hover:bg-ui-50 focus:bg-ui-50 active:bg-ui-0',
+      };
+})<Selectable>``;
+
+const Content = styled.div.attrs({
+  className: 'flex-1 text-left min-w-0',
 })``;
+
+const Domain = styled.p.attrs({
+  className: 'text-sm text-ui-500 truncate',
+})``;
+
+const DaoName = styled.p.attrs(({selected}: Selectable) => {
+  return selected
+    ? {className: 'font-bold truncate text-primary-500'}
+    : {
+        className:
+          'truncate font-bold text-ui-600 group-hover:text-primary-500 group-active:text-primary-500',
+      };
+})<Selectable>``;
+
+const IconContainer = styled.div.attrs(({selected}: Selectable) => {
+  return selected
+    ? {className: 'text-sm text-primary-500'}
+    : {
+        className:
+          'text-sm text-ui-400 group-hover:text-primary-500 group-active:text-primary-500',
+      };
+})<Selectable>``;
