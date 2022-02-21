@@ -16,7 +16,7 @@ export default {
 } as Meta;
 
 const Template: Story<DropdownProps> = args => (
-  <div className={`flex justify-center items-center h-96`}>
+  <div className={'flex justify-center items-center h-96'}>
     <div>
       <Dropdown {...args} />
     </div>
@@ -28,7 +28,7 @@ const items: ListItemProps[] = [
     component: (
       <ActionListItem icon={<IconChevronRight />} title="first item" />
     ),
-    callback: e => {
+    callback: () => {
       alert('first item selected');
     },
   },
@@ -36,7 +36,7 @@ const items: ListItemProps[] = [
     component: (
       <ActionListItem icon={<IconChevronRight />} title="second item" />
     ),
-    callback: e => {
+    callback: () => {
       alert('second item selected');
     },
   },
