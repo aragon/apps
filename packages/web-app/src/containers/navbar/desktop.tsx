@@ -78,7 +78,7 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
   }
 
   return (
-    <Container>
+    <Container data-testid="navbar">
       <NetworkIndicator status={props.status} />
       <Menu>
         <Content>
