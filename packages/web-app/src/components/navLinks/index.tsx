@@ -1,3 +1,10 @@
+import {
+  IconGovernance,
+  IconCommunity,
+  IconDashboard,
+  IconFinance,
+  ListItemAction,
+} from '@aragon/ui-components';
 import React from 'react';
 import styled from 'styled-components';
 import {useNavigate} from 'react-router-dom';
@@ -7,19 +14,17 @@ import NavLink from 'components/navLink';
 import {Dashboard, Community, Finance, Governance} from 'utils/paths';
 
 type NavLinksProps = {
-  selected?: string; //todo Remove
-  isDropdown?: boolean; //todo Remove
-
   parent?: 'modal' | 'nav' | 'dropdown';
   onItemClick?: () => void;
 };
 
 // TODO: Investigate string interpolation with react-i18next
-const NavLinks: React.FC<NavLinksProps> = ({parent = 'nav', ...props}) => {
+const NavLinks: React.FC<NavLinksProps> = ({parent = 'nav', onItemClick}) => {
   const {t} = useTranslation();
   const navigate = useNavigate();
 
   const handleOnClick = (to: string) => {
+    onItemClick?.();
     navigate(to);
   };
 
@@ -83,10 +88,66 @@ const NavLinks: React.FC<NavLinksProps> = ({parent = 'nav', ...props}) => {
 
   return (
     <StyledNavList parent={parent}>
-      <li>abc</li>
-      <li>abc</li>
-      <li>abc</li>
-      <li>abc</li>
+      <li>
+        <NavLink
+          to={Dashboard}
+          matchEnd={false}
+          render={selected => (
+            <ListItemAction
+              iconLeft={<IconDashboard />}
+              title={t('navLinks.dashboard')}
+              onClick={() => handleOnClick(Dashboard)}
+              {...(selected ? {mode: 'selected'} : {})}
+              {...(parent === 'dropdown' ? {bgWhite: true} : {})}
+            />
+          )}
+        />
+      </li>
+      <li>
+        <NavLink
+          to={Governance}
+          matchEnd={false}
+          render={selected => (
+            <ListItemAction
+              iconLeft={<IconGovernance />}
+              title={t('navLinks.governance')}
+              onClick={() => handleOnClick(Governance)}
+              {...(selected ? {mode: 'selected'} : {})}
+              {...(parent === 'dropdown' ? {bgWhite: true} : {})}
+            />
+          )}
+        />
+      </li>
+      <li>
+        <NavLink
+          to={Finance}
+          matchEnd={false}
+          render={selected => (
+            <ListItemAction
+              iconLeft={<IconFinance />}
+              title={t('navLinks.finance')}
+              onClick={() => handleOnClick(Finance)}
+              {...(selected ? {mode: 'selected'} : {})}
+              {...(parent === 'dropdown' ? {bgWhite: true} : {})}
+            />
+          )}
+        />
+      </li>
+      <li>
+        <NavLink
+          to={Community}
+          matchEnd={false}
+          render={selected => (
+            <ListItemAction
+              iconLeft={<IconCommunity />}
+              title={t('navLinks.community')}
+              onClick={() => handleOnClick(Community)}
+              {...(selected ? {mode: 'selected'} : {})}
+              {...(parent === 'dropdown' ? {bgWhite: true} : {})}
+            />
+          )}
+        />
+      </li>
     </StyledNavList>
   );
 };

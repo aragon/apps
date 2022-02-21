@@ -3,10 +3,7 @@ import {
   ButtonIcon,
   ButtonWallet,
   CardDao,
-  IconClose,
-  IconMenu,
   IconMenuVertical,
-  Popover,
 } from '@aragon/ui-components';
 import styled from 'styled-components';
 import NavLinks from 'components/navLinks';

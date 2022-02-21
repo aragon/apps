@@ -13,6 +13,7 @@ import NavLinks from 'components/navLinks';
 type BreadcrumbDropdownProps = {
   open: boolean;
   crumbs: Crumbs;
+  onClose?: () => void;
   onCrumbClick: (path: string) => void;
   onOpenChange?: (open: boolean) => void;
 };
@@ -26,7 +27,7 @@ export const BreadcrumbDropdown: React.FC<BreadcrumbDropdownProps> = props => {
         width={240}
         open={props.open}
         onOpenChange={props.onOpenChange}
-        content={<NavLinks parent="dropdown" />}
+        content={<NavLinks parent="dropdown" onItemClick={props.onClose} />}
       >
         <ButtonIcon
           mode="secondary"

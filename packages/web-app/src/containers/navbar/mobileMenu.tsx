@@ -12,7 +12,8 @@ type MobileNavMenuProps = {
 const MobileNavMenu: React.FC<MobileNavMenuProps> = props => {
   return (
     <BottomSheet isOpen={props.isOpen} onClose={props.onClose}>
-      <div className="p-3 space-y-3">
+      {/* TODO: add shadow for card dao */}
+      <div className="tablet:w-50">
         <CardDao
           daoAddress="dao-name.dao.eth"
           daoName="DAO Name"
@@ -20,7 +21,9 @@ const MobileNavMenu: React.FC<MobileNavMenuProps> = props => {
           src="d"
           wide
         />
-        <NavLinks parent="modal" />
+        <div className="py-3 px-2 space-y-3">
+          <NavLinks parent="modal" onItemClick={props.onClose} />
+        </div>
       </div>
     </BottomSheet>
   );
