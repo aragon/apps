@@ -17,17 +17,20 @@ export type DropdownProps = CustomDropdownContentProps & {
   listItems: ListItemProps[];
 };
 
-export const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
+export const Dropdown: React.FC<DropdownProps> = ({
+  trigger,
+  listItems,
+}: DropdownProps) => {
   return (
     <DropdownMenu.Root>
-      <DropdownMenu.Trigger>{props.trigger}</DropdownMenu.Trigger>
+      <DropdownMenu.Trigger>{trigger}</DropdownMenu.Trigger>
 
-      <StyledContent {...(props as CustomDropdownContentProps)}>
-        <DropdownMenu.Group>
-          {props.listItems.map(li => (
-            <DropdownMenu.Item onSelect={li.callback}>
+      <StyledContent>
+        <DropdownMenu.Group className="space-y-0.5">
+          {listItems.map(li => (
+            <StyledItem onSelect={li.callback} style={{}}>
               {li.component}
-            </DropdownMenu.Item>
+            </StyledItem>
           ))}
         </DropdownMenu.Group>
         <DropdownMenu.Separator />
@@ -36,9 +39,10 @@ export const Dropdown: React.FC<DropdownProps> = (props: DropdownProps) => {
   );
 };
 
-const StyledContent = styled(DropdownMenu.Content).attrs(
-  (props: CustomDropdownContentProps) => {
-    const className: string | undefined = 'bg-ui-0 rounded-lg p-1.5 shadow-xl';
-    return {className};
-  }
-)``;
+const StyledContent = styled(DropdownMenu.Content).attrs({
+  className: 'bg-ui-0 rounded-lg p-2 shadow-xl' || undefined,
+})``;
+
+const StyledItem = styled(DropdownMenu.Item).attrs({
+  className: 'rounded-xl focus-visible:outline-primary',
+})``;
