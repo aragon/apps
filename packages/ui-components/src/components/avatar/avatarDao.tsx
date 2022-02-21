@@ -19,8 +19,11 @@ export const AvatarDao: React.FC<AvatarDaoProps> = ({
   const [error, setError] = useState(false);
 
   const getDaoInitials = useCallback(() => {
-    const arr = label.split(' ');
-    return arr.length === 0 ? arr[0][0] : arr[0][0] + arr[1][0];
+    const arr = label.trim().split(' ');
+
+    // one name, append D for dao to first letter
+    if (arr.length === 1) return arr[0][0] + 'D';
+    else return arr[0][0] + arr[1][0];
   }, [label]);
 
   const DaoAvatar = useMemo(() => {
@@ -31,9 +34,7 @@ export const AvatarDao: React.FC<AvatarDaoProps> = ({
     ) : (
       <Avatar src={src} alt="dao avatar" onError={() => setError(true)} />
     );
-    //TODO: @Fabrice, check the dependency array [VR 04-01-2022]
-    // eslint-disable-next-line
-  }, [error, label, src]);
+  }, [error, getDaoInitials, src]);
 
   return (
     <Container contentMode={contentMode} onClick={onClick}>
