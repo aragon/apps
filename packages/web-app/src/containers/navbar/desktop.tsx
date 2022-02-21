@@ -81,13 +81,13 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
     <Container>
       <NetworkIndicator status={props.status} />
       <Menu>
-        <div className="flex items-center space-x-6">
-          <div className="">
+        <Content>
+          <div>
             <CardDao
               daoName="DAO Name"
               daoAddress="patito.eth.dao"
               onClick={() => null}
-              src="https://banner2.cleanpng.com/20180325/sxw/kisspng-computer-icons-avatar-avatar-5ab7529a8e4e14.9936310115219636745829.jpg"
+              src=" "
             />
           </div>
           <LinksWrapper>
@@ -102,7 +102,7 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
               />
             )}
           </LinksWrapper>
-        </div>
+        </Content>
 
         <ButtonWallet
           src={ensAvatarUrl || account}
@@ -126,6 +126,10 @@ const Container = styled.header.attrs({
 const Menu = styled.nav.attrs({
   className: `flex mx-auto justify-between items-center max-w-screen-wide
      px-5 py-3 bg-gradient-to-b from-ui-50 to-transparent backdrop-blur-xl`,
+})``;
+
+const Content = styled.div.attrs({
+  className: 'flex items-center space-x-6',
 })``;
 
 const ProcessMenuItems = styled.div.attrs({

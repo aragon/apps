@@ -4,7 +4,6 @@ import React, {useEffect, lazy, Suspense} from 'react';
 // compatible with react-router-dom v6
 import {Navigate, Routes, Route, useLocation} from 'react-router-dom';
 
-import Footer from 'containers/footer';
 import Navbar from 'containers/navbar';
 import WalletMenu from 'containers/walletMenu';
 import TransferMenu from 'containers/transferMenu';
