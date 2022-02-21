@@ -23,12 +23,18 @@ export const Dropdown: React.FC<DropdownProps> = ({
 }: DropdownProps) => {
   return (
     <DropdownMenu.Root>
-      <DropdownMenu.Trigger>{trigger}</DropdownMenu.Trigger>
+      <DropdownMenu.Trigger data-testid="dropdown-trigger">
+        {trigger}
+      </DropdownMenu.Trigger>
 
       <StyledContent>
         <DropdownMenu.Group className="space-y-0.5">
-          {listItems.map(li => (
-            <StyledItem onSelect={li.callback} style={{}}>
+          {listItems?.map(li => (
+            <StyledItem
+              key={li.component?.toString()}
+              onSelect={li.callback}
+              style={{}}
+            >
               {li.component}
             </StyledItem>
           ))}
