@@ -12,7 +12,11 @@ import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import {Controller, useFormContext, useFormState} from 'react-hook-form';
 
-import {EMAIL_PATTERN, URL_PATTERN} from 'utils/constants';
+import {
+  EMAIL_PATTERN,
+  URL_PATTERN,
+  URL_WITH_PROTOCOL_PATTERN,
+} from 'utils/constants';
 
 type LinkRowProps = {
   index: number;
@@ -21,7 +25,7 @@ type LinkRowProps = {
 
 const LinkRow: React.FC<LinkRowProps> = ({index, onDelete}) => {
   const {t} = useTranslation();
-  const {control, clearErrors, getValues, trigger} = useFormContext();
+  const {control, clearErrors, getValues, trigger, setValue} = useFormContext();
   const {errors} = useFormState();
 
   /*************************************************
@@ -55,6 +59,28 @@ const LinkRow: React.FC<LinkRowProps> = ({index, onDelete}) => {
       return label === '' ? t('errors.required.label') : true;
     },
     [linkedFieldsAreValid, t]
+  );
+
+  const addProtocolToLinks = useCallback(
+    (name: string) => {
+      const url = getValues(name);
+
+      if (
+        new RegExp(URL_PATTERN).test(url) ||
+        new RegExp(EMAIL_PATTERN).test(url)
+      ) {
+        if (
+          new RegExp(URL_PATTERN).test(url) &&
+          !new RegExp(URL_WITH_PROTOCOL_PATTERN).test(url)
+        ) {
+          setValue(name, `http://${url}`);
+        }
+        return true;
+      } else {
+        return t('errors.invalidURL');
+      }
+    },
+    [getValues, setValue, t]
   );
 
   const linkValidator = useCallback(
@@ -121,7 +147,10 @@ const LinkRow: React.FC<LinkRowProps> = ({index, onDelete}) => {
               <TextInput
                 name={field.name}
                 value={field.value}
-                onBlur={field.onBlur}
+                onBlur={() => {
+                  addProtocolToLinks(field.name);
+                  field.onBlur;
+                }}
                 onChange={field.onChange}
                 placeholder="https://"
                 mode={error?.message ? 'critical' : 'default'}
