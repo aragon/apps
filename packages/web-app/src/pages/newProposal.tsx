@@ -42,7 +42,7 @@ const NewProposal: React.FC = () => {
           <ConfigureActions />
         </Step>
       </FullScreenStepper>
-      <AddActionMenu />
+      <AddActionMenu onActionSelect={alert} />
     </FormProvider>
   );
 };
