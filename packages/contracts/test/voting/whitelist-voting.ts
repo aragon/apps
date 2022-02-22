@@ -1,17 +1,11 @@
 import chai, { expect } from 'chai';
 import { ethers } from 'hardhat';
 import chaiUtils from '../test-utils';
+import { VoterState } from '../test-utils/voting'
 
 chai.use(chaiUtils);
 
 import { WhitelistVoting } from '../../typechain';
-
-enum VoterState {
-    None, 
-    Refused, 
-    Yea,
-    Nay 
-}
 
 const ERRORS = {
     ERROR_INIT_PCTS: "VOTING_INIT_PCTS",
@@ -68,7 +62,7 @@ describe('WhitelistVoting', function () {
 
     function initializeVoting(
         whitelisted: Array<string>,
-        minAcceptQuorum: any,
+        participationRequired: any,
         supportRequired: any, 
         minDuration: any
     ) {
@@ -77,7 +71,7 @@ describe('WhitelistVoting', function () {
                 daoMock.address, 
                 ethers.constants.AddressZero,
                 whitelisted,
-                minAcceptQuorum,
+                participationRequired,
                 supportRequired,
                 minDuration
             );
@@ -90,12 +84,6 @@ describe('WhitelistVoting', function () {
             await expect(
                 initializeVoting([], 1, 2, 3)
             ).to.be.revertedWith(ERRORS.ALREADY_INITIALIZED);
-        })
-
-        it("reverts if quorom is less than support required", async () => {
-            await expect(
-                initializeVoting([], 2, 1, 3)
-            ).to.be.revertedWith(ERRORS.ERROR_INIT_PCTS);
         })
 
         it("reverts if min duration is 0", async () => {
@@ -141,10 +129,6 @@ describe('WhitelistVoting', function () {
             await initializeVoting([], 1, 2, 3);
         });
         it("reverts if wrong config is set", async () => {
-            await expect(
-                voting.changeVoteConfig(2, 1, 3)
-            ).to.be.revertedWith(ERRORS.ERROR_CHANGE_SUPPORT_PCTS);
-
             await expect(
                 voting.changeVoteConfig(1, pct16(1000), 3)
             ).to.be.revertedWith(ERRORS.ERROR_CHANGE_SUPPORT_TOO_BIG);
@@ -196,7 +180,7 @@ describe('WhitelistVoting', function () {
             expect(vote.open).to.equal(true);
             expect(vote.executed).to.equal(false);
             expect(vote.supportRequired).to.equal(2);
-            expect(vote.minAcceptQuorum).to.equal(1);
+            expect(vote.participationRequired).to.equal(1);
             expect(vote.yea).to.equal(0);
             expect(vote.nay).to.equal(0);
 
@@ -225,7 +209,7 @@ describe('WhitelistVoting', function () {
             expect(vote.open).to.equal(true);
             expect(vote.executed).to.equal(false);
             expect(vote.supportRequired).to.equal(2);
-            expect(vote.minAcceptQuorum).to.equal(1);
+            expect(vote.participationRequired).to.equal(1);
            
             expect(vote.yea).to.equal(1);
             expect(vote.nay).to.equal(0);
@@ -268,12 +252,12 @@ describe('WhitelistVoting', function () {
             vote = await voting.getVote(0);
             expect(vote.nay).to.equal(1);
 
-            expect(await voting.vote(0, VoterState.Refused, false))
+            expect(await voting.vote(0, VoterState.Abstain, false))
                 .to.emit(voting, EVENTS.CAST_VOTE)
-                .withArgs(0, ownerAddress, VoterState.Refused);
+                .withArgs(0, ownerAddress, VoterState.Abstain);
 
             vote = await voting.getVote(0);
-            expect(vote.refused).to.equal(1);
+            expect(vote.abstain).to.equal(1);
         })
 
         it("voting multiple times should not increase yea or nay multiple times", async () => {
@@ -288,9 +272,9 @@ describe('WhitelistVoting', function () {
             await voting.vote(0, VoterState.Nay, false);
             expect((await voting.getVote(0)).nay).to.equal(1)
 
-            await voting.vote(0, VoterState.Refused, false);
-            await voting.vote(0, VoterState.Refused, false);
-            expect((await voting.getVote(0)).refused).to.equal(1)
+            await voting.vote(0, VoterState.Abstain, false);
+            await voting.vote(0, VoterState.Abstain, false);
+            expect((await voting.getVote(0)).abstain).to.equal(1)
         })
 
         it("makes executable if enough yea is given from on voting power", async () => {
@@ -318,9 +302,9 @@ describe('WhitelistVoting', function () {
             await voting.connect(signers[2]).vote(0, VoterState.Nay, false);
             await voting.connect(signers[3]).vote(0, VoterState.Nay, false);
 
-            // 2 refused 
-            await voting.connect(signers[4]).vote(0, VoterState.Refused, false);
-            await voting.connect(signers[5]).vote(0, VoterState.Refused, false);
+            // 2 abstain 
+            await voting.connect(signers[4]).vote(0, VoterState.Abstain, false);
+            await voting.connect(signers[5]).vote(0, VoterState.Abstain, false);
 
             expect(await voting.canExecute(0)).to.equal(false);
 
@@ -328,7 +312,7 @@ describe('WhitelistVoting', function () {
             await ethers.provider.send('evm_increaseTime', [minDuration + 10]);
             await ethers.provider.send('evm_mine', []);
             
-            // 2 voted yea, 2 voted yea. 2 voted refused.
+            // 2 voted yea, 2 voted yea. 2 voted abstain.
             // Enough to surpass supportedRequired percentage
             expect(await voting.canExecute(0)).to.equal(true);
         })

@@ -5,74 +5,73 @@
 pragma solidity 0.8.10;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20VotesUpgradeable.sol";
+
 import "./../../core/component/Component.sol";
 import "./../../core/IDAO.sol";
 import "./../../utils/TimeHelpers.sol";
 
-contract WhitelistVoting is Component, TimeHelpers {
+contract SimpleVoting is Component, TimeHelpers {
     bytes32 public constant MODIFY_CONFIG = keccak256("MODIFY_VOTE_CONFIG");
-    bytes32 public constant MODIFY_WHITELIST = keccak256("MODIFY_WHITELIST");
 
     uint64 public constant PCT_BASE = 10 ** 18; // 0% = 0; 1% = 10^16; 100% = 10^18
 
     enum VoterState { None, Abstain, Yea, Nay }
 
+    bool public gio;
+
     struct Vote {
         bool executed;
         uint64 startDate;
         uint64 endDate;
+        uint64 snapshotBlock;
         uint64 supportRequiredPct;
         uint64 participationRequiredPct;
-        uint64 votingPower;
         uint256 yea;
         uint256 nay;
         uint256 abstain;
+        uint256 votingPower;
         mapping (address => VoterState) voters;
         IDAO.Action[] actions;
     }
 
     mapping (uint256 => Vote) internal votes;
-
+    uint x;
     uint64 public supportRequiredPct;
     uint64 public participationRequiredPct;
     uint64 public minDuration;
-
-    uint64 private whitelistedLength;
-
     uint256 public votesLength;
 
-    mapping(address => bool) public whitelisted;
-
-    string private constant ERROR_INIT_SUPPORT_TOO_BIG = "VOTING_INIT_SUPPORT_TOO_BIG";
-    string private constant ERROR_CHANGE_SUPPORT_TOO_BIG = "VOTING_CHANGE_SUPP_TOO_BIG";
+    ERC20VotesUpgradeable public token;
+    
     string private constant ERROR_VOTE_DATES_WRONG = "VOTING_DURATION_TIME_WRONG";
     string private constant ERROR_CHANGE_MIN_DURATION_NO_ZERO = "VOTING_CHANGE_MIN_DURATION_NO_ZERO";
+    string private constant ERROR_INIT_SUPPORT_TOO_BIG = "VOTING_INIT_SUPPORT_TOO_BIG";
+    string private constant ERROR_CHANGE_SUPPORT_TOO_BIG = "VOTING_CHANGE_SUPP_TOO_BIG";
     string private constant ERROR_CAN_NOT_VOTE = "VOTING_CAN_NOT_VOTE";
     string private constant ERROR_CAN_NOT_EXECUTE = "VOTING_CAN_NOT_EXECUTE";
-    string private constant ERROR_CAN_NOT_CREATE_VOTE = "VOTING_CAN_NOT_CREATE_VOTE";
+    string private constant ERROR_CAN_NOT_FORWARD = "VOTING_CAN_NOT_FORWARD";
+    string private constant ERROR_NO_VOTING_POWER = "VOTING_NO_VOTING_POWER";
 
     event StartVote(uint256 indexed voteId, address indexed creator, bytes description);
-    event CastVote(uint256 indexed voteId, address indexed voter, uint8 VoterState);
+    event CastVote(uint256 indexed voteId, address indexed voter, uint8 VoterState, uint256 stake);
     event ExecuteVote(uint256 indexed voteId, bytes[] execResults);
     event UpdateConfig(uint64 participationRequiredPct, uint64 supportRequiredPct, uint64 minDuration);
-    event AddUsers(address[] users);
-    event RemoveUsers(address[] users);
 
     /// @dev describes the version and contract for GSN compatibility.
-    function versionRecipient() external virtual override view returns (string memory) {
-        return "0.0.1+opengsn.recipient.WhitelistVoting";
+    function versionRecipient() external override virtual view returns (string memory){
+        return "0.0.1+opengsn.recipient.SimpleVoting";
     }
-
+    
     /// @dev Used for UUPS upgradability pattern
     /// @param _dao The DAO contract of the current DAO
     function initialize(
-        IDAO _dao,
+        IDAO _dao, 
+        ERC20VotesUpgradeable _token,
         address _gsnForwarder,
-        address[] calldata _whitelisted,
         uint64 _participationRequiredPct,
         uint64 _supportRequiredPct,
         uint64 _minDuration
-    ) public initializer {
+    ) public initializer { 
         require(
             _supportRequiredPct <= PCT_BASE &&
             _participationRequiredPct <= PCT_BASE,
@@ -80,52 +79,14 @@ contract WhitelistVoting is Component, TimeHelpers {
         );
         require(_minDuration > 0, ERROR_CHANGE_MIN_DURATION_NO_ZERO);
 
-        supportRequiredPct = _supportRequiredPct;
+        token = _token;
         participationRequiredPct = _participationRequiredPct;
+        supportRequiredPct = _supportRequiredPct; 
         minDuration = _minDuration;
-        
-        // add whitelisted users.
-        _addWhitelistedUsers(_whitelisted);
 
         Component.initialize(_dao, _gsnForwarder);
         
         emit UpdateConfig(_participationRequiredPct, _supportRequiredPct, _minDuration);
-    }
-
-    /**
-    * @notice add new users to the whitelist.
-    * @param _users addresses of users to add
-    */
-    function addWhitelistedUsers(address[] calldata _users) external auth(MODIFY_WHITELIST) {
-        _addWhitelistedUsers(_users);
-    }
-
-    /**
-    * @dev Internal function to add new users to the whitelist.
-    * @param _users addresses of users to add
-    */
-    function _addWhitelistedUsers(address[] calldata _users) internal {
-        for(uint256 i = 0; i < _users.length; i++) {
-            whitelisted[_users[i]] = true;
-        }
-
-        whitelistedLength += uint64(_users.length);
-
-        emit AddUsers(_users);
-    }
-
-    /**
-    * @notice remove new users to the whitelist.
-    * @param _users addresses of users to remove
-    */
-    function removeWhitelistedUsers(address[] calldata _users) external auth(MODIFY_WHITELIST) {
-        for(uint256 i = 0; i < _users.length; i++) {
-            whitelisted[_users[i]] = false;
-        }
-
-        whitelistedLength -= uint64(_users.length);
-
-        emit RemoveUsers(_users);
     }
 
     /**
@@ -134,14 +95,18 @@ contract WhitelistVoting is Component, TimeHelpers {
     * @param _participationRequiredPct New acceptance quorum
     * @param _minDuration each vote's minimum duration
     */
-    function changeVoteConfig(uint64 _participationRequiredPct, uint64 _supportRequiredPct, uint64 _minDuration) external auth(MODIFY_CONFIG) {
+    function changeVoteConfig(
+        uint64 _participationRequiredPct, 
+        uint64 _supportRequiredPct,
+        uint64 _minDuration
+    ) external auth(MODIFY_CONFIG) {
         require(
             _supportRequiredPct <= PCT_BASE &&
             _participationRequiredPct <= PCT_BASE,
             ERROR_CHANGE_SUPPORT_TOO_BIG
         );
         require(_minDuration > 0, ERROR_CHANGE_MIN_DURATION_NO_ZERO);
-
+        
         participationRequiredPct = _participationRequiredPct;
         supportRequiredPct = _supportRequiredPct;
         minDuration = _minDuration;
@@ -149,7 +114,7 @@ contract WhitelistVoting is Component, TimeHelpers {
         emit UpdateConfig(_participationRequiredPct, _supportRequiredPct, _minDuration);
     }
 
-     /**
+    /**
     * @notice Create a new vote on this concrete implementation
     * @param _proposalMetadata The IPFS hash pointing to the proposal metadata
     * @param _actions the actions that will be executed after vote passes
@@ -166,8 +131,13 @@ contract WhitelistVoting is Component, TimeHelpers {
         bool _executeIfDecided,
         bool _castVote
     ) external returns (uint256 voteId) {
-        require(whitelisted[msg.sender], ERROR_CAN_NOT_CREATE_VOTE);
+        uint64 snapshotBlock = getBlockNumber64() - 1; 
+        
+        uint256 votingPower = token.getPastTotalSupply(snapshotBlock);
+        require(votingPower > 0, ERROR_NO_VOTING_POWER);
 
+        voteId = votesLength++;
+        
         // calculate start and end time for the vote
         uint64 currentTimestamp = getTimestamp64();
 
@@ -180,40 +150,39 @@ contract WhitelistVoting is Component, TimeHelpers {
             ERROR_VOTE_DATES_WRONG
         );
 
-        voteId = votesLength++;
-
-         // create a vote.
+        // create a vote.
         Vote storage vote_ = votes[voteId];
         vote_.startDate = _startDate;
         vote_.endDate = _endDate;
+        vote_.snapshotBlock = snapshotBlock;
         vote_.supportRequiredPct = supportRequiredPct;
         vote_.participationRequiredPct = participationRequiredPct;
-        vote_.votingPower = whitelistedLength;
+        vote_.votingPower = votingPower;
 
         for (uint256 i; i < _actions.length; i++) {
             vote_.actions.push(_actions[i]);
         }
 
-        emit StartVote(voteId, msg.sender, _proposalMetadata);
-
-        if (_castVote && canVote(voteId, msg.sender)) {
-            _vote(voteId, VoterState.Yea, msg.sender, _executeIfDecided);
+        emit StartVote(voteId, _msgSender(), _proposalMetadata);
+    
+        if (_castVote && canVote(voteId, _msgSender())) {
+            _vote(voteId, VoterState.Yea, _msgSender(), _executeIfDecided);
         }
     }
 
     /**
-    * @notice Vote `_supports ? 'yes' : 'no'` in vote #`_voteId`
+    * @notice Vote `[outcome = 1 = abstain], [outcome = 2 = supports], [outcome = 1 = not supports]
     * @param _voteId Id for vote
     * @param _outcome Whether voter abstains, supports or not supports to vote.
     * @param _executesIfDecided Whether the vote should execute its action if it becomes decided
     */
     function vote(uint256 _voteId, VoterState _outcome, bool _executesIfDecided) external {
-        require(_canVote(_voteId, msg.sender), ERROR_CAN_NOT_VOTE);
-        _vote(_voteId, _outcome, msg.sender, _executesIfDecided);
+        require(_canVote(_voteId, _msgSender()), ERROR_CAN_NOT_VOTE);
+        _vote(_voteId, _outcome, _msgSender(), _executesIfDecided);
     }
 
     /**
-    * @dev Internal function to cast a vote. It assumes the queried vote exists.
+    * @dev Internal function to cast a vote. It assumes the queried vote exists. 
     * @param _voteId voteId
     * @param _outcome Whether voter abstains, supports or not supports to vote.
     * @param _executesIfDecided if true, and it's the last vote required, immediatelly executes a vote.
@@ -221,29 +190,31 @@ contract WhitelistVoting is Component, TimeHelpers {
     function _vote(uint256 _voteId, VoterState _outcome, address _voter, bool _executesIfDecided) internal {
         Vote storage vote_ = votes[_voteId];
 
+        // This could re-enter, though we can assume the governance token is not malicious
+        uint256 voterStake = token.getPastVotes(_voter, vote_.snapshotBlock);
         VoterState state = vote_.voters[_voter];
 
         // If voter had previously voted, decrease count
         if (state == VoterState.Yea) {
-            vote_.yea = vote_.yea - 1;
+            vote_.yea = vote_.yea - voterStake;
         } else if (state == VoterState.Nay) {
-            vote_.nay = vote_.nay - 1;
+            vote_.nay = vote_.nay - voterStake;
         } else if (state == VoterState.Abstain) {
-            vote_.abstain = vote_.abstain - 1;
+            vote_.abstain = vote_.abstain - voterStake;
         }
 
         // write the updated/new vote for the voter.
         if (_outcome == VoterState.Yea) {
-            vote_.yea = vote_.yea + 1;
+            vote_.yea = vote_.yea + voterStake;
         } else if (_outcome == VoterState.Nay) {
-            vote_.nay = vote_.nay + 1;
+            vote_.nay = vote_.nay + voterStake;
         } else if (_outcome == VoterState.Abstain) {
-            vote_.abstain = vote_.abstain + 1;
+            vote_.abstain = vote_.abstain + voterStake;
         }
 
         vote_.voters[_voter] = _outcome;
 
-        emit CastVote(_voteId, _voter, uint8(_outcome));
+        emit CastVote(_voteId, _voter, uint8(_outcome), voterStake);
 
         if (_executesIfDecided && _canExecute(_voteId)) {
            _execute(_voteId);
@@ -270,7 +241,7 @@ contract WhitelistVoting is Component, TimeHelpers {
 
         emit ExecuteVote(_voteId, execResults);
     }
-
+    
     /**
     * @dev Return the state of a voter for a given vote by its ID
     * @param _voteId Vote identifier
@@ -307,12 +278,13 @@ contract WhitelistVoting is Component, TimeHelpers {
     * @return executed Vote executed status
     * @return startDate start date
     * @return endDate end date
+    * @return snapshotBlock snapshot block
     * @return supportRequired support required
     * @return participationRequired minimum participation required
-    * @return votingPower power
     * @return yea yeas amount
     * @return nay nays amount
     * @return abstain abstain amount
+    * @return votingPower power
     * @return actions Actions
     */
     function getVote(uint256 _voteId)
@@ -323,27 +295,29 @@ contract WhitelistVoting is Component, TimeHelpers {
             bool executed,
             uint64 startDate,
             uint64 endDate,
+            uint64 snapshotBlock,
             uint64 supportRequired,
             uint64 participationRequired,
-            uint64 votingPower,
             uint256 yea,
             uint256 nay,
             uint256 abstain,
+            uint256 votingPower,
             IDAO.Action[] memory actions
         )
     {
         Vote storage vote_ = votes[_voteId];
-
+        
         open = _isVoteOpen(vote_);
         executed = vote_.executed;
         startDate = vote_.startDate;
         endDate = vote_.endDate;
+        snapshotBlock = vote_.snapshotBlock;
         supportRequired = vote_.supportRequiredPct;
         participationRequired = vote_.participationRequiredPct;
-        votingPower = vote_.votingPower;
         yea = vote_.yea;
         nay = vote_.nay;
         abstain = vote_.abstain;
+        votingPower = vote_.votingPower;
         actions = vote_.actions;
     }
 
@@ -355,7 +329,7 @@ contract WhitelistVoting is Component, TimeHelpers {
     */
     function _canVote(uint256 _voteId, address _voter) internal view returns (bool) {
         Vote storage vote_ = votes[_voteId];
-        return _isVoteOpen(vote_) && whitelisted[_voter];
+        return _isVoteOpen(vote_) && token.getPastVotes(_voter, vote_.snapshotBlock) > 0;
     }
 
     /**
@@ -406,16 +380,16 @@ contract WhitelistVoting is Component, TimeHelpers {
 
     /**
     * @dev Calculates whether `_value` is more than a percentage `_pct` of `_total`
-    * @param _value the current value
+    * @param _value the current value 
     * @param _total the total value
     * @param _pct the required support percentage
-    * @return returns if the _value is _pct or more percentage of _total.
+    * @return returns if the _value is _pct or more percentage of _total. 
     */
     function _isValuePct(uint256 _value, uint256 _total, uint256 _pct) internal pure returns (bool) {
        if (_total == 0) {
            return false;
        }
-
+    
        uint256 computedPct = _value * PCT_BASE / _total;
        return computedPct > _pct;
     }
