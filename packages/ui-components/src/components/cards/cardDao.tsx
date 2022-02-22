@@ -58,7 +58,8 @@ export const CardDao: React.FC<CardDaoProps> = ({
 
 const Card = styled.div.attrs(() => ({
   className:
-    'flex desktop:inline-flex items-center space-x-3 bg-ui-0 desktop:bg-transparent p-3 desktop:p-0 rounded-xl',
+    'flex desktop:inline-flex items-center space-x-3 bg-ui-0' +
+    ' desktop:bg-transparent p-3 desktop:p-0 rounded-xl cursor-pointer',
 }))``;
 
 const LeftContent = styled.div.attrs({
@@ -73,7 +74,6 @@ const DaoName = styled.p.attrs({
   className: 'text-ui-800 font-bold',
 })``;
 
-// FIXME: temporarily changed font weight
 const DaoAddress = styled.p.attrs({
   className: 'text-ui-500 text-sm desktop:hidden',
 })``;
