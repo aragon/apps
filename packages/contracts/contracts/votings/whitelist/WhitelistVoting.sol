@@ -349,7 +349,7 @@ contract WhitelistVoting is Component, TimeHelpers {
     */
     function _canVote(uint256 _voteId, address _voter) internal view returns (bool) {
         Vote storage vote_ = votes[_voteId];
-        return _isVoteOpen(vote_) && getTimestamp64() >= vote_.startDate && whitelisted[_voter];
+        return _isVoteOpen(vote_) && whitelisted[_voter];
     }
 
     /**
@@ -358,7 +358,9 @@ contract WhitelistVoting is Component, TimeHelpers {
     * @return True if the given vote is open, false otherwise
     */
     function _isVoteOpen(Vote storage vote_) internal view returns (bool) {
-        return getTimestamp64() < vote_.endDate && !vote_.executed;
+        return getTimestamp64() < vote_.endDate 
+            && getTimestamp64() >= vote_.startDate
+            && !vote_.executed;
     }
 
     /**

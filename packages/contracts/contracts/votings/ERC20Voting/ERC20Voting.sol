@@ -17,8 +17,6 @@ contract ERC20Voting is Component, TimeHelpers {
 
     enum VoterState { None, Abstain, Yea, Nay }
 
-    bool public gio;
-
     struct Vote {
         bool executed;
         uint64 startDate;
@@ -323,9 +321,7 @@ contract ERC20Voting is Component, TimeHelpers {
     */
     function _canVote(uint256 _voteId, address _voter) internal view returns (bool) {
         Vote storage vote_ = votes[_voteId];
-        return _isVoteOpen(vote_) && 
-            getTimestamp64() >= vote_.startDate && 
-            token.getPastVotes(_voter, vote_.snapshotBlock) > 0;
+        return _isVoteOpen(vote_) && token.getPastVotes(_voter, vote_.snapshotBlock) > 0;
     }
 
     /**
@@ -334,7 +330,9 @@ contract ERC20Voting is Component, TimeHelpers {
     * @return True if the given vote is open, false otherwise
     */
     function _isVoteOpen(Vote storage vote_) internal view returns (bool) {
-        return getTimestamp64() < vote_.endDate && !vote_.executed;
+        return getTimestamp64() < vote_.endDate 
+            && getTimestamp64() >= vote_.startDate 
+            && !vote_.executed;
     }
 
     /**
