@@ -7,15 +7,17 @@ chai.use(chaiUtils);
 
 import { WhitelistVoting } from '../../typechain';
 
+
 const ERRORS = {
     ERROR_INIT_PCTS: "VOTING_INIT_PCTS",
     ERROR_INIT_SUPPORT_TOO_BIG: "VOTING_INIT_SUPPORT_TOO_BIG",
-    ERROR_CHANGE_MIN_DURATION_NO_ZERO: "VOTING_CHANGE_MIN_DURATION_NO_ZERO",
+    ERROR_MIN_DURATION_NO_ZERO: "VOTING_MIN_DURATION_NO_ZERO",
     ERROR_VOTE_DATES_WRONG: "VOTING_DURATION_TIME_WRONG",
     ERROR_NO_VOTING_POWER: "VOTING_NO_VOTING_POWER",
     ERROR_CAN_NOT_VOTE: "VOTING_CAN_NOT_VOTE",
     ERROR_CHANGE_SUPPORT_PCTS: "VOTING_CHANGE_SUPPORT_PCTS",
-    ERROR_CHANGE_SUPPORT_TOO_BIG: "VOTING_CHANGE_SUPP_TOO_BIG",
+    ERROR_SUPPORT_TOO_BIG: "VOTING_SUPPORT_TOO_BIG",
+    ERROR_PARTICIPATION_TOO_BIG: "VOTING_PARTICIPATION_TOO_BIG",
     ERROR_CAN_NOT_EXECUTE: "VOTING_CAN_NOT_EXECUTE",
     ERROR_CAN_NOT_CREATE_VOTE: "VOTING_CAN_NOT_CREATE_VOTE",
     ALREADY_INITIALIZED: 'Initializable: contract is already initialized'
@@ -89,7 +91,7 @@ describe('WhitelistVoting', function () {
         it("reverts if min duration is 0", async () => {
             await expect(
                 initializeVoting([], 1, 2, 0)
-            ).to.be.revertedWith(ERRORS.ERROR_CHANGE_MIN_DURATION_NO_ZERO);
+            ).to.be.revertedWith(ERRORS.ERROR_MIN_DURATION_NO_ZERO);
         })
 
         it("should initialize dao on the component", async () => {
@@ -131,11 +133,15 @@ describe('WhitelistVoting', function () {
         it("reverts if wrong config is set", async () => {
             await expect(
                 voting.changeVoteConfig(1, pct16(1000), 3)
-            ).to.be.revertedWith(ERRORS.ERROR_CHANGE_SUPPORT_TOO_BIG);
+            ).to.be.revertedWith(ERRORS.ERROR_SUPPORT_TOO_BIG);
+
+            await expect(
+                voting.changeVoteConfig(pct16(1000), 2, 3)
+            ).to.be.revertedWith(ERRORS.ERROR_PARTICIPATION_TOO_BIG);
 
             await expect(
                 voting.changeVoteConfig(1, 2, 0)
-            ).to.be.revertedWith(ERRORS.ERROR_CHANGE_MIN_DURATION_NO_ZERO);
+            ).to.be.revertedWith(ERRORS.ERROR_MIN_DURATION_NO_ZERO);
         })
 
         it("should change config successfully", async () => {

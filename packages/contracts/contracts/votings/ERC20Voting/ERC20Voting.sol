@@ -35,7 +35,7 @@ contract ERC20Voting is Component, TimeHelpers {
     }
 
     mapping (uint256 => Vote) internal votes;
-    uint x;
+
     uint64 public supportRequiredPct;
     uint64 public participationRequiredPct;
     uint64 public minDuration;
@@ -44,9 +44,9 @@ contract ERC20Voting is Component, TimeHelpers {
     ERC20VotesUpgradeable public token;
     
     string private constant ERROR_VOTE_DATES_WRONG = "VOTING_DURATION_TIME_WRONG";
-    string private constant ERROR_CHANGE_MIN_DURATION_NO_ZERO = "VOTING_CHANGE_MIN_DURATION_NO_ZERO";
-    string private constant ERROR_INIT_SUPPORT_TOO_BIG = "VOTING_INIT_SUPPORT_TOO_BIG";
-    string private constant ERROR_CHANGE_SUPPORT_TOO_BIG = "VOTING_CHANGE_SUPP_TOO_BIG";
+    string private constant ERROR_MIN_DURATION_NO_ZERO = "VOTING_MIN_DURATION_NO_ZERO";
+    string private constant ERROR_SUPPORT_TOO_BIG = "VOTING_SUPPORT_TOO_BIG";
+    string private constant ERROR_PARTICIPATION_TOO_BIG = "VOTING_PARTICIPATION_TOO_BIG";
     string private constant ERROR_CAN_NOT_VOTE = "VOTING_CAN_NOT_VOTE";
     string private constant ERROR_CAN_NOT_EXECUTE = "VOTING_CAN_NOT_EXECUTE";
     string private constant ERROR_CAN_NOT_FORWARD = "VOTING_CAN_NOT_FORWARD";
@@ -72,12 +72,9 @@ contract ERC20Voting is Component, TimeHelpers {
         uint64 _supportRequiredPct,
         uint64 _minDuration
     ) public initializer { 
-        require(
-            _supportRequiredPct <= PCT_BASE &&
-            _participationRequiredPct <= PCT_BASE,
-            ERROR_INIT_SUPPORT_TOO_BIG
-        );
-        require(_minDuration > 0, ERROR_CHANGE_MIN_DURATION_NO_ZERO);
+        require(_supportRequiredPct <= PCT_BASE, ERROR_SUPPORT_TOO_BIG);
+        require(_participationRequiredPct <= PCT_BASE, ERROR_PARTICIPATION_TOO_BIG);
+        require(_minDuration > 0, ERROR_MIN_DURATION_NO_ZERO);
 
         token = _token;
         participationRequiredPct = _participationRequiredPct;
@@ -100,12 +97,9 @@ contract ERC20Voting is Component, TimeHelpers {
         uint64 _supportRequiredPct,
         uint64 _minDuration
     ) external auth(MODIFY_CONFIG) {
-        require(
-            _supportRequiredPct <= PCT_BASE &&
-            _participationRequiredPct <= PCT_BASE,
-            ERROR_CHANGE_SUPPORT_TOO_BIG
-        );
-        require(_minDuration > 0, ERROR_CHANGE_MIN_DURATION_NO_ZERO);
+        require(_supportRequiredPct <= PCT_BASE, ERROR_SUPPORT_TOO_BIG);
+        require(_participationRequiredPct <= PCT_BASE, ERROR_PARTICIPATION_TOO_BIG);
+        require(_minDuration > 0, ERROR_MIN_DURATION_NO_ZERO);
         
         participationRequiredPct = _participationRequiredPct;
         supportRequiredPct = _supportRequiredPct;
@@ -329,7 +323,9 @@ contract ERC20Voting is Component, TimeHelpers {
     */
     function _canVote(uint256 _voteId, address _voter) internal view returns (bool) {
         Vote storage vote_ = votes[_voteId];
-        return _isVoteOpen(vote_) && token.getPastVotes(_voter, vote_.snapshotBlock) > 0;
+        return _isVoteOpen(vote_) && 
+            getTimestamp64() >= vote_.startDate && 
+            token.getPastVotes(_voter, vote_.snapshotBlock) > 0;
     }
 
     /**
