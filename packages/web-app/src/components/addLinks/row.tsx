@@ -149,7 +149,7 @@ const LinkRow: React.FC<LinkRowProps> = ({index, onDelete}) => {
                 value={field.value}
                 onBlur={() => {
                   addProtocolToLinks(field.name);
-                  field.onBlur;
+                  field.onBlur();
                 }}
                 onChange={field.onChange}
                 placeholder="https://"
