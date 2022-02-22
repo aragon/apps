@@ -4,21 +4,23 @@ import {useTranslation} from 'react-i18next';
 import {ActionListItem, IconChevronRight} from '@aragon/ui-components';
 
 import {useGlobalModalContext} from 'context/globalModals';
+import {useActionsContext} from 'context/actions';
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 
 export enum AddActionItems {
-  ADD_REMOVE_TOKENS = 'ADD_REMOVE_TOKENS',
-  MINT_TOKENS = 'MINT_TOKENS',
-  WITHDRAW_ASSETS = 'WITHDRAW_ASSETS',
-  EXTERNAL_CONTRACT = 'EXTERNAL_CONTRACT',
+  ADD_REMOVE_TOKENS = 'add_remove_address',
+  MINT_TOKENS = 'mint_token',
+  WITHDRAW_ASSETS = 'withdraw_assets',
+  EXTERNAL_CONTRACT = 'external_contract',
 }
 
 type AddActionMenuProps = {
   onActionSelect: (AddActionItems: AddActionItems) => void;
 };
 
-const AddActionMenu: React.FC<AddActionMenuProps> = ({onActionSelect}) => {
+const AddActionMenu: React.FC<AddActionMenuProps> = () => {
   const {isAddActionOpen, close} = useGlobalModalContext();
+  const {setAction} = useActionsContext();
   const {t} = useTranslation();
 
   return (
@@ -32,25 +34,46 @@ const AddActionMenu: React.FC<AddActionMenuProps> = ({onActionSelect}) => {
           title={t('AddActionModal.addRemoveAddresses')}
           subtitle={t('AddActionModal.addRemoveAddressesSubtitle')}
           icon={<IconChevronRight />}
-          onClick={() => onActionSelect(AddActionItems.ADD_REMOVE_TOKENS)}
+          onClick={() => alert(AddActionItems.ADD_REMOVE_TOKENS)}
         />
         <ActionListItem
           title={t('AddActionModal.mintTokens')}
           subtitle={t('AddActionModal.mintTokensSubtitle')}
           icon={<IconChevronRight />}
-          onClick={() => onActionSelect(AddActionItems.MINT_TOKENS)}
+          onClick={() => alert(AddActionItems.MINT_TOKENS)}
         />
         <ActionListItem
           title={t('AddActionModal.withdrawAssets')}
           subtitle={t('AddActionModal.withdrawAssetsSubtitle')}
           icon={<IconChevronRight />}
-          onClick={() => onActionSelect(AddActionItems.WITHDRAW_ASSETS)}
+          onClick={() =>
+            setAction({
+              name: AddActionItems.WITHDRAW_ASSETS,
+              inputs: [
+                {
+                  type: 'address',
+                  name: 'To',
+                  value: '',
+                },
+                {
+                  type: 'address',
+                  name: 'Token',
+                  value: '',
+                },
+                {
+                  type: 'uint',
+                  name: 'Amount',
+                  value: '',
+                },
+              ],
+            })
+          }
         />
         <ActionListItem
           title={t('AddActionModal.externalContract')}
           subtitle={t('AddActionModal.externalContractSubtitle')}
           icon={<IconChevronRight />}
-          onClick={() => onActionSelect(AddActionItems.EXTERNAL_CONTRACT)}
+          onClick={() => alert(AddActionItems.EXTERNAL_CONTRACT)}
         />
       </Container>
     </ModalBottomSheetSwitcher>

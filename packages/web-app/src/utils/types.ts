@@ -123,3 +123,23 @@ export type HookData<T> = {
 };
 
 export type SupportedChainId = 1 | 4;
+
+/**
+ * Allowed Actions for each dao
+ */
+export type ActionsTypes =
+  | 'add_remove_address'
+  | 'withdraw_assets'
+  | 'mint_token'
+  | 'external_contract';
+
+export type ParamType = {
+  type: string;
+  name?: string;
+  value: string;
+};
+
+export type ActionItem = {
+  name: ActionsTypes;
+  inputs: ParamType[];
+};
