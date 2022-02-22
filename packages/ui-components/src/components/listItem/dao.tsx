@@ -5,16 +5,16 @@ import {AvatarDao} from '../avatar';
 import {Address, shortenAddress} from '../../utils/addresses';
 import {IconRadioDefault, IconRadioSelected} from '../icons';
 
+// TODO: Refactor to use input type radio for accessibility
+
 export type ListItemDaoProps = {
   /** Dao's ethereum address **or** ENS name */
   daoAddress: Address;
   daoLogo?: string;
   daoName: string;
-  /** ListItem value; defaults to daoName if not provided */
-  value?: string | Address;
   selected?: boolean;
   /** Handler for ListItem selection */
-  onItemSelect?: (value: string) => void;
+  onClick?: React.MouseEventHandler;
 };
 
 /**
@@ -22,10 +22,7 @@ export type ListItemDaoProps = {
  */
 export const ListItemDao: React.FC<ListItemDaoProps> = props => {
   return (
-    <Container
-      selected={props.selected}
-      onClick={() => props.onItemSelect?.(props.value || props.daoName)}
-    >
+    <Container selected={props.selected} onClick={props.onClick}>
       <AvatarDao daoName={props.daoName} src={props.daoLogo} />
       <Content>
         <DaoName selected={props.selected}>{props.daoName}</DaoName>
@@ -42,14 +39,14 @@ type Selectable = Pick<ListItemDaoProps, 'selected'>;
 
 const Container = styled.button.attrs(({selected}: Selectable) => {
   const baseClasses =
-    'group flex items-center p-2 space-x-2  w-full rounded-xl focus:ring-2 focus:ring-primary-500 focus:outline-none';
+    'group flex items-center p-2 space-x-2  w-full rounded-xl' +
+    ' focus:ring-2 focus:ring-primary-500 focus:outline-none';
 
-  return selected
-    ? {className: baseClasses + ' bg-ui-0'}
-    : {
-        className:
-          baseClasses + ' hover:bg-ui-50 focus:bg-ui-50 active:bg-ui-0',
-      };
+  return {
+    className: selected
+      ? baseClasses + ' bg-ui-0'
+      : baseClasses + ' hover:bg-ui-50 focus:bg-ui-50 active:bg-ui-0',
+  };
 })<Selectable>``;
 
 const Content = styled.div.attrs({
@@ -61,19 +58,18 @@ const Domain = styled.p.attrs({
 })``;
 
 const DaoName = styled.p.attrs(({selected}: Selectable) => {
-  return selected
-    ? {className: 'font-bold truncate text-primary-500'}
-    : {
-        className:
-          'truncate font-bold text-ui-600 group-hover:text-primary-500 group-active:text-primary-500',
-      };
+  return {
+    className: selected
+      ? 'font-bold truncate text-primary-500'
+      : 'truncate font-bold text-ui-600 group-hover:text-primary-500' +
+        ' group-active:text-primary-500',
+  };
 })<Selectable>``;
 
 const IconContainer = styled.div.attrs(({selected}: Selectable) => {
-  return selected
-    ? {className: 'text-sm text-primary-500'}
-    : {
-        className:
-          'text-sm text-ui-400 group-hover:text-primary-500 group-active:text-primary-500',
-      };
+  return {
+    className: selected
+      ? 'text-sm text-primary-500'
+      : 'text-sm text-ui-400 group-hover:text-primary-500 group-active:text-primary-500',
+  };
 })<Selectable>``;
