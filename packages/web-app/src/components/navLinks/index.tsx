@@ -174,8 +174,8 @@ const StyledNavList = styled.ul.attrs(({parent}: ParentProps) => {
 const NavItem = styled.button.attrs(({isSelected}: {isSelected: boolean}) => {
   let className =
     'py-1.5 px-2 rounded-xl font-bold hover:text-primary-500 ' +
-    'active:text-primary-700 disabled:text-ui-300 focus:bg-ui-50 ' +
-    'disabled:bg-ui-50 focus:ring-2 focus:ring-primary-500 focus:outline-none ';
+    'active:text-primary-700 disabled:text-ui-300 disabled:bg-ui-50' +
+    ' focus:ring-2 focus:ring-primary-500 focus:outline-none ';
 
   isSelected
     ? (className += 'text-primary-500 bg-ui-0')

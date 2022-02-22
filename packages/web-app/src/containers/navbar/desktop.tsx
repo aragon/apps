@@ -56,7 +56,7 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
             <Breadcrumb
               process
               crumbs={[{label: props.processLabel!, path: props.returnURL!}]}
-              onClick={path => navigate(path)}
+              onClick={(path: string) => navigate(path)}
             />
             <ButtonIcon
               mode="secondary"
