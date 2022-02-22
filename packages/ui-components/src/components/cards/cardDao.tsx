@@ -30,7 +30,7 @@ export const CardDao: React.FC<CardDaoProps> = ({
   src,
 }: CardDaoProps) => {
   return (
-    <Card data-testid="cardDao">
+    <Card data-testid="cardDao" onClick={onClick}>
       <LeftContent>
         <AvatarDao daoName={daoName} src={src} />
         <TextContainer>
@@ -45,14 +45,12 @@ export const CardDao: React.FC<CardDaoProps> = ({
         mode="secondary"
         size="small"
         bgWhite
-        onClick={onClick}
       />
       <ButtonIcon
         className="hidden desktop:flex"
         icon={<IconSwitch />}
         mode="secondary"
         size="small"
-        onClick={onClick}
       />
     </Card>
   );
