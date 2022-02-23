@@ -1,7 +1,12 @@
 import React from 'react';
 import {useTranslation} from 'react-i18next';
 import styled from 'styled-components';
-import {ButtonIcon, IconMenuVertical} from '@aragon/ui-components';
+import {
+  Popover,
+  ListItemAction,
+  ButtonIcon,
+  IconMenuVertical,
+} from '@aragon/ui-components';
 
 import {useGlobalModalContext} from 'context/globalModals';
 import {useActionsContext} from 'context/actions';
@@ -19,12 +24,37 @@ const WithdrawAction: React.FC = () => {
           <Title>Withdraw Assets</Title>
           <Description>Withdraw assets from the DAO treasury</Description>
         </HCWrapper>
-        <ButtonIcon
-          mode="ghost"
-          size="large"
-          icon={<IconMenuVertical />}
-          data-testid="trigger"
-        />
+        <Popover
+          side="bottom"
+          align="end"
+          width={264}
+          content={
+            <div className="p-1.5 space-y-0.5">
+              <ListItemAction
+                title={t('labels.duplicateAction')}
+                // onClick={resetDistribution}
+                bgWhite
+              />
+              <ListItemAction
+                title={t('labels.resetAction')}
+                onClick={() => {}}
+                bgWhite
+              />
+              <ListItemAction
+                title={t('labels.removeEntireAction')}
+                onClick={() => {}}
+                bgWhite
+              />
+            </div>
+          }
+        >
+          <ButtonIcon
+            mode="ghost"
+            size="large"
+            icon={<IconMenuVertical />}
+            data-testid="trigger"
+          />
+        </Popover>
       </Header>
       <Body>
         <ConfigureWithdrawForm />
@@ -44,7 +74,7 @@ const Header = styled.div.attrs({
 })``;
 
 const Body = styled.div.attrs({
-  className: 'bg-ui-50 p-3 rounded-xl space-y-3 my-3',
+  className: 'bg-ui-50 p-3 rounded-xl space-y-3 mt-3',
 })``;
 
 const Title = styled.h2.attrs({

@@ -15,7 +15,18 @@ const ConfigureActions: React.FC = () => {
   return (
     <>
       {action ? (
-        <ActionBuilder />
+        <ActionsWrapper>
+          <ActionBuilder />
+          <ButtonText
+            mode="ghost"
+            size="large"
+            bgWhite
+            label={t('newProposal.configureActions.addAction')}
+            iconLeft={<IconAdd />}
+            onClick={() => open('addAction')}
+            className="mt-2"
+          />
+        </ActionsWrapper>
       ) : (
         <FormItem>
           <Label
@@ -50,4 +61,8 @@ export default ConfigureActions;
 
 const FormItem = styled.div.attrs({
   className: 'space-y-1.5',
+})``;
+
+const ActionsWrapper = styled.div.attrs({
+  className: 'space-y-2',
 })``;
