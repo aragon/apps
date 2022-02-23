@@ -12,8 +12,6 @@ import {useStepper} from 'hooks/useStepper';
 import {StepProps} from './step';
 
 export type FullScreenStepperProps = {
-  navbarLabel: string;
-  navbarBackUrl: string;
   wizardProcessName: string;
   totalFormSteps?: number;
   children: React.FunctionComponentElement<StepProps>[];
