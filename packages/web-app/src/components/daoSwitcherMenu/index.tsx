@@ -28,9 +28,9 @@ const DaoSwitcherMenu: React.FC<DaoSwitcherMenuProps> = ({
       <DaoListContainer>
         {/* NOTE: Temporarily static  */}
         <AvatarDao daoName="Bushido DAO" src={TEMP_ICON} onClick={onClick} />
-        {daos.map(({name, ens, icon}) => (
+        {daos.map(({name, icon}) => (
           <div key={name}>
-            <AvatarDao label={name} domain={ens} src={icon} onClick={onClick} />
+            <AvatarDao daoName={name} src={icon} onClick={onClick} />
           </div>
         ))}
       </DaoListContainer>
