@@ -139,6 +139,9 @@ export type ParamType = {
   value: string;
 };
 
+/**
+ *  Inputs prop is using for custom smart contract methods that have unknown fields
+ */
 export type ActionItem = {
   name: ActionsTypes;
   inputs?: ParamType[];

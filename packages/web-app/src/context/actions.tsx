@@ -23,6 +23,10 @@ type ActionsContextType = {
 
 type Props = Record<'children', ReactNode>;
 
+/**
+ * This Context must refactor later and add more attributes to cover whole transactions process
+ */
+
 const ActionsProvider: React.FC<Props> = ({children}) => {
   const [daoAddress, setDaoAddress] =
     useState<ActionsContextType['daoAddress']>('');
