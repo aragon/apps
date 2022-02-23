@@ -61,6 +61,8 @@ type VaultWithdraw @entity {
   to: Bytes!
   amount: BigInt!
   reference: String!
+  transaction: String!
+  proposal: Proposal!
   createdAt: BigInt!
 }
 
@@ -71,6 +73,7 @@ type VaultDeposit @entity {
   sender: Bytes!
   amount: BigInt!
   reference: String!
+  transaction: String!
   createdAt: BigInt!
 }
 
@@ -111,6 +114,7 @@ interface Proposal {
   id: ID! # package + voteId
   dao: Dao!
   actions: [Action!]! @derivedFrom(field: "proposal")
+  executed: Boolean!
 }
 
 # Voter

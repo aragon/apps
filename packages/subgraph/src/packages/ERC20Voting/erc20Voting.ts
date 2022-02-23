@@ -10,9 +10,18 @@ import {
   ERC20VotingPackage,
   ERC20VotingProposal,
   ERC20VotingVoter,
-  ERC20Vote
+  ERC20Vote,
+  VaultWithdraw
 } from '../../../generated/schema';
-import {BigInt, ByteArray, crypto, dataSource} from '@graphprotocol/graph-ts';
+import {
+  BigInt,
+  ByteArray,
+  Bytes,
+  crypto,
+  dataSource,
+  ethereum,
+  log
+} from '@graphprotocol/graph-ts';
 
 export function handleStartVote(event: StartVote): void {
   let context = dataSource.context();
@@ -116,6 +125,9 @@ export function handleCastVote(event: CastVote): void {
 }
 
 export function handleExecuteVote(event: ExecuteVote): void {
+  let context = dataSource.context();
+  let daoId = context.getString('daoAddress');
+
   let proposalId =
     event.address.toHexString() + '_' + event.params.voteId.toHexString();
   let proposalEntity = ERC20VotingProposal.load(proposalId);
@@ -128,7 +140,7 @@ export function handleExecuteVote(event: ExecuteVote): void {
   let contract = ERC20Voting.bind(event.address);
   let vote = contract.try_getVote(event.params.voteId);
   if (!vote.reverted) {
-    let actions = vote.value.value9;
+    let actions = vote.value.value10;
     for (let index = 0; index < actions.length; index++) {
       const action = actions[index];
 

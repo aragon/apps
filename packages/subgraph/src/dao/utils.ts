@@ -1,8 +1,75 @@
 import {DaoPackage, ERC20VotingPackage} from '../../generated/schema';
-import {Address, DataSourceContext, store} from '@graphprotocol/graph-ts';
-import {ERC20Voting} from '../../generated/templates';
+import {
+  Address,
+  BigInt,
+  ByteArray,
+  Bytes,
+  DataSourceContext,
+  log,
+  store
+} from '@graphprotocol/graph-ts';
 import {ERC20Voting as ERC20VotingContract} from '../../generated/templates/ERC20Voting/ERC20Voting';
+import {ERC20Voting} from '../../generated/templates';
 import {handleERC20Token} from '../utils/tokens';
+import {ADDRESS_ZERO} from '../utils/constants';
+
+class WithdrawParams {
+  token: Address = Address.fromString(ADDRESS_ZERO);
+  to: Address = Address.fromString(ADDRESS_ZERO);
+  amount: BigInt = BigInt.zero();
+  reference: string = '';
+}
+
+function removePadding(data: Uint8Array): Uint8Array {
+  for (let index = 0; index < data.length; index++) {
+    const element = data[index];
+    if (element !== 0) {
+      return data.subarray(index);
+    }
+  }
+  return data;
+}
+
+/**
+ *
+ * @param data is ethereum function call data without the function signiture for dao's Withdraw function
+ * @returns WithdrawParams
+ */
+export function decodeWithdrawParams(data: ByteArray): WithdrawParams {
+  let tokenSubArray = data.subarray(12, 32);
+  let toSubArray = data.subarray(44, 64);
+  let amountSubArray = data.subarray(64, 96);
+  // skip next 32 Bytes as it is just an indicator that the next batch is string
+  let referenceLengthSubArray = data.subarray(128, 160);
+  let referenceSubArray = data.subarray(160);
+
+  let tokenAddress = Address.fromString(
+    Address.fromUint8Array(tokenSubArray).toHexString()
+  );
+  let toAddress = Address.fromString(
+    Address.fromUint8Array(toSubArray).toHexString()
+  );
+  let amountUnPadded = removePadding(amountSubArray);
+  let amountBigInt = BigInt.fromUnsignedBytes(
+    changetype<Bytes>(amountUnPadded.reverse())
+  );
+  let referenceLengthSubArrayUnPadded = removePadding(referenceLengthSubArray);
+  let referenceLength = BigInt.fromUnsignedBytes(
+    changetype<Bytes>(referenceLengthSubArrayUnPadded.reverse())
+  ).toI32();
+
+  // @dev perhaps a length limmit is need such as no more than 288 char
+  let refrenceStringArray = referenceSubArray.subarray(0, referenceLength);
+  let referenceBytes = Bytes.fromByteArray(
+    changetype<ByteArray>(refrenceStringArray)
+  );
+  let withdrawParams = new WithdrawParams();
+  withdrawParams.token = tokenAddress;
+  withdrawParams.to = toAddress;
+  withdrawParams.amount = amountBigInt;
+  withdrawParams.reference = referenceBytes.toString();
+  return withdrawParams;
+}
 
 export function addPackage(daoId: string, who: Address): void {
   let daoPackageEntityId = daoId + '_' + who.toHexString();

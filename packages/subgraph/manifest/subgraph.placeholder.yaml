@@ -56,8 +56,8 @@ templates:
           handler: handleDeposited
         - event: ETHDeposited(address,uint256)
           handler: handleETHDeposited
-        - event: Withdrawn(indexed address,indexed address,uint256,string)
-          handler: handleWithdrawn
+        - event: Executed(indexed address,uint256,uint256,(address,uint256,bytes)[],bytes[])
+          handler: handleExecuted
         - event: Granted(indexed bytes32,indexed address,indexed address,address,address)
           handler: handleGranted
         - event: Revoked(indexed bytes32,indexed address,indexed address,address)
