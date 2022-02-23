@@ -87,7 +87,8 @@
     "sec": "sec",
     "ago": "ago",
     "step": "Step",
-    "of": "of"
+    "of": "of",
+    "allTokens": "All Tokens"
   },
   "placeHolders": {
     "selectToken": "Select a Token ...",

@@ -15,9 +15,9 @@ import React, {useMemo, useState} from 'react';
 import {useWallet} from 'context/augmentedWallet';
 import {useWalletProps} from 'containers/walletMenu';
 import NetworkIndicator from './networkIndicator';
+import {BreadcrumbDropdown} from './breadcrumbDropdown';
 import {Dashboard, NotFound} from 'utils/paths';
 import {NetworkIndicatorStatus} from 'utils/types';
-import {BreadcrumbDropdown} from './breadcrumbDropdown';
 
 const MIN_ROUTE_DEPTH_FOR_BREADCRUMBS = 2;
 
@@ -87,7 +87,7 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
               daoName="DAO Name"
               daoAddress="patito.eth.dao"
               onClick={() => null}
-              src=" "
+              src="https://banner2.cleanpng.com/20180325/sxw/kisspng-computer-icons-avatar-avatar-5ab7529a8e4e14.9936310115219636745829.jpg"
             />
           </div>
           <LinksWrapper>
@@ -97,6 +97,7 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
               <BreadcrumbDropdown
                 open={showCrumbMenu}
                 crumbs={breadcrumbs}
+                onClose={() => setShowCrumbMenu(false)}
                 onOpenChange={setShowCrumbMenu}
                 onCrumbClick={path => navigate(path)}
               />

@@ -2,13 +2,20 @@ import styled from 'styled-components';
 import React, {useMemo} from 'react';
 import {matchRoutes, useLocation} from 'react-router-dom';
 
+import {
+  NewDeposit,
+  NewWithDraw,
+  CreateDAO,
+  Dashboard,
+  Finance,
+} from 'utils/paths';
+import {i18n} from '../../../i18n.config';
 import MobileNav from './mobile';
 import useScreen from 'hooks/useScreen';
 import DesktopNav from './desktop';
 import {useWallet} from 'context/augmentedWallet';
 import {useWalletMenuContext} from 'context/walletMenu';
 import {CHAIN_METADATA as chains} from 'utils/constants';
-import {NewDeposit, NewWithDraw, CreateDAO} from 'utils/paths';
 
 type NumberIndexed = {[key: number]: {}};
 type StringIndexed = {[key: string]: {processLabel: string; returnURL: string}};
@@ -20,9 +27,15 @@ const processPaths = [
 ];
 
 const processes: StringIndexed = {
-  [CreateDAO]: {processLabel: 'Create your DAO', returnURL: '/'},
-  [NewDeposit]: {processLabel: 'New Transfer', returnURL: '/'},
-  [NewWithDraw]: {processLabel: 'New Transfer', returnURL: '/'},
+  [CreateDAO]: {processLabel: i18n.t('createDAO.title'), returnURL: Dashboard},
+  [NewDeposit]: {
+    processLabel: i18n.t('allTransfer.newTransfer'),
+    returnURL: Finance,
+  },
+  [NewWithDraw]: {
+    processLabel: i18n.t('allTransfer.newTransfer'),
+    returnURL: Finance,
+  },
 };
 
 const getNetworkStatus = (id: number) => {
