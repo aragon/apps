@@ -18,8 +18,7 @@ const MobileNavMenu: React.FC<MobileNavMenuProps> = props => {
           daoAddress="dao-name.dao.eth"
           daoName="DAO Name"
           onClick={() => null}
-          src="d"
-          wide
+          src=""
         />
         <div className="py-3 px-2 space-y-3">
           <NavLinks parent="modal" onItemClick={props.onClose} />

@@ -69,8 +69,7 @@ const MobileNav: React.FC<MobileNavProps> = props => {
           <FlexOne className="justify-center">
             <AvatarDao
               src="https://banner2.cleanpng.com/20180325/sxw/kisspng-computer-icons-avatar-avatar-5ab7529a8e4e14.9936310115219636745829.jpg"
-              label="DAO Name"
-              contentMode={isMobile ? 'none' : 'below'}
+              daoName="DAO Name"
             />
           </FlexOne>
           <FlexOne className="justify-end">

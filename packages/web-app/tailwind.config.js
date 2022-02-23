@@ -110,8 +110,8 @@ module.exports = {
     screens: {
       tablet: '768px',
       lg: '1280px',
-      desktop: '1440px',
-      wide: '1920px',
+      desktop: '1280px',
+      wide: '1680px',
     },
     fontFamily: {
       sans: ['Manrope'],
