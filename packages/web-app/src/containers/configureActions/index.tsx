@@ -10,11 +10,11 @@ import ActionBuilder from 'containers/actionBuilder';
 const ConfigureActions: React.FC = () => {
   const {t} = useTranslation();
   const {open} = useGlobalModalContext();
-  const {action} = useActionsContext();
+  const {actions} = useActionsContext();
 
   return (
     <>
-      {action ? (
+      {actions.length !== 0 ? (
         <ActionsWrapper>
           <ActionBuilder />
           <ButtonText

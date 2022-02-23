@@ -7,22 +7,35 @@ import {
   ButtonIcon,
   IconMenuVertical,
 } from '@aragon/ui-components';
+import {useFormContext} from 'react-hook-form';
 
-import {useGlobalModalContext} from 'context/globalModals';
 import {useActionsContext} from 'context/actions';
 import ConfigureWithdrawForm from '../configureWithdraw';
 
-const WithdrawAction: React.FC = () => {
+type Props = {
+  index: number;
+};
+
+const WithdrawAction: React.FC<Props> = ({index}) => {
   const {t} = useTranslation();
-  const {open} = useGlobalModalContext();
-  const {action} = useActionsContext();
+  const {removeAction, duplicateAction} = useActionsContext();
+  const {resetField} = useFormContext();
+
+  const resetWithdrawFields = () => {
+    resetField('to');
+    resetField('tokenSymbol');
+    resetField('tokenAddress');
+    resetField('amount');
+  };
 
   return (
     <Container>
       <Header>
         <HCWrapper>
-          <Title>Withdraw Assets</Title>
-          <Description>Withdraw assets from the DAO treasury</Description>
+          <Title>{t('AddActionModal.withdrawAssets')}</Title>
+          <Description>
+            {t('AddActionModal.withdrawAssetsActionSubtitle')}
+          </Description>
         </HCWrapper>
         <Popover
           side="bottom"
@@ -32,17 +45,17 @@ const WithdrawAction: React.FC = () => {
             <div className="p-1.5 space-y-0.5">
               <ListItemAction
                 title={t('labels.duplicateAction')}
-                // onClick={resetDistribution}
+                onClick={() => duplicateAction(index)}
                 bgWhite
               />
               <ListItemAction
                 title={t('labels.resetAction')}
-                onClick={() => {}}
+                onClick={resetWithdrawFields}
                 bgWhite
               />
               <ListItemAction
                 title={t('labels.removeEntireAction')}
-                onClick={() => {}}
+                onClick={() => removeAction(index)}
                 bgWhite
               />
             </div>

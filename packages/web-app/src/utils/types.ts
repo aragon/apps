@@ -141,5 +141,5 @@ export type ParamType = {
 
 export type ActionItem = {
   name: ActionsTypes;
-  inputs: ParamType[];
+  inputs?: ParamType[];
 };

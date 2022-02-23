@@ -14,29 +14,9 @@ export enum AddActionItems {
   EXTERNAL_CONTRACT = 'external_contract',
 }
 
-const actionsInputs = {
-  [AddActionItems.WITHDRAW_ASSETS]: [
-    {
-      type: 'address',
-      name: 'To',
-      value: '',
-    },
-    {
-      type: 'address',
-      name: 'Token',
-      value: '',
-    },
-    {
-      type: 'uint',
-      name: 'Amount',
-      value: '',
-    },
-  ],
-};
-
 const AddActionMenu: React.FC = () => {
   const {isAddActionOpen, close} = useGlobalModalContext();
-  const {setAction} = useActionsContext();
+  const {addAction} = useActionsContext();
   const {t} = useTranslation();
 
   return (
@@ -63,9 +43,8 @@ const AddActionMenu: React.FC = () => {
           subtitle={t('AddActionModal.withdrawAssetsSubtitle')}
           icon={<IconChevronRight />}
           onClick={() => {
-            setAction({
+            addAction({
               name: AddActionItems.WITHDRAW_ASSETS,
-              inputs: actionsInputs[AddActionItems.WITHDRAW_ASSETS],
             });
             close('addAction');
           }}

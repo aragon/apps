@@ -1,26 +1,27 @@
 import React from 'react';
-import {AlertInline, ButtonText, IconAdd, Label} from '@aragon/ui-components';
-import {useTranslation} from 'react-i18next';
-import styled from 'styled-components';
 
-import {useGlobalModalContext} from 'context/globalModals';
 import {useActionsContext} from 'context/actions';
 import WithdrawAction from './withdrawAction';
+import {ActionsTypes} from 'utils/types';
+import {AddActionItems} from '../addActionMenu';
 
 const ActionBuilder: React.FC = () => {
-  const {t} = useTranslation();
-  const {open} = useGlobalModalContext();
-  const {action} = useActionsContext();
+  const {actions} = useActionsContext();
+
+  const actionsComponents = (name: ActionsTypes, index: number) => {
+    switch (name) {
+      case AddActionItems.WITHDRAW_ASSETS:
+        return <WithdrawAction key={index} {...{index}} />;
+    }
+  };
 
   return (
     <>
-      <WithdrawAction />
+      {actions.map((action, index: number) =>
+        actionsComponents(action.name, index)
+      )}
     </>
   );
 };
 
 export default ActionBuilder;
-
-const FormItem = styled.div.attrs({
-  className: 'space-y-1.5',
-})``;

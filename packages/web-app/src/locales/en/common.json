@@ -81,7 +81,7 @@
     "createToken": "Create Token",
     "duplicateAction": "Duplicate Action",
     "resetAction": "Reset Action",
-    "removeEntireAction":"Remove Entire Action",
+    "removeEntireAction": "Remove Entire Action",
     "walletList": {
       "address": "Address",
       "addresses": "{{count}} Addresses"
@@ -238,6 +238,7 @@
     "mintTokensSubtitle": "Mint new tokens and distribute",
     "withdrawAssets": "Withdraw Assets",
     "withdrawAssetsSubtitle": "Propose to withdraw assets from the DAO treasury",
+    "withdrawAssetsActionSubtitle": "Withdraw assets from the DAO treasury",
     "externalContract": "External Contract",
     "externalContractSubtitle": "Interact with any contract on the blockchain and access any functionality"
   },

@@ -4,6 +4,7 @@ import React, {
   useState,
   useMemo,
   ReactNode,
+  useCallback,
 } from 'react';
 
 import {Address} from '@aragon/ui-components/dist/utils/addresses';
@@ -13,8 +14,10 @@ const ActionsContext = createContext<ActionsContextType | null>(null);
 
 type ActionsContextType = {
   daoAddress: Address;
-  action?: ActionItem;
-  setAction: (value: ActionItem) => void;
+  actions: ActionItem[];
+  addAction: (value: ActionItem) => void;
+  duplicateAction: (index: number) => void;
+  removeAction: (index: number) => void;
   setDaoAddress: (value: string) => void;
 };
 
@@ -23,16 +26,40 @@ type Props = Record<'children', ReactNode>;
 const ActionsProvider: React.FC<Props> = ({children}) => {
   const [daoAddress, setDaoAddress] =
     useState<ActionsContextType['daoAddress']>('');
-  const [action, setAction] = useState<ActionsContextType['action']>();
+  const [actions, setActions] = useState<ActionsContextType['actions']>([]);
+
+  const addAction = useCallback(newAction => {
+    setActions((oldActions: ActionsContextType['actions']) => [
+      ...oldActions,
+      newAction,
+    ]);
+  }, []);
+
+  const removeAction = useCallback(
+    (index: number) => {
+      const newActions = actions.filter((_, oldIndex) => oldIndex !== index);
+      setActions(newActions);
+    },
+    [actions]
+  );
+
+  const duplicateAction = useCallback((index: number) => {
+    setActions((oldActions: ActionsContextType['actions']) => [
+      ...oldActions,
+      oldActions[index],
+    ]);
+  }, []);
 
   const value = useMemo(
     (): ActionsContextType => ({
       daoAddress,
-      action,
+      actions,
       setDaoAddress,
-      setAction,
+      addAction,
+      removeAction,
+      duplicateAction,
     }),
-    [action, daoAddress]
+    [actions, addAction, daoAddress, duplicateAction, removeAction]
   );
 
   return (
