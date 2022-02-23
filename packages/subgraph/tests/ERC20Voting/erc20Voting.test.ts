@@ -9,7 +9,6 @@ import {
   DAO_ADDRESS
 } from '../constants';
 import {
-  createDummyAcctions,
   createGetVoteCall,
   createNewCastVoteEvent,
   createNewExecuteVoteEvent,
@@ -23,6 +22,7 @@ import {
   handleUpdateConfig,
   _handleStartVote
 } from '../../src/packages/ERC20Voting/erc20Voting';
+import {createDummyAcctions} from '../utils';
 
 test('Run ERC Voting (handleStartVote) mappings with mock event', () => {
   // create state
@@ -191,6 +191,31 @@ test('Run ERC Voting (handleExecuteVote) mappings with mock event', () => {
   let entityID = Address.fromString(VOTING_ADDRESS).toHexString() + '_' + '0x0';
   let erc20VotingProposal = new ERC20VotingProposal(entityID);
   erc20VotingProposal.save();
+
+  // create calls
+  let voteId = '0';
+  let startDate = '1644851000';
+  let endDate = '1644852000';
+  let snapshotBlock = '100';
+  let supportRequiredPct = '1000';
+  let minAcceptQuorumPct = '500';
+  let votingPower = '1000';
+  let actions = createDummyAcctions(DAO_TOKEN_ADDRESS, '0', '0x00000000');
+  createGetVoteCall(
+    VOTING_ADDRESS,
+    voteId,
+    true,
+    true,
+    startDate,
+    endDate,
+    snapshotBlock,
+    supportRequiredPct,
+    minAcceptQuorumPct,
+    '1',
+    '0',
+    votingPower,
+    actions
+  );
 
   // create event
   let event = createNewExecuteVoteEvent('0', VOTING_ADDRESS);

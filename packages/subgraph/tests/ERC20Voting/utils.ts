@@ -166,20 +166,6 @@ export function createGetVoteCall(
     ]);
 }
 
-export function createDummyAcctions(
-  address: string,
-  value: string,
-  data: string
-): ethereum.Tuple[] {
-  let tuple = new ethereum.Tuple();
-
-  tuple.push(ethereum.Value.fromAddress(Address.fromString(address)));
-  tuple.push(ethereum.Value.fromSignedBigInt(BigInt.fromString(value)));
-  tuple.push(ethereum.Value.fromBytes(Bytes.fromUTF8(data)));
-
-  return [tuple];
-}
-
 export function getVotesLengthCall(
   contractAddress: string,
   returns: string
