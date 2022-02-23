@@ -177,9 +177,9 @@ const NavItem = styled.button.attrs(({isSelected}: {isSelected: boolean}) => {
     'active:text-primary-700 disabled:text-ui-300 disabled:bg-ui-50' +
     ' focus:ring-2 focus:ring-primary-500 focus:outline-none ';
 
-  isSelected
-    ? (className += 'text-primary-500 bg-ui-0')
-    : (className += 'text-ui-600');
+  if (isSelected) className += 'text-primary-500 bg-ui-0';
+  else className += 'text-ui-600';
+
   return {className};
 })<{isSelected: boolean}>``;
 
