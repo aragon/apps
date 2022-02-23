@@ -3,11 +3,13 @@ import React, {useMemo} from 'react';
 import {matchRoutes, useLocation} from 'react-router-dom';
 
 import {
-  NewDeposit,
-  NewWithDraw,
   CreateDAO,
   Dashboard,
   Finance,
+  Governance,
+  NewDeposit,
+  NewProposal,
+  NewWithDraw,
 } from 'utils/paths';
 import {i18n} from '../../../i18n.config';
 import MobileNav from './mobile';
@@ -24,6 +26,7 @@ const processPaths = [
   {path: NewDeposit},
   {path: NewWithDraw},
   {path: CreateDAO},
+  {path: NewProposal},
 ];
 
 const processes: StringIndexed = {
@@ -35,6 +38,10 @@ const processes: StringIndexed = {
   [NewWithDraw]: {
     processLabel: i18n.t('allTransfer.newTransfer'),
     returnURL: Finance,
+  },
+  [NewProposal]: {
+    processLabel: i18n.t('newProposal.title'),
+    returnURL: Governance,
   },
 };
 
