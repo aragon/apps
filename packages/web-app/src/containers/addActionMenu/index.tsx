@@ -14,11 +14,27 @@ export enum AddActionItems {
   EXTERNAL_CONTRACT = 'external_contract',
 }
 
-type AddActionMenuProps = {
-  onActionSelect: (AddActionItems: AddActionItems) => void;
+const actionsInputs = {
+  [AddActionItems.WITHDRAW_ASSETS]: [
+    {
+      type: 'address',
+      name: 'To',
+      value: '',
+    },
+    {
+      type: 'address',
+      name: 'Token',
+      value: '',
+    },
+    {
+      type: 'uint',
+      name: 'Amount',
+      value: '',
+    },
+  ],
 };
 
-const AddActionMenu: React.FC<AddActionMenuProps> = () => {
+const AddActionMenu: React.FC = () => {
   const {isAddActionOpen, close} = useGlobalModalContext();
   const {setAction} = useActionsContext();
   const {t} = useTranslation();
@@ -46,28 +62,13 @@ const AddActionMenu: React.FC<AddActionMenuProps> = () => {
           title={t('AddActionModal.withdrawAssets')}
           subtitle={t('AddActionModal.withdrawAssetsSubtitle')}
           icon={<IconChevronRight />}
-          onClick={() =>
+          onClick={() => {
             setAction({
               name: AddActionItems.WITHDRAW_ASSETS,
-              inputs: [
-                {
-                  type: 'address',
-                  name: 'To',
-                  value: '',
-                },
-                {
-                  type: 'address',
-                  name: 'Token',
-                  value: '',
-                },
-                {
-                  type: 'uint',
-                  name: 'Amount',
-                  value: '',
-                },
-              ],
-            })
-          }
+              inputs: actionsInputs[AddActionItems.WITHDRAW_ASSETS],
+            });
+            close('addAction');
+          }}
         />
         <ActionListItem
           title={t('AddActionModal.externalContract')}
