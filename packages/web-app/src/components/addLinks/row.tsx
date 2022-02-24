@@ -23,6 +23,10 @@ type LinkRowProps = {
   onDelete?: (index: number) => void;
 };
 
+const UrlRegex = new RegExp(URL_PATTERN);
+const EmailRegex = new RegExp(EMAIL_PATTERN);
+const UrlWithProtocolRegex = new RegExp(URL_WITH_PROTOCOL_PATTERN);
+
 const LinkRow: React.FC<LinkRowProps> = ({index, onDelete}) => {
   const {t} = useTranslation();
   const {control, clearErrors, getValues, trigger, setValue} = useFormContext();
@@ -65,14 +69,8 @@ const LinkRow: React.FC<LinkRowProps> = ({index, onDelete}) => {
     (name: string) => {
       const url = getValues(name);
 
-      if (
-        new RegExp(URL_PATTERN).test(url) ||
-        new RegExp(EMAIL_PATTERN).test(url)
-      ) {
-        if (
-          new RegExp(URL_PATTERN).test(url) &&
-          !new RegExp(URL_WITH_PROTOCOL_PATTERN).test(url)
-        ) {
+      if (UrlRegex.test(url) || EmailRegex.test(url)) {
+        if (UrlRegex.test(url) && !UrlWithProtocolRegex.test(url)) {
           setValue(name, `http://${url}`);
         }
         return true;
@@ -89,8 +87,7 @@ const LinkRow: React.FC<LinkRowProps> = ({index, onDelete}) => {
 
       if (url === '') return t('errors.required.link');
 
-      return new RegExp(URL_PATTERN).test(url) ||
-        new RegExp(EMAIL_PATTERN).test(url)
+      return UrlRegex.test(url) || EmailRegex.test(url)
         ? true
         : t('errors.invalidURL');
     },
