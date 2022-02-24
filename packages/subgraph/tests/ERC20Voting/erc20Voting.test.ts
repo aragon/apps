@@ -37,7 +37,7 @@ test('Run ERC Voting (handleStartVote) mappings with mock event', () => {
   let endDate = '1644852000';
   let snapshotBlock = '100';
   let supportRequiredPct = '1000';
-  let minAcceptQuorumPct = '500';
+  let participationRequiredPct = '500';
   let votingPower = '1000';
   getVotesLengthCall(VOTING_ADDRESS, '1');
   let actions = createDummyAcctions(DAO_TOKEN_ADDRESS, '0', '0x00000000');
@@ -50,10 +50,11 @@ test('Run ERC Voting (handleStartVote) mappings with mock event', () => {
     endDate,
     snapshotBlock,
     supportRequiredPct,
-    minAcceptQuorumPct,
-    '0',
-    '0',
+    participationRequiredPct,
     votingPower,
+    '0',
+    '0',
+    '0',
     actions
   );
 
@@ -108,8 +109,8 @@ test('Run ERC Voting (handleStartVote) mappings with mock event', () => {
   assert.fieldEquals(
     'ERC20VotingProposal',
     entityID,
-    'minAcceptQuorumPct',
-    minAcceptQuorumPct
+    'participationRequiredPct',
+    participationRequiredPct
   );
   assert.fieldEquals(
     'ERC20VotingProposal',
@@ -143,7 +144,7 @@ test('Run ERC Voting (handleCastVote) mappings with mock event', () => {
   let endDate = '1644852000';
   let snapshotBlock = '100';
   let supportRequiredPct = '1000';
-  let minAcceptQuorumPct = '500';
+  let participationRequired = '500';
   let votingPower = '1000';
   let actions = createDummyAcctions(DAO_TOKEN_ADDRESS, '0', '0x00000000');
   createGetVoteCall(
@@ -155,10 +156,11 @@ test('Run ERC Voting (handleCastVote) mappings with mock event', () => {
     endDate,
     snapshotBlock,
     supportRequiredPct,
-    minAcceptQuorumPct,
+    participationRequired,
+    votingPower,
     '1',
     '0',
-    votingPower,
+    '0',
     actions
   );
 
@@ -166,7 +168,7 @@ test('Run ERC Voting (handleCastVote) mappings with mock event', () => {
   let event = createNewCastVoteEvent(
     voteId,
     ADDRESS_ONE,
-    true,
+    '2', // Yea
     '10000',
     VOTING_ADDRESS
   );
@@ -198,7 +200,7 @@ test('Run ERC Voting (handleExecuteVote) mappings with mock event', () => {
   let endDate = '1644852000';
   let snapshotBlock = '100';
   let supportRequiredPct = '1000';
-  let minAcceptQuorumPct = '500';
+  let participationRequiredPct = '500';
   let votingPower = '1000';
   let actions = createDummyAcctions(DAO_TOKEN_ADDRESS, '0', '0x00000000');
   createGetVoteCall(
@@ -210,10 +212,11 @@ test('Run ERC Voting (handleExecuteVote) mappings with mock event', () => {
     endDate,
     snapshotBlock,
     supportRequiredPct,
-    minAcceptQuorumPct,
+    participationRequiredPct,
+    votingPower,
     '1',
     '0',
-    votingPower,
+    '0',
     actions
   );
 
@@ -245,7 +248,12 @@ test('Run ERC Voting (handleUpdateConfig) mappings with mock event', () => {
   // checks
   assert.fieldEquals('ERC20VotingPackage', entityID, 'id', entityID);
   assert.fieldEquals('ERC20VotingPackage', entityID, 'supportRequiredPct', '1');
-  assert.fieldEquals('ERC20VotingPackage', entityID, 'minAcceptQuorumPct', '2');
+  assert.fieldEquals(
+    'ERC20VotingPackage',
+    entityID,
+    'participationRequiredPct',
+    '2'
+  );
   assert.fieldEquals('ERC20VotingPackage', entityID, 'minDuration', '3600');
 
   clearStore();

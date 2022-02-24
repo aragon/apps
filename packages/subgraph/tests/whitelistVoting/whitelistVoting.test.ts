@@ -15,7 +15,6 @@ import {
   ADDRESS_TWO
 } from '../constants';
 import {
-  createDummyAcctions,
   createGetVoteCall,
   createNewAddUsersEvent,
   createNewCastVoteEvent,
@@ -33,6 +32,7 @@ import {
   handleUpdateConfig,
   _handleStartVote
 } from '../../src/packages/whitelist/whitelistVoting';
+import {createDummyAcctions} from '../utils';
 
 test('Run Whitelist Voting (handleStartVote) mappings with mock event', () => {
   // create state
@@ -46,6 +46,7 @@ test('Run Whitelist Voting (handleStartVote) mappings with mock event', () => {
   let startDate = '1644851000';
   let endDate = '1644852000';
   let supportRequiredPct = '1000';
+  let participationRequired = '500';
   let votingPower = '1000';
   getVotesLengthCall(VOTING_ADDRESS, '1');
   let actions = createDummyAcctions(DAO_TOKEN_ADDRESS, '0', '0x00000000');
@@ -57,9 +58,11 @@ test('Run Whitelist Voting (handleStartVote) mappings with mock event', () => {
     startDate,
     endDate,
     supportRequiredPct,
-    '0',
-    '0',
+    participationRequired,
     votingPower,
+    '0',
+    '0',
+    '0',
     actions
   );
 
@@ -126,6 +129,7 @@ test('Run Whitelist Voting (handleCastVote) mappings with mock event', () => {
   let startDate = '1644851000';
   let endDate = '1644852000';
   let supportRequiredPct = '1000';
+  let participationRequired = '500';
   let votingPower = '1000';
   let actions = createDummyAcctions(DAO_TOKEN_ADDRESS, '0', '0x00000000');
   createGetVoteCall(
@@ -136,14 +140,16 @@ test('Run Whitelist Voting (handleCastVote) mappings with mock event', () => {
     startDate,
     endDate,
     supportRequiredPct,
+    participationRequired,
+    votingPower,
     '1',
     '0',
-    votingPower,
+    '0',
     actions
   );
 
   // create event
-  let event = createNewCastVoteEvent(voteId, ADDRESS_ONE, true, VOTING_ADDRESS);
+  let event = createNewCastVoteEvent(voteId, ADDRESS_ONE, '2', VOTING_ADDRESS);
 
   handleCastVote(event);
 
@@ -183,13 +189,19 @@ test('Run Whitelist Voting (handleUpdateConfig) mappings with mock event', () =>
   erc20VotingPackage.save();
 
   // create event
-  let event = createNewUpdateConfigEvent('1', '3600', VOTING_ADDRESS);
+  let event = createNewUpdateConfigEvent('2', '1', '3600', VOTING_ADDRESS);
 
   // handle event
   handleUpdateConfig(event);
 
   // checks
   assert.fieldEquals('WhitelistPackage', entityID, 'id', entityID);
+  assert.fieldEquals(
+    'WhitelistPackage',
+    entityID,
+    'participationRequiredPct',
+    '2'
+  );
   assert.fieldEquals('WhitelistPackage', entityID, 'supportRequiredPct', '1');
   assert.fieldEquals('WhitelistPackage', entityID, 'minDuration', '3600');
 

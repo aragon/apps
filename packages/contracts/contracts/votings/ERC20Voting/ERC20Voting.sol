@@ -56,7 +56,7 @@ contract ERC20Voting is Component, TimeHelpers {
     string private constant ERROR_NO_VOTING_POWER = "VOTING_NO_VOTING_POWER";
 
     event StartVote(uint256 indexed voteId, address indexed creator, bytes description);
-    event CastVote(uint256 indexed voteId, address indexed voter, uint8 VoterState, uint256 stake);
+    event CastVote(uint256 indexed voteId, address indexed voter, uint8 voterState, uint256 stake);
     event ExecuteVote(uint256 indexed voteId, bytes[] execResults);
     event UpdateConfig(uint64 participationRequiredPct, uint64 supportRequiredPct, uint64 minDuration);
 
@@ -283,10 +283,10 @@ contract ERC20Voting is Component, TimeHelpers {
      * @return snapshotBlock snapshot block
      * @return supportRequired support required
      * @return participationRequired minimum participation required
+     * @return votingPower power
      * @return yea yeas amount
      * @return nay nays amount
      * @return abstain abstain amount
-     * @return votingPower power
      * @return actions Actions
      */
     function getVote(uint256 _voteId)
@@ -300,10 +300,10 @@ contract ERC20Voting is Component, TimeHelpers {
             uint64 snapshotBlock,
             uint64 supportRequired,
             uint64 participationRequired,
+            uint256 votingPower,
             uint256 yea,
             uint256 nay,
             uint256 abstain,
-            uint256 votingPower,
             IDAO.Action[] memory actions
         )
     {
@@ -316,10 +316,10 @@ contract ERC20Voting is Component, TimeHelpers {
         snapshotBlock = vote_.snapshotBlock;
         supportRequired = vote_.supportRequiredPct;
         participationRequired = vote_.participationRequiredPct;
+        votingPower = vote_.votingPower;
         yea = vote_.yea;
         nay = vote_.nay;
         abstain = vote_.abstain;
-        votingPower = vote_.votingPower;
         actions = vote_.actions;
     }
 

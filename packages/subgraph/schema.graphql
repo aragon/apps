@@ -123,6 +123,15 @@ interface Voter {
   id: ID! # address
 }
 
+# Votings
+
+enum VoterState {
+  None
+  Abstain
+  Yea
+  Nay
+}
+
 # ERC20Voting
 
 type ERC20VotingPackage implements Package @entity {
@@ -130,7 +139,7 @@ type ERC20VotingPackage implements Package @entity {
   daos: [DaoPackage!] @derivedFrom(field: "pkg")
   proposals: [ERC20VotingProposal!]! @derivedFrom(field: "pkg")
   supportRequiredPct: BigInt
-  minAcceptQuorumPct: BigInt
+  participationRequiredPct: BigInt
   minDuration: BigInt
   votesLength: BigInt
   token: ERC20Token
@@ -146,7 +155,7 @@ type ERC20Vote @entity {
   id: ID! # voter + proposal
   voter: ERC20VotingVoter!
   proposal: ERC20VotingProposal!
-  vote: Boolean!
+  vote: VoterState!
   stake: BigInt!
   createdAt: BigInt!
 }
@@ -163,9 +172,10 @@ type ERC20VotingProposal implements Proposal @entity {
   endDate: BigInt!
   snapshotBlock: BigInt!
   supportRequiredPct: BigInt!
-  minAcceptQuorumPct: BigInt!
+  participationRequiredPct: BigInt!
   yea: BigInt
   nay: BigInt
+  abstain: BigInt
   votingPower: BigInt!
   voters: [ERC20Vote!]! @derivedFrom(field: "proposal")
   executed: Boolean!
@@ -179,7 +189,7 @@ type WhitelistPackage implements Package @entity {
   daos: [DaoPackage!] @derivedFrom(field: "pkg")
   proposals: [WhitelistProposal!]! @derivedFrom(field: "pkg")
   supportRequiredPct: BigInt
-  whitelistedLength: BigInt
+  participationRequiredPct: BigInt
   minDuration: BigInt
   votesLength: BigInt
   users: [WhitelistVoter!]! @derivedFrom(field: "pkg")
@@ -196,7 +206,7 @@ type WhitelistVote @entity {
   id: ID! # voter + proposal
   voter: WhitelistVoter!
   proposal: WhitelistProposal!
-  vote: Boolean!
+  vote: VoterState!
   createdAt: BigInt!
 }
 
@@ -211,9 +221,11 @@ type WhitelistProposal implements Proposal @entity {
   startDate: BigInt!
   endDate: BigInt!
   supportRequiredPct: BigInt!
+  participationRequired: BigInt!
   votingPower: BigInt!
   yea: BigInt
   nay: BigInt
+  abstain: BigInt
   voters: [WhitelistVote!]! @derivedFrom(field: "proposal")
   executed: Boolean!
   createdAt: BigInt!

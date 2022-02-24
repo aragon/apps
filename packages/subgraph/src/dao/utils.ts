@@ -82,16 +82,16 @@ function createErc20VotingPakcage(who: Address, daoId: string): void {
     packageEntity = new ERC20VotingPackage(who.toHexString());
     let contract = ERC20VotingContract.bind(who);
     let supportRequiredPct = contract.try_supportRequiredPct();
-    let minAcceptQuorumPct = contract.try_minAcceptQuorumPct();
+    let participationRequiredPct = contract.try_participationRequiredPct();
     let minDuration = contract.try_minDuration();
     let token = contract.try_token();
 
     packageEntity.supportRequiredPct = supportRequiredPct.reverted
       ? null
       : supportRequiredPct.value;
-    packageEntity.minAcceptQuorumPct = minAcceptQuorumPct.reverted
+    packageEntity.participationRequiredPct = participationRequiredPct.reverted
       ? null
-      : minAcceptQuorumPct.value;
+      : participationRequiredPct.value;
     packageEntity.minDuration = minDuration.reverted ? null : minDuration.value;
 
     let tokenId = handleERC20Token(token.value);
@@ -113,15 +113,15 @@ function createWhitelistVotingPakcage(who: Address, daoId: string): void {
     packageEntity = new WhitelistPackage(who.toHexString());
     let contract = WhitelistVotingContract.bind(who);
     let supportRequiredPct = contract.try_supportRequiredPct();
-    let whitelistedLength = contract.try_whitelistedLength();
+    let participationRequiredPct = contract.try_participationRequiredPct();
     let minDuration = contract.try_minDuration();
 
     packageEntity.supportRequiredPct = supportRequiredPct.reverted
       ? null
       : supportRequiredPct.value;
-    packageEntity.whitelistedLength = whitelistedLength.reverted
+    packageEntity.participationRequiredPct = participationRequiredPct.reverted
       ? null
-      : whitelistedLength.value;
+      : participationRequiredPct.value;
     packageEntity.minDuration = minDuration.reverted ? null : minDuration.value;
 
     // Create template

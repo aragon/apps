@@ -256,14 +256,14 @@ export function getSupportRequiredPct(
     .returns([ethereum.Value.fromSignedBigInt(returns)]);
 }
 
-export function getMinAcceptQuorumPct(
+export function getParticipationRequiredPct(
   contractAddress: string,
   returns: BigInt
 ): void {
   createMockedFunction(
     Address.fromString(contractAddress),
-    'minAcceptQuorumPct',
-    'minAcceptQuorumPct():(uint64)'
+    'participationRequiredPct',
+    'participationRequiredPct():(uint64)'
   )
     .withArgs([])
     .returns([ethereum.Value.fromSignedBigInt(returns)]);

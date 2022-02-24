@@ -15,6 +15,7 @@ import {
   WhitelistVote
 } from '../../../generated/schema';
 import {dataSource, store} from '@graphprotocol/graph-ts';
+import {VOTER_STATE} from '../../utils/constants';
 
 export function handleStartVote(event: StartVote): void {
   let context = dataSource.context();
@@ -39,14 +40,15 @@ export function _handleStartVote(event: StartVote, daoId: string): void {
   let vote = contract.try_getVote(event.params.voteId);
 
   if (!vote.reverted) {
+    proposalEntity.executed = vote.value.value1;
     proposalEntity.startDate = vote.value.value2;
     proposalEntity.endDate = vote.value.value3;
     proposalEntity.supportRequiredPct = vote.value.value4;
-    proposalEntity.votingPower = vote.value.value5;
-    proposalEntity.executed = vote.value.value1;
+    proposalEntity.participationRequired = vote.value.value5;
+    proposalEntity.votingPower = vote.value.value6;
 
     // actions
-    let actions = vote.value.value8;
+    let actions = vote.value.value10;
     for (let index = 0; index < actions.length; index++) {
       const action = actions[index];
 
@@ -90,7 +92,7 @@ export function handleCastVote(event: CastVote): void {
     voterProposalEntity.voter = event.params.voter.toHexString();
     voterProposalEntity.proposal = proposalId;
   }
-  voterProposalEntity.vote = event.params.voterSupports;
+  voterProposalEntity.vote = VOTER_STATE.get(event.params.voterState);
   voterProposalEntity.createdAt = event.block.timestamp;
   voterProposalEntity.save();
 
@@ -100,8 +102,9 @@ export function handleCastVote(event: CastVote): void {
     let contract = WhitelistVoting.bind(event.address);
     let vote = contract.try_getVote(event.params.voteId);
     if (!vote.reverted) {
-      proposalEntity.yea = vote.value.value6;
-      proposalEntity.nay = vote.value.value7;
+      proposalEntity.yea = vote.value.value7;
+      proposalEntity.nay = vote.value.value8;
+      proposalEntity.abstain = vote.value.value9;
       proposalEntity.save();
     }
   }
@@ -120,7 +123,7 @@ export function handleExecuteVote(event: ExecuteVote): void {
   let contract = WhitelistVoting.bind(event.address);
   let vote = contract.try_getVote(event.params.voteId);
   if (!vote.reverted) {
-    let actions = vote.value.value8;
+    let actions = vote.value.value10;
     for (let index = 0; index < actions.length; index++) {
       const action = actions[index];
 
@@ -143,6 +146,8 @@ export function handleExecuteVote(event: ExecuteVote): void {
 export function handleUpdateConfig(event: UpdateConfig): void {
   let packageEntity = WhitelistPackage.load(event.address.toHexString());
   if (packageEntity) {
+    packageEntity.participationRequiredPct =
+      event.params.participationRequiredPct;
     packageEntity.supportRequiredPct = event.params.supportRequiredPct;
     packageEntity.minDuration = event.params.minDuration;
     packageEntity.save();

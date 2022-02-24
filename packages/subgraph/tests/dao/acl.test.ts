@@ -6,7 +6,7 @@ import {
   createNewRevokedEvent,
   getEXEC_ROLE,
   getEXEC_ROLEreverted,
-  getMinAcceptQuorumPct,
+  getParticipationRequiredPct,
   getSupportRequiredPct,
   getSVToken,
   getVotesLength,
@@ -47,7 +47,7 @@ test('Run dao (handleGranted) mappings with mock event', () => {
   createTokenCalls(DAO_TOKEN_ADDRESS, 'DAO Token', 'DAOT', '6');
   getEXEC_ROLE(DAO_ADDRESS, role);
   getSupportRequiredPct(VOTING_ADDRESS, BigInt.fromString(ONE_ETH));
-  getMinAcceptQuorumPct(VOTING_ADDRESS, BigInt.fromString(ONE_ETH));
+  getParticipationRequiredPct(VOTING_ADDRESS, BigInt.fromString(ONE_ETH));
   getMinDuration(VOTING_ADDRESS, BigInt.fromString(ONE_ETH));
   getVotesLength(VOTING_ADDRESS, BigInt.fromString(ONE_ETH));
   getSVToken(VOTING_ADDRESS, DAO_TOKEN_ADDRESS);
