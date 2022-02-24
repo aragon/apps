@@ -68,7 +68,7 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
           <ProcessMenuItems>
             <Breadcrumb
               crumbs={{label: props.processLabel!, path: props.returnURL!}}
-              onClick={(path: string) => navigate(path)}
+              onClick={navigate}
             />
             <ButtonIcon
               mode="secondary"
@@ -104,14 +104,21 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
             {breadcrumbs.length < MIN_ROUTE_DEPTH_FOR_BREADCRUMBS ? (
               <NavLinks />
             ) : (
-              <BreadcrumbDropdown
-                open={showCrumbMenu}
-                icon={basePathIcons[breadcrumbs[0].path]}
-                crumbs={breadcrumbs}
-                onClose={() => setShowCrumbMenu(false)}
-                onOpenChange={setShowCrumbMenu}
-                onCrumbClick={path => navigate(path)}
-              />
+              <>
+                <BreadcrumbDropdown
+                  open={showCrumbMenu}
+                  icon={basePathIcons[breadcrumbs[0].path]}
+                  crumbs={breadcrumbs}
+                  onClose={() => setShowCrumbMenu(false)}
+                  onCrumbClick={navigate}
+                  onOpenChange={setShowCrumbMenu}
+                />
+                <Breadcrumb
+                  icon={basePathIcons[breadcrumbs[0].path]}
+                  crumbs={breadcrumbs}
+                  onClick={navigate}
+                />
+              </>
             )}
           </LinksWrapper>
         </Content>
