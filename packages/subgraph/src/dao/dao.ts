@@ -207,8 +207,8 @@ export function handleGranted(event: Granted): void {
   permissionEntity.save();
 
   // Package
-  // TODO: rethink this once the market place is ready
   let daoContract = DAOContract.bind(event.address);
+  // TODO: perhaps hardcoding exec role will be more efficient.
   let executionRole = daoContract.try_EXEC_ROLE();
   if (!executionRole.reverted && event.params.role == executionRole.value) {
     addPackage(daoId, event.params.who);

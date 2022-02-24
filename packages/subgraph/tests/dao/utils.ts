@@ -299,6 +299,33 @@ export function getSVToken(contractAddress: string, returns: string): void {
     .returns([ethereum.Value.fromAddress(Address.fromString(returns))]);
 }
 
+export function getWhiteListed(
+  contractAddress: string,
+  address: string,
+  returns: boolean
+): void {
+  createMockedFunction(
+    Address.fromString(contractAddress),
+    'whitelisted',
+    'whitelisted(address):(bool)'
+  )
+    .withArgs([ethereum.Value.fromAddress(Address.fromString(address))])
+    .returns([ethereum.Value.fromBoolean(returns)]);
+}
+
+export function getWhitelistedLength(
+  contractAddress: string,
+  returns: string
+): void {
+  createMockedFunction(
+    Address.fromString(contractAddress),
+    'whitelistedLength',
+    'whitelistedLength():(uint64)'
+  )
+    .withArgs([])
+    .returns([ethereum.Value.fromUnsignedBigInt(BigInt.fromString(returns))]);
+}
+
 export function createNewExecutedEvent(
   actor: string,
   callId: string,

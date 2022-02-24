@@ -1,4 +1,8 @@
-import {DaoPackage, ERC20VotingPackage} from '../../generated/schema';
+import {
+  DaoPackage,
+  ERC20VotingPackage,
+  WhitelistPackage
+} from '../../generated/schema';
 import {
   Address,
   BigInt,
@@ -9,9 +13,10 @@ import {
   store
 } from '@graphprotocol/graph-ts';
 import {ERC20Voting as ERC20VotingContract} from '../../generated/templates/ERC20Voting/ERC20Voting';
-import {ERC20Voting} from '../../generated/templates';
+import {ERC20Voting, WhitelistVoting} from '../../generated/templates';
 import {handleERC20Token} from '../utils/tokens';
 import {ADDRESS_ZERO} from '../utils/constants';
+import {WhitelistVoting as WhitelistVotingContract} from '../../generated/templates/WhitelistVoting/WhitelistVoting';
 
 class WithdrawParams {
   token: Address = Address.fromString(ADDRESS_ZERO);
@@ -71,15 +76,7 @@ export function decodeWithdrawParams(data: ByteArray): WithdrawParams {
   return withdrawParams;
 }
 
-export function addPackage(daoId: string, who: Address): void {
-  let daoPackageEntityId = daoId + '_' + who.toHexString();
-  let daoPackageEntity = new DaoPackage(daoPackageEntityId);
-  daoPackageEntity.pkg = who.toHexString();
-  daoPackageEntity.dao = daoId;
-  daoPackageEntity.save();
-
-  // package
-  // TODO: select the correct package according to supporting interface
+function createErc20VotingPakcage(who: Address, daoId: string): void {
   let packageEntity = ERC20VotingPackage.load(who.toHexString());
   if (!packageEntity) {
     packageEntity = new ERC20VotingPackage(who.toHexString());
@@ -108,6 +105,50 @@ export function addPackage(daoId: string, who: Address): void {
 
     packageEntity.save();
   }
+}
+
+function createWhitelistVotingPakcage(who: Address, daoId: string): void {
+  let packageEntity = WhitelistPackage.load(who.toHexString());
+  if (!packageEntity) {
+    packageEntity = new WhitelistPackage(who.toHexString());
+    let contract = WhitelistVotingContract.bind(who);
+    let supportRequiredPct = contract.try_supportRequiredPct();
+    let whitelistedLength = contract.try_whitelistedLength();
+    let minDuration = contract.try_minDuration();
+
+    packageEntity.supportRequiredPct = supportRequiredPct.reverted
+      ? null
+      : supportRequiredPct.value;
+    packageEntity.whitelistedLength = whitelistedLength.reverted
+      ? null
+      : whitelistedLength.value;
+    packageEntity.minDuration = minDuration.reverted ? null : minDuration.value;
+
+    // Create template
+    let context = new DataSourceContext();
+    context.setString('daoAddress', daoId);
+    WhitelistVoting.createWithContext(who, context);
+
+    packageEntity.save();
+  }
+}
+
+export function addPackage(daoId: string, who: Address): void {
+  let daoPackageEntityId = daoId + '_' + who.toHexString();
+  let daoPackageEntity = new DaoPackage(daoPackageEntityId);
+  daoPackageEntity.pkg = who.toHexString();
+  daoPackageEntity.dao = daoId;
+  daoPackageEntity.save();
+
+  // package
+  // @dev this is a temporary solution as we have only 2 packages, and should change in the future.
+  let contract = WhitelistVotingContract.bind(who);
+  let response = contract.try_whitelisted(Address.fromString(ADDRESS_ZERO));
+  if (!response.reverted) {
+    createWhitelistVotingPakcage(who, daoId);
+    return;
+  }
+  createErc20VotingPakcage(who, daoId);
 }
 
 export function removePackage(daoId: string, who: string): void {

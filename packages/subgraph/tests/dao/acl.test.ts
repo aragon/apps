@@ -10,7 +10,9 @@ import {
   getSupportRequiredPct,
   getSVToken,
   getVotesLength,
-  getMinDuration
+  getMinDuration,
+  getWhiteListed,
+  getWhitelistedLength
 } from './utils';
 import {
   DAO_ADDRESS,
@@ -49,6 +51,8 @@ test('Run dao (handleGranted) mappings with mock event', () => {
   getMinDuration(VOTING_ADDRESS, BigInt.fromString(ONE_ETH));
   getVotesLength(VOTING_ADDRESS, BigInt.fromString(ONE_ETH));
   getSVToken(VOTING_ADDRESS, DAO_TOKEN_ADDRESS);
+  getWhiteListed(VOTING_ADDRESS, ADDRESS_ZERO, false);
+  getWhitelistedLength(VOTING_ADDRESS, '1');
 
   // handle event
   handleGranted(grantedEvent);
@@ -118,6 +122,8 @@ test('Run dao (handleGranted) mappings with reverted mocke call', () => {
   // launch calls
   createTokenCalls(DAO_TOKEN_ADDRESS, 'DAO Token', 'DAOT', '6');
   getEXEC_ROLEreverted(DAO_ADDRESS);
+  getWhiteListed(VOTING_ADDRESS, ADDRESS_ZERO, false);
+  getWhitelistedLength(VOTING_ADDRESS, '1');
 
   // handle event
   handleGranted(grantedEvent);
