@@ -96,6 +96,7 @@ module.exports = {
         14: '112px',
         16: '128px',
         25: '200px',
+        50: '400px',
       },
       borderRadius: {
         larger: '10px',
@@ -108,8 +109,9 @@ module.exports = {
     // overrides screen breakpoints according to design system
     screens: {
       tablet: '768px',
-      desktop: '1440px',
-      wide: '1920px',
+      lg: '1280px',
+      desktop: '1280px',
+      wide: '1680px',
     },
     fontFamily: {
       sans: ['Manrope'],

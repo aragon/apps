@@ -87,7 +87,8 @@
     "sec": "sec",
     "ago": "ago",
     "step": "Step",
-    "of": "of"
+    "of": "of",
+    "allTokens": "All Tokens"
   },
   "placeHolders": {
     "selectToken": "Select a Token ...",
@@ -103,6 +104,12 @@
     "tokens": "Tokens"
   },
   "governance": {
+    "emptyState": {
+      "title": "Create your very first proposal now",
+      "subtitleLine1": "By creating a proposal, your community can vote and participate in this DAO.",
+      "subtitleLine2": "Learn more in",
+      "proposalGuide": "our Proposal Guide."
+    },
     "proposals": {
       "publishedBy": "Published by",
       "pending": "Starts in {{days}} days {{hours}} hours",
@@ -125,11 +132,15 @@
         "closeFullProposal": "Close Full Proposal"
       }
     },
-    "noProposals": "No proposals found!"
+    "noProposals": "No proposals found!",
+    "executionCard": {
+      "title": "Execution",
+      "description": "These smart actions are executed when the proposal reaches sufficient support. Find out which actions are executed."
+    }
   },
   "infos": {
     "voteDuration": "The minimum duration of 5 days is defined by DAO Governance Settings",
-    "newVotinTypes": "New voting types will be released soon"
+    "newVotingTypes": "New voting types will be released soon"
   },
   "errors": {
     "amountWithInvalidToken": "Cannot validate amount with invalid token address",
@@ -172,7 +183,9 @@
     "startPast": "Process must not start in the past"
   },
   "alert": {
-    "durationAlert": "We recommend a minimum duration of 1 day if it does not have to be a quick financial decision."
+    "durationAlert": "We recommend a minimum duration of 1 day if it does not have to be a quick financial decision.",
+    "testNet": "Testnet Active",
+    "unsupportedNet": "Network Not Supported"
   },
   "warnings": {
     "amountGtDaoToken": "Withdraw amount is greater than the current token balance"
@@ -217,6 +230,17 @@
     "errorLabel": "Error while confirmation",
     "successLabel": "Transaction successful"
   },
+  "AddActionModal": {
+    "title": "Add Action",
+    "addRemoveAddresses": "Add or Remove Addresses",
+    "addRemoveAddressesSubtitle": "Propose to add or remove addresses to this DAO",
+    "mintTokens": "Mint Tokens",
+    "mintTokensSubtitle": "Mint new tokens and distribute",
+    "withdrawAssets": "Withdraw Assets",
+    "withdrawAssetsSubtitle": "Propose to withdraw assets from the DAO treasury",
+    "externalContract": "External Contract",
+    "externalContractSubtitle": "Interact with any contract on the blockchain and access any functionality"
+  },
   "newDeposit": {
     "depositAssets": "Deposit Assets",
     "configureDeposit": "Configure Deposit",
@@ -245,8 +269,7 @@
       "title": "Setup Voting",
       "description": "For a withdraw, a vote is necessary so that the majority can determine whether your proposal is legitimate. For this, you need this configuration.",
       "optionLabel": {
-        "title": "Options",
-        "helptext": "This is a placeholder"
+        "title": "Options"
       },
       "yesNoLabel": {
         "title": "Yes & No",
@@ -265,6 +288,10 @@
       "summaryPlaceholder": "Type your description ...",
       "proposal": "Proposal",
       "proposalPlaceholder": "Type your proposal ..."
+    },
+    "reviewProposal": {
+      "heading": "Review Proposal",
+      "description": "A proposal is necessary so that the community understands why you want to execute this withdraw. Fill in the necessary fields and be as detailed but as concise as possible."
     }
   },
   "createDAO": {
@@ -322,6 +349,19 @@
       "alerts": {
         "minimumApprovalAlert": "{{amount}} {{symbol}} tokens"
       }
+    }
+  },
+  "newProposal": {
+    "title": "New Proposal",
+    "configureActions": {
+      "heading": "Configure Actions",
+      "description": "If the response is to execute a transaction, store your desired actions at the corresponding response. These can be simple transactions or any smart contract methods you can find (e.g. Uniswap or similar).",
+      "yesOption": "Yes",
+      "yesOptionSubtitle": "If the option “yes” wins the voting, perform the following actions.",
+      "addFirstActionTitle": "Add your very first action",
+      "addFirstActionSubtitle": "Add optional actions if you wish to perform on-chain executions",
+      "addFirstAction": "Add First Action",
+      "actionsInfo": "Based on the voting options setup, it is only possible to add actions to the option \"Yes\"."
     }
   },
   "votingTerminal": {
