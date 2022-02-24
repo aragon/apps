@@ -20,6 +20,7 @@ import {useWallet} from 'context/augmentedWallet';
 import {useWalletProps} from 'containers/walletMenu';
 import NetworkIndicator from './networkIndicator';
 import {BreadcrumbDropdown} from './breadcrumbDropdown';
+import {useGlobalModalContext} from 'context/globalModals';
 import {NetworkIndicatorStatus} from 'utils/types';
 import {Community, Dashboard, Finance, Governance, NotFound} from 'utils/paths';
 
@@ -41,6 +42,7 @@ type DesktopNavProp = {
 
 const DesktopNav: React.FC<DesktopNavProp> = props => {
   const {t} = useTranslation();
+  const {open} = useGlobalModalContext();
   const navigate = useNavigate();
   const [showCrumbMenu, setShowCrumbMenu] = useState(false);
   const {isConnected, account, ensName, ensAvatarUrl}: useWalletProps =
@@ -92,13 +94,12 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
       <NetworkIndicator status={props.status} />
       <Menu>
         <Content>
-          <div>
-            <CardDao
-              daoName="DAO Name"
-              daoAddress="patito.eth.dao"
-              onClick={() => null}
-            />
-          </div>
+          <CardDao
+            daoName="DAO Name"
+            daoAddress="patito.eth.dao"
+            onClick={() => open('selectDao')}
+          />
+
           <LinksWrapper>
             {breadcrumbs.length < MIN_ROUTE_DEPTH_FOR_BREADCRUMBS ? (
               <NavLinks />

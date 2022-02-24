@@ -17,8 +17,8 @@ import MobileMenu from './mobileMenu';
 import {useWallet} from 'context/augmentedWallet';
 import {useWalletProps} from 'containers/walletMenu';
 import NetworkIndicator from './networkIndicator';
+import {useGlobalModalContext} from 'context/globalModals';
 import {NetworkIndicatorStatus} from 'utils/types';
-
 type MobileNavProps = {
   status?: NetworkIndicatorStatus;
   returnURL?: string;
@@ -28,6 +28,7 @@ type MobileNavProps = {
 
 const MobileNav: React.FC<MobileNavProps> = props => {
   const {t} = useTranslation();
+  const {open} = useGlobalModalContext();
   const navigate = useNavigate();
   const {isMobile} = useScreen();
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -73,7 +74,7 @@ const MobileNav: React.FC<MobileNavProps> = props => {
             )}
           </FlexOne>
           <FlexOne className="justify-center">
-            <AvatarDao daoName="DAO Name" />
+            <AvatarDao daoName="DAO Name" onClick={() => open('selectDao')} />
           </FlexOne>
           <FlexOne className="justify-end">
             <ButtonWallet
