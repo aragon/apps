@@ -26,7 +26,7 @@ const MobileNavMenu: React.FC<MobileNavMenuProps> = props => {
           />
         </CardWrapper>
         <div className="py-3 px-2 space-y-3">
-          <NavLinks parent="modal" onItemClick={props.onClose} />
+          <NavLinks onItemClick={props.onClose} />
         </div>
       </div>
     </BottomSheet>
