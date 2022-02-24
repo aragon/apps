@@ -64,12 +64,14 @@ const DaoSelectMenu: React.FC = () => {
             )
           )}
         </ListGroup>
+        {/* TODO: Change click */}
         <ButtonText
           mode="secondary"
           size="large"
           label={t('daoSwitcher.subtitle')}
           iconLeft={<IconLinkExternal />}
           className="w-full"
+          onClick={() => close('selectDao')}
         />
       </ModalContentContainer>
     </ModalBottomSheetSwitcher>

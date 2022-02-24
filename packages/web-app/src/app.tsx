@@ -41,7 +41,7 @@ function App() {
   return (
     <div className="flex flex-col items-center pb-12 tablet:pb-4 bg-ui-50">
       <Navbar />
-      <main className="mx-2 tablet:mx-3 w-full desktop:max-w-screen-wide min-h-screen border">
+      <main className="mx-2 tablet:mx-3 w-full desktop:max-w-screen-wide min-h-screen">
         {/* TODO: replace with loading indicator */}
         <Suspense fallback={<p>Loading...</p>}>
           <Routes>

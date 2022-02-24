@@ -110,8 +110,7 @@ export const FullScreenStepper: React.FC<FullScreenStepperProps> = ({
 };
 
 const Layout = styled.div.attrs({
-  className:
-    'border tablet:m-auto tablet:mt-3 tablet:w-9/12 font-medium text-ui-600',
+  className: 'tablet:m-auto tablet:mt-3 tablet:w-9/12 font-medium text-ui-600',
 })``;
 
 type FormLayoutProps = {
@@ -119,7 +118,7 @@ type FormLayoutProps = {
 };
 
 const FormLayout = styled.div.attrs(({fullWidth}: FormLayoutProps) => ({
-  className: `border my-5 px-2 tablet:px-0 tablet:my-8 tablet:mx-auto space-y-5 ${
+  className: `my-5 px-2 tablet:px-0 tablet:my-8 tablet:mx-auto space-y-5 ${
     !fullWidth && 'tablet:w-3/4'
   }`,
 }))<FormLayoutProps>``;
