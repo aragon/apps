@@ -74,7 +74,10 @@ const MobileNav: React.FC<MobileNavProps> = props => {
             )}
           </FlexOne>
           <FlexOne className="justify-center">
-            <AvatarDao daoName="DAO Name" onClick={() => open('selectDao')} />
+            <DaoContainer>
+              <AvatarDao daoName="DAO Name" onClick={() => open('selectDao')} />
+              <DaoName>DAO Name</DaoName>
+            </DaoContainer>
           </FlexOne>
           <FlexOne className="justify-end">
             <ButtonWallet
@@ -103,13 +106,27 @@ const FlexOne = styled.div.attrs({
 })``;
 
 const Container = styled.div.attrs({
-  className:
-    'flex flex-col tablet:flex-col-reverse fixed tablet:sticky bottom-0 tablet:top-0 w-full',
+  className: 'flex flex-col fixed left-0 bottom-0 w-full',
 })``;
 
 const Menu = styled.nav.attrs({
   className: `flex justify-between items-center px-2 tablet:px-3 py-1 
-     tablet:py-1.5 bg-gradient-to-t tablet:bg-gradient-to-b from-ui-50 to-transparent backdrop-blur-xl`,
+     tablet:py-1.5`,
+})`
+  background: linear-gradient(
+    180deg,
+    rgba(245, 247, 250, 0) 0%,
+    rgba(245, 247, 250, 1) 100%
+  );
+  backdrop-filter: blur(24px);
+`;
+
+const DaoContainer = styled.div.attrs({
+  className: 'flex flex-col gap-y-0.5 items-center rounded-xl',
+})``;
+
+const DaoName = styled.p.attrs({
+  className: 'hidden tablet:block text-sm font-bold text-ui-800',
 })``;
 
 const ProcessMenuItems = styled.nav.attrs({

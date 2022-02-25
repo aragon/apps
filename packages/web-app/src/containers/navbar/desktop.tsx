@@ -144,8 +144,15 @@ const Container = styled.header.attrs({
 
 const Menu = styled.nav.attrs({
   className: `flex mx-auto justify-between items-center max-w-screen-wide
-     px-5 py-3 bg-gradient-to-b from-ui-50 to-transparent backdrop-blur-xl`,
-})``;
+     px-5 py-3`,
+})`
+  background: linear-gradient(
+    180deg,
+    rgba(245, 247, 250, 1) 0%,
+    rgba(245, 247, 250, 0) 100%
+  );
+  backdrop-filter: blur(24px);
+`;
 
 const Content = styled.div.attrs({
   className: 'flex items-center space-x-6',
