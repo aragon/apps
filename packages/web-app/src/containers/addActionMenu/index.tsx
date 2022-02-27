@@ -8,7 +8,7 @@ import {useActionsContext} from 'context/actions';
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 
 export enum AddActionItems {
-  ADD_REMOVE_TOKENS = 'add_remove_address',
+  ADD_REMOVE_ADDRESS = 'add_remove_address',
   MINT_TOKENS = 'mint_token',
   WITHDRAW_ASSETS = 'withdraw_assets',
   EXTERNAL_CONTRACT = 'external_contract',
@@ -30,7 +30,7 @@ const AddActionMenu: React.FC = () => {
           title={t('AddActionModal.addRemoveAddresses')}
           subtitle={t('AddActionModal.addRemoveAddressesSubtitle')}
           icon={<IconChevronRight />}
-          onClick={() => alert(AddActionItems.ADD_REMOVE_TOKENS)}
+          onClick={() => alert(AddActionItems.ADD_REMOVE_ADDRESS)}
         />
         <ActionListItem
           title={t('AddActionModal.mintTokens')}

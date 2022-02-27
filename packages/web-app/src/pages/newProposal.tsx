@@ -11,7 +11,6 @@ import ConfigureActions from 'containers/configureActions';
 import AddActionMenu from 'containers/addActionMenu';
 import TokenMenu from 'containers/tokenMenu';
 import {useDaoTokens} from 'hooks/useDaoTokens';
-import {WithdrawFormData, defaultValues} from './newWithdraw';
 import {useWallet} from 'context/augmentedWallet';
 import {formatUnits} from 'utils/library';
 import {useWalletProps} from 'containers/walletMenu';
@@ -21,8 +20,7 @@ import {fetchTokenPrice} from 'services/prices';
 
 const NewProposal: React.FC = () => {
   const {t} = useTranslation();
-  const formMethods = useForm<WithdrawFormData>({
-    defaultValues,
+  const formMethods = useForm({
     mode: 'onChange',
   });
   const {data: tokens} = useDaoTokens('myDaoAddress');

@@ -12,21 +12,28 @@ import {AddActionItems} from '../addActionMenu';
  * @returns List of actions
  */
 
+type actionsComponentType = {
+  name: ActionsTypes;
+  key: number;
+};
+
+const Action: React.FC<actionsComponentType> = ({name, key}) => {
+  switch (name) {
+    case AddActionItems.WITHDRAW_ASSETS:
+      return <WithdrawAction key={key} />;
+    default:
+      return <></>;
+  }
+};
+
 const ActionBuilder: React.FC = () => {
   const {actions} = useActionsContext();
 
-  const actionsComponents = (name: ActionsTypes, index: number) => {
-    switch (name) {
-      case AddActionItems.WITHDRAW_ASSETS:
-        return <WithdrawAction key={index} {...{index}} />;
-    }
-  };
-
   return (
     <>
-      {actions.map((action, index: number) =>
-        actionsComponents(action.name, index)
-      )}
+      {actions.map((action, index: number) => (
+        <Action key={index} name={action.name} />
+      ))}
     </>
   );
 };
