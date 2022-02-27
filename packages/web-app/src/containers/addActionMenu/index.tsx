@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
-import {ActionListItem, IconChevronRight} from '@aragon/ui-components';
+import {ListItemAction, IconChevronRight} from '@aragon/ui-components';
 
 import {useGlobalModalContext} from 'context/globalModals';
 import {useActionsContext} from 'context/actions';
@@ -26,19 +26,19 @@ const AddActionMenu: React.FC = () => {
       title={t('AddActionModal.title')}
     >
       <Container>
-        <ActionListItem
+        <ListItemAction
           title={t('AddActionModal.addRemoveAddresses')}
           subtitle={t('AddActionModal.addRemoveAddressesSubtitle')}
           icon={<IconChevronRight />}
           onClick={() => alert(AddActionItems.ADD_REMOVE_ADDRESS)}
         />
-        <ActionListItem
+        <ListItemAction
           title={t('AddActionModal.mintTokens')}
           subtitle={t('AddActionModal.mintTokensSubtitle')}
           icon={<IconChevronRight />}
           onClick={() => alert(AddActionItems.MINT_TOKENS)}
         />
-        <ActionListItem
+        <ListItemAction
           title={t('AddActionModal.withdrawAssets')}
           subtitle={t('AddActionModal.withdrawAssetsSubtitle')}
           icon={<IconChevronRight />}
@@ -49,7 +49,7 @@ const AddActionMenu: React.FC = () => {
             close('addAction');
           }}
         />
-        <ActionListItem
+        <ListItemAction
           title={t('AddActionModal.externalContract')}
           subtitle={t('AddActionModal.externalContractSubtitle')}
           icon={<IconChevronRight />}
