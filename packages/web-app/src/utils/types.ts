@@ -146,3 +146,4 @@ export type ActionItem = {
   name: ActionsTypes;
   inputs?: ParamType[];
 };
+export type NetworkIndicatorStatus = 'default' | 'testnet' | 'unsupported';

@@ -13,10 +13,10 @@ import {useActionsContext} from 'context/actions';
 import ConfigureWithdrawForm from '../configureWithdraw';
 
 type Props = {
-  key: number;
+  index: number;
 };
 
-const WithdrawAction: React.FC<Props> = ({key}) => {
+const WithdrawAction: React.FC<Props> = ({index}) => {
   const {t} = useTranslation();
   const {removeAction, duplicateAction} = useActionsContext();
   const {resetField} = useFormContext();
@@ -45,7 +45,7 @@ const WithdrawAction: React.FC<Props> = ({key}) => {
             <div className="p-1.5 space-y-0.5">
               <ListItemAction
                 title={t('labels.duplicateAction')}
-                onClick={() => duplicateAction(key)}
+                onClick={() => duplicateAction(index)}
                 bgWhite
               />
               <ListItemAction
@@ -55,7 +55,7 @@ const WithdrawAction: React.FC<Props> = ({key}) => {
               />
               <ListItemAction
                 title={t('labels.removeEntireAction')}
-                onClick={() => removeAction(key)}
+                onClick={() => removeAction(index)}
                 bgWhite
               />
             </div>

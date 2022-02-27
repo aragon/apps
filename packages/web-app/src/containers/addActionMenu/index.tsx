@@ -29,19 +29,19 @@ const AddActionMenu: React.FC = () => {
         <ListItemAction
           title={t('AddActionModal.addRemoveAddresses')}
           subtitle={t('AddActionModal.addRemoveAddressesSubtitle')}
-          icon={<IconChevronRight />}
+          iconRight={<IconChevronRight />}
           onClick={() => alert(AddActionItems.ADD_REMOVE_ADDRESS)}
         />
         <ListItemAction
           title={t('AddActionModal.mintTokens')}
           subtitle={t('AddActionModal.mintTokensSubtitle')}
-          icon={<IconChevronRight />}
+          iconRight={<IconChevronRight />}
           onClick={() => alert(AddActionItems.MINT_TOKENS)}
         />
         <ListItemAction
           title={t('AddActionModal.withdrawAssets')}
           subtitle={t('AddActionModal.withdrawAssetsSubtitle')}
-          icon={<IconChevronRight />}
+          iconRight={<IconChevronRight />}
           onClick={() => {
             addAction({
               name: AddActionItems.WITHDRAW_ASSETS,
@@ -52,7 +52,7 @@ const AddActionMenu: React.FC = () => {
         <ListItemAction
           title={t('AddActionModal.externalContract')}
           subtitle={t('AddActionModal.externalContractSubtitle')}
-          icon={<IconChevronRight />}
+          iconRight={<IconChevronRight />}
           onClick={() => alert(AddActionItems.EXTERNAL_CONTRACT)}
         />
       </Container>

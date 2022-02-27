@@ -14,13 +14,13 @@ import {AddActionItems} from '../addActionMenu';
 
 type actionsComponentType = {
   name: ActionsTypes;
-  key: number;
+  index: number;
 };
 
-const Action: React.FC<actionsComponentType> = ({name, key}) => {
+const Action: React.FC<actionsComponentType> = ({name, index}) => {
   switch (name) {
     case AddActionItems.WITHDRAW_ASSETS:
-      return <WithdrawAction key={key} />;
+      return <WithdrawAction {...{index}} />;
     default:
       return <></>;
   }
@@ -32,7 +32,7 @@ const ActionBuilder: React.FC = () => {
   return (
     <>
       {actions.map((action, index: number) => (
-        <Action key={index} name={action.name} />
+        <Action key={index} name={action?.name} {...{index}} />
       ))}
     </>
   );
