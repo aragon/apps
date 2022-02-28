@@ -62,7 +62,7 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
 
   if (isProcess) {
     return (
-      <Container>
+      <Container data-testid="navbar">
         <NetworkIndicator status={props.status} />
         <Menu>
           <ProcessMenuItems>

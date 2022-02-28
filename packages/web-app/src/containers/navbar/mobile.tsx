@@ -42,7 +42,7 @@ const MobileNav: React.FC<MobileNavProps> = props => {
 
   if (isProcess) {
     return (
-      <ProcessMenuItems>
+      <ProcessMenuItems data-testid="navbar">
         <Breadcrumb
           crumbs={{label: props.processLabel!, path: props.returnURL!}}
           onClick={(path: string) => navigate(path)}
@@ -53,7 +53,7 @@ const MobileNav: React.FC<MobileNavProps> = props => {
   }
   return (
     <>
-      <Container>
+      <Container data-testid="navbar">
         <Menu>
           <FlexOne>
             {isMobile ? (
