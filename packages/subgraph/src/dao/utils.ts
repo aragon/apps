@@ -9,6 +9,7 @@ import {
   ByteArray,
   Bytes,
   DataSourceContext,
+  ethereum,
   log,
   store
 } from '@graphprotocol/graph-ts';
@@ -23,16 +24,6 @@ class WithdrawParams {
   to: Address = Address.fromString(ADDRESS_ZERO);
   amount: BigInt = BigInt.zero();
   reference: string = '';
-}
-
-function removePadding(data: Uint8Array): Uint8Array {
-  for (let index = 0; index < data.length; index++) {
-    const element = data[index];
-    if (element !== 0) {
-      return data.subarray(index);
-    }
-  }
-  return data;
 }
 
 /**
@@ -51,17 +42,28 @@ export function decodeWithdrawParams(data: ByteArray): WithdrawParams {
   let tokenAddress = Address.fromString(
     Address.fromUint8Array(tokenSubArray).toHexString()
   );
+
   let toAddress = Address.fromString(
     Address.fromUint8Array(toSubArray).toHexString()
   );
-  let amountUnPadded = removePadding(amountSubArray);
-  let amountBigInt = BigInt.fromUnsignedBytes(
-    changetype<Bytes>(amountUnPadded.reverse())
+
+  let amountDecoded = ethereum.decode(
+    'uint256',
+    changetype<Bytes>(amountSubArray)
   );
-  let referenceLengthSubArrayUnPadded = removePadding(referenceLengthSubArray);
-  let referenceLength = BigInt.fromUnsignedBytes(
-    changetype<Bytes>(referenceLengthSubArrayUnPadded.reverse())
-  ).toI32();
+  let amountBigInt = BigInt.zero();
+  if (amountDecoded) {
+    amountBigInt = amountDecoded.toBigInt();
+  }
+
+  let referenceLengthDecoded = ethereum.decode(
+    'uint256',
+    changetype<Bytes>(referenceLengthSubArray)
+  );
+  let referenceLength: i32 = 0;
+  if (referenceLengthDecoded) {
+    referenceLength = referenceLengthDecoded.toI32();
+  }
 
   // @dev perhaps a length limmit is need such as no more than 288 char
   let refrenceStringArray = referenceSubArray.subarray(0, referenceLength);
