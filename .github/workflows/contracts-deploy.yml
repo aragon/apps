@@ -12,19 +12,20 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       environment: ${{ steps.envdev.outputs.environment }}${{ steps.envprod.outputs.environment }}
+      tags:  ${{ steps.envdev.outputs.tags }}${{ steps.envprod.outputs.tags }}
     steps:
       - name: Set environment to staging
         if: endsWith(github.ref, '/develop')
         id: envdev
         run: |
           echo "::set-output name=environment::staging"
-          echo "FORCE_REGISTRY_DEPLOY=true" >> $GITHUB_ENV
+          echo "::set-output name=tags::Registry"
       - name: Set environment to prod
         if: endsWith(github.ref, '/main')
         id: envprod
         run: |
           echo "::set-output name=environment::production"
-          echo "FORCE_REGISTRY_DEPLOY=false" >> $GITHUB_ENV
+          echo "::set-output name=tags::Registry"
   build-deploy:
     runs-on: ubuntu-latest
     needs: [set-environment]
@@ -43,7 +44,7 @@ jobs:
       - name: Test
         run: yarn test
       - name: Deploy
-        run: npx hardhat run scripts/deploy.ts --network $NETWORK
+        run: npx hardhat run scripts/deploy.ts --network $NETWORK --tags "DAOFactory,TokenFactory,${{ needs.set-environment.outputs.tags }}"
         env:
           RINKEBY_URL: "https://rinkeby.eth.aragon.network/"
           MAINNET_URL: "https://mainnet.eth.aragon.network/"
