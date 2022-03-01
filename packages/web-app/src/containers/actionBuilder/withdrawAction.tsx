@@ -19,13 +19,13 @@ type Props = {
 const WithdrawAction: React.FC<Props> = ({index}) => {
   const {t} = useTranslation();
   const {removeAction, duplicateAction} = useActionsContext();
-  const {resetField} = useFormContext();
+  const {setValue, resetField} = useFormContext();
 
   const resetWithdrawFields = () => {
-    resetField('to');
+    setValue('to', '');
     resetField('tokenSymbol');
-    resetField('tokenAddress');
-    resetField('amount');
+    setValue('tokenAddress', '');
+    setValue('amount', '');
   };
 
   return (
