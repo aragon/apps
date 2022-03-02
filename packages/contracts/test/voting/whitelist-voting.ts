@@ -334,7 +334,6 @@ describe('WhitelistVoting', function () {
         .withArgs(
           voting.address,
           0,
-          0,
           [
             [
               dummyActions[0].to,

@@ -345,7 +345,6 @@ describe('ERC20Voting', function () {
         .withArgs(
           voting.address,
           0,
-          0,
           [
             [
               dummyActions[0].to,

@@ -35,7 +35,6 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, ERC1271, AdaptiveERC1
     string internal constant ERROR_ETH_DEPOSIT_AMOUNT_MISMATCH = "ETH_DEPOSIT_AMOUNT_MISMATCH";
     string internal constant ERROR_ETH_WITHDRAW_FAILED = "ETH_WITHDRAW_FAILED";
 
-    uint256 public executionId;
     ERC1271 signatureValidator;
 
     /// @dev Used for UUPS upgradability pattern
@@ -92,9 +91,7 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, ERC1271, AdaptiveERC1
             execResults[i] = response;
         }
 
-        executionId++;
-
-        emit Executed(msg.sender, callId, executionId, _actions, execResults);
+        emit Executed(msg.sender, callId, _actions, execResults);
 
         return execResults;
     }

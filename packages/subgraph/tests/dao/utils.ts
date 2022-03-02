@@ -329,7 +329,6 @@ export function getWhitelistedLength(
 export function createNewExecutedEvent(
   actor: string,
   callId: string,
-  executionId: string,
   actions: ethereum.Tuple[],
   execResults: Bytes[],
   contractAddress: string
@@ -347,10 +346,6 @@ export function createNewExecutedEvent(
     'callId',
     ethereum.Value.fromUnsignedBigInt(BigInt.fromString(callId))
   );
-  let executionIdParam = new ethereum.EventParam(
-    'executionId',
-    ethereum.Value.fromUnsignedBigInt(BigInt.fromString(executionId))
-  );
   let actionsParam = new ethereum.EventParam(
     'actions',
     ethereum.Value.fromTupleArray(actions)
@@ -362,7 +357,6 @@ export function createNewExecutedEvent(
 
   newExecutedEvent.parameters.push(actorParam);
   newExecutedEvent.parameters.push(callIdParam);
-  newExecutedEvent.parameters.push(executionIdParam);
   newExecutedEvent.parameters.push(actionsParam);
   newExecutedEvent.parameters.push(execResultsParams);
 

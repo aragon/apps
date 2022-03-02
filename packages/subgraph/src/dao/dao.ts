@@ -162,8 +162,6 @@ export function handleExecuted(event: Executed): void {
         '_' +
         event.transactionLogIndex.toHexString() +
         '_' +
-        event.params.executionId.toHexString() +
-        '_' +
         index.toString();
 
       let vaultWithdrawEntity = new VaultWithdraw(withdrawId);

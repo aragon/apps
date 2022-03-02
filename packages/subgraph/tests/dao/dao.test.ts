@@ -209,7 +209,6 @@ test('Run dao (handleDeposited) for Token mappings with mock event', () => {
   let event = createNewExecutedEvent(
     Address.fromHexString(VOTING_ADDRESS).toHexString(),
     '0',
-    '0',
     actions,
     [Bytes.fromUTF8('')],
     Address.fromHexString(DAO_ADDRESS).toHexString()
@@ -225,8 +224,6 @@ test('Run dao (handleDeposited) for Token mappings with mock event', () => {
     event.transaction.hash.toHexString() +
     '_' +
     event.transactionLogIndex.toHexString() +
-    '_' +
-    event.params.executionId.toHexString() +
     '_' +
     '0';
   assert.fieldEquals('VaultWithdraw', entityID, 'id', entityID);
