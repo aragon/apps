@@ -89,7 +89,6 @@ const Proposal: React.FC = () => {
             <Link
               external
               label={publisher}
-              // label={shortenAddress(publisherAddress || '')}
               // href={`${explorers[chainId]}${publisherAddress}`}
             />
           </ProposerLink>
@@ -213,7 +212,7 @@ const ProposerLink = styled.p.attrs({
 })``;
 
 const SummaryText = styled.p.attrs({
-  className: 'text-lg text-ui-500',
+  className: 'text-lg text-ui-600',
 })``;
 
 const ProposalContainer = styled.div.attrs({
