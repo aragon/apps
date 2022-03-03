@@ -30,6 +30,8 @@ type FormData = {
   durationMinutes: string;
   durationHours: string;
   durationDays: string;
+  minimumApproval: string;
+  support: string;
 };
 
 const defaultValues = {
@@ -103,6 +105,24 @@ const CreateDAO: React.FC = () => {
     tokenTotalSupply,
   ]);
 
+  const daoConfigureCommunity = useMemo(() => {
+    if (
+      errors.minimumApproval ||
+      errors.support ||
+      errors.durationDays ||
+      errors.durationHours ||
+      errors.durationMinutes
+    )
+      return false;
+    return true;
+  }, [
+    errors.durationDays,
+    errors.durationHours,
+    errors.durationMinutes,
+    errors.minimumApproval,
+    errors.support,
+  ]);
+
   /*************************************************
    *                    Render                     *
    *************************************************/
@@ -140,6 +160,7 @@ const CreateDAO: React.FC = () => {
         <Step
           wizardTitle={t('createDAO.step4.title')}
           wizardDescription={t('createDAO.step4.description')}
+          isNextButtonDisabled={!daoConfigureCommunity}
         >
           <ConfigureCommunity />
         </Step>

@@ -54,6 +54,7 @@ const WalletRow: React.FC<WalletRowProps> = ({index, onDelete}) => {
     if (walletFieldArray) {
       walletFieldArray.forEach((wallet: WalletField, walletIndex: number) => {
         if (address === wallet.address && index !== walletIndex) {
+          console.log('-->', address, wallet.address, index, walletIndex);
           validationResult = t('errors.duplicateAddress') as string;
           setIsDuplicate(true);
         }
