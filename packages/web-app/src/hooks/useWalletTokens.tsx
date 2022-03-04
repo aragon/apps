@@ -5,23 +5,31 @@ import {formatUnits} from 'ethers/lib/utils';
 import {isETH, fetchBalance} from 'utils/tokens';
 import {useWallet} from 'context/augmentedWallet';
 import {useWalletProps} from 'containers/walletMenu';
-import {TokenBalance} from 'utils/types';
+import {HookData, TokenBalance} from 'utils/types';
+import {useProviders, useWalletTokensList} from 'context/providers';
 
-// TODO return as HookData
-export function useWalletTokens() {
-  const {account, chainId, provider, getTokenList, balance}: useWalletProps =
-    useWallet();
+export function useWalletTokens(): HookData<TokenBalance[]> {
+  const {account, balance}: useWalletProps = useWallet();
+  const {infura: provider} = useProviders();
+  const {
+    data: tokenList,
+    isLoading: tokenListLoading,
+    error: tokenListError,
+  } = useWalletTokensList();
+
   const [walletTokens, setWalletTokens] = useState<TokenBalance[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | undefined>();
 
   // fetch tokens and corresponding balance on wallet
   useEffect(() => {
     async function fetchWalletTokens() {
-      if (account === null) {
+      setIsLoading(true);
+      if (account === null || provider === null) {
         setWalletTokens([]);
         return;
       }
 
-      const tokenList = await getTokenList();
       if (Number(balance) !== -1 && Number(balance) !== 0)
         await tokenList.push(constants.AddressZero);
 
@@ -40,10 +48,16 @@ export function useWalletTokens() {
           count: balances[index],
         }))
       );
+      setIsLoading(false);
     }
 
+    if (tokenListLoading) return;
+    if (tokenListError) {
+      setError(tokenListError);
+      return;
+    }
     fetchWalletTokens();
-  }, [account, balance, chainId, getTokenList, provider]);
+  }, [account, balance, tokenList, provider, tokenListLoading, tokenListError]);
 
-  return walletTokens;
+  return {data: walletTokens, isLoading: tokenListLoading || isLoading, error};
 }

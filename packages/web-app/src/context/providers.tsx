@@ -55,9 +55,10 @@ export function useProviders(): NonNullable<Providers> {
   return useContext(ProviderContext) as Providers;
 }
 
-export function useWalletTokens(): HookData<string[]> {
+export function useWalletTokensList(): HookData<string[]> {
   const {account} = useWallet();
   const {web3} = useContext(ProviderContext) as Providers;
+
   const [tokenList, setTokenList] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | undefined>();

@@ -11,22 +11,25 @@ import {ActionsProvider} from 'context/actions';
 import {ApolloProvider} from '@apollo/client';
 import {client} from 'context/apolloClient';
 import 'tailwindcss/tailwind.css';
+import {ProvidersProvider} from 'context/providers';
 
 ReactDOM.render(
   <React.StrictMode>
     <APMProvider>
       <WalletProvider>
-        <WalletMenuProvider>
-          <GlobalModalsProvider>
-            <ActionsProvider>
-              <Router>
-                <ApolloProvider client={client}>
-                  <App />
-                </ApolloProvider>
-              </Router>
-            </ActionsProvider>
-          </GlobalModalsProvider>
-        </WalletMenuProvider>
+        <ProvidersProvider>
+          <WalletMenuProvider>
+            <GlobalModalsProvider>
+              <ActionsProvider>
+                <Router>
+                  <ApolloProvider client={client}>
+                    <App />
+                  </ApolloProvider>
+                </Router>
+              </ActionsProvider>
+            </GlobalModalsProvider>
+          </WalletMenuProvider>
+        </ProvidersProvider>
       </WalletProvider>
     </APMProvider>
   </React.StrictMode>,
