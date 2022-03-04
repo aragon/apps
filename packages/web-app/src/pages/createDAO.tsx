@@ -16,8 +16,9 @@ import SetupCommunity from 'containers/setupCommunity';
 import GoLive, {GoLiveHeader, GoLiveFooter} from 'containers/goLive';
 import {WalletField} from '../components/addWallets/row';
 import {useWallet} from 'context/augmentedWallet';
-import {ethers} from 'ethers';
+import {BigNumberish, ethers} from 'ethers';
 import DAOFactoryABI from '../abis/DAOFactory.json';
+import {DAOFactory} from 'typechain';
 
 type FormData = {
   daoLogo: string;
@@ -154,7 +155,7 @@ const CreateDAO: React.FC = () => {
               '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0',
               DAOFactoryABI,
               provider
-            );
+            ) as DAOFactory;
 
             console.log(
               'NewDAO Gas:',
