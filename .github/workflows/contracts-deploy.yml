@@ -78,6 +78,8 @@ jobs:
         run: node .github/helpers/contracts/updateReleasesMD.js
       - name: Update active_contracts.json
         run: node .github/helpers/contracts/updateActiveContractsJSON.js
+      - name: Update Subgraph manifests
+        run: node .github/helpers/subgraph/updateManifest.js
       - name: Commit changes
         run: |
           git fetch
@@ -86,25 +88,6 @@ jobs:
           git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com"
           git add active_contracts.json
           git add packages/contracts/Releases.md
+          git add ./packages/subgraph/	
           git commit -am "Updates files with deployed contract addresses"
           git push
-  subgraphUpdate:
-    runs-on: ubuntu-latest
-    needs: ['build-deploy']
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/download-artifact@v3
-        with:
-          path: artefacts
-      - name: Update Subgraph manifests
-        run: node .github/helpers/subgraph/updateManifest.js
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
-        with:
-          add-paths: ./packages/subgraph/	
-          commit-message: Update subgraph manifests
-          branch: feature/update-manifests
-          delete-branch: true
-          branch-suffix: short-commit-hash
-          title: Updates Subgraph manifests
-          reviewers: Rekard0,RakeshUP
