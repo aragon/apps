@@ -21,6 +21,7 @@ jobs:
         id: prepare
         run: node .github/helpers/subgraph/buildMatrix.js '${{ github.ref }}'
   test:
+    needs: [prepare]
     runs-on: ubuntu-latest
     environment: ${{ needs.prepare.outputs.environment }}
     strategy:
