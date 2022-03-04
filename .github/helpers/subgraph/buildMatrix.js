@@ -3,15 +3,16 @@ const path = require('path');
 
 async function main(ref) {
   const isTestnet = !ref.endsWith('/main');
-  const networks = await fs.readFile(
-    path.join(process.env.GITHUB_WORKSPACE, 'packages/contracts/networks.json')
+  const manifests = await fs.readdir(
+    path.join(process.env.GITHUB_WORKSPACE, 'packages/subgraph/manifest/data'),
+    {withFileTypes: true}
   );
-  const networksJson = JSON.parse(networks.toString());
 
   const matrix = {network: []};
-  for (const network of Object.keys(networksJson)) {
-    if (networksJson[network].isTestnet === isTestnet) {
-      matrix.network.push(network);
+
+  for (const manifest of manifests) {
+    if (manifest.name.endsWith('.json')) {
+      matrix.network.push(manifest.name.split('.')[0]);
     }
   }
 
