@@ -1,6 +1,6 @@
 import { BigNumberish } from "@ethersproject/bignumber";
 import { createProposal } from "./createProposal";
-import { ConfigurationObject } from "./init";
+import { ContextConfiguration } from "./init";
 import { DAO } from "../internal/abi/dao/DAO";
 import Configuration from "../internal/context/Context";
 import Proposal from "../internal/proposal/Proposal";
@@ -27,7 +27,7 @@ export function withdraw(
     proposalMetadata: object,
     executeIfDecided: boolean = false,
     castVote: boolean = false,
-    config?: ConfigurationObject
+    config?: ContextConfiguration
 ): Proposal {
     return createProposal(
         {

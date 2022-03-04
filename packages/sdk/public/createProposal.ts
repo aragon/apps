@@ -1,5 +1,5 @@
 import Proposal, { ProposalObject } from "../internal/proposal/Proposal";
-import { ConfigurationObject } from "./init";
+import { ContextConfiguration } from "./init";
 
 export { ProposalObject } from "../internal/proposal/Proposal";
 
@@ -15,6 +15,6 @@ export { ProposalObject } from "../internal/proposal/Proposal";
  * 
  * @returns 
  */
-export function createProposal(proposal: ProposalObject, config: ConfigurationObject): Proposal {
+export function createProposal(proposal: ProposalObject, config: ContextConfiguration): Proposal {
     return new Proposal(proposal, config).create();
 }
