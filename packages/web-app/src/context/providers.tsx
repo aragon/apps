@@ -1,12 +1,14 @@
 import {InfuraProvider, Web3Provider} from '@ethersproject/providers';
-import {providers as EthersProviders} from 'ethers';
 import {Interface, getAddress, hexZeroPad} from 'ethers/lib/utils';
 import React, {createContext, useContext, useEffect, useState} from 'react';
 import {useWallet} from 'use-wallet';
 
 import {erc20TokenABI} from 'abis/erc20TokenABI';
-import {INFURA_PROJECT_ID} from 'utils/constants';
+import {INFURA_PROJECT_ID_ARB} from 'utils/constants';
 import {HookData, Nullable} from 'utils/types';
+
+const NW_ARB = {chainId: 42161, name: 'arbitrum'};
+const NW_ARB_RINKEBY = {chainId: 421611, name: 'arbitrum-rinkeby'};
 
 type Providers = {
   infura: InfuraProvider;
@@ -19,28 +21,45 @@ type ProviderProviderProps = {
   children: React.ReactNode;
 };
 
+/**
+ * Returns two blockchain providers.
+ *
+ * The infura provider is always available, regardless of whether or not a
+ * wallet is connected.
+ *
+ * The web3 provider, however, is based on the conencted and wallet and will
+ * therefore be null if no wallet is connected.
+ */
 export function ProvidersProvider({children}: ProviderProviderProps) {
-  const {ethereum, chainId} = useWallet();
-
+  const {chainId, ethereum} = useWallet();
   const [web3Provider, setWeb3Provider] = useState(
-    ethereum ? new EthersProviders.Web3Provider(ethereum) : null
+    ethereum ? new Web3Provider(ethereum) : null
   );
 
   const [infuraProvider, setInfuraProvider] = useState(
-    new EthersProviders.InfuraProvider(chainId, INFURA_PROJECT_ID)
+    new InfuraProvider(NW_ARB, INFURA_PROJECT_ID_ARB)
   );
 
   useEffect(() => {
-    setInfuraProvider(
-      new EthersProviders.InfuraProvider(chainId, INFURA_PROJECT_ID)
-    );
+    // NOTE Passing the chainIds from useWallet doesn't work in the case of
+    // arbitrum and arbitrum-rinkeby. They need to be passed as objects.
+    // However, I have no idea why this is necessary. Looking at the ethers
+    // library, there's no reason why passing the chainId wouldn't work. Also,
+    // I've tried it on a fresh project and had no problems there...
+    if (chainId === 42161) {
+      setInfuraProvider(new InfuraProvider(NW_ARB, INFURA_PROJECT_ID_ARB));
+    } else if (chainId === 421611) {
+      setInfuraProvider(
+        new InfuraProvider(NW_ARB_RINKEBY, INFURA_PROJECT_ID_ARB)
+      );
+    } else {
+      setInfuraProvider(new InfuraProvider(chainId, INFURA_PROJECT_ID_ARB));
+    }
   }, [chainId]);
 
   useEffect(() => {
-    setWeb3Provider(
-      ethereum ? new EthersProviders.Web3Provider(ethereum) : null
-    );
-  }, [ethereum]);
+    setWeb3Provider(ethereum ? new Web3Provider(ethereum) : null);
+  }, [ethereum, chainId]);
 
   return (
     <ProviderContext.Provider

@@ -19,6 +19,9 @@ function useWalletAugmented(): WalletAugmented {
 const WalletAugmented: React.FC<unknown> = ({children}) => {
   const wallet = useWallet();
 
+  // TODO this should be moved into a separate hook and then called from within
+  // the app component. Afterwards, the wallet should no longer need to be
+  // augmented and this whole component should be removed.
   useEffect(() => {
     if (
       wallet.status === 'connected' &&
@@ -52,7 +55,6 @@ export const connectors = [
   {
     id: 'injected',
     properties: {
-      // Add the following when the arbitrum situation is fixed: 42161, 421611
       chainId: [1, 4, 137, 80001, 42161, 421611],
     },
   },

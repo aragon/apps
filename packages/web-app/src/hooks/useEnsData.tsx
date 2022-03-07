@@ -49,7 +49,7 @@ export function useEnsAvatar(address: Address): HookData<string> {
           if (!res) res = '';
           setAvatarUrl(res);
         } catch (error) {
-          setError(new Error('Failed to fetch ENS name'));
+          setError(new Error('Failed to fetch ENS Avatar'));
           console.error(error);
         }
       } else {
