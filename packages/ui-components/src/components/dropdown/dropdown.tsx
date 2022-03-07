@@ -29,6 +29,16 @@ export type CustomDropdownContentProps = Omit<
 
 export type DropdownProps = CustomDropdownContentProps & {
   /**
+   * The controlled open state of the dropdown. Must be used in conjunction with onOpenChange.
+   */
+  open?: boolean;
+
+  /**
+   * Event handler called when the open state of the dropdown changes.
+   */
+  onOpenChange?: (open: boolean) => void;
+
+  /**
    * Element that triggers the opening state of the dropdown menu.
    */
   trigger: React.ReactNode;
@@ -39,20 +49,22 @@ export type DropdownProps = CustomDropdownContentProps & {
 };
 
 export const Dropdown: React.FC<DropdownProps> = ({
+  open,
+  onOpenChange,
   trigger,
   listItems,
   ...rest
 }: DropdownProps) => {
   return (
-    <DropdownMenu.Root>
-      <DropdownMenu.Trigger data-testid="dropdown-trigger">
+    <DropdownMenu.Root open={open} onOpenChange={onOpenChange}>
+      <DropdownMenu.Trigger data-testid="dropdown-trigger" asChild>
         {trigger}
       </DropdownMenu.Trigger>
 
       <StyledContent {...rest}>
         <DropdownMenu.Group className="space-y-0.5">
           {listItems?.map((li, index) => (
-            <StyledItem key={index} onSelect={li.callback} style={{}}>
+            <StyledItem key={index} onSelect={li.callback}>
               {li.component}
             </StyledItem>
           ))}
