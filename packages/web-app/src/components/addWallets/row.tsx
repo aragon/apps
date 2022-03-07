@@ -94,7 +94,7 @@ const WalletRow: React.FC<WalletRowProps> = ({index, onDelete}) => {
               <ValueInput
                 mode={error ? 'critical' : 'default'}
                 name={name}
-                value={value}
+                value={value === account ? 'My Wallet' : value}
                 onBlur={onBlur}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   onChange(
@@ -103,12 +103,14 @@ const WalletRow: React.FC<WalletRowProps> = ({index, onDelete}) => {
                 }}
                 disabled={index === 0}
                 adornmentText={value ? t('labels.copy') : t('labels.paste')}
-                onAdornmentClick={() =>
+                onAdornmentClick={() => {
                   handleClipboardActions(
-                    value === account ? account : value,
-                    onChange
-                  )
-                }
+                    value === 'My Wallet' ? account : value,
+                    (newValue: string) => {
+                      onChange(newValue === account ? 'My Wallet' : newValue);
+                    }
+                  );
+                }}
               />
               {error?.message && (
                 <ErrorContainer>
