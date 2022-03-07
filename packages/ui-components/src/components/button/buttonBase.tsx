@@ -41,29 +41,6 @@ export const ButtonBase = React.forwardRef<HTMLButtonElement, ButtonBaseProps>(
 
 ButtonBase.displayName = 'ButtonBase';
 
-// export const ButtonBase: React.FC<ButtonBaseProps> = ({
-//   iconRight,
-//   iconLeft,
-//   iconOnly = false,
-//   size = 'medium',
-//   label,
-//   ...props
-// }) => {
-//   return (
-//     <BaseStyledButton {...props} size={size}>
-//       {iconLeft && <IconContainer size={size}>{iconLeft}</IconContainer>}
-
-//       {!iconOnly && (
-//         <Label visible={label ? true : false}>{label && label}</Label>
-//       )}
-
-//       {!iconLeft && iconRight && (
-//         <IconContainer size={size}>{iconRight}</IconContainer>
-//       )}
-//     </BaseStyledButton>
-//   );
-// };
-
 /**********************************
  *             STYLES             *
  **********************************/

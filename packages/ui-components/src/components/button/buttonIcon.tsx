@@ -42,26 +42,6 @@ export const ButtonIcon = React.forwardRef<HTMLButtonElement, ButtonIconProps>(
 );
 
 ButtonIcon.displayName = 'ButtonIcon';
-// export const ButtonIcon: React.FC<ButtonIconProps> = ({
-//   bgWhite = false,
-//   icon,
-//   isActive = false,
-//   mode = 'primary',
-//   size = 'medium',
-//   ...props
-// }) => {
-//   return (
-//     <StyledButton
-//       {...props}
-//       iconLeft={icon}
-//       bgWhite={bgWhite}
-//       isActive={isActive}
-//       mode={mode}
-//       size={size}
-//       iconOnly={true}
-//     />
-//   );
-// };
 
 const paddingStyles = {
   small: 'w-4 p-1',

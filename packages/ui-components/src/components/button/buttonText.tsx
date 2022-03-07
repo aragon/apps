@@ -42,28 +42,6 @@ export const ButtonText = React.forwardRef<HTMLButtonElement, ButtonTextProps>(
 
 ButtonText.displayName = 'ButtonText';
 
-// export const ButtonText: React.FC<ButtonTextProps> = ({
-//   bgWhite = false,
-//   label,
-//   isActive = false,
-//   mode = 'primary',
-//   size = 'medium',
-//   className,
-//   ...props
-// }) => {
-//   return (
-//     <StyledButton
-//       {...props}
-//       bgWhite={bgWhite}
-//       label={label}
-//       isActive={isActive}
-//       mode={mode}
-//       size={size}
-//       inputClassName={className}
-//     />
-//   );
-// };
-
 const paddingStyles = {
   small: 'py-0.5 px-2',
   medium: 'py-1.5 px-2',
