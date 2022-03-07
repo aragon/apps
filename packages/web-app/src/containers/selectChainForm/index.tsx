@@ -38,8 +38,8 @@ const SelectChainForm: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const {control, getValues} = useFormContext();
   const [sortFilter, setFilter] = useState<SortFilter>('cost');
-  const [networkType, setNetworkType] = useState<NetworkType>(() =>
-    getNetworkType(getValues('blockchain') || chainId)
+  const [networkType, setNetworkType] = useState<NetworkType>(
+    () => getValues('blockchain')?.network || getNetworkType(chainId)
   );
 
   const handleFilterChanged = useCallback(
@@ -81,7 +81,7 @@ const SelectChainForm: React.FC = () => {
             open={isOpen}
             align="start"
             width={264}
-            onOpenChange={value => setIsOpen(value)}
+            onOpenChange={(value: boolean) => setIsOpen(value)}
             content={
               <DropdownContent>
                 <ListItemAction

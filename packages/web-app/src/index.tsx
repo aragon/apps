@@ -7,6 +7,7 @@ import {WalletProvider} from 'context/augmentedWallet';
 import {APMProvider} from 'context/elasticAPM';
 import {WalletMenuProvider} from 'context/walletMenu';
 import {GlobalModalsProvider} from 'context/globalModals';
+import {ActionsProvider} from 'context/actions';
 import {ApolloClientProvider} from 'context/apolloClient';
 import 'tailwindcss/tailwind.css';
 
@@ -16,11 +17,13 @@ ReactDOM.render(
       <WalletProvider>
         <WalletMenuProvider>
           <GlobalModalsProvider>
-            <Router>
-              <ApolloClientProvider>
-                <App />
-              </ApolloClientProvider>
-            </Router>
+            <ActionsProvider>
+              <Router>
+                <ApolloClientProvider>
+                  <App />
+                </ApolloClientProvider>
+              </Router>
+            </ActionsProvider>
           </GlobalModalsProvider>
         </WalletMenuProvider>
       </WalletProvider>

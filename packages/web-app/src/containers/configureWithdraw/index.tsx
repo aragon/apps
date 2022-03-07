@@ -184,6 +184,7 @@ const ConfigureWithdrawForm: React.FC = () => {
         <Controller
           name="to"
           control={control}
+          defaultValue=""
           rules={{
             required: t('errors.required.recipient'),
             validate: validateAddress,
@@ -220,6 +221,7 @@ const ConfigureWithdrawForm: React.FC = () => {
         <Controller
           name="tokenSymbol"
           control={control}
+          defaultValue=""
           rules={{required: t('errors.required.token')}}
           render={({field: {name, value}, fieldState: {error}}) => (
             <>
@@ -248,6 +250,7 @@ const ConfigureWithdrawForm: React.FC = () => {
           <Controller
             name="tokenAddress"
             control={control}
+            defaultValue=""
             rules={{
               required: t('errors.required.tokenAddress'),
               validate: addressValidator,
@@ -287,6 +290,7 @@ const ConfigureWithdrawForm: React.FC = () => {
         <Controller
           name="amount"
           control={control}
+          defaultValue=""
           rules={{
             required: t('errors.required.amount'),
             validate: amountValidator,

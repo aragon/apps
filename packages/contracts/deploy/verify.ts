@@ -20,7 +20,6 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   console.log('Starting to verify now');
 
   await run(TASK_ETHERSCAN_VERIFY, {
-    apiKey: process.env.ETHERSCAN_KEY,
     license: 'GPL-3.0',
     solcInput: true,
   });
@@ -73,8 +72,8 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   await verifyContract(distributorBase, []);
 };
 export default func;
+func.tags = ['DAOFactory', 'TokenFactory', 'Registry'];
 func.runAtTheEnd = true;
-func.dependencies = ['Registry', 'DAOFactory', 'TokenFactory'];
 func.skip = (hre: HardhatRuntimeEnvironment) =>
   Promise.resolve(
     hre.network.name === 'localhost' ||
