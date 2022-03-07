@@ -50,7 +50,10 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
         {crumbs.map(({label, path}, index) => {
           isLast = index === crumbs.length - 1;
           return (
-            <>
+            <div
+              key={index}
+              className="flex items-center space-x-1 desktop:space-x-1.5"
+            >
               <Crumb
                 first={index === 0}
                 icon={icon}
@@ -60,7 +63,7 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
                 {...(isLast ? {} : {onClick: () => onClick?.(path)})}
               />
               {!isLast && <IconChevronRight className="text-ui-300" />}
-            </>
+            </div>
           );
         })}
       </Container>
