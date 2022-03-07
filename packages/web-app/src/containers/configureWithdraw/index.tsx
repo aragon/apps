@@ -97,6 +97,7 @@ const ConfigureWithdrawForm: React.FC = () => {
     setValue,
     tokenAddress,
     trigger,
+    client,
   ]);
 
   /*************************************************

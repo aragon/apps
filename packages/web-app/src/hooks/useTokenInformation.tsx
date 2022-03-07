@@ -56,7 +56,7 @@ export const useTokenInfo = (tokenBalances: TokenBalance[]) => {
       if (isMounted()) setError(error as Error);
       console.error(error);
     }
-  }, [isMounted, provider, tokenBalances]);
+  }, [isMounted, provider, tokenBalances, client]);
 
   /*************************************************
    *                      Hooks                    *

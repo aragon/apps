@@ -3,7 +3,7 @@ import {constants} from 'ethers';
 
 import {TokenPricePercentages} from 'utils/types';
 import {BASE_URL, DEFAULT_CURRENCY} from 'utils/constants';
-import {ApolloClient, gql} from '@apollo/client';
+import {ApolloClient, ApolloClientOptions, gql} from '@apollo/client';
 
 type TokenPrices = {
   [key: string]: {
@@ -77,7 +77,7 @@ type FetchedTokenData = Promise<TokenData | undefined>;
  */
 async function fetchTokenData(
   address: Address,
-  client: ApolloClient<any>
+  client: ApolloClient<ApolloClientOptions<string | undefined>>
 ): FetchedTokenData {
   const endPoint = '/coins/ethereum';
   const arg =

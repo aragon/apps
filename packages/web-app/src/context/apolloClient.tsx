@@ -1,9 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// Workarounds are used that necessitate the any escape hatch
+
 import React, {useContext, useMemo} from 'react';
 import {
   ApolloClient,
   ApolloProvider,
   HttpLink,
   InMemoryCache,
+  ApolloClientOptions,
 } from '@apollo/client';
 import {RestLink} from 'apollo-link-rest';
 import {CachePersistor, LocalStorageWrapper} from 'apollo3-cache-persist';
@@ -11,7 +15,7 @@ import {BASE_URL, SUBGRAPH_API_URL} from 'utils/constants';
 import {useWallet} from 'context/augmentedWallet';
 
 interface IApolloClientContext {
-  client: ApolloClient<any>;
+  client: ApolloClient<ApolloClientOptions<string | undefined>>;
 }
 
 const UseApolloClientContext = React.createContext<IApolloClientContext | any>(
@@ -27,11 +31,15 @@ const ApolloClientProvider: React.FC<unknown> = ({children}) => {
     });
   }, [networkName]);
 
-  const restLink = new RestLink({
-    uri: BASE_URL,
-  });
+  const restLink = useMemo(() => {
+    return new RestLink({
+      uri: BASE_URL,
+    });
+  }, []);
 
-  const cache = new InMemoryCache();
+  const cache = useMemo(() => {
+    return new InMemoryCache();
+  }, []);
 
   // add the REST API's typename you want to persist here
   const entitiesToPersist = ['tokenData'];
@@ -93,7 +101,7 @@ const ApolloClientProvider: React.FC<unknown> = ({children}) => {
       cache,
       link: restLink.concat(graphLink),
     });
-  }, [graphLink]);
+  }, [graphLink, cache, restLink]);
 
   return (
     <UseApolloClientContext.Provider value={client}>

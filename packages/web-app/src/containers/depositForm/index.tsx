@@ -97,6 +97,7 @@ const DepositForm: React.FC = () => {
     tokenAddress,
     trigger,
     walletBalance,
+    client,
   ]);
 
   /*************************************************
