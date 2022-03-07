@@ -50,7 +50,7 @@ const defaultValues = {
 const zeroAddress = ethers.constants.AddressZero;
 const daoDummyName = "Rakesh's Syndicate";
 const daoDummyMetadata = '0x00000000000000000000000000';
-const dummyVoteSettings = [1, 2, 3];
+const dummyVoteSettings: [BigNumberish, BigNumberish, BigNumberish] = [1, 2, 3];
 
 const CreateDAO: React.FC = () => {
   const {t} = useTranslation();
