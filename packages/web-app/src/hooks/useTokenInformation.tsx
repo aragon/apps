@@ -5,6 +5,7 @@ import useIsMounted from './useIsMounted';
 import {getTokenInfo} from 'utils/tokens';
 import {fetchTokenData} from 'services/prices';
 import {BaseTokenInfo, HookData, TokenBalance} from 'utils/types';
+import {useApolloClient} from 'context/apolloClient';
 
 /**
  * Hook that fetches information for given list of tokens.
@@ -12,6 +13,7 @@ import {BaseTokenInfo, HookData, TokenBalance} from 'utils/types';
  * @returns List of token information as well as the hook state.
  */
 export const useTokenInfo = (tokenBalances: TokenBalance[]) => {
+  const client = useApolloClient();
   const isMounted = useIsMounted();
   const {provider} = useWallet();
   const [error, setError] = useState<Error>();
@@ -26,7 +28,9 @@ export const useTokenInfo = (tokenBalances: TokenBalance[]) => {
 
     try {
       const allFetchPromise = Promise.all(
-        tokenBalances.map(tokenBalance => fetchTokenData(tokenBalance.address))
+        tokenBalances.map(tokenBalance =>
+          fetchTokenData(tokenBalance.address, client)
+        )
       );
 
       // Await all promises

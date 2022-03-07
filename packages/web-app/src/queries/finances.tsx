@@ -75,6 +75,9 @@ export const DAO_TRANSFER_LIST = gql`
       amount
       reference
       transaction
+      proposal {
+        id
+      }
       createdAt
     }
   }

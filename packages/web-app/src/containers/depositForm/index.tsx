@@ -23,8 +23,10 @@ import {handleClipboardActions} from 'utils/library';
 import {useGlobalModalContext} from 'context/globalModals';
 import {fetchBalance, getTokenInfo, isETH} from 'utils/tokens';
 import {validateTokenAddress, validateTokenAmount} from 'utils/validators';
+import {useApolloClient} from 'context/apolloClient';
 
 const DepositForm: React.FC = () => {
+  const client = useApolloClient();
   const {t} = useTranslation();
   const {open} = useGlobalModalContext();
   const {account, balance: walletBalance, provider} = useWallet();
@@ -57,7 +59,7 @@ const DepositForm: React.FC = () => {
           isETH(tokenAddress)
             ? utils.formatEther(walletBalance)
             : fetchBalance(tokenAddress, account, provider),
-          fetchTokenData(tokenAddress),
+          fetchTokenData(tokenAddress, client),
         ]);
 
         // use blockchain if api data unavailable

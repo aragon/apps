@@ -1,74 +1,109 @@
-import {ApolloClient, HttpLink, InMemoryCache} from '@apollo/client';
+import React, {useContext, useMemo} from 'react';
+import {
+  ApolloClient,
+  ApolloProvider,
+  HttpLink,
+  InMemoryCache,
+} from '@apollo/client';
 import {RestLink} from 'apollo-link-rest';
 import {CachePersistor, LocalStorageWrapper} from 'apollo3-cache-persist';
 import {BASE_URL, SUBGRAPH_API_URL} from 'utils/constants';
+import {useWallet} from 'context/augmentedWallet';
 
-const graphLink = new HttpLink({
-  uri: SUBGRAPH_API_URL,
-});
+interface IApolloClientContext {
+  client: ApolloClient<any>;
+}
 
-const restLink = new RestLink({
-  uri: BASE_URL,
-});
+const UseApolloClientContext = React.createContext<IApolloClientContext | any>(
+  {}
+);
 
-const cache = new InMemoryCache();
+const ApolloClientProvider: React.FC<unknown> = ({children}) => {
+  const {networkName} = useWallet();
 
-// add the REST API's typename you want to persist here
-const entitiesToPersist = ['tokenData'];
+  const graphLink = useMemo(() => {
+    return new HttpLink({
+      uri: SUBGRAPH_API_URL + networkName,
+    });
+  }, [networkName]);
 
-const persistor = new CachePersistor({
-  cache,
-  // TODO: Check and update the size needed for the cache
-  maxSize: 5242880, // 5 MiB
-  storage: new LocalStorageWrapper(window.localStorage),
-  debug: process.env.NODE_ENV === 'development',
-  persistenceMapper: async (data: string) => {
-    const parsed = JSON.parse(data);
+  const restLink = new RestLink({
+    uri: BASE_URL,
+  });
 
-    const mapped: Record<string, unknown> = {};
-    const persistEntities: string[] = [];
-    const rootQuery = parsed['ROOT_QUERY'];
+  const cache = new InMemoryCache();
 
-    mapped['ROOT_QUERY'] = Object.keys(rootQuery).reduce(
-      (obj: Record<string, unknown>, key: string) => {
-        if (key === '__typename') return obj;
+  // add the REST API's typename you want to persist here
+  const entitiesToPersist = ['tokenData'];
 
-        const keyWithoutArgs = key.substring(0, key.indexOf('('));
-        if (entitiesToPersist.includes(keyWithoutArgs)) {
-          obj[key] = rootQuery[key];
+  const persistor = new CachePersistor({
+    cache,
+    // TODO: Check and update the size needed for the cache
+    maxSize: 5242880, // 5 MiB
+    storage: new LocalStorageWrapper(window.localStorage),
+    debug: process.env.NODE_ENV === 'development',
+    persistenceMapper: async (data: string) => {
+      const parsed = JSON.parse(data);
 
-          if (Array.isArray(rootQuery[key])) {
-            const entities = rootQuery[key].map(
-              (item: Record<string, unknown>) => item.__ref
-            );
-            persistEntities.push(...entities);
-          } else {
-            const entity = rootQuery[key].__ref;
-            persistEntities.push(entity);
+      const mapped: Record<string, unknown> = {};
+      const persistEntities: string[] = [];
+      const rootQuery = parsed['ROOT_QUERY'];
+
+      mapped['ROOT_QUERY'] = Object.keys(rootQuery).reduce(
+        (obj: Record<string, unknown>, key: string) => {
+          if (key === '__typename') return obj;
+
+          const keyWithoutArgs = key.substring(0, key.indexOf('('));
+          if (entitiesToPersist.includes(keyWithoutArgs)) {
+            obj[key] = rootQuery[key];
+
+            if (Array.isArray(rootQuery[key])) {
+              const entities = rootQuery[key].map(
+                (item: Record<string, unknown>) => item.__ref
+              );
+              persistEntities.push(...entities);
+            } else {
+              const entity = rootQuery[key].__ref;
+              persistEntities.push(entity);
+            }
           }
-        }
 
+          return obj;
+        },
+        {__typename: 'Query'}
+      );
+
+      persistEntities.reduce((obj, key) => {
+        obj[key] = parsed[key];
         return obj;
-      },
-      {__typename: 'Query'}
-    );
+      }, mapped);
 
-    persistEntities.reduce((obj, key) => {
-      obj[key] = parsed[key];
-      return obj;
-    }, mapped);
+      return JSON.stringify(mapped);
+    },
+  });
 
-    return JSON.stringify(mapped);
-  },
-});
+  const restoreApolloCache = async () => {
+    await persistor.restore();
+  };
 
-const restoreApolloCache = async () => {
-  await persistor.restore();
+  restoreApolloCache();
+
+  const client = useMemo(() => {
+    return new ApolloClient({
+      cache,
+      link: restLink.concat(graphLink),
+    });
+  }, [graphLink]);
+
+  return (
+    <UseApolloClientContext.Provider value={client}>
+      <ApolloProvider client={client}>{children}</ApolloProvider>
+    </UseApolloClientContext.Provider>
+  );
 };
 
-restoreApolloCache();
+const useApolloClient = () => {
+  return useContext(UseApolloClientContext);
+};
 
-export const client = new ApolloClient({
-  cache,
-  link: restLink.concat(graphLink),
-});
+export {ApolloClientProvider, useApolloClient};
