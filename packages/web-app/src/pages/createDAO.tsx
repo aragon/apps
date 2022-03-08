@@ -36,6 +36,7 @@ type FormData = {
 
 const defaultValues = {
   tokenName: '',
+  tokenAddress: '',
   tokenSymbol: '',
   tokenTotalSupply: 0,
   links: [{label: '', href: ''}],
