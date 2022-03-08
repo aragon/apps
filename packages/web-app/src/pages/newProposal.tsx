@@ -65,7 +65,6 @@ const NewProposal: React.FC = () => {
 
         <AddActionMenu />
       </ActionsProvider>
-      <pre>{JSON.stringify(formMethods.watch(), null, 2)}</pre>
     </FormProvider>
   );
 };
