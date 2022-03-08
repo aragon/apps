@@ -8,7 +8,7 @@ import {
 import styled from 'styled-components';
 import {chains} from 'use-wallet';
 import {useTranslation} from 'react-i18next';
-import React, {useCallback, useMemo} from 'react';
+import React, {useCallback, useEffect, useMemo} from 'react';
 import {Controller, useFormContext, useWatch} from 'react-hook-form';
 
 import {useWallet} from 'context/augmentedWallet';
@@ -28,11 +28,18 @@ const AddExistingToken: React.FC<AddExistingTokenType> = ({
 }) => {
   const {t} = useTranslation();
   const {provider, isConnected, chainId, networkName} = useWallet();
-  const {control, setValue} = useFormContext();
+  const {control, setValue, trigger} = useFormContext();
 
-  const [blockchain, tokenName, tokenSymbol, tokenTotalSupply] = useWatch({
-    name: ['blockchain', 'tokenName', 'tokenSymbol', 'tokenTotalSupply'],
-  });
+  const [tokenAddress, blockchain, tokenName, tokenSymbol, tokenTotalSupply] =
+    useWatch({
+      name: [
+        'tokenAddress',
+        'blockchain',
+        'tokenName',
+        'tokenSymbol',
+        'tokenTotalSupply',
+      ],
+    });
 
   const explorer = useMemo(() => {
     if (blockchain.id) {
@@ -45,20 +52,12 @@ const AddExistingToken: React.FC<AddExistingTokenType> = ({
     return DEFAULT_BLOCK_EXPLORER;
   }, [blockchain.id]);
 
-  // TODO: Run on network change!
-  // useEffect(() => {
-  //   if (account && formState.dirtyFields?.tokenAddress) {
-  //     alert('triggering');
-  //     trigger('tokenAddress');
-  //   }
-  // }, [
-  //   account,
-  //   blockchain,
-  //   chainId,
-  //   formState.dirtyFields?.tokenAddress,
-  //   formState.dirtyFields.tokenName,
-  //   trigger,
-  // ]);
+  // Trigger address validation on network change
+  useEffect(() => {
+    if (blockchain.id === chainId && tokenAddress !== '' && !tokenSymbol) {
+      trigger('tokenAddress');
+    }
+  }, [blockchain.id, chainId, tokenAddress, tokenSymbol, trigger]);
 
   /*************************************************
    *            Functions and Callbacks            *
