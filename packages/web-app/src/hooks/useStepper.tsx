@@ -10,6 +10,7 @@ export const useStepper = (totalSteps: number) => {
   const gotoNextStep = useCallback(() => {
     if (currentStep !== totalSteps) {
       setStep(current => current + 1);
+      window.scrollTo({top: 0, behavior: 'smooth'});
     }
   }, [currentStep, totalSteps]);
 
@@ -17,6 +18,7 @@ export const useStepper = (totalSteps: number) => {
   const gotoPreviousStep = useCallback(() => {
     if (currentStep !== 1) {
       setStep(current => current - 1);
+      window.scrollTo({top: 0, behavior: 'smooth'});
     }
   }, [currentStep]);
 
