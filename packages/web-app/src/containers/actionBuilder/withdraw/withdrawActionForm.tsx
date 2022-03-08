@@ -1,9 +1,7 @@
 import {
   AlertInline,
-  ButtonWallet,
   DropdownInput,
   Label,
-  TextareaSimple,
   ValueInput,
 } from '@aragon/ui-components';
 import {
@@ -14,66 +12,75 @@ import {
 } from 'react-hook-form';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
-import {constants, utils} from 'ethers';
 import React, {useCallback, useEffect} from 'react';
 
+import {
+  validateAddress,
+  validateTokenAddress,
+  validateTokenAmount,
+} from 'utils/validators';
 import {useWallet} from 'context/augmentedWallet';
 import {fetchTokenData} from 'services/prices';
-import {handleClipboardActions} from 'utils/library';
+import {getTokenInfo, isETH} from 'utils/tokens';
 import {useGlobalModalContext} from 'context/globalModals';
-import {fetchBalance, getTokenInfo, isETH} from 'utils/tokens';
-import {validateTokenAddress, validateTokenAmount} from 'utils/validators';
-import {useApolloClient} from 'context/apolloClient';
+import {formatUnits, handleClipboardActions} from 'utils/library';
+import {useActionsContext} from 'context/actions';
 
-const DepositForm: React.FC = () => {
-  const client = useApolloClient();
+const WithdrawActionForm: React.FC<{index: number}> = ({index}) => {
   const {t} = useTranslation();
   const {open} = useGlobalModalContext();
-  const {account, balance: walletBalance, provider} = useWallet();
-  const {control, resetField, setValue, setFocus, trigger, getValues} =
+  const {setActionsCounter} = useActionsContext();
+  const {account, provider} = useWallet();
+  const {control, getValues, trigger, resetField, setFocus, setValue} =
     useFormContext();
   const {errors, dirtyFields} = useFormState({control});
-  const [tokenAddress, isCustomToken, tokenBalance, tokenSymbol] = useWatch({
-    name: ['tokenAddress', 'isCustomToken', 'tokenBalance', 'tokenSymbol'],
+  const [tokenAddress, isCustomToken, tokenBalance, symbol] = useWatch({
+    name: [
+      `actions.${index}.tokenAddress`,
+      `actions.${index}.isCustomToken`,
+      `actions.${index}.tokenBalance`,
+      `actions.${index}.tokenSymbol`,
+    ],
   });
-
   /*************************************************
    *                    Hooks                      *
    *************************************************/
   useEffect(() => {
-    if (isCustomToken) setFocus('tokenAddress');
-  }, [isCustomToken, setFocus]);
+    if (isCustomToken) setFocus(`actions.${index}.tokenAddress`);
+  }, [index, isCustomToken, setFocus]);
 
   useEffect(() => {
     if (!account || !isCustomToken || !tokenAddress) return;
 
     const fetchTokenInfo = async () => {
       if (errors.tokenAddress !== undefined) {
-        if (dirtyFields.amount) trigger(['amount', 'tokenSymbol']);
+        if (dirtyFields.amount)
+          trigger([`actions.${index}.amount`, `actions.${index}.tokenSymbol`]);
         return;
       }
 
       try {
         // fetch token balance and token metadata
+        // TODO: replace with commented out code when integrating backend
         const allTokenInfoPromise = Promise.all([
           isETH(tokenAddress)
-            ? utils.formatEther(walletBalance)
-            : fetchBalance(tokenAddress, account, provider),
-          fetchTokenData(tokenAddress, client),
+            ? formatUnits('4242424242400000000000', 18) //provider.getBalance(DAOVaultAddress)
+            : formatUnits('4242424242400000000000', 18), //fetchBalance(tokenAddress, DAOVaultAddress, provider),
+          fetchTokenData(tokenAddress),
         ]);
 
         // use blockchain if api data unavailable
         const [balance, data] = await allTokenInfoPromise;
         if (data) {
-          setValue('tokenName', data.name);
-          setValue('tokenSymbol', data.symbol);
-          setValue('tokenImgUrl', data.imgUrl);
+          setValue(`actions.${index}.tokenName`, data.name);
+          setValue(`actions.${index}.tokenSymbol`, data.symbol);
+          setValue(`actions.${index}.tokenImgUrl`, data.imgUrl);
         } else {
           const {name, symbol} = await getTokenInfo(tokenAddress, provider);
-          setValue('tokenName', name);
-          setValue('tokenSymbol', symbol);
+          setValue(`actions.${index}.tokenName`, name);
+          setValue(`actions.${index}.tokenSymbol`, symbol);
         }
-        setValue('tokenBalance', balance);
+        setValue(`actions.${index}.tokenBalance`, balance);
       } catch (error) {
         /**
          * Error is intentionally swallowed. Passing invalid address will
@@ -83,7 +90,8 @@ const DepositForm: React.FC = () => {
          */
         console.error(error);
       }
-      if (dirtyFields.amount) trigger(['amount', 'tokenSymbol']);
+      if (dirtyFields.amount)
+        trigger([`actions.${index}.amount`, `actions.${index}.tokenSymbol`]);
     };
 
     fetchTokenInfo();
@@ -91,14 +99,38 @@ const DepositForm: React.FC = () => {
     account,
     dirtyFields.amount,
     errors.tokenAddress,
+    index,
     isCustomToken,
     provider,
     setValue,
     tokenAddress,
     trigger,
-    walletBalance,
-    client,
   ]);
+
+  /*************************************************
+   *             Callbacks and Handlers            *
+   *************************************************/
+  const handleMaxClicked = useCallback(
+    (onChange: React.ChangeEventHandler<HTMLInputElement>) => {
+      if (tokenBalance) {
+        onChange(tokenBalance);
+      }
+    },
+    [tokenBalance]
+  );
+
+  const renderWarning = useCallback(
+    (value: string) => {
+      // Insufficient data to calculate warning
+      if (!tokenBalance || value === '') return null;
+
+      if (Number(value) > Number(tokenBalance))
+        return (
+          <AlertInline label={t('warnings.amountGtDaoToken')} mode="warning" />
+        );
+    },
+    [tokenBalance, t]
+  );
 
   /*************************************************
    *                Field Validators               *
@@ -111,25 +143,22 @@ const DepositForm: React.FC = () => {
 
       // address invalid, reset token fields
       if (validationResult !== true) {
-        resetField('tokenName');
-        resetField('tokenImgUrl');
-        resetField('tokenSymbol');
-        resetField('tokenBalance');
+        resetField(`actions.${index}.tokenName`);
+        resetField(`actions.${index}.tokenImgUrl`);
+        resetField(`actions.${index}.tokenSymbol`);
+        resetField(`actions.${index}.tokenBalance`);
       }
 
       return validationResult;
     },
-    [provider, resetField]
+    [index, provider, resetField]
   );
 
   const amountValidator = useCallback(
     async (amount: string) => {
-      const [tokenAddress, tokenBalance] = getValues([
-        'tokenAddress',
-        'tokenBalance',
-      ]);
+      const tokenAddress = getValues(`actions.${index}.tokenAddress`);
 
-      // check if a token is selected using it's address
+      // check if a token is selected using its address
       if (tokenAddress === '') return t('errors.noTokenSelected');
 
       // check if token selected is valid
@@ -139,28 +168,14 @@ const DepositForm: React.FC = () => {
         const {decimals} = await getTokenInfo(tokenAddress, provider);
 
         // run amount rules
-        return validateTokenAmount(amount, decimals, tokenBalance);
+        return validateTokenAmount(amount, decimals);
       } catch (error) {
         // catches miscellaneous cases such as not being able to get token decimal
         console.error('Error validating amount', error);
         return t('errors.defaultAmountValidationError');
       }
     },
-    [errors.tokenAddress, getValues, provider, t]
-  );
-
-  /*************************************************
-   *             Callbacks and Handlers            *
-   *************************************************/
-  const handleMaxClicked = useCallback(
-    (onChange: React.ChangeEventHandler<HTMLInputElement>) => {
-      const tokenBalance = getValues('tokenBalance');
-
-      if (tokenBalance !== '') {
-        onChange(tokenBalance);
-      }
-    },
-    [getValues]
+    [errors.tokenAddress, getValues, index, provider, t]
   );
 
   /*************************************************
@@ -168,15 +183,40 @@ const DepositForm: React.FC = () => {
    *************************************************/
   return (
     <>
+      {/* Recipient (to) */}
       <FormItem>
-        <Label label={t('labels.to')} helpText={t('newDeposit.toSubtitle')} />
-
-        {/* TODO: Proper DAO address */}
-        <ButtonWallet
-          label="patito.dao.eth"
-          src={constants.AddressZero}
-          isConnected
-          disabled
+        <Label
+          label={t('labels.to')}
+          helpText={t('newWithdraw.configureWithdraw.toSubtitle')}
+        />
+        <Controller
+          name={`actions.${index}.to`}
+          control={control}
+          defaultValue=""
+          rules={{
+            required: t('errors.required.recipient'),
+            validate: validateAddress,
+          }}
+          render={({
+            field: {name, onBlur, onChange, value},
+            fieldState: {error},
+          }) => (
+            <>
+              <ValueInput
+                mode={error ? 'critical' : 'default'}
+                name={name}
+                value={value}
+                onBlur={onBlur}
+                onChange={onChange}
+                placeholder={t('placeHolders.walletOrEns')}
+                adornmentText={value ? t('labels.copy') : t('labels.paste')}
+                onAdornmentClick={() => handleClipboardActions(value, onChange)}
+              />
+              {error?.message && (
+                <AlertInline label={error.message} mode="critical" />
+              )}
+            </>
+          )}
         />
       </FormItem>
 
@@ -184,11 +224,12 @@ const DepositForm: React.FC = () => {
       <FormItem>
         <Label
           label={t('labels.token')}
-          helpText={t('newDeposit.tokenSubtitle')}
+          helpText={t('newWithdraw.configureWithdraw.tokenSubtitle')}
         />
         <Controller
-          name="tokenSymbol"
+          name={`actions.${index}.tokenSymbol`}
           control={control}
+          defaultValue=""
           rules={{required: t('errors.required.token')}}
           render={({field: {name, value}, fieldState: {error}}) => (
             <>
@@ -196,7 +237,10 @@ const DepositForm: React.FC = () => {
                 name={name}
                 mode={error ? 'critical' : 'default'}
                 value={value}
-                onClick={() => open('token')}
+                onClick={() => {
+                  setActionsCounter(index);
+                  open('token');
+                }}
                 placeholder={t('placeHolders.selectToken')}
               />
               {error?.message && (
@@ -215,8 +259,9 @@ const DepositForm: React.FC = () => {
             helpText={t('newDeposit.contractAddressSubtitle')}
           />
           <Controller
-            name="tokenAddress"
+            name={`actions.${index}.tokenAddress`}
             control={control}
+            defaultValue=""
             rules={{
               required: t('errors.required.tokenAddress'),
               validate: addressValidator,
@@ -251,11 +296,12 @@ const DepositForm: React.FC = () => {
       <FormItem>
         <Label
           label={t('labels.amount')}
-          helpText={t('newDeposit.amountSubtitle')}
+          helpText={t('newWithdraw.configureWithdraw.amountSubtitle')}
         />
         <Controller
-          name="amount"
+          name={`actions.${index}.amount`}
           control={control}
+          defaultValue=""
           rules={{
             required: t('errors.required.amount'),
             validate: amountValidator,
@@ -275,17 +321,16 @@ const DepositForm: React.FC = () => {
                 adornmentText={t('labels.max')}
                 onAdornmentClick={() => handleMaxClicked(onChange)}
               />
-              <div className="flex justify-between">
-                {error?.message && (
-                  <AlertInline label={error.message} mode="critical" />
-                )}
-
-                {!error?.message && tokenBalance && (
+              <div className="flex justify-between items-start">
+                <div className="space-y-1">
+                  {error?.message && (
+                    <AlertInline label={error.message} mode="critical" />
+                  )}
+                  {renderWarning(value)}
+                </div>
+                {tokenBalance && (
                   <TokenBalance>
-                    {`${t('labels.maxBalance')}: ${tokenBalance.slice(
-                      0,
-                      6
-                    )} ${tokenSymbol}`}
+                    {`${t('labels.maxBalance')}: ${tokenBalance} ${symbol}`}
                   </TokenBalance>
                 )}
               </div>
@@ -293,32 +338,11 @@ const DepositForm: React.FC = () => {
           )}
         />
       </FormItem>
-
-      {/* Token reference */}
-      <FormItem>
-        <Label
-          label={t('labels.reference')}
-          helpText={t('newDeposit.referenceSubtitle')}
-          isOptional={true}
-        />
-        <Controller
-          name="reference"
-          control={control}
-          render={({field: {name, onBlur, onChange, value}}) => (
-            <TextareaSimple
-              name={name}
-              value={value}
-              onBlur={onBlur}
-              onChange={onChange}
-            />
-          )}
-        />
-      </FormItem>
     </>
   );
 };
 
-export default DepositForm;
+export default WithdrawActionForm;
 
 const FormItem = styled.div.attrs({
   className: 'space-y-1.5',
