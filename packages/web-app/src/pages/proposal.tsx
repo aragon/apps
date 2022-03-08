@@ -72,7 +72,7 @@ const Proposal: React.FC = () => {
       <HeaderContainer>
         {!isDesktop && (
           <Breadcrumb
-            onClick={path => navigate(path)}
+            onClick={navigate}
             crumbs={breadcrumbs}
             icon={<IconGovernance />}
           />
@@ -192,7 +192,8 @@ const Content = styled.div.attrs({
 })``;
 
 const HeaderContainer = styled.div.attrs({
-  className: 'flex flex-col gap-y-2 desktop:p-0 px-2 tablet:px-3 pt-2',
+  className:
+    'flex flex-col gap-y-2 desktop:p-0 px-2 tablet:px-3 pt-2 border border-red-500',
 })``;
 
 const ProposalTitle = styled.p.attrs({

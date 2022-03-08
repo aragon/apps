@@ -7,6 +7,7 @@ import useScreen from 'hooks/useScreen';
 import {basePathIcons} from 'containers/navbar/desktop';
 import {SectionWrapperProps} from './sectionWrappers';
 import {Dashboard, NotFound} from 'utils/paths';
+import {useNavigate} from 'react-router-dom';
 
 export type PageWrapperProps = SectionWrapperProps & {
   buttonLabel: string;
@@ -30,6 +31,7 @@ export const PageWrapper = ({
   onClick,
 }: PageWrapperProps) => {
   const {isDesktop} = useScreen();
+  const navigate = useNavigate();
 
   const breadcrumbs = useBreadcrumbs(undefined, {
     excludePaths: [Dashboard, NotFound, 'governance/proposals'],
@@ -45,6 +47,7 @@ export const PageWrapper = ({
           <Breadcrumb
             icon={basePathIcons[breadcrumbs[0].path]}
             crumbs={breadcrumbs}
+            onClick={navigate}
           />
         )}
         <ContentWrapper>
