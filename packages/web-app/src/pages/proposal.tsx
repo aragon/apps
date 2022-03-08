@@ -192,8 +192,7 @@ const Content = styled.div.attrs({
 })``;
 
 const HeaderContainer = styled.div.attrs({
-  className:
-    'flex flex-col gap-y-2 desktop:p-0 px-2 tablet:px-3 pt-2 border border-red-500',
+  className: 'flex flex-col gap-y-2 desktop:p-0 px-2 tablet:px-3 pt-2',
 })``;
 
 const ProposalTitle = styled.p.attrs({
