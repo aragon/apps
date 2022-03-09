@@ -101,7 +101,7 @@ export function useWalletTokens(): HookData<TokenBalance[]> {
       }
 
       if (Number(balance) !== -1 && Number(balance) !== 0)
-        await tokenList.push(constants.AddressZero);
+        tokenList.push(constants.AddressZero);
 
       // get tokens balance from wallet
       const balances = await Promise.all(
