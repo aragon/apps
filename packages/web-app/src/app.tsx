@@ -40,10 +40,8 @@ function App() {
   }, [pathname]);
 
   return (
-    <div className="flex flex-col bg-ui-50">
+    <div className="flex flex-col mb-14 desktop:mb-10 bg-ui-50">
       <Navbar />
-      {/* <main className="mx-2 tablet:mx-3 desktop:mx-5 wide:mx-auto w-full max-w-screen-wide min-h-screen border border-red-500"> */}
-
       <Layout>
         {/* TODO: replace with loading indicator */}
         <Suspense fallback={<p>Loading...</p>}>
@@ -80,11 +78,10 @@ function App() {
 }
 
 const Layout = styled.main.attrs({
-  className: `grid  wide:w-190
-  grid-cols-4                   mx-2      gap-x-2
-   tablet:grid-cols-8    tablet:mx-3 
-  desktop:grid-cols-12  desktop:mx-5      desktop:gap-x-3
-                           wide:mx-auto      wide:gap-x-4`,
+  className:
+    'grid grid-cols-4 tablet:grid-cols-8 ' +
+    'desktop:grid-cols-12 gap-x-2 desktop:gap-x-3 ' +
+    'wide:gap-x-4 mx-2 tablet:mx-3 desktop:mx-5 wide:mx-auto wide:w-190',
 })``;
 
 export default App;

@@ -78,7 +78,7 @@ const Governance: React.FC = () => {
           label="Toggle Empty State"
           onClick={() => setShowEmptyState(false)}
           size="small"
-          className="mx-auto mt-5 mb-16"
+          className="mx-auto mt-5"
         />
       </Container>
     );
@@ -147,12 +147,12 @@ const ListWrapper = styled.div.attrs({
 })``;
 
 const PaginationWrapper = styled.div.attrs({
-  className: 'flex mt-8 mb-10',
+  className: 'flex mt-8',
 })``;
 
 const EmptyStateContainer = styled.div.attrs({
   className:
-    'flex flex-col w-full items-center py-4 px-3 tablet:py-8 tablet:px-6 mx-auto mt-3 tablet:mt-5 text-lg bg-white rounded-xl text-ui-500',
+    'flex flex-col w-full items-center py-4 px-3 tablet:py-8 tablet:px-6 mx-auto mt-3 tablet:mt-5 text-lg bg-white rounded-xl text-ui-500 border border-red-500',
 })``;
 
 const ImageContainer = styled.img.attrs({

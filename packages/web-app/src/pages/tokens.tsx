@@ -1,4 +1,3 @@
-import styled from 'styled-components';
 import {SearchInput} from '@aragon/ui-components';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
