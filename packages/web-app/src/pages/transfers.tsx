@@ -90,9 +90,6 @@ const Transfers: React.FC = () => {
   );
 };
 
-const Layout = styled.div.attrs({
-  className: 'm-auto mt-5 space-y-5 w-8/12',
-})``;
-const SectionContainer = styled.div.attrs({className: 'my-5'})``;
+const SectionContainer = styled.div.attrs({className: 'my-3 desktop:my-5'})``;
 
 export default withTransaction('Transfers', 'component')(Transfers);
