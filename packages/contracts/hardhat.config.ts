@@ -55,14 +55,14 @@ const config: HardhatUserConfig = {
     currency: 'USD',
   },
   etherscan: {
-    apiKey: {
-      mainnet: process.env.ETHERSCAN_KEY || '',
-      rinkeby: process.env.ETHERSCAN_KEY || '',
-      polygon: process.env.POLYGONSCAN_KEY || '',
-      polygonMumbai: process.env.POLYGONSCAN_KEY || '',
-      arbitrumOne: process.env.ARBISCAN_KEY || '',
-      arbitrumTestnet: process.env.ARBISCAN_KEY || '',
-    },
+    // apiKey: {
+    //   mainnet: process.env.ETHERSCAN_KEY || '',
+    //   rinkeby: process.env.ETHERSCAN_KEY || '',
+    //   polygon: process.env.POLYGONSCAN_KEY || '',
+    //   polygonMumbai: process.env.POLYGONSCAN_KEY || '',
+    //   arbitrumOne: process.env.ARBISCAN_KEY || '',
+    //   arbitrumTestnet: process.env.ARBISCAN_KEY || '',
+    // },
   },
   namedAccounts: {
     deployer: 0,
