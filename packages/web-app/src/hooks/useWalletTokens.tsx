@@ -1,5 +1,6 @@
 import {constants} from 'ethers';
 import {formatUnits, Interface, getAddress, hexZeroPad} from 'ethers/lib/utils';
+import {Log} from '@ethersproject/providers';
 import {useState, useEffect} from 'react';
 
 import {erc20TokenABI} from 'abis/erc20TokenABI';
@@ -36,7 +37,7 @@ export function useUserTokenAddresses(): HookData<string[]> {
           const latestBlockNumber = await web3.getBlockNumber();
 
           // Get all transfers sent to the input address
-          const transfers = await web3.getLogs({
+          const transfers: Log[] = await web3.getLogs({
             fromBlock: 0,
             toBlock: latestBlockNumber,
             topics: [
