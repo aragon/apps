@@ -14,10 +14,11 @@ import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import React, {useCallback, useEffect} from 'react';
 
+import {useActionsContext} from 'context/actions';
 import {useWallet} from 'context/augmentedWallet';
-import {useProviders} from 'context/providers';
 import {useGlobalModalContext} from 'context/globalModals';
 import {fetchTokenData} from 'services/prices';
+import {useProviders} from 'context/providers';
 import {formatUnits, handleClipboardActions} from 'utils/library';
 import {getTokenInfo, isETH} from 'utils/tokens';
 import {
@@ -26,30 +27,37 @@ import {
   validateTokenAmount,
 } from 'utils/validators';
 
-const ConfigureWithdrawForm: React.FC = () => {
+const WithdrawActionForm: React.FC<{index: number}> = ({index}) => {
   const {t} = useTranslation();
   const {open} = useGlobalModalContext();
+  const {setActionsCounter} = useActionsContext();
   const {account} = useWallet();
   const {infura: provider} = useProviders();
   const {control, getValues, trigger, resetField, setFocus, setValue} =
     useFormContext();
   const {errors, dirtyFields} = useFormState({control});
   const [tokenAddress, isCustomToken, tokenBalance, symbol] = useWatch({
-    name: ['tokenAddress', 'isCustomToken', 'tokenBalance', 'tokenSymbol'],
+    name: [
+      `actions.${index}.tokenAddress`,
+      `actions.${index}.isCustomToken`,
+      `actions.${index}.tokenBalance`,
+      `actions.${index}.tokenSymbol`,
+    ],
   });
   /*************************************************
    *                    Hooks                      *
    *************************************************/
   useEffect(() => {
-    if (isCustomToken) setFocus('tokenAddress');
-  }, [isCustomToken, setFocus]);
+    if (isCustomToken) setFocus(`actions.${index}.tokenAddress`);
+  }, [index, isCustomToken, setFocus]);
 
   useEffect(() => {
     if (!account || !isCustomToken || !tokenAddress) return;
 
     const fetchTokenInfo = async () => {
       if (errors.tokenAddress !== undefined) {
-        if (dirtyFields.amount) trigger(['amount', 'tokenSymbol']);
+        if (dirtyFields.amount)
+          trigger([`actions.${index}.amount`, `actions.${index}.tokenSymbol`]);
         return;
       }
 
@@ -66,15 +74,15 @@ const ConfigureWithdrawForm: React.FC = () => {
         // use blockchain if api data unavailable
         const [balance, data] = await allTokenInfoPromise;
         if (data) {
-          setValue('tokenName', data.name);
-          setValue('tokenSymbol', data.symbol);
-          setValue('tokenImgUrl', data.imgUrl);
+          setValue(`actions.${index}.tokenName`, data.name);
+          setValue(`actions.${index}.tokenSymbol`, data.symbol);
+          setValue(`actions.${index}.tokenImgUrl`, data.imgUrl);
         } else {
           const {name, symbol} = await getTokenInfo(tokenAddress, provider);
-          setValue('tokenName', name);
-          setValue('tokenSymbol', symbol);
+          setValue(`actions.${index}.tokenName`, name);
+          setValue(`actions.${index}.tokenSymbol`, symbol);
         }
-        setValue('tokenBalance', balance);
+        setValue(`actions.${index}.tokenBalance`, balance);
       } catch (error) {
         /**
          * Error is intentionally swallowed. Passing invalid address will
@@ -84,7 +92,8 @@ const ConfigureWithdrawForm: React.FC = () => {
          */
         console.error(error);
       }
-      if (dirtyFields.amount) trigger(['amount', 'tokenSymbol']);
+      if (dirtyFields.amount)
+        trigger([`actions.${index}.amount`, `actions.${index}.tokenSymbol`]);
     };
 
     fetchTokenInfo();
@@ -92,6 +101,7 @@ const ConfigureWithdrawForm: React.FC = () => {
     account,
     dirtyFields.amount,
     errors.tokenAddress,
+    index,
     isCustomToken,
     provider,
     setValue,
@@ -135,20 +145,20 @@ const ConfigureWithdrawForm: React.FC = () => {
 
       // address invalid, reset token fields
       if (validationResult !== true) {
-        resetField('tokenName');
-        resetField('tokenImgUrl');
-        resetField('tokenSymbol');
-        resetField('tokenBalance');
+        resetField(`actions.${index}.tokenName`);
+        resetField(`actions.${index}.tokenImgUrl`);
+        resetField(`actions.${index}.tokenSymbol`);
+        resetField(`actions.${index}.tokenBalance`);
       }
 
       return validationResult;
     },
-    [provider, resetField]
+    [index, provider, resetField]
   );
 
   const amountValidator = useCallback(
     async (amount: string) => {
-      const tokenAddress = getValues('tokenAddress');
+      const tokenAddress = getValues(`actions.${index}.tokenAddress`);
 
       // check if a token is selected using its address
       if (tokenAddress === '') return t('errors.noTokenSelected');
@@ -167,7 +177,7 @@ const ConfigureWithdrawForm: React.FC = () => {
         return t('errors.defaultAmountValidationError');
       }
     },
-    [errors.tokenAddress, getValues, provider, t]
+    [errors.tokenAddress, getValues, index, provider, t]
   );
 
   /*************************************************
@@ -182,7 +192,7 @@ const ConfigureWithdrawForm: React.FC = () => {
           helpText={t('newWithdraw.configureWithdraw.toSubtitle')}
         />
         <Controller
-          name="to"
+          name={`actions.${index}.to`}
           control={control}
           defaultValue=""
           rules={{
@@ -219,7 +229,7 @@ const ConfigureWithdrawForm: React.FC = () => {
           helpText={t('newWithdraw.configureWithdraw.tokenSubtitle')}
         />
         <Controller
-          name="tokenSymbol"
+          name={`actions.${index}.tokenSymbol`}
           control={control}
           defaultValue=""
           rules={{required: t('errors.required.token')}}
@@ -229,7 +239,10 @@ const ConfigureWithdrawForm: React.FC = () => {
                 name={name}
                 mode={error ? 'critical' : 'default'}
                 value={value}
-                onClick={() => open('token')}
+                onClick={() => {
+                  setActionsCounter(index);
+                  open('token');
+                }}
                 placeholder={t('placeHolders.selectToken')}
               />
               {error?.message && (
@@ -248,7 +261,7 @@ const ConfigureWithdrawForm: React.FC = () => {
             helpText={t('newDeposit.contractAddressSubtitle')}
           />
           <Controller
-            name="tokenAddress"
+            name={`actions.${index}.tokenAddress`}
             control={control}
             defaultValue=""
             rules={{
@@ -288,7 +301,7 @@ const ConfigureWithdrawForm: React.FC = () => {
           helpText={t('newWithdraw.configureWithdraw.amountSubtitle')}
         />
         <Controller
-          name="amount"
+          name={`actions.${index}.amount`}
           control={control}
           defaultValue=""
           rules={{
@@ -331,7 +344,7 @@ const ConfigureWithdrawForm: React.FC = () => {
   );
 };
 
-export default ConfigureWithdrawForm;
+export default WithdrawActionForm;
 
 const FormItem = styled.div.attrs({
   className: 'space-y-1.5',

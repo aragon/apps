@@ -5,16 +5,16 @@ import {
   SearchInput,
   TextInput,
 } from '@aragon/ui-components';
+import React, {useCallback, useEffect, useMemo} from 'react';
+import {Controller, useFormContext, useWatch} from 'react-hook-form';
 import styled from 'styled-components';
 import {chains} from 'use-wallet';
 import {useTranslation} from 'react-i18next';
-import React, {useCallback, useEffect, useMemo} from 'react';
-import {Controller, useFormContext, useWatch} from 'react-hook-form';
-
 import {useWallet} from 'context/augmentedWallet';
+import {useProviders} from 'context/providers';
+import {ChainInformation} from 'use-wallet/dist/cjs/types';
 import {formatUnits} from 'utils/library';
 import {getTokenInfo} from 'utils/tokens';
-import {ChainInformation} from 'use-wallet/dist/cjs/types';
 import {validateTokenAddress} from 'utils/validators';
 
 const DEFAULT_BLOCK_EXPLORER = 'https://etherscan.io/';
@@ -27,7 +27,8 @@ const AddExistingToken: React.FC<AddExistingTokenType> = ({
   resetTokenFields,
 }) => {
   const {t} = useTranslation();
-  const {provider, isConnected, chainId, networkName} = useWallet();
+  const {isConnected, chainId, networkName} = useWallet();
+  const {infura: provider} = useProviders();
   const {control, setValue, trigger} = useFormContext();
 
   const [tokenAddress, blockchain, tokenName, tokenSymbol, tokenTotalSupply] =
