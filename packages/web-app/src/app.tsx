@@ -17,6 +17,7 @@ import '../i18n.config';
 import HomePage from 'pages/home';
 import * as paths from 'utils/paths';
 import DaoSelectMenu from 'containers/navbar/daoSelectMenu';
+import styled from 'styled-components';
 
 const TokensPage = lazy(() => import('pages/tokens'));
 const FinancePage = lazy(() => import('pages/finance'));
@@ -39,9 +40,11 @@ function App() {
   }, [pathname]);
 
   return (
-    <div className="flex flex-col pb-12 tablet:pb-4 bg-ui-50">
+    <div className="flex flex-col bg-ui-50">
       <Navbar />
-      <main className="min-h-screen">
+      {/* <main className="mx-2 tablet:mx-3 desktop:mx-5 wide:mx-auto w-full max-w-screen-wide min-h-screen border border-red-500"> */}
+
+      <Layout>
         {/* TODO: replace with loading indicator */}
         <Suspense fallback={<p>Loading...</p>}>
           <Routes>
@@ -60,7 +63,7 @@ function App() {
             <Route path="*" element={<Navigate to={paths.NotFound} />} />
           </Routes>
         </Suspense>
-      </main>
+      </Layout>
       <WalletMenu />
       <TransferMenu />
       <DaoSelectMenu />
@@ -75,5 +78,13 @@ function App() {
     </div>
   );
 }
+
+const Layout = styled.main.attrs({
+  className: `grid  wide:w-190
+  grid-cols-4                   mx-2      gap-x-2
+   tablet:grid-cols-8    tablet:mx-3 
+  desktop:grid-cols-12  desktop:mx-5      desktop:gap-x-3
+                           wide:mx-auto      wide:gap-x-4`,
+})``;
 
 export default App;

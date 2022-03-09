@@ -136,7 +136,7 @@ const Container = styled.header.attrs({
 
 const Menu = styled.nav.attrs({
   className: `flex mx-auto justify-between items-center max-w-screen-wide
-     px-5 py-3`,
+     px-5 wide:px-10 py-3`,
 })`
   background: linear-gradient(
     180deg,
