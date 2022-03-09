@@ -29,29 +29,25 @@ const Tokens: React.FC = () => {
   );
 
   return (
-    <Layout>
-      <PageWrapper
-        title={t('labels.allTokens') as string}
-        buttonLabel={t('TransferModal.newTransfer') as string}
-        subtitle={`${new Intl.NumberFormat('en-US', {
-          style: 'currency',
-          currency: 'USD',
-        }).format(treasury.totalAssetValue)} Total Volume`}
-        onClick={open}
-      >
+    <PageWrapper
+      title={t('labels.allTokens') as string}
+      buttonLabel={t('TransferModal.newTransfer') as string}
+      subtitle={`${new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+      }).format(treasury.totalAssetValue)} Total Volume`}
+      onClick={open}
+    >
+      <div className="mt-3 desktop:mt-8 space-y-3 desktop:space-y-5">
         <SearchInput
           placeholder="Type to filter"
           value={searchTerm}
           onChange={handleChange}
         />
         <TokenList tokens={filteredInfo} />
-      </PageWrapper>
-    </Layout>
+      </div>
+    </PageWrapper>
   );
 };
 
 export default withTransaction('Tokens', 'component')(Tokens);
-
-const Layout = styled.div.attrs({
-  className: 'm-auto mt-5 space-y-5 w-8/12',
-})``;
