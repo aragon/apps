@@ -14,6 +14,9 @@ import {CachePersistor, LocalStorageWrapper} from 'apollo3-cache-persist';
 import {BASE_URL, SUBGRAPH_API_URL} from 'utils/constants';
 import {useWallet} from 'context/augmentedWallet';
 
+/**
+ * IApolloClientContext
+ */
 interface IApolloClientContext {
   client: ApolloClient<ApolloClientOptions<string | undefined>>;
 }
