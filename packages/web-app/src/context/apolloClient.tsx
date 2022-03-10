@@ -26,9 +26,11 @@ const ApolloClientProvider: React.FC<unknown> = ({children}) => {
   const {networkName} = useWallet();
 
   const graphLink = useMemo(() => {
-    return new HttpLink({
-      uri: SUBGRAPH_API_URL + networkName,
-    });
+    if (networkName) {
+      return new HttpLink({
+        uri: SUBGRAPH_API_URL[networkName],
+      });
+    }
   }, [networkName]);
 
   const restLink = useMemo(() => {
@@ -99,7 +101,7 @@ const ApolloClientProvider: React.FC<unknown> = ({children}) => {
   const client = useMemo(() => {
     return new ApolloClient({
       cache,
-      link: restLink.concat(graphLink),
+      link: graphLink ? restLink.concat(graphLink) : restLink,
     });
   }, [graphLink, cache, restLink]);
 
