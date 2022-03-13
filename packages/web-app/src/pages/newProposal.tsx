@@ -1,7 +1,7 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
-import {useForm, FormProvider} from 'react-hook-form';
+import {useForm, FormProvider, useFormState, useWatch} from 'react-hook-form';
 import {constants} from 'ethers';
 
 import {FullScreenStepper, Step} from 'components/fullScreenStepper';
@@ -21,7 +21,9 @@ const NewProposal: React.FC = () => {
   const formMethods = useForm({
     mode: 'onChange',
   });
+  const {errors, dirtyFields} = useFormState({control: formMethods.control});
   const {account}: useWalletProps = useWallet();
+  const endDateType = formMethods.getValues('durationSwitch');
 
   // TODO: Sepehr, is this still necessary?
   useEffect(() => {
@@ -31,6 +33,44 @@ const NewProposal: React.FC = () => {
       formMethods.setValue('type', TransferTypes.Withdraw);
     }
   }, [account, formMethods]);
+
+  /*************************************************
+   *             Step Validation States            *
+   *************************************************/
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const defineProposalIsValid = useMemo(() => {
+    // required fields not dirty
+    if (
+      !dirtyFields.proposalTitle ||
+      !dirtyFields.proposalSummary ||
+      errors.proposalTitle ||
+      errors.proposalSummary
+    )
+      return false;
+    return true;
+  }, [
+    dirtyFields.proposalSummary,
+    dirtyFields.proposalTitle,
+    errors.proposalSummary,
+    errors.proposalTitle,
+  ]);
+
+  const setupVotingFormIsValid = useMemo(() => {
+    if (endDateType === 'date') {
+      return errors.startDate || errors.startTime || errors.endDate
+        ? false
+        : true;
+    }
+    return errors.startDate || errors.startTime || errors.duration
+      ? false
+      : true;
+  }, [
+    endDateType,
+    errors.duration,
+    errors.endDate,
+    errors.startDate,
+    errors.startTime,
+  ]);
 
   /*************************************************
    *                    Render                     *
@@ -46,12 +86,14 @@ const NewProposal: React.FC = () => {
           <Step
             wizardTitle={t('newWithdraw.defineProposal.heading')}
             wizardDescription={t('newWithdraw.defineProposal.description')}
+            isNextButtonDisabled={!defineProposalIsValid}
           >
             <DefineProposal />
           </Step>
           <Step
             wizardTitle={t('newWithdraw.setupVoting.title')}
             wizardDescription={t('newWithdraw.setupVoting.description')}
+            isNextButtonDisabled={!setupVotingFormIsValid}
           >
             <SetupVotingForm />
           </Step>

@@ -7,12 +7,17 @@ import {
   NumberInput,
 } from '@aragon/ui-components';
 import {toDate} from 'date-fns-tz';
-import {Controller, FieldError, useFormContext} from 'react-hook-form';
+import {
+  Controller,
+  FieldError,
+  useFormContext,
+  useWatch,
+} from 'react-hook-form';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import React, {useEffect, useState} from 'react';
 
-import {DateModeSwitch, EndDateType} from './dateModeSwitch';
+import {DateModeSwitch} from './dateModeSwitch';
 import {SimplifiedTimeInput} from 'components/inputTime/inputTime';
 import UtcMenu from 'containers/utcMenu';
 import {timezones} from 'containers/utcMenu/utcData';
@@ -31,14 +36,23 @@ type UtcInstance = 'first' | 'second';
 const SetupVotingForm: React.FC = () => {
   const {t} = useTranslation();
   const {open} = useGlobalModalContext();
-  const {control, setValue, getValues, setError, formState, clearErrors} =
-    useFormContext();
+  const {
+    control,
+    setValue,
+    getValues,
+    setError,
+    formState,
+    clearErrors,
+    resetField,
+  } = useFormContext();
 
   /*************************************************
    *                    STATE & EFFECT             *
    *************************************************/
 
-  const [endDateType, setEndDateType] = useState<EndDateType>('duration');
+  const endDateType = useWatch({
+    name: 'durationSwitch',
+  });
   const [utcInstance, setUtcInstance] = useState<UtcInstance>('first');
   const [utcStart, setUtcStart] = useState('');
   const [utcEnd, setUtcEnd] = useState('');
@@ -47,14 +61,14 @@ const SetupVotingForm: React.FC = () => {
   // This is done here rather than in the defaulValues object as time can
   // ellapse between the creation of the form context and this stage of the form.
   useEffect(() => {
-    if (!getValues('startTime'))
-      setValue('startTime', getCanonicalTime({minutes: 10}));
-    if (!getValues('startDate'))
-      setValue('startDate', getCanonicalDate({minutes: 10}));
-    if (!getValues('endTime'))
-      setValue('endTime', getCanonicalTime({days: 5, minutes: 10}));
-    if (!getValues('endDate'))
-      setValue('endDate', getCanonicalDate({days: 5, minutes: 10}));
+    // if (!getValues('startTime'))
+    //   setValue('startTime', getCanonicalTime({minutes: 10}));
+    // if (!getValues('startDate'))
+    //   setValue('startDate', getCanonicalDate({minutes: 10}));
+    // // if (!getValues('endTime'))
+    // //   setValue('endTime', getCanonicalTime({days: 5, minutes: 10}));
+    // // if (!getValues('endDate'))
+    // //   setValue('endDate', getCanonicalDate({days: 5, minutes: 10}));
 
     const currTimezone = timezones.find(tz => tz === getFormattedUtcOffset());
     if (!currTimezone) {
@@ -145,6 +159,7 @@ const SetupVotingForm: React.FC = () => {
         type: 'validate',
         message: t('errors.startPast'),
       });
+      return t('errors.endPast');
     }
     if (startMills >= currMills) {
       clearErrors('startDate');
@@ -161,13 +176,14 @@ const SetupVotingForm: React.FC = () => {
         type: 'validate',
         message: t('errors.endPast'),
       });
+      return t('errors.endPast');
     }
     if (endMills >= minEndDateTimeMills) {
       clearErrors('endDate');
       clearErrors('endTime');
     }
 
-    return '';
+    return true;
   };
 
   // sets the UTC values for the start and end date/time
@@ -179,6 +195,12 @@ const SetupVotingForm: React.FC = () => {
       setUtcEnd(tz);
       setValue('endUtc', tz);
     }
+  };
+
+  const clearInputs = () => {
+    resetField('duration');
+    resetField('endDate');
+    resetField('endTime');
   };
 
   /*************************************************
@@ -208,6 +230,7 @@ const SetupVotingForm: React.FC = () => {
           <Controller
             name="startDate"
             control={control}
+            defaultValue={getCanonicalDate({minutes: 10})}
             rules={{
               required: t('errors.required.date'),
               validate: dateTimeValidator,
@@ -226,6 +249,7 @@ const SetupVotingForm: React.FC = () => {
           <Controller
             name="startTime"
             control={control}
+            defaultValue={getCanonicalTime({minutes: 10})}
             rules={{
               required: t('errors.required.time'),
               // FIXME this triggers the validators, but for some reason they do
@@ -265,10 +289,26 @@ const SetupVotingForm: React.FC = () => {
         {endDateType === 'duration' ? (
           <>
             <HStack>
-              <DateModeSwitch value={endDateType} setValue={setEndDateType} />
+              <Controller
+                name="durationSwitch"
+                defaultValue="duration"
+                control={control}
+                render={({field: {onChange, value}}) => {
+                  return (
+                    <DateModeSwitch
+                      value={value}
+                      setValue={value => {
+                        clearInputs();
+                        onChange(value);
+                      }}
+                    />
+                  );
+                }}
+              />
               <Controller
                 name="duration"
                 control={control}
+                defaultValue={5}
                 rules={{
                   min: {
                     value: 5,
@@ -300,7 +340,22 @@ const SetupVotingForm: React.FC = () => {
           <>
             <div className="block space-y-2">
               <div>
-                <DateModeSwitch value={endDateType} setValue={setEndDateType} />
+                <Controller
+                  name="durationSwitch"
+                  control={control}
+                  defaultValue="date"
+                  render={({field: {onChange, value}}) => {
+                    return (
+                      <DateModeSwitch
+                        value={value}
+                        setValue={value => {
+                          clearInputs();
+                          onChange(value);
+                        }}
+                      />
+                    );
+                  }}
+                />
               </div>
               <HStack>
                 <Controller
@@ -310,6 +365,7 @@ const SetupVotingForm: React.FC = () => {
                     required: t('errors.required.date'),
                     validate: dateTimeValidator,
                   }}
+                  defaultValue={getCanonicalDate({days: 5, minutes: 10})}
                   render={({field: {name, value, onChange, onBlur}}) => (
                     <div>
                       <DateInput
@@ -324,6 +380,7 @@ const SetupVotingForm: React.FC = () => {
                 <Controller
                   name="endTime"
                   control={control}
+                  defaultValue={getCanonicalTime({days: 5, minutes: 10})}
                   rules={{
                     required: t('errors.required.time'),
                     validate: dateTimeValidator,
