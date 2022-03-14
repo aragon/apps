@@ -33,6 +33,7 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, ERC1271, AdaptiveERC1
     string internal constant ERROR_ACTION_CALL_FAILED = "ACTION_CALL_FAILED";
     string internal constant ERROR_WITHDRAW_RECIPIENT_ZERO = "WITHDRAW_RECIPIENT_ZERO";
     string internal constant ERROR_DEPOSIT_AMOUNT_ZERO = "DEPOSIT_AMOUNT_ZERO";
+    string internal constant ERROR_WITHDRAW_AMOUNT_ZERO = "WITHDRAW_AMOUNT_ZERO";
     string internal constant ERROR_DEPOSIT_ETH_VALUE_ZERO = "DEPOSIT_ETH_VALUE_ZERO";
     string internal constant ERROR_ETH_DEPOSIT_AMOUNT_MISMATCH = "ETH_DEPOSIT_AMOUNT_MISMATCH";
     string internal constant ERROR_ETH_WITHDRAW_FAILED = "ETH_WITHDRAW_FAILED";
@@ -141,7 +142,7 @@ contract DAO is IDAO, Initializable, UUPSUpgradeable, ACL, ERC1271, AdaptiveERC1
         uint256 _amount,
         string memory _reference
     ) external override auth(address(this), WITHDRAW_ROLE) {
-        require(_amount > 0, ERROR_DEPOSIT_AMOUNT_ZERO);
+        require(_amount > 0, ERROR_WITHDRAW_AMOUNT_ZERO);
 
         if (_token == address(0)) {
             (bool ok, ) = _to.call{value: _amount}("");
