@@ -21,6 +21,8 @@ import {BreadcrumbDropdown} from './breadcrumbDropdown';
 import {useGlobalModalContext} from 'context/globalModals';
 import {NetworkIndicatorStatus} from 'utils/types';
 import {Community, Dashboard, Finance, Governance, NotFound} from 'utils/paths';
+import {selectedDAO} from 'context/apolloClient';
+import {useReactiveVar} from '@apollo/client';
 
 const MIN_ROUTE_DEPTH_FOR_BREADCRUMBS = 2;
 
@@ -42,6 +44,7 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
   const {t} = useTranslation();
   const {open} = useGlobalModalContext();
   const navigate = useNavigate();
+  const selectedDao = useReactiveVar(selectedDAO);
   const [showCrumbMenu, setShowCrumbMenu] = useState(false);
   const {isConnected, account, ensName, ensAvatarUrl}: useWalletProps =
     useWallet();
@@ -87,8 +90,8 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
       <Menu>
         <Content>
           <CardDao
-            daoName="DAO Name"
-            daoAddress="patito.eth.dao"
+            daoName={selectedDao.daoName}
+            daoAddress={selectedDao.daoAddress}
             onClick={() => open('selectDao')}
           />
 

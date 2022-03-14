@@ -7,7 +7,7 @@ import {Link} from '../link';
 
 export type VoterType = {
   wallet: string;
-  option: 'Yes' | 'No';
+  option: 'Yes' | 'Abstain' | 'No';
   votingPower: string;
   tokenAmount: string;
 };
@@ -38,7 +38,13 @@ export const VotersTable: React.FC<VotersTableProps> = ({
             <TableCell type="tag">
               <Badge
                 label={voter.option}
-                colorScheme={voter.option === 'Yes' ? 'success' : 'critical'}
+                colorScheme={
+                  voter.option === 'Yes'
+                    ? 'success'
+                    : voter.option === 'No'
+                    ? 'critical'
+                    : 'neutral'
+                }
               />
             </TableCell>
             <TableCell type="text" text={voter.votingPower} rightAligned />
