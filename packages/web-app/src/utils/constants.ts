@@ -14,8 +14,10 @@ type SubgraphNetworkUrl = {
 
 export const SUBGRAPH_API_URL: SubgraphNetworkUrl = {
   main: undefined,
+  // rinkeby:
+  //   'https://api.thegraph.com/subgraphs/name/aragon/aragon-zaragoza-rinkeby',
   rinkeby:
-    'https://api.thegraph.com/subgraphs/name/aragon/aragon-zaragoza-rinkeby',
+    'https://api.thegraph.com/subgraphs/name/rekard0/rekard0-zaragoza-rinkeby',
   polygon: undefined,
   mumbai:
     'https://api.thegraph.com/subgraphs/name/aragon/aragon-zaragoza-mumbai',
