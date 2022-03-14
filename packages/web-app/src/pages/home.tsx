@@ -6,10 +6,14 @@ import {ButtonText} from '@aragon/ui-components';
 import {useNavigate} from 'react-router-dom';
 import {useGlobalModalContext} from 'context/globalModals';
 
+import {useDaoBalances} from 'hooks/useDaoBalances';
+
 const Home: React.FC = () => {
   const {t} = useTranslation();
   const navigate = useNavigate();
   const {open} = useGlobalModalContext();
+  const {data} = useDaoBalances('0x79fde96a6182adbd9ca4a803ba26f65a893fbf4f');
+  console.log('data', data);
 
   return (
     <>
