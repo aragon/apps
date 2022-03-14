@@ -1,4 +1,4 @@
-import {useQuery} from '@apollo/client';
+import {useLazyQuery, useQuery} from '@apollo/client';
 import {Address} from '@aragon/ui-components/dist/utils/addresses';
 import {DAO_BALANCE_LIST} from 'queries/finances';
 
@@ -15,14 +15,18 @@ type BalanceFromGraph = {
 };
 
 export const useDaoBalances = (daoAddress: Address) => {
-  const {data, error, loading, refetch} = useQuery(DAO_BALANCE_LIST, {
-    variables: {dao: daoAddress},
-  });
+  const [getDaoBalances, {data, error, loading, refetch}] = useLazyQuery(
+    DAO_BALANCE_LIST,
+    {
+      variables: {dao: daoAddress},
+    }
+  );
 
   return {
     data: data?.balances as BalanceFromGraph[],
     error,
     loading,
     refetch,
+    getDaoBalances,
   };
 };

@@ -1,7 +1,7 @@
 import {gql} from '@apollo/client';
 
 /**
- * Voters and Actions can be paginanted
+ * Voters and Actions can be paginated
  * or can be used to get array length
  */
 export const DAO_BALANCE_LIST = gql`

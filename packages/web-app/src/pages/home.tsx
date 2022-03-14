@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
@@ -7,13 +7,23 @@ import {useNavigate} from 'react-router-dom';
 import {useGlobalModalContext} from 'context/globalModals';
 
 import {useDaoBalances} from 'hooks/useDaoBalances';
+import {useDaoMetadata} from 'hooks/useDaoMetadata';
 
 const Home: React.FC = () => {
   const {t} = useTranslation();
-  const navigate = useNavigate();
   const {open} = useGlobalModalContext();
-  const {data} = useDaoBalances('0x79fde96a6182adbd9ca4a803ba26f65a893fbf4f');
-  console.log('data', data);
+  const navigate = useNavigate();
+
+  const {data: balances, getDaoBalances} = useDaoBalances(
+    '0x79fde96a6182adbd9ca4a803ba26f65a893fbf4f'
+  );
+
+  const {data: tokens} = useDaoMetadata(balances);
+  useEffect(() => {
+    getDaoBalances();
+  }, [getDaoBalances]);
+
+  console.log('tokens', tokens);
 
   return (
     <>
