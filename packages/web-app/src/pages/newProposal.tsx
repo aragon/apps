@@ -1,7 +1,7 @@
 import React, {useEffect, useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
-import {useForm, FormProvider, useFormState, useWatch} from 'react-hook-form';
+import {useForm, FormProvider, useFormState} from 'react-hook-form';
 import {constants} from 'ethers';
 
 import {FullScreenStepper, Step} from 'components/fullScreenStepper';
@@ -23,7 +23,7 @@ const NewProposal: React.FC = () => {
   });
   const {errors, dirtyFields} = useFormState({control: formMethods.control});
   const {account}: useWalletProps = useWallet();
-  const endDateType = formMethods.getValues('durationSwitch');
+  const [durationSwitch] = formMethods.getValues(['durationSwitch']);
 
   // TODO: Sepehr, is this still necessary?
   useEffect(() => {
@@ -56,7 +56,7 @@ const NewProposal: React.FC = () => {
   ]);
 
   const setupVotingFormIsValid = useMemo(() => {
-    if (endDateType === 'date') {
+    if (durationSwitch === 'date') {
       return errors.startDate || errors.startTime || errors.endDate
         ? false
         : true;
@@ -65,7 +65,7 @@ const NewProposal: React.FC = () => {
       ? false
       : true;
   }, [
-    endDateType,
+    durationSwitch,
     errors.duration,
     errors.endDate,
     errors.startDate,
