@@ -5,7 +5,7 @@ import {TokenPricePercentages} from 'utils/types';
 import {BASE_URL, DEFAULT_CURRENCY} from 'utils/constants';
 import {ApolloClient, ApolloClientOptions, gql} from '@apollo/client';
 
-type TokenPrices = {
+export type TokenPrices = {
   [key: string]: {
     price: number;
     percentages: TokenPricePercentages;

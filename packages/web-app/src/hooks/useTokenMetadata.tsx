@@ -1,9 +1,9 @@
-import {ApolloClient, ApolloClientOptions, gql, useQuery} from '@apollo/client';
 import {Address} from '@aragon/ui-components/dist/utils/addresses';
-import {useApolloClient} from 'context/apolloClient';
 import {constants} from 'ethers';
-import {useEffect, useState} from 'react';
 import {useWallet} from 'use-wallet';
+import {useApolloClient} from 'context/apolloClient';
+import {useEffect, useState} from 'react';
+import {ApolloClient, ApolloClientOptions, gql} from '@apollo/client';
 
 type BalanceFromGraph = {
   id: number;
@@ -13,19 +13,19 @@ type BalanceFromGraph = {
     symbol: string;
     decimals: number;
   };
-  balance: BigInt;
+  balance: bigint;
   lastUpdated: string;
 };
 
-type TokenWithMetadata = {
-  balance: BigInt;
+export type TokenWithMetadata = {
+  balance: bigint;
   metadata: BalanceFromGraph['token'] & {
     apiId?: string;
     imgUrl?: string;
   };
 };
 
-export const useDaoMetadata = (balances: BalanceFromGraph[]) => {
+export const useTokenMetadata = (balances: BalanceFromGraph[]) => {
   const client = useApolloClient();
   const {chainId} = useWallet();
   const [data, setData] = useState<TokenWithMetadata[]>();

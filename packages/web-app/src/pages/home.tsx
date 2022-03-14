@@ -1,29 +1,24 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import {useTranslation} from 'react-i18next';
-import {withTransaction} from '@elastic/apm-rum-react';
 import {ButtonText} from '@aragon/ui-components';
 import {useNavigate} from 'react-router-dom';
+import {useTranslation} from 'react-i18next';
+import {withTransaction} from '@elastic/apm-rum-react';
 import {useGlobalModalContext} from 'context/globalModals';
 
-import {useDaoBalances} from 'hooks/useDaoBalances';
-import {useDaoMetadata} from 'hooks/useDaoMetadata';
+import {TimeFilter} from 'utils/constants';
+import {useDaoVault} from 'hooks/useDaoVault';
 
 const Home: React.FC = () => {
   const {t} = useTranslation();
   const {open} = useGlobalModalContext();
   const navigate = useNavigate();
 
-  const {data: balances, getDaoBalances} = useDaoBalances(
-    '0x79fde96a6182adbd9ca4a803ba26f65a893fbf4f'
+  const vault = useDaoVault(
+    '0x79fde96a6182adbd9ca4a803ba26f65a893fbf4f',
+    TimeFilter.day
   );
-
-  const {data: tokens} = useDaoMetadata(balances);
-  useEffect(() => {
-    getDaoBalances();
-  }, [getDaoBalances]);
-
-  console.log('tokens', tokens);
+  console.log('vault', vault);
 
   return (
     <>
