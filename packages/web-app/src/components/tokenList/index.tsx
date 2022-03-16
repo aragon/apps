@@ -3,10 +3,10 @@ import {CardToken} from '@aragon/ui-components';
 import {formatUnits} from 'ethers/lib/utils';
 import {useTranslation} from 'react-i18next';
 
-import {TreasuryToken} from 'utils/types';
+import {VaultToken} from 'utils/types';
 
 type TokenListProps = {
-  tokens: TreasuryToken[];
+  tokens: VaultToken[];
 };
 
 const usdFormatter = new Intl.NumberFormat('en-US', {
@@ -29,44 +29,47 @@ const TokenList: React.FC<TokenListProps> = ({tokens}) => {
     <div className="space-y-1.5" data-testid="tokenList">
       {tokens.map(token => (
         <CardToken
-          key={token.address}
-          tokenName={token.name}
+          key={token.metadata.id}
+          tokenName={token.metadata.name}
+          tokenSymbol={token.metadata.symbol}
+          tokenImageUrl={token.metadata.imgUrl || ''}
           tokenCount={numberFormatter.format(
-            Number(formatUnits(token.count, token.decimals))
+            Number(formatUnits(token.balance, token.metadata.decimals))
           )}
-          tokenSymbol={token.symbol}
-          tokenImageUrl={token.imgUrl}
-          {...(token.price &&
-          token.treasuryShare &&
-          token.changeDuringInterval &&
-          token.percentageChangeDuringInterval
+          {...(!token.marketData
             ? {
-                tokenUSDValue: usdFormatter.format(token.price),
-                treasuryShare: usdFormatter.format(token.treasuryShare),
-                treasurySharePercentage:
-                  token.treasurySharePercentage?.toFixed(0) + '%',
+                tokenUSDValue: t('finance.unknownUSDValue'),
+                treasuryShare: t('finance.unknownUSDValue'),
+              }
+            : {
+                tokenUSDValue: usdFormatter.format(token.marketData.price),
+                treasuryShare: usdFormatter.format(
+                  token.marketData.treasuryShare
+                ),
+                treasurySharePercentage: `${token.treasurySharePercentage?.toFixed(
+                  0
+                )}%`,
+
+                // Type of change during interval
+                changeType:
+                  token.marketData.percentageChangedDuringInterval > 0
+                    ? 'Positive'
+                    : 'Negative',
 
                 // Percentage change during given interval
                 percentageChangeDuringInterval:
                   new Intl.NumberFormat('en-US', {
                     signDisplay: 'always',
                     maximumFractionDigits: 2,
-                  }).format(token.percentageChangeDuringInterval) + '%',
+                  }).format(token.marketData.percentageChangedDuringInterval) +
+                  '%',
 
                 // Change during interval in currency
                 changeDuringInterval: new Intl.NumberFormat('en-US', {
                   style: 'currency',
                   currency: 'USD',
                   signDisplay: 'always',
-                }).format(token.changeDuringInterval),
-
-                // Type of change during interval
-                changeType:
-                  token.changeDuringInterval > 0 ? 'Positive' : 'Negative',
-              }
-            : {
-                tokenUSDValue: t('finance.unknownUSDValue'),
-                treasuryShare: t('finance.unknownUSDValue'),
+                }).format(token.marketData.valueChangeDuringInterval),
               })}
         />
       ))}

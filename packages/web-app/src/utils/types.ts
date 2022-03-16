@@ -77,8 +77,9 @@ export type TokenWithMetadata = {
 export type TokenWithMarketData = TokenWithMetadata & {
   marketData?: {
     price: number;
-    treasuryShare?: number;
-    percentageChangedDuringInterval?: number;
+    treasuryShare: number;
+    valueChangeDuringInterval: number;
+    percentageChangedDuringInterval: number;
   };
 };
 
@@ -86,7 +87,7 @@ export type VaultToken = TokenWithMarketData & {
   treasurySharePercentage: number;
 };
 
-export type PollTokenOptions = {interval?: number; filter?: TimeFilter};
+export type PollTokenOptions = {interval?: number; filter: TimeFilter};
 
 /** A transfer transaction */
 export type Transfer = {

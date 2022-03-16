@@ -63,10 +63,11 @@ export const usePollTokenPrices = (
     let sum = 0;
     let intervalChange = 0;
     let treasuryShare: number;
+    let valueChangeDuringInterval: number;
     let tokenMarketData;
 
     // map tokens
-    const tokens = tokenList.map(token => {
+    const tokens: TokenWithMarketData[] = tokenList.map(token => {
       if (!token.metadata.apiId) return token;
 
       tokenMarketData = fetchedMarketData[token.metadata.apiId];
@@ -76,22 +77,29 @@ export const usePollTokenPrices = (
         tokenMarketData.price *
         Number(formatUnits(token.balance, token.metadata.decimals));
 
+      valueChangeDuringInterval =
+        treasuryShare * (tokenMarketData.percentages[options.filter] / 100);
+
       sum += treasuryShare;
-      intervalChange +=
-        treasuryShare * (tokenMarketData.percentages[options.filter!] / 100);
+      intervalChange += valueChangeDuringInterval;
 
       return {
         ...token,
         marketData: {
           price: tokenMarketData.price,
           treasuryShare,
-          percentageChangeDuringInterval:
-            tokenMarketData.percentages[options.filter!],
+          valueChangeDuringInterval,
+          percentageChangedDuringInterval:
+            tokenMarketData.percentages[options.filter],
         },
-      } as TokenWithMarketData;
+      };
     });
 
-    return {tokens, totalAssetValue: sum, totalAssetChange: intervalChange};
+    return {
+      tokens,
+      totalAssetValue: sum,
+      totalAssetChange: intervalChange,
+    };
   }, [fetchedMarketData, options.filter, tokenList]);
 
   useInterval(() => fetchPrices(), options.interval, tokenList.length > 0);

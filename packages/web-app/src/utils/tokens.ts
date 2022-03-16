@@ -1,6 +1,6 @@
 /* eslint-disable no-empty */
 import {erc20TokenABI} from 'abis/erc20TokenABI';
-import {BaseTokenInfo, TreasuryToken} from './types';
+import {BaseTokenInfo, VaultToken} from './types';
 import {constants, ethers, providers as EthersProviders} from 'ethers';
 
 import {formatUnits} from 'utils/library';
@@ -19,39 +19,39 @@ import {formatUnits} from 'utils/library';
  * @example sortTokens(baseTokenInfos[], 'name');
  * @example sortTokens(baseTokenInfos[], 'count');
  */
-export function sortTokens<K extends keyof TreasuryToken>(
-  tokens: TreasuryToken[],
+export function sortTokens<K extends keyof VaultToken>(
+  tokens: VaultToken[],
   criteria: K,
   reverse = false
 ) {
-  function sorter(a: TreasuryToken, b: TreasuryToken) {
+  function sorter(a: VaultToken, b: VaultToken) {
     // ensure that undefined fields are placed last.
     if (!a[criteria]) return 1;
     if (!b[criteria]) return -1;
 
     if (a[criteria] < b[criteria]) {
-      return -1;
+      return reverse ? 1 : -1;
     }
     if (a[criteria] > b[criteria]) {
-      return 1;
+      return reverse ? -1 : 1;
     }
     return 0;
   }
-  function reverseSorter(a: TreasuryToken, b: TreasuryToken) {
-    // ensure that undefined fields are placed last.
-    if (!a[criteria]) return 1;
-    if (!b[criteria]) return -1;
+  // function reverseSorter(a: VaultToken, b: VaultToken) {
+  //   // ensure that undefined fields are placed last.
+  //   if (!a[criteria]) return 1;
+  //   if (!b[criteria]) return -1;
 
-    if (a[criteria] > b[criteria]) {
-      return -1;
-    }
-    if (a[criteria] < b[criteria]) {
-      return 1;
-    }
-    return 0;
-  }
+  //   if (a[criteria] > b[criteria]) {
+  //     return -1;
+  //   }
+  //   if (a[criteria] < b[criteria]) {
+  //     return 1;
+  //   }
+  //   return 0;
+  // }
 
-  tokens.sort(reverse ? reverseSorter : sorter);
+  tokens.sort(sorter);
 }
 
 /**

@@ -15,6 +15,7 @@ import {TimeFilter, TransferTypes} from 'utils/constants';
 
 import type {Transfer, TreasuryToken} from 'utils/types';
 import {sortTokens} from 'utils/tokens';
+import {useDaoVault} from 'hooks/useDaoVault';
 
 // TODO remove this. Instead use first x transfers returned by categorized
 // transfers hook.
@@ -50,10 +51,12 @@ const TEMP_TRANSFERS: Transfer[] = [
 const Finance: React.FC = () => {
   const {t} = useTranslation();
   const {open} = useGlobalModalContext();
-  const {data: treasury} = useDaoTreasury('0xMyDaoAddress', TimeFilter.day);
+  const {tokens, totalAssetChange, totalAssetValue} = useDaoVault(
+    '0x79fde96a6182adbd9ca4a803ba26f65a893fbf4f'
+  );
 
-  sortTokens(treasury.tokens, 'treasurySharePercentage', true);
-  const displayedTokens: TreasuryToken[] = treasury.tokens.slice(0, 5);
+  sortTokens(tokens, 'treasurySharePercentage');
+  const displayedTokens = tokens.slice(0, 5);
 
   return (
     <div className={'m-auto mt-4 w-8/12'}>
@@ -61,13 +64,13 @@ const Finance: React.FC = () => {
         title={new Intl.NumberFormat('en-US', {
           style: 'currency',
           currency: 'USD',
-        }).format(treasury.totalAssetValue)}
+        }).format(totalAssetValue)}
         buttonLabel={t('TransferModal.newTransfer')}
         subtitle={new Intl.NumberFormat('en-US', {
           style: 'currency',
           currency: 'USD',
           signDisplay: 'always',
-        }).format(treasury.totalAssetChange)}
+        }).format(totalAssetChange)}
         onClick={open}
       >
         <div className={'h-4'} />
