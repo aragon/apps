@@ -53,6 +53,40 @@ export type TokenBalance = {
   address: Address;
   count: bigint;
 };
+//===========================================================
+export type DaoTokenBalance = {
+  id: number;
+  token: {
+    id: string;
+    name: string;
+    symbol: string;
+    decimals: number;
+  };
+  balance: bigint;
+  lastUpdated: string;
+};
+
+export type TokenWithMetadata = {
+  balance: bigint;
+  metadata: DaoTokenBalance['token'] & {
+    apiId?: string;
+    imgUrl?: string;
+  };
+};
+
+export type TokenWithMarketData = TokenWithMetadata & {
+  marketData?: {
+    price: number;
+    treasuryShare?: number;
+    percentageChangedDuringInterval?: number;
+  };
+};
+
+export type VaultToken = TokenWithMarketData & {
+  treasurySharePercentage: number;
+};
+
+export type PollTokenOptions = {interval?: number; filter?: TimeFilter};
 
 /** A transfer transaction */
 export type Transfer = {

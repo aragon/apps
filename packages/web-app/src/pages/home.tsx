@@ -6,7 +6,6 @@ import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
 import {useGlobalModalContext} from 'context/globalModals';
 
-import {TimeFilter} from 'utils/constants';
 import {useDaoVault} from 'hooks/useDaoVault';
 
 const Home: React.FC = () => {
@@ -14,10 +13,7 @@ const Home: React.FC = () => {
   const {open} = useGlobalModalContext();
   const navigate = useNavigate();
 
-  const vault = useDaoVault(
-    '0x79fde96a6182adbd9ca4a803ba26f65a893fbf4f',
-    TimeFilter.day
-  );
+  const vault = useDaoVault('0x79fde96a6182adbd9ca4a803ba26f65a893fbf4f');
   console.log('vault', vault);
 
   return (

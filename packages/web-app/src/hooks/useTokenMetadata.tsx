@@ -1,31 +1,12 @@
-import {Address} from '@aragon/ui-components/dist/utils/addresses';
-import {constants} from 'ethers';
 import {useWallet} from 'use-wallet';
-import {useApolloClient} from 'context/apolloClient';
 import {useEffect, useState} from 'react';
-import {ApolloClient, ApolloClientOptions, gql} from '@apollo/client';
 
-type BalanceFromGraph = {
-  id: number;
-  token: {
-    id: string;
-    name: string;
-    symbol: string;
-    decimals: number;
-  };
-  balance: bigint;
-  lastUpdated: string;
-};
+import {fetchTokenData} from 'services/prices';
+import {useApolloClient} from 'context/apolloClient';
+import {ASSET_PLATFORMS} from 'utils/constants';
+import {DaoTokenBalance, TokenWithMetadata} from 'utils/types';
 
-export type TokenWithMetadata = {
-  balance: bigint;
-  metadata: BalanceFromGraph['token'] & {
-    apiId?: string;
-    imgUrl?: string;
-  };
-};
-
-export const useTokenMetadata = (balances: BalanceFromGraph[]) => {
+export const useTokenMetadata = (balances: DaoTokenBalance[]) => {
   const client = useApolloClient();
   const {chainId} = useWallet();
   const [data, setData] = useState<TokenWithMetadata[]>();
@@ -38,7 +19,7 @@ export const useTokenMetadata = (balances: BalanceFromGraph[]) => {
       // fetch token metadata from external api
       const metadata = await Promise.all(
         balances?.map(balance =>
-          fetchTokenData(balance.token.id, client, asset_platforms[chainId!])
+          fetchTokenData(balance.token.id, client, ASSET_PLATFORMS[chainId!])
         )
       );
 
@@ -61,50 +42,3 @@ export const useTokenMetadata = (balances: BalanceFromGraph[]) => {
 
   return {data, loading};
 };
-
-const asset_platforms: {[key: number]: string} = {
-  1: 'ethereum',
-  127: 'polygon-pos',
-  42161: 'arbitrum-one',
-};
-
-const TOKEN_DATA_QUERY = gql`
-  query TokenData {
-    tokenData(url: $url)
-      @rest(type: "TokenData", path: "{args.url}", method: "GET") {
-      id
-      image {
-        large
-      }
-    }
-  }
-`;
-type TokenData = {
-  id: string; // coingecko Id
-  imgUrl: string;
-};
-
-async function fetchTokenData(
-  tokenAddress: Address,
-  client: ApolloClient<ApolloClientOptions<string | undefined>>,
-  platform = 'ethereum'
-): Promise<TokenData | undefined> {
-  let url: string;
-
-  if (tokenAddress === constants.AddressZero) url = '/coins/ethereum';
-  else url = `/coins/${platform}/contract/${tokenAddress}`;
-
-  const {data, error} = await client.query({
-    query: TOKEN_DATA_QUERY,
-    variables: {url},
-  });
-
-  if (!error && data.tokenData) {
-    return {
-      id: data.tokenData.id,
-      imgUrl: data.tokenData.image.large,
-    };
-  }
-
-  console.error('Error fetching token price', error);
-}

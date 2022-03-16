@@ -1,26 +1,22 @@
 import {useCallback, useMemo, useState} from 'react';
 
+import type {
+  PollTokenOptions,
+  TokenWithMarketData,
+  TokenWithMetadata,
+} from 'utils/types';
+
 import useInterval from 'hooks/useInterval';
 import useIsMounted from 'hooks/useIsMounted';
 import {TimeFilter} from 'utils/constants';
 import {formatUnits} from 'utils/library';
-import {TokenWithMetadata} from './useTokenMetadata';
 import {fetchTokenMarketData, TokenPrices} from 'services/prices';
-
-export type TokenWithMarketData = TokenWithMetadata & {
-  marketData?: {
-    price: number;
-    treasuryShare?: number;
-    percentageChangedDuringInterval?: number;
-  };
-};
-
-type PollTokenOptions = {interval?: number; filter?: TimeFilter};
 
 /**
  * Hook for fetching token prices at specified intervals
  * @param tokenList List of token ids to fetch USD  value for
- * @param interval Delay in milliseconds
+ * @param options.filter TimeFilter for market data
+ * @param options.interval Delay in milliseconds
  * @returns Object with key value pairs corresponding to token address and USD value respectively.
  * If USD value isn't found, returns null for token price.
  */
@@ -33,6 +29,7 @@ export const usePollTokenPrices = (
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [fetchedMarketData, setFetchedMarketData] = useState<TokenPrices>();
 
+  // fetch token pricing and market data
   const fetchPrices = useCallback(async () => {
     setIsLoading(true);
 

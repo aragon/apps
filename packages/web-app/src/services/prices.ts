@@ -1,9 +1,10 @@
 import {Address} from '@aragon/ui-components/dist/utils/addresses';
 import {constants} from 'ethers';
 
+import {TOKEN_DATA_QUERY} from 'queries/tokenData';
 import {TokenPricePercentages} from 'utils/types';
 import {BASE_URL, DEFAULT_CURRENCY} from 'utils/constants';
-import {ApolloClient, ApolloClientOptions, gql} from '@apollo/client';
+import {ApolloClient, ApolloClientOptions} from '@apollo/client';
 
 export type TokenPrices = {
   [key: string]: {
@@ -61,59 +62,46 @@ async function fetchTokenMarketData(id: string): FetchedTokenMarketData {
 }
 
 type TokenData = {
+  id: string;
   name: string;
   symbol: string;
   imgUrl: string;
   address: Address;
-  id: string;
 };
 
-type FetchedTokenData = Promise<TokenData | undefined>;
 /**
  * Get token data from external api. Ideally, this data should be cached so that
  * the id property can be used when querying for prices.
- * @param address Token contract address
+ * @param tokenAddress Token contract address
+ * @param client Apollo Client instance
+ * @param platform Api network platform
  * @returns Basic information about the token or undefined if data could not be fetched
  */
 async function fetchTokenData(
-  address: Address,
-  client: ApolloClient<ApolloClientOptions<string | undefined>>
-): FetchedTokenData {
-  const endPoint = '/coins/ethereum';
-  const arg =
-    address !== constants.AddressZero
-      ? `${endPoint}/contract/${address}`
-      : `${endPoint}`;
+  tokenAddress: Address,
+  client: ApolloClient<ApolloClientOptions<string | undefined>>,
+  platform = 'ethereum'
+): Promise<TokenData | undefined> {
+  let url: string;
 
-  const TOKEN_DATA_QUERY = gql`
-    query TokenData {
-      tokenData(address: ${JSON.stringify(arg)})
-        @rest(
-          type: "TokenData"
-          path: "{args.address}"
-          method: "GET"
-        ) {
-        id
-        name
-        symbol
-        image {
-          large
-        }
-        address
-      }
-    }
-  `;
+  if (tokenAddress === constants.AddressZero) url = '/coins/ethereum';
+  else url = `/coins/${platform}/contract/${tokenAddress}`;
 
-  const {data, error} = await client.query({query: TOKEN_DATA_QUERY});
+  const {data, error} = await client.query({
+    query: TOKEN_DATA_QUERY,
+    variables: {url},
+  });
+
   if (!error && data.tokenData) {
     return {
       id: data.tokenData.id,
       name: data.tokenData.name,
-      symbol: (data.tokenData.symbol as string).toUpperCase(),
+      symbol: data.tokenData.symbol.toUpperCase(),
       imgUrl: data.tokenData.image.large,
-      address: address,
+      address: tokenAddress,
     };
   }
+
   console.error('Error fetching token price', error);
 }
 

@@ -31,6 +31,13 @@ export const DEFAULT_CURRENCY = 'usd';
 export const INFURA_PROJECT_ID = '7a03fcb37be7479da06f92c5117afd47';
 export const INFURA_PROJECT_ID_ARB = '92aa62d2bb5449cfafe04b83ca8636f1';
 
+// Coingecko Api specific asset platform keys
+export const ASSET_PLATFORMS: {[key: number]: string} = {
+  1: 'ethereum',
+  127: 'polygon-pos',
+  42161: 'arbitrum-one',
+};
+
 /** Time period options for token price change */
 export const enum TimeFilter {
   day = 'day',

@@ -1,29 +1,26 @@
 import {useEffect, useMemo} from 'react';
 
-import {TimeFilter} from 'utils/constants';
-import {useTokenMetadata} from './useTokenMetadata';
 import {useDaoBalances} from './useDaoBalances';
-import {TokenWithMarketData, usePollTokenPrices} from './usePollTokenPrices';
+import {useTokenMetadata} from './useTokenMetadata';
+import {usePollTokenPrices} from './usePollTokenPrices';
+import {PollTokenOptions, VaultToken} from 'utils/types';
 
 // TODO: Explore options. This might be best on a context around the financial pages
 // Would save however many calls is made in one go
-
-type VaultToken = TokenWithMarketData & {
-  treasurySharePercentage: number;
-};
 
 /**
  * Hook encapsulating the logic for fetching the assets from the DAO vault and mapping them
  * to their corresponding USD market values.
  * @param daoAddress Dao address
- * @param filter Time filter to get data
+ * @param options.filter TimeFilter for market data
+ * @param options.interval Delay in milliseconds
  * @returns A list of tokens in the DAO treasury, current USD sum value of all assets,
  * and the price change in USD based on the filter
  */
-export const useDaoVault = (daoAddress: string, filter: TimeFilter) => {
+export const useDaoVault = (daoAddress: string, options?: PollTokenOptions) => {
   const {data: balances, getDaoBalances} = useDaoBalances(daoAddress);
   const {data: tokensWithMetadata} = useTokenMetadata(balances);
-  const {data} = usePollTokenPrices(tokensWithMetadata, {filter});
+  const {data} = usePollTokenPrices(tokensWithMetadata, options);
 
   useEffect(() => {
     getDaoBalances();
