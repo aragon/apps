@@ -15,6 +15,7 @@ import {useWalletProps} from 'containers/walletMenu';
 import {TransferTypes} from 'utils/constants';
 import {Governance} from 'utils/paths';
 import {ActionsProvider} from 'context/actions';
+import ReviewProposal from 'containers/reviewProposal';
 
 const NewProposal: React.FC = () => {
   const {t} = useTranslation();
@@ -102,6 +103,15 @@ const NewProposal: React.FC = () => {
             wizardDescription={t('newProposal.configureActions.description')}
           >
             <ConfigureActions />
+          </Step>
+          <Step
+            wizardTitle={t('newWithdraw.reviewProposal.heading')}
+            wizardDescription={t('newWithdraw.reviewProposal.description')}
+            nextButtonLabel={t('labels.submitWithdraw')}
+            isNextButtonDisabled
+            fullWidth
+          >
+            <ReviewProposal />
           </Step>
         </FullScreenStepper>
 
