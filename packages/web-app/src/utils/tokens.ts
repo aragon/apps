@@ -1,6 +1,6 @@
 /* eslint-disable no-empty */
 import {erc20TokenABI} from 'abis/erc20TokenABI';
-import {BaseTokenInfo, VaultToken} from './types';
+import {BaseTokenInfo, TokenWithMetadata, VaultToken} from './types';
 import {constants, ethers, providers as EthersProviders} from 'ethers';
 
 import {formatUnits} from 'utils/library';
@@ -37,19 +37,6 @@ export function sortTokens<K extends keyof VaultToken>(
     }
     return 0;
   }
-  // function reverseSorter(a: VaultToken, b: VaultToken) {
-  //   // ensure that undefined fields are placed last.
-  //   if (!a[criteria]) return 1;
-  //   if (!b[criteria]) return -1;
-
-  //   if (a[criteria] > b[criteria]) {
-  //     return -1;
-  //   }
-  //   if (a[criteria] < b[criteria]) {
-  //     return 1;
-  //   }
-  //   return 0;
-  // }
 
   tokens.sort(sorter);
 }
@@ -63,12 +50,12 @@ export function sortTokens<K extends keyof VaultToken>(
  * @returns Filtered list of (basic) token information that contains search
  * term.
  */
-export function filterTokens(tokens: BaseTokenInfo[], searchTerm: string) {
-  function tokenInfoMatches(token: BaseTokenInfo, term: string) {
+export function filterTokens(tokens: TokenWithMetadata[], searchTerm: string) {
+  function tokenInfoMatches(token: TokenWithMetadata, term: string) {
     const lowercaseTerm = term.toLocaleLowerCase();
-    const lowercaseSymbol = token.symbol.toLocaleLowerCase();
-    const lowercaseAddress = token.address.toLocaleLowerCase();
-    const lowercaseName = token.name.toLocaleLowerCase();
+    const lowercaseSymbol = token.metadata.symbol.toLocaleLowerCase();
+    const lowercaseAddress = token.metadata.id.toLocaleLowerCase();
+    const lowercaseName = token.metadata.name.toLocaleLowerCase();
     return (
       lowercaseSymbol.indexOf(lowercaseTerm) >= 0 ||
       lowercaseName.indexOf(lowercaseTerm) >= 0 ||

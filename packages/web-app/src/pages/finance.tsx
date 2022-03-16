@@ -9,11 +9,10 @@ import {
 } from 'components/wrappers';
 import TokenList from 'components/tokenList';
 import TransferList from 'components/transferList';
-import {useDaoTreasury} from 'hooks/useDaoTreasury';
 import {useGlobalModalContext} from 'context/globalModals';
-import {TimeFilter, TransferTypes} from 'utils/constants';
+import {TransferTypes} from 'utils/constants';
 
-import type {Transfer, TreasuryToken} from 'utils/types';
+import type {Transfer} from 'utils/types';
 import {sortTokens} from 'utils/tokens';
 import {useDaoVault} from 'hooks/useDaoVault';
 

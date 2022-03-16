@@ -10,12 +10,16 @@ import {PageWrapper} from 'components/wrappers';
 import {filterTokens} from 'utils/tokens';
 import {useDaoTreasury} from 'hooks/useDaoTreasury';
 import {useGlobalModalContext} from 'context/globalModals';
-import type {TreasuryToken} from 'utils/types';
+import {useDaoVault} from 'hooks/useDaoVault';
+import type {VaultToken} from 'utils/types';
 
 const Tokens: React.FC = () => {
   const {t} = useTranslation();
   const {open} = useGlobalModalContext();
   const {data: treasury} = useDaoTreasury('0xMyDaoAddress', TimeFilter.day);
+  const {tokens, totalAssetChange, totalAssetValue} = useDaoVault(
+    '0x79fde96a6182adbd9ca4a803ba26f65a893fbf4f'
+  );
 
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -23,20 +27,14 @@ const Tokens: React.FC = () => {
     setSearchTerm(event.target.value);
   };
 
-  const filteredInfo: TreasuryToken[] = filterTokens(
-    treasury.tokens,
-    searchTerm
-  );
+  const filteredTokens: VaultToken[] = filterTokens(tokens, searchTerm);
 
   return (
     <Layout>
       <PageWrapper
-        title={t('labels.allTokens') as string}
+        title={t('allTokens.title') as string}
+        subtitle={t('allTokens.subtitle', {count: tokens.length})}
         buttonLabel={t('TransferModal.newTransfer') as string}
-        subtitle={`${new Intl.NumberFormat('en-US', {
-          style: 'currency',
-          currency: 'USD',
-        }).format(treasury.totalAssetValue)} Total Volume`}
         onClick={open}
       >
         <SearchInput
@@ -44,7 +42,7 @@ const Tokens: React.FC = () => {
           value={searchTerm}
           onChange={handleChange}
         />
-        <TokenList tokens={filteredInfo} />
+        <TokenList tokens={filteredTokens} />
       </PageWrapper>
     </Layout>
   );

@@ -99,8 +99,7 @@
     "sec": "sec",
     "ago": "ago",
     "step": "Step",
-    "of": "of",
-    "allTokens": "All Tokens"
+    "of": "of"
   },
   "placeHolders": {
     "selectToken": "Select a Token ...",
@@ -217,6 +216,12 @@
     "allTransfers": "All Transfers",
     "noTransfers": "No transfer information available",
     "totalVolume": "Total Volume"
+  },
+  "allTokens": {
+    "title": "All Tokens",
+    "subtitle": "{{count}} Tokens",
+    "callToAction": "New Transfer",
+    "noTokens": "No token information available."
   },
   "TransferModal": {
     "allTransfers": "All Transfers",

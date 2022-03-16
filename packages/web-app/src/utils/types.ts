@@ -84,7 +84,7 @@ export type TokenWithMarketData = TokenWithMetadata & {
 };
 
 export type VaultToken = TokenWithMarketData & {
-  treasurySharePercentage: number;
+  treasurySharePercentage?: number;
 };
 
 export type PollTokenOptions = {interval?: number; filter: TimeFilter};
