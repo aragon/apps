@@ -78,7 +78,7 @@ const Community: React.FC = () => {
             </LabelWrapper>
             <Link
               label={t('createDAO.review.distributionLink', {
-                count: wallets?.length - 1,
+                count: wallets?.length,
               })}
               onClick={() => open('addresses')}
             />
