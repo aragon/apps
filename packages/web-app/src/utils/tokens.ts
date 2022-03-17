@@ -1,6 +1,6 @@
 /* eslint-disable no-empty */
 import {erc20TokenABI} from 'abis/erc20TokenABI';
-import {BaseTokenInfo, TokenWithMetadata, VaultToken} from './types';
+import {TokenWithMetadata} from './types';
 import {constants, ethers, providers as EthersProviders} from 'ethers';
 
 import {formatUnits} from 'utils/library';
@@ -19,12 +19,12 @@ import {formatUnits} from 'utils/library';
  * @example sortTokens(baseTokenInfos[], 'name');
  * @example sortTokens(baseTokenInfos[], 'count');
  */
-export function sortTokens<K extends keyof VaultToken>(
-  tokens: VaultToken[],
-  criteria: K,
+export function sortTokens<Type>(
+  tokens: Type[],
+  criteria: keyof Type,
   reverse = false
 ) {
-  function sorter(a: VaultToken, b: VaultToken) {
+  function sorter(a: Type, b: Type) {
     // ensure that undefined fields are placed last.
     if (!a[criteria]) return 1;
     if (!b[criteria]) return -1;

@@ -2,14 +2,15 @@ import {Address} from '@aragon/ui-components/dist/utils/addresses';
 import {constants} from 'ethers';
 
 import {TOKEN_DATA_QUERY} from 'queries/tokenData';
-import {TokenPricePercentages} from 'utils/types';
-import {BASE_URL, DEFAULT_CURRENCY} from 'utils/constants';
 import {ApolloClient, ApolloClientOptions} from '@apollo/client';
+import {BASE_URL, DEFAULT_CURRENCY, TimeFilter} from 'utils/constants';
 
 export type TokenPrices = {
   [key: string]: {
     price: number;
-    percentages: TokenPricePercentages;
+    percentages: {
+      [key in TimeFilter]: number;
+    };
   };
 };
 

@@ -5,21 +5,16 @@ import {withTransaction} from '@elastic/apm-rum-react';
 import React, {useState} from 'react';
 
 import TokenList from 'components/tokenList';
-import {TimeFilter} from 'utils/constants';
+import {useDaoVault} from 'hooks/useDaoVault';
 import {PageWrapper} from 'components/wrappers';
 import {filterTokens} from 'utils/tokens';
-import {useDaoTreasury} from 'hooks/useDaoTreasury';
-import {useGlobalModalContext} from 'context/globalModals';
-import {useDaoVault} from 'hooks/useDaoVault';
 import type {VaultToken} from 'utils/types';
+import {useGlobalModalContext} from 'context/globalModals';
 
 const Tokens: React.FC = () => {
   const {t} = useTranslation();
   const {open} = useGlobalModalContext();
-  const {data: treasury} = useDaoTreasury('0xMyDaoAddress', TimeFilter.day);
-  const {tokens, totalAssetChange, totalAssetValue} = useDaoVault(
-    '0x79fde96a6182adbd9ca4a803ba26f65a893fbf4f'
-  );
+  const {tokens} = useDaoVault('0x79fde96a6182adbd9ca4a803ba26f65a893fbf4f');
 
   const [searchTerm, setSearchTerm] = useState('');
 

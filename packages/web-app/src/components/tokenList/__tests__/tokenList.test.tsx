@@ -3,16 +3,18 @@ import {constants} from 'ethers';
 import {render, screen} from 'test-utils';
 
 import TokenList from '..';
-import {BaseTokenInfo} from 'utils/types';
+import {TokenWithMetadata} from 'utils/types';
 
-const DEFAULT_TOKENS: BaseTokenInfo[] = [
+const DEFAULT_TOKENS: TokenWithMetadata[] = [
   {
-    name: 'Ethereum',
-    address: constants.AddressZero,
-    imgUrl: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png',
-    count: BigInt('255555'),
-    symbol: 'ETH',
-    decimals: 18,
+    metadata: {
+      id: constants.AddressZero,
+      name: 'Ethereum',
+      imgUrl: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png',
+      symbol: 'ETH',
+      decimals: 18,
+    },
+    balance: BigInt('255555'),
   },
 ];
 

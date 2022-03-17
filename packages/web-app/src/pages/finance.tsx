@@ -8,13 +8,12 @@ import {
   TransferSectionWrapper,
 } from 'components/wrappers';
 import TokenList from 'components/tokenList';
-import TransferList from 'components/transferList';
-import {useGlobalModalContext} from 'context/globalModals';
-import {TransferTypes} from 'utils/constants';
-
-import type {Transfer} from 'utils/types';
 import {sortTokens} from 'utils/tokens';
+import TransferList from 'components/transferList';
 import {useDaoVault} from 'hooks/useDaoVault';
+import {TransferTypes} from 'utils/constants';
+import type {Transfer} from 'utils/types';
+import {useGlobalModalContext} from 'context/globalModals';
 
 // TODO remove this. Instead use first x transfers returned by categorized
 // transfers hook.
