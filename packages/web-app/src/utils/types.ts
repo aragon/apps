@@ -70,7 +70,7 @@ export type TokenWithMetadata = {
   balance: bigint;
   metadata: DaoTokenBalance['token'] & {
     apiId?: string;
-    imgUrl?: string;
+    imgUrl: string;
   };
 };
 

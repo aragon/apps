@@ -107,7 +107,14 @@ const ReviewWithdraw: React.FC = () => {
             tokenImageUrl={values.tokenImgUrl}
             tokenSymbol={values.tokenSymbol}
             tokenCount={values.amount}
-            treasuryShare={`$${values.tokenPrice * values.amount}`}
+            treasuryShare={
+              values.tokenPrice
+                ? new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                  }).format(values.tokenPrice * values.amount)
+                : t('finance.unknownUSDValue')
+            }
           />
         </ProposalContainer>
 

@@ -9,12 +9,12 @@ import {useTranslation} from 'react-i18next';
 import React, {useCallback, useState} from 'react';
 
 import TokenBox from './tokenBox';
-import {sortTokens} from 'utils/tokens';
 import {formatUnits} from 'utils/library';
-import {useTokenInfo} from 'hooks/useTokenInformation';
 import {useGlobalModalContext} from 'context/globalModals';
-import {BaseTokenInfo, TokenBalance} from 'utils/types';
+import {BaseTokenInfo, DaoTokenBalance, TokenWithMetadata} from 'utils/types';
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
+
+import {useTokenMetadata} from 'hooks/useTokenMetadata';
 
 const customToken = {
   address: '',
@@ -27,7 +27,7 @@ const customToken = {
 
 type TokenMenuProps = {
   isWallet?: boolean;
-  tokenBalances: TokenBalance[];
+  tokenBalances: DaoTokenBalance[];
   onTokenSelect: (token: BaseTokenInfo) => void;
 };
 
@@ -37,32 +37,42 @@ const TokenMenu: React.FC<TokenMenuProps> = ({
   onTokenSelect,
 }) => {
   const {t} = useTranslation();
-  const {data: tokens} = useTokenInfo(tokenBalances);
+  const {data: tokens} = useTokenMetadata(tokenBalances);
   const {isTokenOpen, close} = useGlobalModalContext();
   const [searchValue, setSearchValue] = useState('');
 
   /*************************************************
    *             Functions and Handlers            *
    *************************************************/
-  const handleTokenClick = (token: BaseTokenInfo) => {
-    onTokenSelect(token);
+  const handleTokenClick = (token: TokenWithMetadata) => {
+    onTokenSelect({
+      address: token.metadata.id,
+      name: token.metadata.name,
+      count: token.balance,
+      imgUrl: token.metadata.imgUrl,
+      symbol: token.metadata.symbol,
+      decimals: token.metadata.decimals,
+    });
     close('token');
   };
 
   const filterValidator = useCallback(
-    (token: BaseTokenInfo) => {
+    (token: TokenWithMetadata) => {
       if (searchValue !== '') {
         const re = new RegExp(searchValue, 'i');
-        return token?.name?.match(re) || token?.symbol?.match(re);
+        return (
+          token?.metadata.name?.match(re) || token?.metadata.symbol?.match(re)
+        );
       }
       return true;
     },
     [searchValue]
   );
 
-  const renderTokens = () => {
-    const tokenList = tokens.filter(filterValidator);
-    sortTokens(tokenList, 'name');
+  const RenderTokens = () => {
+    const tokenList = tokens
+      .filter(filterValidator)
+      .sort((a, b) => (a.metadata.name < b.metadata.name ? -1 : 1));
 
     if (tokenList.length === 0 && searchValue === '') {
       return (
@@ -97,15 +107,18 @@ const TokenMenu: React.FC<TokenMenuProps> = ({
       return (
         <>
           {tokenList.map(token => (
-            <div key={token.address} onClick={() => handleTokenClick(token)}>
+            <div
+              key={token.metadata.id}
+              onClick={() => handleTokenClick(token)}
+            >
               <TokenBox
-                tokenName={token.name}
-                tokenLogo={token.imgUrl}
-                tokenSymbol={token.symbol}
-                tokenBalance={formatUnits(token.count, token.decimals).slice(
-                  0,
-                  6
-                )}
+                tokenName={token.metadata.name}
+                tokenLogo={token.metadata.imgUrl || ''}
+                tokenSymbol={token.metadata.symbol}
+                tokenBalance={formatUnits(
+                  token.balance,
+                  token.metadata.decimals
+                ).slice(0, 6)}
               />
             </div>
           ))}
@@ -117,7 +130,6 @@ const TokenMenu: React.FC<TokenMenuProps> = ({
   /*************************************************
    *                    Render                     *
    *************************************************/
-  //TODO: Cross Icon should added in the next released
   return (
     <ModalBottomSheetSwitcher
       isOpen={isTokenOpen}
@@ -132,15 +144,16 @@ const TokenMenu: React.FC<TokenMenuProps> = ({
           }
           placeholder={t('placeHolders.searchTokens')}
         />
-        <TokensWrapper>{renderTokens()}</TokensWrapper>
+        <TokensWrapper>{<RenderTokens />}</TokensWrapper>
         <WideButton
           mode="secondary"
           size="large"
           label="Add Custom Token"
           iconLeft={<IconAdd />}
-          onClick={() =>
-            handleTokenClick({...customToken, symbol: searchValue})
-          }
+          onClick={() => {
+            onTokenSelect({...customToken, symbol: searchValue});
+            close('token');
+          }}
         />
       </Container>
     </ModalBottomSheetSwitcher>

@@ -4,6 +4,7 @@ import {TokenWithMetadata} from './types';
 import {constants, ethers, providers as EthersProviders} from 'ethers';
 
 import {formatUnits} from 'utils/library';
+import path from 'path';
 
 /**
  * This method sorts a list of array information. It is applicable to any field
@@ -19,12 +20,8 @@ import {formatUnits} from 'utils/library';
  * @example sortTokens(baseTokenInfos[], 'name');
  * @example sortTokens(baseTokenInfos[], 'count');
  */
-export function sortTokens<Type>(
-  tokens: Type[],
-  criteria: keyof Type,
-  reverse = false
-) {
-  function sorter(a: Type, b: Type) {
+export function sortTokens<T>(tokens: T[], criteria: keyof T, reverse = false) {
+  function sorter(a: T, b: T) {
     // ensure that undefined fields are placed last.
     if (!a[criteria]) return 1;
     if (!b[criteria]) return -1;
@@ -32,6 +29,7 @@ export function sortTokens<Type>(
     if (a[criteria] < b[criteria]) {
       return reverse ? 1 : -1;
     }
+
     if (a[criteria] > b[criteria]) {
       return reverse ? -1 : 1;
     }

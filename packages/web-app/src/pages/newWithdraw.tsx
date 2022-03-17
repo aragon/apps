@@ -19,6 +19,7 @@ import DefineProposal from 'containers/defineProposal';
 import ReviewWithdraw from 'containers/reviewWithdraw';
 import {fetchTokenPrice} from 'services/prices';
 import {Finance} from 'utils/paths';
+import {useDaoBalances} from 'hooks/useDaoBalances';
 
 export type TransferData = {
   amount: string;
@@ -79,6 +80,9 @@ const NewWithdraw: React.FC = () => {
   });
   const {data: tokens} = useDaoTokens('myDaoAddress');
   const {account}: useWalletProps = useWallet();
+
+  const {data: balances} = useDaoBalances();
+  console.log('balances', balances);
 
   useEffect(() => {
     if (account) {
@@ -168,7 +172,7 @@ const NewWithdraw: React.FC = () => {
       <TokenMenu
         isWallet={false}
         onTokenSelect={handleTokenSelect}
-        tokenBalances={tokens}
+        tokenBalances={balances}
       />
     </FormProvider>
   );
