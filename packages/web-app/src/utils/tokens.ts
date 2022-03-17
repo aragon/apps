@@ -4,15 +4,13 @@ import {TokenWithMetadata} from './types';
 import {constants, ethers, providers as EthersProviders} from 'ethers';
 
 import {formatUnits} from 'utils/library';
-import path from 'path';
 
 /**
  * This method sorts a list of array information. It is applicable to any field
  * of the information object that can be compared using '<', '>'.
  *
  * @param tokens List of token (basic) token information
- * @param criteria Field of the information object that determines the sort
- * order. Must be a key of BaseTokenInfo.
+ * @param criteria Field of the information object that determines the sort order.
  * @param reverse reverses the order in which the token are sorted. Note that in
  * either cases, any objects with undefined fields will moved to the end of the
  * array.

@@ -8,7 +8,7 @@ import {useWallet} from 'context/augmentedWallet';
 import {useProviders} from 'context/providers';
 import {useWalletProps} from 'containers/walletMenu';
 import {isETH, fetchBalance, getTokenInfo} from 'utils/tokens';
-import {DaoTokenBalance, HookData} from 'utils/types';
+import {TokenBalance, HookData} from 'utils/types';
 
 // TODO The two hooks in this file are very similar and should probably be
 // merged into one. The reason I'm not doing it now is that I'm not sure if
@@ -79,7 +79,7 @@ export function useUserTokenAddresses(): HookData<string[]> {
  * This is hook is very similar to useUserTokenAddresses, but in addition to the
  * contract address it also returns the user's balance for each of the tokens.
  */
-export function useWalletTokens(): HookData<DaoTokenBalance[]> {
+export function useWalletTokens(): HookData<TokenBalance[]> {
   const {account, balance}: useWalletProps = useWallet();
   const {infura: provider} = useProviders();
   const {
@@ -88,7 +88,7 @@ export function useWalletTokens(): HookData<DaoTokenBalance[]> {
     error: tokenListError,
   } = useUserTokenAddresses();
 
-  const [walletTokens, setWalletTokens] = useState<DaoTokenBalance[]>([]);
+  const [walletTokens, setWalletTokens] = useState<TokenBalance[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | undefined>();
 

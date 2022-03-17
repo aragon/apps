@@ -11,7 +11,7 @@ import React, {useCallback, useState} from 'react';
 import TokenBox from './tokenBox';
 import {formatUnits} from 'utils/library';
 import {useGlobalModalContext} from 'context/globalModals';
-import {BaseTokenInfo, DaoTokenBalance, TokenWithMetadata} from 'utils/types';
+import {BaseTokenInfo, TokenBalance, TokenWithMetadata} from 'utils/types';
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 
 import {useTokenMetadata} from 'hooks/useTokenMetadata';
@@ -27,7 +27,7 @@ const customToken = {
 
 type TokenMenuProps = {
   isWallet?: boolean;
-  tokenBalances: DaoTokenBalance[];
+  tokenBalances: TokenBalance[];
   onTokenSelect: (token: BaseTokenInfo) => void;
 };
 
@@ -46,6 +46,7 @@ const TokenMenu: React.FC<TokenMenuProps> = ({
    *************************************************/
   const handleTokenClick = (token: TokenWithMetadata) => {
     onTokenSelect({
+      id: token.metadata.apiId,
       address: token.metadata.id,
       name: token.metadata.name,
       count: token.balance,
