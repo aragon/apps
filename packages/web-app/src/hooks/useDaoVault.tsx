@@ -18,13 +18,9 @@ import {PollTokenOptions, VaultToken} from 'utils/types';
  * and the price change in USD based on the filter
  */
 export const useDaoVault = (daoAddress: string, options?: PollTokenOptions) => {
-  const {data: balances, getDaoBalances} = useDaoBalances(daoAddress);
+  const {data: balances} = useDaoBalances(daoAddress);
   const {data: tokensWithMetadata} = useTokenMetadata(balances);
   const {data} = usePollTokenPrices(tokensWithMetadata, options);
-
-  useEffect(() => {
-    getDaoBalances();
-  }, [getDaoBalances]);
 
   const tokens = useMemo(
     () =>
