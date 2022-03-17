@@ -114,7 +114,7 @@ const TokenMenu: React.FC<TokenMenuProps> = ({
             >
               <TokenBox
                 tokenName={token.metadata.name}
-                tokenLogo={token.metadata.imgUrl || ''}
+                tokenLogo={token.metadata.imgUrl}
                 tokenSymbol={token.metadata.symbol}
                 tokenBalance={formatUnits(
                   token.balance,
@@ -145,7 +145,9 @@ const TokenMenu: React.FC<TokenMenuProps> = ({
           }
           placeholder={t('placeHolders.searchTokens')}
         />
-        <TokensWrapper>{<RenderTokens />}</TokensWrapper>
+        <TokensWrapper>
+          <RenderTokens />
+        </TokensWrapper>
         <WideButton
           mode="secondary"
           size="large"
