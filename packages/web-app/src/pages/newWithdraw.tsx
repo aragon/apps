@@ -8,7 +8,6 @@ import React, {useEffect} from 'react';
 import TokenMenu from 'containers/tokenMenu';
 import {useWallet} from 'context/augmentedWallet';
 import {formatUnits} from 'utils/library';
-import {useDaoTokens} from 'hooks/useDaoTokens';
 import {BaseTokenInfo} from 'utils/types';
 import {TransferTypes} from 'utils/constants';
 import {useWalletProps} from 'containers/walletMenu';
@@ -78,11 +77,9 @@ const NewWithdraw: React.FC = () => {
     defaultValues,
     mode: 'onChange',
   });
-  const {data: tokens} = useDaoTokens('myDaoAddress');
-  const {account}: useWalletProps = useWallet();
 
   const {data: balances} = useDaoBalances();
-  console.log('balances', balances);
+  const {account}: useWalletProps = useWallet();
 
   useEffect(() => {
     if (account) {
