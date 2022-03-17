@@ -2,7 +2,6 @@ import React, {useState, useCallback, useEffect} from 'react';
 import {VotersTable, SearchInput} from '@aragon/ui-components';
 import styled from 'styled-components';
 import {useFormContext} from 'react-hook-form';
-import {useTranslation} from 'react-i18next';
 
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 import {useGlobalModalContext} from 'context/globalModals';
