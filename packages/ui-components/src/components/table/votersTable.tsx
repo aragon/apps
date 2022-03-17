@@ -1,64 +1,84 @@
 import React from 'react';
 import styled from 'styled-components';
+
 import {TableCell} from './tableCell';
 import {Badge} from '../badge';
 import {IconChevronDown} from '../icons';
 import {Link} from '../link';
+import {shortenAddress} from '../../utils/addresses';
 
 export type VoterType = {
   wallet: string;
-  option: 'Yes' | 'No';
-  votingPower: string;
-  tokenAmount: string;
+  option?: 'Yes' | 'No';
+  votingPower?: string;
+  tokenAmount?: string;
 };
 
 export type VotersTableProps = {
   voters: Array<VoterType>;
-  onLoadMore: () => void;
+  onLoadMore?: () => void;
+  showOption?: boolean;
+  showVotingPower?: boolean;
+  showAmount?: boolean;
 };
 
 export const VotersTable: React.FC<VotersTableProps> = ({
   voters,
   onLoadMore,
+  showOption = false,
+  showVotingPower = false,
+  showAmount = false,
 }) => {
   return (
     <Table data-testid="votersTable">
       <thead>
         <tr>
           <TableCell type="head" text="Wallet" />
-          <TableCell type="head" text="Option" />
-          <TableCell type="head" text="Voting Power" rightAligned />
-          <TableCell type="head" text="Token Amount" rightAligned />
+          {showOption && <TableCell type="head" text="Option" />}
+          {showVotingPower && <TableCell type="head" text="Voting Power" />}
+          {showAmount && <TableCell type="head" text="Token Amount" />}
         </tr>
       </thead>
       <tbody>
         {voters.map((voter, index) => (
           <tr key={index}>
-            <TableCell type="text" text={voter.wallet} />
-            <TableCell type="tag">
-              <Badge
-                label={voter.option}
-                colorScheme={voter.option === 'Yes' ? 'success' : 'critical'}
-              />
-            </TableCell>
-            <TableCell type="text" text={voter.votingPower} rightAligned />
-            <TableCell type="text" text={voter.tokenAmount} rightAligned />
+            <TableCell type="text" text={shortenAddress(voter.wallet)} />
+            {showOption && (
+              <TableCell type="tag">
+                {voter.option && (
+                  <Badge
+                    label={voter.option}
+                    colorScheme={
+                      voter.option === 'Yes' ? 'success' : 'critical'
+                    }
+                  />
+                )}
+              </TableCell>
+            )}
+            {showVotingPower && (
+              <TableCell type="text" text={voter.votingPower} rightAligned />
+            )}
+            {showAmount && (
+              <TableCell type="text" text={voter.tokenAmount} rightAligned />
+            )}
           </tr>
         ))}
       </tbody>
       <tfoot>
-        <tr>
-          <TableCell type="link">
-            <Link
-              label="Load More"
-              iconRight={<IconChevronDown />}
-              onClick={onLoadMore}
-            />
-          </TableCell>
-          <TableCell type="text" text="" />
-          <TableCell type="text" text="" />
-          <TableCell type="text" text="" />
-        </tr>
+        {onLoadMore && (
+          <tr>
+            <TableCell type="link">
+              <Link
+                label="Load More"
+                iconRight={<IconChevronDown />}
+                onClick={onLoadMore}
+              />
+            </TableCell>
+            {showOption && <TableCell type="text" text="" />}
+            {showVotingPower && <TableCell type="text" text="" />}
+            {showAmount && <TableCell type="text" text="" />}
+          </tr>
+        )}
       </tfoot>
     </Table>
   );
