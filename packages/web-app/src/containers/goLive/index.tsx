@@ -18,7 +18,7 @@ import {useNetwork} from 'context/network';
 import {useTransactionContext} from 'context/transactions';
 
 export const GoLiveHeader: React.FC = () => {
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const {network} = useNetwork();
 

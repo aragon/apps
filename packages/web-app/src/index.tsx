@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {HashRouter as Router} from 'react-router-dom';
+import { HashRouter as Router } from 'react-router-dom';
 
 import App from './app';
 import {WalletProvider} from 'context/augmentedWallet';
@@ -15,6 +15,8 @@ import {UseSignerProvider} from 'use-signer';
 import {IProviderOptions} from 'web3modal';
 import WalletConnectProvider from '@walletconnect/web3-provider/dist/umd/index.min.js';
 import 'tailwindcss/tailwind.css';
+import { UseCacheProvider } from 'hooks/useCache';
+import { UseClientProvider } from 'hooks/useClient';
 
 const providerOptions: IProviderOptions = {
   walletconnect: {
