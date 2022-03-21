@@ -68,6 +68,8 @@ const Finance: React.FC = () => {
           currency: 'USD',
           signDisplay: 'always',
         }).format(treasury.totalAssetChange)}
+        sign={Math.sign(treasury.totalAssetChange)}
+        timePeriod="24h" // temporarily hardcoded
         onClick={open}
       >
         <div className={'h-4'} />
