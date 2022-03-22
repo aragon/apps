@@ -111,7 +111,7 @@
   },
   "finance": {
     "tokenSection": "Tokens",
-    "transferSection": "Transfers",
+    "transferSection": "Latest Transfers",
     "unknownUSDValue": "Value unknown",
     "tokens": "Tokens"
   },
