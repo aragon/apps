@@ -15,10 +15,6 @@ export type PageWrapperProps = SectionWrapperProps & {
   onClick?: () => void;
 };
 
-// NOTE: It's possible to merge these two components. But I'm not sure it makes
-// things any simpler right now. However, if other sections wrappers like these
-// are added in the future and all have similar style, feel free to merge them.
-
 /**
  * Non proposal page wrapper. Consists of a header with a title and a
  * icon button.
