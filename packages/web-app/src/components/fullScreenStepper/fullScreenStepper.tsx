@@ -90,23 +90,25 @@ export const FullScreenStepper: React.FC<FullScreenStepperProps> = ({
   return (
     <FullScreenStepperContext.Provider value={value}>
       <Layout>
-        {!hideWizard && (
-          <Wizard
-            includeStepper={includeStepper}
-            processName={wizardProcessName}
-            title={wizardTitle || ''}
-            description={wizardDescription || ''}
-            totalSteps={totalSteps}
-            currentStep={currentFormStep}
-            nav={
-              <Breadcrumb
-                crumbs={{label: navLabel, path: returnPath}}
-                onClick={(path: string) => navigate(path)}
-              />
-            }
-          />
-        )}
-        {customHeader}
+        <div className="-mx-2 tablet:mx-0 tablet:mt-3">
+          {!hideWizard && (
+            <Wizard
+              includeStepper={includeStepper}
+              processName={wizardProcessName}
+              title={wizardTitle || ''}
+              description={wizardDescription || ''}
+              totalSteps={totalSteps}
+              currentStep={currentFormStep}
+              nav={
+                <Breadcrumb
+                  crumbs={{label: navLabel, path: returnPath}}
+                  onClick={(path: string) => navigate(path)}
+                />
+              }
+            />
+          )}
+          {customHeader}
+        </div>
         <FormLayout fullWidth={fullWidth || false}>
           {children[currentIndex]}
           {customFooter ? (
@@ -141,7 +143,8 @@ export const FullScreenStepper: React.FC<FullScreenStepperProps> = ({
 };
 
 const Layout = styled.div.attrs({
-  className: 'tablet:m-auto tablet:mt-3 tablet:w-8/12 font-medium text-ui-600',
+  className:
+    'col-span-full desktop:col-start-2 desktop:col-end-12 font-medium text-ui-600',
 })``;
 
 type FormLayoutProps = {
@@ -149,11 +152,11 @@ type FormLayoutProps = {
 };
 
 const FormLayout = styled.div.attrs(({fullWidth}: FormLayoutProps) => ({
-  className: `my-5 px-2 tablet:px-0 tablet:my-8 tablet:mx-auto space-y-5 ${
-    !fullWidth && 'tablet:w-3/4'
+  className: `mt-5 desktop:mt-8 mx-auto space-y-5 ${
+    !fullWidth && 'desktop:w-3/5'
   }`,
 }))<FormLayoutProps>``;
 
 const FormFooter = styled.div.attrs({
-  className: 'flex justify-between pt-8',
+  className: 'flex justify-between desktop:pt-3',
 })``;

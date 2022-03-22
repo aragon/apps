@@ -9,9 +9,9 @@ import {shortenAddress} from '../../utils/addresses';
 
 export type VoterType = {
   wallet: string;
-  option?: 'Yes' | 'No';
-  votingPower?: string;
-  tokenAmount?: string;
+  option: 'Yes' | 'Abstain' | 'No';
+  votingPower: string;
+  tokenAmount: string;
 };
 
 export type VotersTableProps = {
@@ -21,6 +21,9 @@ export type VotersTableProps = {
   showVotingPower?: boolean;
   showAmount?: boolean;
 };
+
+const colorScheme = (option: string) =>
+  option === 'Yes' ? 'success' : option === 'No' ? 'critical' : 'neutral';
 
 export const VotersTable: React.FC<VotersTableProps> = ({
   voters,
@@ -48,9 +51,7 @@ export const VotersTable: React.FC<VotersTableProps> = ({
                 {voter.option && (
                   <Badge
                     label={voter.option}
-                    colorScheme={
-                      voter.option === 'Yes' ? 'success' : 'critical'
-                    }
+                    colorScheme={colorScheme(voter.option)}
                   />
                 )}
               </TableCell>

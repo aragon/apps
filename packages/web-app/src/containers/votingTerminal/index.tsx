@@ -30,7 +30,7 @@ const voters: Array<VoterType> = [
   },
   {
     wallet: '0xc54c...ee7a',
-    option: 'Yes',
+    option: 'Abstain',
     votingPower: '13.333%',
     tokenAmount: '250TN',
   },
@@ -78,6 +78,19 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
             <HStack>
               <p className="font-bold text-primary-500">
                 {t('votingTerminal.yes')}
+              </p>
+              <p className="flex-1 text-right text-ui-600">{`X ${t(
+                'votingTerminal.token'
+              )}`}</p>
+              <p className="pl-6 font-bold text-primary-500">0%</p>
+            </HStack>
+            <LinearProgress max={100} value={1} />
+          </VStackNormal>
+
+          <VStackNormal>
+            <HStack>
+              <p className="font-bold text-primary-500">
+                {t('votingTerminal.abstain')}
               </p>
               <p className="flex-1 text-right text-ui-600">{`X ${t(
                 'votingTerminal.token'
@@ -156,12 +169,16 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
 
           <CheckboxContainer>
             <CheckboxListItem
-              label={t('votingTerminal.no')}
-              helptext={t('votingTerminal.noHelptext')}
-            />
-            <CheckboxListItem
               label={t('votingTerminal.yes')}
               helptext={t('votingTerminal.yesHelptext')}
+            />
+            <CheckboxListItem
+              label={t('votingTerminal.abstain')}
+              helptext={t('votingTerminal.abstainHelptext')}
+            />
+            <CheckboxListItem
+              label={t('votingTerminal.no')}
+              helptext={t('votingTerminal.noHelptext')}
             />
           </CheckboxContainer>
 
@@ -241,7 +258,7 @@ const Heading2 = styled.h2.attrs({
 })``;
 
 const CheckboxContainer = styled.div.attrs({
-  className: 'tablet:flex mt-3 space-y-1.5 tablet:space-y-0 tablet:space-x-3',
+  className: 'mt-3 space-y-1.5',
 })``;
 
 const VoteContainer = styled.div.attrs({

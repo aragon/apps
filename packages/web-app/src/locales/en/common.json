@@ -111,7 +111,7 @@
   },
   "finance": {
     "tokenSection": "Tokens",
-    "transferSection": "Transfers",
+    "transferSection": "Latest Transfers",
     "unknownUSDValue": "Value unknown",
     "tokens": "Tokens"
   },
@@ -293,7 +293,7 @@
         "title": "Options"
       },
       "yesNoLabel": {
-        "title": "Yes & No",
+        "title": "Yes, Abstain & No",
         "helptext": "Let users vote for or against."
       },
       "endDescription": "Define how long the voting should last in days or exact date and time."
@@ -403,8 +403,10 @@
     "voters": "Voters",
     "info": "Info",
     "yes": "Yes",
+    "abstain": "Abstain",
     "no": "No",
     "yesHelptext": "Your choice will be counted for option yes",
+    "abstainHelptext": "Your choice will be counted for option abstain",
     "noHelptext": "Your choice will be counted for option no",
     "token": "Token",
     "inputPlaceholder": "Type Address, ENS or E-Mail",
