@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import {useNavigate} from 'react-router-dom';
 import useBreadcrumbs from 'use-react-router-breadcrumbs';
 import {Badge, Breadcrumb, ButtonText, IconAdd} from '@aragon/ui-components';
 
@@ -7,7 +8,8 @@ import useScreen from 'hooks/useScreen';
 import {basePathIcons} from 'containers/navbar/desktop';
 import {SectionWrapperProps} from './sectionWrappers';
 import {Dashboard, NotFound} from 'utils/paths';
-import {useNavigate} from 'react-router-dom';
+
+type ChangeSign = -1 | 0 | 1;
 
 export type PageWrapperProps = SectionWrapperProps & {
   buttonLabel: string;
@@ -17,14 +19,11 @@ export type PageWrapperProps = SectionWrapperProps & {
   onClick?: () => void;
 };
 
-const textColors: {[key: string]: string} = {
+const textColors: Record<ChangeSign, string> = {
   '-1': 'text-critical-800',
   '1': 'text-success-600',
   '0': 'text-ui-600',
 };
-// NOTE: It's possible to merge these two components. But I'm not sure it makes
-// things any simpler right now. However, if other sections wrappers like these
-// are added in the future and all have similar style, feel free to merge them.
 
 /**
  * Non proposal page wrapper. Consists of a header with a title and a
@@ -35,7 +34,7 @@ export const PageWrapper = ({
   children,
   buttonLabel,
   timePeriod,
-  sign,
+  sign = 0,
   subtitle,
   onClick,
 }: PageWrapperProps) => {
@@ -64,7 +63,7 @@ export const PageWrapper = ({
             <PageTitle>{title}</PageTitle>
             <PageSubtitleContainer>
               {timePeriod && <Badge label={timePeriod} />}
-              <p className={textColors[sign?.toString() || '0']}>{subtitle}</p>
+              <p className={textColors[sign as ChangeSign]}>{subtitle}</p>
             </PageSubtitleContainer>
           </TextWrapper>
 
