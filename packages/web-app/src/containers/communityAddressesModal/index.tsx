@@ -1,19 +1,19 @@
-import React, {useState, useCallback, useEffect} from 'react';
+import React, {useState, useCallback, useMemo} from 'react';
 import {VotersTable, SearchInput} from '@aragon/ui-components';
 import styled from 'styled-components';
 import {useFormContext} from 'react-hook-form';
+import {useTranslation} from 'react-i18next';
 
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 import {useGlobalModalContext} from 'context/globalModals';
-import {VoterType} from '@aragon/ui-components/dist/components/table/votersTable';
 
 const CommunityAddressesModal: React.FC = () => {
-  const [addressList, setAddressList] = useState<VoterType[]>([]);
   const [searchValue, setSearchValue] = useState('');
   const [page, setPage] = useState<number>(1);
   const {getValues} = useFormContext();
   const {isAddressesOpen, close} = useGlobalModalContext();
   const {wallets, tokenSymbol} = getValues();
+  const {t} = useTranslation();
 
   const filterValidator = useCallback(
     wallets => {
@@ -26,15 +26,16 @@ const CommunityAddressesModal: React.FC = () => {
     [searchValue]
   );
 
-  useEffect(() => {
-    const list = wallets
-      .filter(filterValidator)
-      .map(({address, amount}: {address: string; amount: string}) => ({
-        wallet: address,
-        tokenAmount: `${amount} ${tokenSymbol}`,
-      }));
-    setAddressList(list);
-  }, [wallets, setAddressList, filterValidator, tokenSymbol]);
+  const filteredAddressList = useMemo(
+    () =>
+      wallets
+        .filter(filterValidator)
+        .map(({address, amount}: {address: string; amount: string}) => ({
+          wallet: address,
+          tokenAmount: `${amount} ${tokenSymbol}`,
+        })),
+    [wallets, filterValidator, tokenSymbol]
+  );
 
   /*************************************************
    *                    Render                     *
@@ -54,13 +55,18 @@ const CommunityAddressesModal: React.FC = () => {
         />
       </ModalHeader>
       <Container>
-        <VotersTable
-          voters={addressList.slice(0, page * 5)}
-          showAmount
-          {...(page * 5 < addressList.length && {
-            onLoadMore: () => setPage(prePage => prePage + 1),
-          })}
-        />
+        {filteredAddressList.length !== 0 ? (
+          <VotersTable
+            voters={filteredAddressList.slice(0, page * 5)}
+            showAmount
+            {...(page * 5 < filteredAddressList.length && {
+              onLoadMore: () => setPage(prePage => prePage + 1),
+            })}
+          />
+        ) : (
+          // this view is temporary until designs arrive
+          <span>{t('AddressModal.noAddresses')}</span>
+        )}
       </Container>
     </ModalBottomSheetSwitcher>
   );

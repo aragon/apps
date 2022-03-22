@@ -235,6 +235,9 @@
     "tokenNotAvailableSubtitle": "Check your wallet, update the tokens or add a custom token to transfer",
     "tokenNotAvailableSubtitleDao": "Update the tokens or add a custom token to transfer."
   },
+  "AddressModal": {
+    "noAddresses": "No address Found"
+  },
   "TransactionModal": {
     "estimatedFees": "Estimated Gas Fees",
     "synced": "Synced {{time}} sec ag",
