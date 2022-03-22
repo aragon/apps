@@ -17,6 +17,9 @@ export type VotersTableProps = {
   onLoadMore: () => void;
 };
 
+const colorScheme = (option: string) =>
+  option === 'Yes' ? 'success' : option === 'No' ? 'critical' : 'neutral';
+
 export const VotersTable: React.FC<VotersTableProps> = ({
   voters,
   onLoadMore,
@@ -38,13 +41,7 @@ export const VotersTable: React.FC<VotersTableProps> = ({
             <TableCell type="tag">
               <Badge
                 label={voter.option}
-                colorScheme={
-                  voter.option === 'Yes'
-                    ? 'success'
-                    : voter.option === 'No'
-                    ? 'critical'
-                    : 'neutral'
-                }
+                colorScheme={colorScheme(voter.option)}
               />
             </TableCell>
             <TableCell type="text" text={voter.votingPower} rightAligned />
