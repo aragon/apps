@@ -49,8 +49,8 @@ export const PageWrapper = ({
   }));
 
   return (
-    <>
-      <HeaderContainer>
+    <div className="col-span-full desktop:col-start-3 desktop:col-end-11">
+      <HeaderContainer className="-mx-2 tablet:mx-0 tablet:mt-3">
         {!isDesktop && (
           <Breadcrumb
             icon={basePathIcons[breadcrumbs[0].path]}
@@ -78,7 +78,7 @@ export const PageWrapper = ({
       </HeaderContainer>
 
       {children}
-    </>
+    </div>
   );
 };
 

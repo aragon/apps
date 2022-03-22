@@ -42,13 +42,13 @@ const Transfers: React.FC = () => {
    */
 
   return (
-    <Layout>
-      <PageWrapper
-        title={t('TransferModal.allTransfers') as string}
-        buttonLabel={t('TransferModal.newTransfer') as string}
-        subtitle={'$1,002,200.00 Total Volume'}
-        onClick={open}
-      >
+    <PageWrapper
+      title={t('TransferModal.allTransfers') as string}
+      buttonLabel={t('TransferModal.newTransfer') as string}
+      subtitle={'$1,002,200.00 Total Volume'}
+      onClick={open}
+    >
+      <div className="mt-3 desktop:mt-8">
         <div className="space-y-1.5">
           <SearchInput placeholder="Type to filter" />
           <div className="flex">
@@ -85,14 +85,11 @@ const Transfers: React.FC = () => {
             </div>
           </TransferSectionWrapper>
         </SectionContainer>
-      </PageWrapper>
-    </Layout>
+      </div>
+    </PageWrapper>
   );
 };
 
-const Layout = styled.div.attrs({
-  className: 'm-auto mt-5 space-y-5 w-8/12',
-})``;
-const SectionContainer = styled.div.attrs({className: 'my-5'})``;
+const SectionContainer = styled.div.attrs({className: 'my-3 desktop:my-5'})``;
 
 export default withTransaction('Transfers', 'component')(Transfers);

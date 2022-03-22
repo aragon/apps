@@ -8,6 +8,7 @@ import {
   HttpLink,
   InMemoryCache,
   ApolloClientOptions,
+  makeVar,
 } from '@apollo/client';
 import {RestLink} from 'apollo-link-rest';
 import {CachePersistor, LocalStorageWrapper} from 'apollo3-cache-persist';
@@ -97,6 +98,8 @@ const ApolloClientProvider: React.FC<unknown> = ({children}) => {
 
   const restoreApolloCache = async () => {
     await persistor.restore();
+    // favoriteDAOs(JSON.parse(localStorage.getItem('favoriteDAOs') as string));
+    selectedDAO(favoriteDAOs()[0]);
   };
 
   restoreApolloCache();
@@ -119,4 +122,19 @@ const useApolloClient = () => {
   return useContext(UseApolloClientContext);
 };
 
-export {ApolloClientProvider, useApolloClient};
+type favoriteDAO = {
+  daoAddress: string;
+  daoName: string;
+};
+
+const selectedDAO = makeVar<favoriteDAO>({daoName: '', daoAddress: ''});
+
+const favoriteDAOs = makeVar<Array<favoriteDAO>>([
+  {
+    daoAddress: '0x0ee165029b09d91a54687041adbc705f6376c67f',
+    daoName: 'Lorax DAO',
+  },
+  {daoAddress: 'dao-name.dao.eth', daoName: 'DAO name'},
+]);
+
+export {ApolloClientProvider, useApolloClient, favoriteDAOs, selectedDAO};
