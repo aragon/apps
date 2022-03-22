@@ -1,26 +1,15 @@
 {
-  "name": "@aragon/zaragoza",
+  "name": "@aragon/apps",
   "version": "0.1.0",
-  "description": "Aragon DAO Framework",
-  "repository": "https://github.com/aragon/zaragoza",
+  "description": "Aragon DAO Clients",
+  "repository": "https://github.com/aragon/apps",
   "author": "Aragon Association",
   "license": "MIT",
   "private": true,
   "workspaces": {
     "packages": [
       "packages/*"
-    ],
-    "nohoist": [
-      "**/@graphprotocol/graph-ts",
-      "**/@graphprotocol/graph-ts/**",
-      "**/@graphprotocol/graph-cli",
-      "**/@graphprotocol/graph-cli/**",
-      "**/matchstick-as",
-      "**/matchstick-as/**"
     ]
-  },
-  "devDependencies": {
-    "lerna": "^3.22.1"
   },
   "engines": {
     "node": ">=14 <15.0.0"
