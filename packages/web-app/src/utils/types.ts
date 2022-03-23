@@ -55,7 +55,6 @@ export type TokenBalance = {
 };
 //===========================================================
 export type DaoTokenBalance = {
-  id: number;
   token: {
     id: string;
     name: string;

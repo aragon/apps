@@ -1,16 +1,13 @@
-import {useEffect, useMemo} from 'react';
+import {useEffect, useState} from 'react';
 
 import {useDaoBalances} from './useDaoBalances';
 import {useTokenMetadata} from './useTokenMetadata';
 import {usePollTokenPrices} from './usePollTokenPrices';
 import {PollTokenOptions, VaultToken} from 'utils/types';
 
-// TODO: Explore options. This might be best on a context around the financial pages
-// Would save however many calls is made in one go
-
 /**
- * Hook encapsulating the logic for fetching the assets from the DAO vault and mapping them
- * to their corresponding USD market values.
+ * Hook encapsulating the logic for fetching the assets from the DAO vault, mapping them
+ * to their corresponding USD market values, and calculating their treasury share percentage.
  * @param daoAddress Dao address
  * @param options.filter TimeFilter for market data
  * @param options.interval Delay in milliseconds
@@ -18,27 +15,26 @@ import {PollTokenOptions, VaultToken} from 'utils/types';
  * and the price change in USD based on the filter
  */
 export const useDaoVault = (daoAddress: string, options?: PollTokenOptions) => {
-  const {data: balances, getDaoBalances} = useDaoBalances(daoAddress);
+  const {data: balances} = useDaoBalances(daoAddress);
   const {data: tokensWithMetadata} = useTokenMetadata(balances);
   const {data} = usePollTokenPrices(tokensWithMetadata, options);
+  const [tokens, setTokens] = useState<VaultToken[]>([]);
 
   useEffect(() => {
-    getDaoBalances();
-  }, [getDaoBalances]);
-
-  const tokens = useMemo(
-    () =>
-      data?.tokens.map(token => ({
+    const values = data.tokens.map(token => {
+      return {
         ...token,
         ...(token.marketData?.treasuryShare
           ? {
               treasurySharePercentage:
-                (token.marketData.treasuryShare / data.totalAssetValue) * 100,
+                (token.marketData.treasuryShare / data?.totalAssetValue) * 100,
             }
           : {}),
-      })) as VaultToken[],
-    [data?.tokens, data?.totalAssetValue]
-  );
+      };
+    });
+
+    setTokens(values);
+  }, [data.tokens, data.totalAssetValue]);
 
   return {
     tokens,

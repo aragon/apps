@@ -9,7 +9,7 @@ import {DaoTokenBalance, TokenWithMetadata} from 'utils/types';
 export const useTokenMetadata = (balances: DaoTokenBalance[]) => {
   const client = useApolloClient();
   const {chainId} = useWallet();
-  const [data, setData] = useState<TokenWithMetadata[]>();
+  const [data, setData] = useState<TokenWithMetadata[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
