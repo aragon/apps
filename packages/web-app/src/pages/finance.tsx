@@ -57,34 +57,34 @@ const Finance: React.FC = () => {
   const displayedTokens = tokens.slice(0, 5);
 
   return (
-    <div className={'m-auto mt-4 w-8/12'}>
-      <PageWrapper
-        title={new Intl.NumberFormat('en-US', {
-          style: 'currency',
-          currency: 'USD',
-        }).format(totalAssetValue)}
-        buttonLabel={t('TransferModal.newTransfer')}
-        subtitle={new Intl.NumberFormat('en-US', {
-          style: 'currency',
-          currency: 'USD',
-          signDisplay: 'always',
-        }).format(totalAssetChange)}
-        onClick={open}
-      >
-        <div className={'h-4'} />
-        <TokenSectionWrapper title={t('finance.tokenSection')}>
-          <div className="py-2 space-y-2 border-solid">
-            <TokenList tokens={displayedTokens} />
-          </div>
-        </TokenSectionWrapper>
-        <div className={'h-4'} />
-        <TransferSectionWrapper title={t('finance.transferSection')} showButton>
-          <div className="py-2 space-y-2">
-            <TransferList transfers={TEMP_TRANSFERS} />
-          </div>
-        </TransferSectionWrapper>
-      </PageWrapper>
-    </div>
+    <PageWrapper
+      title={new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+      }).format(totalAssetValue)}
+      buttonLabel={t('TransferModal.newTransfer')}
+      subtitle={new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        signDisplay: 'always',
+      }).format(totalAssetChange)}
+      sign={Math.sign(totalAssetChange)}
+      timePeriod="24h" // temporarily hardcoded
+      onClick={open}
+    >
+      <div className={'h-4'} />
+      <TokenSectionWrapper title={t('finance.tokenSection')}>
+        <div className="py-2 space-y-2 border-solid">
+          <TokenList tokens={displayedTokens} />
+        </div>
+      </TokenSectionWrapper>
+      <div className={'h-4'} />
+      <TransferSectionWrapper title={t('finance.transferSection')} showButton>
+        <div className="py-2 space-y-2">
+          <TransferList transfers={TEMP_TRANSFERS} />
+        </div>
+      </TransferSectionWrapper>
+    </PageWrapper>
   );
 };
 

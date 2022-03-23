@@ -53,12 +53,13 @@ const Governance: React.FC = () => {
 
   if (showEmptyState) {
     return (
-      <>
+      <Container>
         <EmptyStateContainer>
           <ImageContainer src={NoProposals} />
           <EmptyStateHeading>
             {t('governance.emptyState.title')}
           </EmptyStateHeading>
+
           <p className="mt-1.5 lg:w-1/2 text-center">
             {t('governance.emptyState.subtitleLine1')}{' '}
             {t('governance.emptyState.subtitleLine2')}{' '}
@@ -79,70 +80,66 @@ const Governance: React.FC = () => {
           size="small"
           className="mx-auto mt-5"
         />
-      </>
+      </Container>
     );
   }
 
   // TODO: search functionality will implement later using graph queries
   return (
-    <Container>
-      <PageWrapper
-        title={'Proposals'}
-        buttonLabel={'New Proposal'}
-        subtitle={'1 active Proposal'}
-        onClick={() => navigate('/new-proposal')}
-      >
-        <div className="mt-8 space-y-1.5">
-          <ButtonGroup
-            bgWhite
-            defaultValue="all"
-            onChange={(selected: string) => {
-              setFilterValue(selected);
-              setPage(1);
-            }}
-          >
-            <Option value="all" label="All" />
-            <Option value="draft" label="Draft" />
-            <Option value="pending" label="Pending" />
-            <Option value="active" label="Active" />
-            <Option value="succeeded" label="Succeeded" />
-            <Option value="executed" label="Executed" />
-            <Option value="defeated" label="Defeated" />
-          </ButtonGroup>
-        </div>
-        <ListWrapper>
-          <ProposalList
-            proposals={displayedProposals.slice(
-              (page - 1) * ProposalsPerPage,
-              page * ProposalsPerPage
-            )}
-          />
-        </ListWrapper>
-        <PaginationWrapper>
-          {displayedProposals.length > ProposalsPerPage && (
-            <Pagination
-              totalPages={
-                Math.ceil(
-                  displayedProposals.length / ProposalsPerPage
-                ) as number
-              }
-              activePage={page}
-              onChange={(activePage: number) => {
-                setPage(activePage);
-                window.scrollTo({top: 0, behavior: 'smooth'});
-              }}
-            />
+    <PageWrapper
+      title={'Proposals'}
+      buttonLabel={'New Proposal'}
+      subtitle={'1 active Proposal'}
+      onClick={() => navigate('/new-proposal')}
+    >
+      <div className="flex mt-3 desktop:mt-8">
+        <ButtonGroup
+          bgWhite
+          defaultValue="all"
+          onChange={(selected: string) => {
+            setFilterValue(selected);
+            setPage(1);
+          }}
+        >
+          <Option value="all" label="All" />
+          <Option value="draft" label="Draft" />
+          <Option value="pending" label="Pending" />
+          <Option value="active" label="Active" />
+          <Option value="succeeded" label="Succeeded" />
+          <Option value="executed" label="Executed" />
+          <Option value="defeated" label="Defeated" />
+        </ButtonGroup>
+      </div>
+      <ListWrapper>
+        <ProposalList
+          proposals={displayedProposals.slice(
+            (page - 1) * ProposalsPerPage,
+            page * ProposalsPerPage
           )}
-        </PaginationWrapper>
-      </PageWrapper>
-    </Container>
+        />
+      </ListWrapper>
+      <PaginationWrapper>
+        {displayedProposals.length > ProposalsPerPage && (
+          <Pagination
+            totalPages={
+              Math.ceil(displayedProposals.length / ProposalsPerPage) as number
+            }
+            activePage={page}
+            onChange={(activePage: number) => {
+              setPage(activePage);
+              window.scrollTo({top: 0, behavior: 'smooth'});
+            }}
+          />
+        )}
+      </PaginationWrapper>
+    </PageWrapper>
   );
 };
 
 export default withTransaction('Governance', 'component')(Governance);
 
 const Container = styled.div.attrs({
-  className: 'm-auto mt-4 w-8/12',
+  className: 'col-span-full desktop:col-start-3 desktop:col-end-11',
 })``;
 
 const ListWrapper = styled.div.attrs({
@@ -150,12 +147,12 @@ const ListWrapper = styled.div.attrs({
 })``;
 
 const PaginationWrapper = styled.div.attrs({
-  className: 'flex mt-8 mb-10',
+  className: 'flex mt-8',
 })``;
 
 const EmptyStateContainer = styled.div.attrs({
   className:
-    'flex flex-col items-center py-4 px-3 tablet:py-8 tablet:px-6 mx-auto mt-3 tablet:mt-5 w-11/12 tablet:w-3/4 text-lg bg-white rounded-xl text-ui-500',
+    'flex flex-col w-full items-center py-4 px-3 tablet:py-8 tablet:px-6 mx-auto mt-3 tablet:mt-5 text-lg bg-white rounded-xl text-ui-500',
 })``;
 
 const ImageContainer = styled.img.attrs({

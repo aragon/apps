@@ -18,10 +18,13 @@ import {
   Footer,
   ActionWrapper,
 } from './blockchain';
+import CommunityAddressesModal from 'containers/communityAddressesModal';
+import {useGlobalModalContext} from 'context/globalModals';
 
 const Community: React.FC = () => {
   const {control, getValues} = useFormContext();
   const {setStep} = useFormStep();
+  const {open} = useGlobalModalContext();
   const {t} = useTranslation();
   const {
     membership,
@@ -77,6 +80,7 @@ const Community: React.FC = () => {
               label={t('createDAO.review.distributionLink', {
                 count: wallets?.length,
               })}
+              onClick={() => open('addresses')}
             />
           </Row>
         )}
@@ -102,6 +106,7 @@ const Community: React.FC = () => {
           )}
         />
       </Footer>
+      <CommunityAddressesModal />
     </Card>
   );
 };

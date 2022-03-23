@@ -31,5 +31,8 @@ Default.args = {
       tokenAmount: '250TN',
     },
   ],
-  onLoadMore: () => alert('load more clicked'),
+  // onLoadMore: () => alert('load more clicked'),
+  showOption: true,
+  showVotingPower: true,
+  showAmount: true,
 };

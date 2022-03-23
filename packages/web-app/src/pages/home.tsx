@@ -12,13 +12,11 @@ const Home: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <>
-      <div className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 mx-auto">
-        <div className="text-center">
-          <WelcomeMessage>{t('subtitle')}</WelcomeMessage>
-          <Title>{t('title.part1')}</Title>
-          <Subtitle>{t('title.part2')}</Subtitle>
-        </div>
+    <div className="col-span-full my-10">
+      <div className="text-center">
+        <WelcomeMessage>{t('subtitle')}</WelcomeMessage>
+        <Title>{t('title.part1')}</Title>
+        <Subtitle>{t('title.part2')}</Subtitle>
       </div>
 
       <ButtonText
@@ -33,7 +31,7 @@ const Home: React.FC = () => {
         size="large"
         onClick={() => open('transaction')}
       />
-    </>
+    </div>
   );
 };
 

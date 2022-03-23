@@ -7,26 +7,22 @@ import {
 } from '@aragon/ui-components';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
-import React, {useState} from 'react';
+import React from 'react';
 
 import {useGlobalModalContext} from 'context/globalModals';
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
-
-// This should be gotten from cache
-const DAOS = [
-  {daoAddress: 'dao-name.dao.eth', daoName: 'DAO name'},
-  {daoAddress: 'dao-name-two.dao.eth', daoName: 'DAO name 2'},
-  {daoAddress: 'dao-name-three.dao.eth', daoName: 'DAO name 3'},
-];
+import {favoriteDAOs, selectedDAO} from 'context/apolloClient';
+import {useReactiveVar} from '@apollo/client';
 
 // NOTE: the state setting is temporary until backend integration
 const DaoSelectMenu: React.FC = () => {
   const {t} = useTranslation();
-  const [selectedDao, setSelectedDao] = useState(DAOS[0]);
+  const selectedDao = useReactiveVar(selectedDAO);
+  const favoriteDaos = useReactiveVar(favoriteDAOs);
   const {isSelectDaoOpen, close} = useGlobalModalContext();
 
   const handleDaoSelect = (dao: {daoName: string; daoAddress: string}) => {
-    setSelectedDao(dao);
+    selectedDAO(dao);
     close('selectDao');
   };
 
@@ -48,21 +44,14 @@ const DaoSelectMenu: React.FC = () => {
       </ModalHeader>
       <ModalContentContainer>
         <ListGroup>
-          <ListItemDao
-            {...selectedDao}
-            key={selectedDao.daoAddress}
-            selected
-            onClick={() => handleDaoSelect(selectedDao)}
-          />
-          {DAOS.filter(dao => dao.daoAddress !== selectedDao.daoAddress).map(
-            dao => (
-              <ListItemDao
-                {...dao}
-                key={dao.daoAddress}
-                onClick={() => handleDaoSelect(dao)}
-              />
-            )
-          )}
+          {favoriteDaos.map(dao => (
+            <ListItemDao
+              {...dao}
+              selected={dao.daoAddress === selectedDao?.daoAddress}
+              key={dao.daoAddress}
+              onClick={() => handleDaoSelect(dao)}
+            />
+          ))}
         </ListGroup>
         {/* TODO: Change click */}
         <ButtonText

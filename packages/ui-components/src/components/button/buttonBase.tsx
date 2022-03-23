@@ -20,28 +20,26 @@ export type ButtonBaseProps = ButtonHTMLAttributes<HTMLButtonElement> & {
  * Note: Even if both iconRight and iconLeft are passed,
  * ONLY the iconLeft will be shown.
  */
-export const ButtonBase: React.FC<ButtonBaseProps> = ({
-  iconRight,
-  iconLeft,
-  iconOnly = false,
-  size = 'medium',
-  label,
-  ...props
-}) => {
-  return (
-    <BaseStyledButton {...props} size={size}>
-      {iconLeft && <IconContainer size={size}>{iconLeft}</IconContainer>}
+export const ButtonBase = React.forwardRef<HTMLButtonElement, ButtonBaseProps>(
+  (
+    {iconRight, iconLeft, iconOnly = false, size = 'medium', label, ...props},
+    ref
+  ) => {
+    return (
+      <BaseStyledButton {...props} size={size} ref={ref}>
+        {iconLeft && <IconContainer size={size}>{iconLeft}</IconContainer>}
+        {!iconOnly && (
+          <Label visible={label ? true : false}>{label && label}</Label>
+        )}
+        {!iconLeft && iconRight && (
+          <IconContainer size={size}>{iconRight}</IconContainer>
+        )}
+      </BaseStyledButton>
+    );
+  }
+);
 
-      {!iconOnly && (
-        <Label visible={label ? true : false}>{label && label}</Label>
-      )}
-
-      {!iconLeft && iconRight && (
-        <IconContainer size={size}>{iconRight}</IconContainer>
-      )}
-    </BaseStyledButton>
-  );
-};
+ButtonBase.displayName = 'ButtonBase';
 
 /**********************************
  *             STYLES             *

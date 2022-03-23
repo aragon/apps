@@ -24,6 +24,8 @@ type BreadcrumbDropdownProps = {
 export const BreadcrumbDropdown: React.FC<BreadcrumbDropdownProps> = props => {
   return (
     <StyledDropdown
+      open={props.open}
+      onOpenChange={props.onOpenChange}
       align="start"
       trigger={
         <ButtonIcon

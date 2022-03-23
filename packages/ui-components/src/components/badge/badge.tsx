@@ -14,7 +14,7 @@ export const Badge: React.FC<BadgeProps> = ({
 }) => {
   return (
     <StyledBadge data-testid="badge" colorScheme={colorScheme}>
-      <p>{label}</p>
+      <p className="font-bold">{label}</p>
     </StyledBadge>
   );
 };
@@ -37,7 +37,7 @@ const StyledBadge = styled.div.attrs(({colorScheme}: StyledBadgeProps) => {
     colorCode = 'bg-ui-100 text-ui-600';
   }
 
-  const className = `inline-flex text-sm px-0.5 font-bold rounded ${colorCode}`;
+  const className = `inline-flex text-sm px-0.5 rounded ${colorCode}`;
 
   return {className, style: {paddingTop: 2, paddingBottom: 2}};
 })<StyledBadgeProps>``;
