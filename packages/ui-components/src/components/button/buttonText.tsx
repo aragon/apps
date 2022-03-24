@@ -12,27 +12,35 @@ export type ButtonTextProps = Omit<ButtonBaseProps, 'label' | 'iconOnly'> & {
   className?: string;
 };
 
-export const ButtonText: React.FC<ButtonTextProps> = ({
-  bgWhite = false,
-  label,
-  isActive = false,
-  mode = 'primary',
-  size = 'medium',
-  className,
-  ...props
-}) => {
-  return (
-    <StyledButton
-      {...props}
-      bgWhite={bgWhite}
-      label={label}
-      isActive={isActive}
-      mode={mode}
-      size={size}
-      inputClassName={className}
-    />
-  );
-};
+export const ButtonText = React.forwardRef<HTMLButtonElement, ButtonTextProps>(
+  (
+    {
+      bgWhite = false,
+      label,
+      isActive = false,
+      mode = 'primary',
+      size = 'medium',
+      className,
+      ...props
+    },
+    ref
+  ) => {
+    return (
+      <StyledButton
+        ref={ref}
+        {...props}
+        bgWhite={bgWhite}
+        label={label}
+        isActive={isActive}
+        mode={mode}
+        size={size}
+        inputClassName={className}
+      />
+    );
+  }
+);
+
+ButtonText.displayName = 'ButtonText';
 
 const paddingStyles = {
   small: 'py-0.5 px-2',

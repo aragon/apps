@@ -1,4 +1,3 @@
-import styled from 'styled-components';
 import {SearchInput} from '@aragon/ui-components';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
@@ -23,29 +22,24 @@ const Tokens: React.FC = () => {
   };
 
   const filteredTokens: VaultToken[] = filterTokens(tokens, searchTerm);
-  sortTokens(filteredTokens, 'treasurySharePercentage');
 
   return (
-    <Layout>
-      <PageWrapper
-        title={t('allTokens.title') as string}
-        subtitle={t('allTokens.subtitle', {count: tokens.length})}
-        buttonLabel={t('TransferModal.newTransfer') as string}
-        onClick={open}
-      >
+    <PageWrapper
+      title={t('allTokens.title') as string}
+      subtitle={t('allTokens.subtitle', {count: tokens.length})}
+      buttonLabel={t('TransferModal.newTransfer') as string}
+      onClick={open}
+    >
+      <div className="mt-3 desktop:mt-8 space-y-3 desktop:space-y-5">
         <SearchInput
           placeholder="Type to filter"
           value={searchTerm}
           onChange={handleChange}
         />
         <TokenList tokens={filteredTokens} />
-      </PageWrapper>
-    </Layout>
+      </div>
+    </PageWrapper>
   );
 };
 
 export default withTransaction('Tokens', 'component')(Tokens);
-
-const Layout = styled.div.attrs({
-  className: 'm-auto mt-5 space-y-5 w-8/12',
-})``;

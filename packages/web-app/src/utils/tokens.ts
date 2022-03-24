@@ -27,7 +27,6 @@ export function sortTokens<T>(tokens: T[], criteria: keyof T, reverse = false) {
     if (a[criteria] < b[criteria]) {
       return reverse ? 1 : -1;
     }
-
     if (a[criteria] > b[criteria]) {
       return reverse ? -1 : 1;
     }

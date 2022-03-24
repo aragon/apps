@@ -15,7 +15,7 @@ import ConfigureWithdrawForm from 'containers/configureWithdraw';
 import {FullScreenStepper, Step} from 'components/fullScreenStepper';
 import SetupVotingForm from 'containers/setupVotingForm';
 import DefineProposal from 'containers/defineProposal';
-import ReviewWithdraw from 'containers/reviewWithdraw';
+import ReviewProposal from 'containers/reviewProposal';
 import {fetchTokenPrice} from 'services/prices';
 import {Finance} from 'utils/paths';
 import {useDaoBalances} from 'hooks/useDaoBalances';
@@ -163,7 +163,7 @@ const NewWithdraw: React.FC = () => {
           isNextButtonDisabled
           fullWidth
         >
-          <ReviewWithdraw />
+          <ReviewProposal />
         </Step>
       </FullScreenStepper>
       <TokenMenu

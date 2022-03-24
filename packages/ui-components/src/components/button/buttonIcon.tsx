@@ -14,26 +14,34 @@ export type ButtonIconProps = Omit<
   isActive?: boolean;
 };
 
-export const ButtonIcon: React.FC<ButtonIconProps> = ({
-  bgWhite = false,
-  icon,
-  isActive = false,
-  mode = 'primary',
-  size = 'medium',
-  ...props
-}) => {
-  return (
-    <StyledButton
-      {...props}
-      iconLeft={icon}
-      bgWhite={bgWhite}
-      isActive={isActive}
-      mode={mode}
-      size={size}
-      iconOnly={true}
-    />
-  );
-};
+export const ButtonIcon = React.forwardRef<HTMLButtonElement, ButtonIconProps>(
+  (
+    {
+      bgWhite = false,
+      icon,
+      isActive = false,
+      mode = 'primary',
+      size = 'medium',
+      ...props
+    },
+    ref
+  ) => {
+    return (
+      <StyledButton
+        ref={ref}
+        {...props}
+        iconLeft={icon}
+        bgWhite={bgWhite}
+        isActive={isActive}
+        mode={mode}
+        size={size}
+        iconOnly={true}
+      />
+    );
+  }
+);
+
+ButtonIcon.displayName = 'ButtonIcon';
 
 const paddingStyles = {
   small: 'w-4 p-1',

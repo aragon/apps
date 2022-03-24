@@ -1,23 +1,29 @@
 import React from 'react';
 import styled from 'styled-components';
+import {useNavigate} from 'react-router-dom';
 import useBreadcrumbs from 'use-react-router-breadcrumbs';
-import {Breadcrumb, ButtonText, IconAdd} from '@aragon/ui-components';
+import {Badge, Breadcrumb, ButtonText, IconAdd} from '@aragon/ui-components';
 
 import useScreen from 'hooks/useScreen';
 import {basePathIcons} from 'containers/navbar/desktop';
 import {SectionWrapperProps} from './sectionWrappers';
 import {Dashboard, NotFound} from 'utils/paths';
-import {useNavigate} from 'react-router-dom';
+
+type ChangeSign = -1 | 0 | 1;
 
 export type PageWrapperProps = SectionWrapperProps & {
   buttonLabel: string;
   subtitle: string;
+  timePeriod?: string;
+  sign?: number;
   onClick?: () => void;
 };
 
-// NOTE: It's possible to merge these two components. But I'm not sure it makes
-// things any simpler right now. However, if other sections wrappers like these
-// are added in the future and all have similar style, feel free to merge them.
+const textColors: Record<ChangeSign, string> = {
+  '-1': 'text-critical-800',
+  '1': 'text-success-600',
+  '0': 'text-ui-600',
+};
 
 /**
  * Non proposal page wrapper. Consists of a header with a title and a
@@ -27,6 +33,8 @@ export const PageWrapper = ({
   title,
   children,
   buttonLabel,
+  timePeriod,
+  sign = 0,
   subtitle,
   onClick,
 }: PageWrapperProps) => {
@@ -41,8 +49,8 @@ export const PageWrapper = ({
   }));
 
   return (
-    <>
-      <HeaderContainer>
+    <div className="col-span-full desktop:col-start-3 desktop:col-end-11">
+      <HeaderContainer className="-mx-2 tablet:mx-0 tablet:mt-3">
         {!isDesktop && (
           <Breadcrumb
             icon={basePathIcons[breadcrumbs[0].path]}
@@ -53,7 +61,10 @@ export const PageWrapper = ({
         <ContentWrapper>
           <TextWrapper>
             <PageTitle>{title}</PageTitle>
-            <PageSubtitle>{subtitle}</PageSubtitle>
+            <PageSubtitleContainer>
+              {timePeriod && <Badge label={timePeriod} />}
+              <p className={textColors[sign as ChangeSign]}>{subtitle}</p>
+            </PageSubtitleContainer>
           </TextWrapper>
 
           <ButtonText
@@ -67,12 +78,12 @@ export const PageWrapper = ({
       </HeaderContainer>
 
       {children}
-    </>
+    </div>
   );
 };
 
-const PageSubtitle = styled.p.attrs({
-  className: 'mt-1 text-lg text-ui-600',
+const PageSubtitleContainer = styled.div.attrs({
+  className: 'flex gap-x-1.5 items-center mt-1 text-lg text-ui-600',
 })``;
 
 const TextWrapper = styled.div.attrs({

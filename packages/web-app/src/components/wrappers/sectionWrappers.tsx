@@ -84,7 +84,7 @@ const SeeAllButton = ({path}: SeeAllButtonProps) => {
 };
 
 const Title = styled.p.attrs({
-  className: 'flex text-lg font-bold items-center',
+  className: 'flex text-lg font-bold items-center text-ui-800',
 })``;
 
 const HeaderContainer = styled.div.attrs({

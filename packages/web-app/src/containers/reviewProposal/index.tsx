@@ -17,7 +17,7 @@ import {
 import ResourceList from 'components/resourceList';
 import {VotingTerminal} from 'containers/votingTerminal';
 
-const ReviewWithdraw: React.FC = () => {
+const ReviewProposal: React.FC = () => {
   const [expandedProposal, setExpandedProposal] = useState(false);
   const {getValues, setValue} = useFormContext();
   const {t} = useTranslation();
@@ -126,7 +126,7 @@ const ReviewWithdraw: React.FC = () => {
   );
 };
 
-export default ReviewWithdraw;
+export default ReviewProposal;
 
 const Header = styled.p.attrs({className: 'font-bold text-ui-800 text-3xl'})``;
 
