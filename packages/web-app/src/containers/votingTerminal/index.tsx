@@ -118,6 +118,9 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
           <SearchInput placeholder={t('votingTerminal.inputPlaceholder')} />
           <VotersTable
             voters={voters}
+            showOption
+            showVotingPower
+            showAmount
             onLoadMore={() => console.log('load more clicked')}
           />
         </div>
