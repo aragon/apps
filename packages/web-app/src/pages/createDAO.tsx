@@ -9,7 +9,6 @@ import SelectChain from 'containers/selectChainForm';
 import DefineMetadata from 'containers/defineMetadata';
 import ConfigureCommunity from 'containers/configureCommunity';
 import SetupCommunity from 'containers/setupCommunity';
-import GoLive, {GoLiveHeader, GoLiveFooter} from 'containers/goLive';
 import {WalletField} from '../components/addWallets/row';
 import {Dashboard} from 'utils/paths';
 
@@ -166,14 +165,6 @@ const CreateDAO: React.FC = () => {
           isNextButtonDisabled={!daoConfigureCommunity}
         >
           <ConfigureCommunity />
-        </Step>
-        <Step
-          hideWizard
-          fullWidth
-          customHeader={<GoLiveHeader />}
-          customFooter={<GoLiveFooter />}
-        >
-          <GoLive />
         </Step>
       </FullScreenStepper>
     </FormProvider>
