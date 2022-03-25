@@ -416,7 +416,7 @@
     "token": "Token",
     "inputPlaceholder": "Type Address, ENS or E-Mail",
     "options": "Options",
-    "yes+no": "Yes + No",
+    "yes+no": "Yes + Abstain + No",
     "strategy": "Strategy",
     "tokenVoting": "1 Token -> 1 Vote",
     "minimumApproval": "Minimum Approval",
