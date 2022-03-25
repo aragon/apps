@@ -2,6 +2,7 @@ const fs = require('fs');
 const glob = require('glob');
 const {promisify} = require('util');
 
+// TODO modify this to point to the new contract location
 const contractsDir = '../contracts/artifacts/contracts';
 const abiDir = './src/abis';
 

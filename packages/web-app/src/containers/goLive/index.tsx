@@ -3,7 +3,9 @@ import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import {useFormContext} from 'react-hook-form';
 import {BigNumberish, ethers} from 'ethers';
-import {DAOFactory} from 'typechain';
+// import {DAOFactory} from 'typechain';
+// TODO reintroduce this by adding back the postInstall script in packages.json
+// that executes the generate-abis-and-types command.
 import {Breadcrumb, ButtonText, IconChevronRight} from '@aragon/ui-components';
 
 import Blockchain from './blockchain';
@@ -81,7 +83,7 @@ export const GoLiveFooter: React.FC = () => {
             '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0',
             DAOFactoryABI,
             provider
-          ) as DAOFactory;
+          );
 
           console.log(
             'NewDAO Gas:',
