@@ -11,6 +11,7 @@ import TokenList from 'components/tokenList';
 import {sortTokens} from 'utils/tokens';
 import TransferList from 'components/transferList';
 import {useDaoVault} from 'hooks/useDaoVault';
+import {useDaoTransfers} from 'hooks/useDaoTransfers';
 import {TransferTypes} from 'utils/constants';
 import type {Transfer} from 'utils/types';
 import {useGlobalModalContext} from 'context/globalModals';
@@ -52,6 +53,8 @@ const Finance: React.FC = () => {
   const {tokens, totalAssetChange, totalAssetValue} = useDaoVault(
     '0x79fde96a6182adbd9ca4a803ba26f65a893fbf4f'
   );
+
+  useDaoTransfers();
 
   sortTokens(tokens, 'treasurySharePercentage');
   const displayedTokens = tokens.slice(0, 5);

@@ -1,6 +1,8 @@
 import {useEffect, useState} from 'react';
 
 import {useDaoBalances} from './useDaoBalances';
+import {useDaoTransfers} from './useDaoTransfers';
+import {usePollTransfersPrices} from './usePollTransfersPrices';
 import {useTokenMetadata} from './useTokenMetadata';
 import {usePollTokenPrices} from './usePollTokenPrices';
 import {PollTokenOptions, VaultToken} from 'utils/types';
@@ -16,11 +18,15 @@ import {PollTokenOptions, VaultToken} from 'utils/types';
  */
 export const useDaoVault = (daoAddress: string, options?: PollTokenOptions) => {
   const {data: balances} = useDaoBalances(daoAddress);
+  const {data: transfers} = useDaoTransfers(daoAddress);
   const {data: tokensWithMetadata} = useTokenMetadata(balances);
   const {data} = usePollTokenPrices(tokensWithMetadata, options);
+  const {data: transfersData} = usePollTransfersPrices(transfers);
   const [tokens, setTokens] = useState<VaultToken[]>([]);
 
   useEffect(() => {
+    console.log('seetransfersData', transfersData, balances);
+
     const values = data.tokens.map(token => {
       return {
         ...token,
@@ -34,7 +40,7 @@ export const useDaoVault = (daoAddress: string, options?: PollTokenOptions) => {
     });
 
     setTokens(values);
-  }, [data.tokens, data.totalAssetValue]);
+  }, [balances, data.tokens, data?.totalAssetValue, transfersData]);
 
   return {
     tokens,

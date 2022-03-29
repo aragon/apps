@@ -11,6 +11,11 @@ export const TOKEN_DATA_QUERY = gql`
         large
       }
       address
+      market_data {
+        current_price {
+          usd
+        }
+      }
     }
   }
 `;

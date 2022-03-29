@@ -25,6 +25,7 @@ export type TokenBalance = {
     name: string;
     symbol: string;
     decimals: number;
+    price?: number;
   };
   balance: bigint;
 };
@@ -39,6 +40,28 @@ export type TokenWithMetadata = {
     apiId?: string;
     imgUrl: string;
   };
+};
+
+/** The Dao transfer */
+export type DaoTransfer = {
+  amount: bigint;
+  createdAt: number;
+  dao: {
+    id: string;
+  };
+  token: TokenBalance['token'];
+  id: string;
+  reference: string;
+  sender: Address;
+  transaction: string;
+};
+
+/**
+ * Transfers token with market data
+ */
+
+export type TransferWithMarketData = DaoTransfer & {
+  price: number;
 };
 
 /** Token populated with the current price, and price change percentage for given filter */
