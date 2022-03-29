@@ -431,5 +431,12 @@
     "cancel": "Cancel",
     "remainingTime": "Remaining time",
     "voteNow": "Vote now"
+  },
+  "privacyPolicy": {
+    "title": "Privacy policy",
+    "cookieSettings": "Cookie settings",
+    "acceptAllCookies": "Accept all",
+    "rejectAllCookies": "Reject all",
+    "content": "We use cookies and similar technologies to improve your browsing experience in our application, enabling certain features, and analyzing our application usage. You may choose below to opt-out for some specific behaviors. Know more by reading our"
   }
 }
