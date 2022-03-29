@@ -68,7 +68,7 @@ type TokenData = {
   symbol: string;
   imgUrl: string;
   address: Address;
-  price: number;
+  price?: number;
 };
 
 /**
@@ -101,7 +101,7 @@ async function fetchTokenData(
       symbol: data.tokenData.symbol.toUpperCase(),
       imgUrl: data.tokenData.image.large,
       address: tokenAddress,
-      price: data.TokenData.market_data.current_price.usd,
+      price: data?.tokenData.market_data.current_price.usd,
     };
   }
 

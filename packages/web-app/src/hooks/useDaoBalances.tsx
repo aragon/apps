@@ -11,8 +11,6 @@ export const useDaoBalances = (
     variables: {dao: daoAddress},
   });
 
-  console.log('seeDat', data);
-
   return {
     data: data?.balances as TokenBalance[],
     error,

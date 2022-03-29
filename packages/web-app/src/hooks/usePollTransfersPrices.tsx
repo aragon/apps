@@ -4,12 +4,12 @@ import {useEffect, useState} from 'react';
 import {fetchTokenData} from 'services/prices';
 import {useApolloClient} from 'context/apolloClient';
 import {ASSET_PLATFORMS} from 'utils/constants';
-import {DaoTransfer} from 'utils/types';
+import {DaoTransfer, Transfer} from 'utils/types';
 
 export const usePollTransfersPrices = (transfers: DaoTransfer[]) => {
   const client = useApolloClient();
   const {chainId} = useWallet();
-  const [data, setData] = useState<DaoTransfer[]>([]);
+  const [data, setData] = useState<Transfer[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -24,11 +24,16 @@ export const usePollTransfersPrices = (transfers: DaoTransfer[]) => {
       );
 
       // map metadata to token balances
-      const tokensWithMetadata = transfers?.map(
-        (transfer: DaoTransfer, index) => {
-          transfer.token.price = metadata[index]?.price;
-          return transfer;
-        }
+      const tokensWithMetadata: Transfer[] = transfers?.map(
+        (transfer: DaoTransfer, index: number) => ({
+          title: transfer.reference ? transfer.reference : 'deposit',
+          tokenAmount: transfer.amount,
+          tokenSymbol: transfer.token.symbol,
+          transferDate: transfer.createdAt,
+          transferType: 'Deposit',
+          usdValue: metadata[index]?.price,
+          isPending: false,
+        })
       );
 
       setData(tokensWithMetadata);

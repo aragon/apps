@@ -44,7 +44,7 @@ export type TokenWithMetadata = {
 
 /** The Dao transfer */
 export type DaoTransfer = {
-  amount: bigint;
+  amount: number;
   createdAt: number;
   dao: {
     id: string;
@@ -54,14 +54,6 @@ export type DaoTransfer = {
   reference: string;
   sender: Address;
   transaction: string;
-};
-
-/**
- * Transfers token with market data
- */
-
-export type TransferWithMarketData = DaoTransfer & {
-  price: number;
 };
 
 /** Token populated with the current price, and price change percentage for given filter */
@@ -86,9 +78,9 @@ export type Transfer = {
   title: string;
   tokenAmount: number;
   tokenSymbol: string;
-  transferDate: string;
-  transferType: TransferTypes;
-  usdValue: string;
+  transferDate: number;
+  transferType: string;
+  usdValue?: number;
   isPending?: boolean;
 };
 
