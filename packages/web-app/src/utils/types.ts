@@ -171,4 +171,13 @@ export type ActionItem = {
   name: ActionsTypes;
   inputs?: ParamType[];
 };
+
 export type NetworkIndicatorStatus = 'default' | 'testnet' | 'unsupported';
+
+export type SupportedNetworks =
+  | 'ethereum'
+  | 'rinkeby'
+  | 'polygon'
+  | 'mumbai'
+  | 'arbitrum'
+  | 'arbitrum-test';
