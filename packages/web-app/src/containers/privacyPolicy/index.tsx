@@ -21,6 +21,8 @@ const PrivacyPolicy: React.FC = () => {
   useEffect(() => {
     const object = localStorage.getItem(STORAGE_KEY);
 
+    // If there is an object in the local storage, assume
+    // that user has already accepted/rejected the privacy policy
     if (object && JSON.parse(object)?.optIn !== undefined) {
       setShowPrivacyPolicy(false);
     }
@@ -37,6 +39,7 @@ const PrivacyPolicy: React.FC = () => {
     setShowPrivacyPolicy(false);
   }, []);
 
+  // Accept one or more cookies
   const handleAccept = useCallback(({analytics, functional}: CookiesType) => {
     if (analytics || functional) {
       localStorage.setItem(
@@ -52,6 +55,8 @@ const PrivacyPolicy: React.FC = () => {
     setShowPrivacyPolicy(false);
   }, []);
 
+  // Reject all cookies but still add the opt-in so that the user doesn't
+  // see the privacy policy again
   const handleRejectAll = useCallback(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({optIn: false}));
     setShowPrivacyPolicy(false);

@@ -31,8 +31,7 @@
       !(function () {
         // opt out of analytics based on user preferences
         const preferences = localStorage.getItem('privacy-policy-preferences');
-        if (preferences && JSON.parse(preferences)?.analytics !== true)
-          return null;
+        if (preferences && JSON.parse(preferences)?.analytics !== true) return;
 
         const analyticsKey = '%VITE_REACT_APP_ANALYTICS_KEY%';
         if (!analyticsKey.includes('undefined')) {

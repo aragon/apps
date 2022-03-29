@@ -14,7 +14,6 @@ const APMProvider: React.FC = ({children}) => {
   const [apm, setApm] = useState<ApmBase | null>(() => {
     // opt out of analytics based on user preferences
     const preferences = localStorage.getItem('privacy-policy-preferences');
-
     if (preferences && JSON.parse(preferences)?.analytics !== true) return null;
 
     if (

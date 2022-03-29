@@ -44,30 +44,30 @@ const CookieSettingsMenu: React.FC<CookieSettingsMenuProps> = props => {
         <BottomSheetContentContainer>
           <div className="space-y-1.5">
             <CheckboxListItem
-              label="Functional cookies"
+              label={t('privacyPolicy.functional')}
               state={functionalSelected ? 'active' : 'default'}
               onClick={() => setFunctionalSelected(!functionalSelected)}
-              helptext="Used to store your preferences in the application."
+              helptext={t('privacyPolicy.functionalHelpText')}
               multiSelect
             />
             <CheckboxListItem
-              label="Analytics cookies"
+              label={t('privacyPolicy.analytics')}
               state={analyticsSelected ? 'active' : 'default'}
               onClick={() => setAnalyticsSelected(!analyticsSelected)}
-              helptext="It will allow to collect information of how you use our app."
+              helptext={t('privacyPolicy.analyticsHelpText')}
               multiSelect
             />
           </div>
           <div className="flex space-x-2">
             <ButtonText
-              label="Reject All"
+              label={t('privacyPolicy.acceptAllCookies')}
               size="large"
               mode="secondary"
               onClick={props.onRejectAllClick}
             />
             <ButtonText
               className="flex-1"
-              label="Accept"
+              label={t('privacyPolicy.acceptSelectedCookies')}
               size="large"
               onClick={() =>
                 props.onAcceptClick({
