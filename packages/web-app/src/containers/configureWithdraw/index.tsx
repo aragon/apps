@@ -4,6 +4,7 @@ import {
   Label,
   ValueInput,
 } from '@aragon/ui-components';
+
 import {
   Controller,
   useFormContext,
@@ -16,16 +17,19 @@ import React, {useCallback, useEffect} from 'react';
 
 import {useWallet} from 'context/augmentedWallet';
 import {useProviders} from 'context/providers';
-import {useGlobalModalContext} from 'context/globalModals';
 import {fetchTokenData} from 'services/prices';
-import {formatUnits, handleClipboardActions} from 'utils/library';
-import {getTokenInfo, isETH} from 'utils/tokens';
+import {useApolloClient} from 'context/apolloClient';
+import {useGlobalModalContext} from 'context/globalModals';
+import {handleClipboardActions} from 'utils/library';
+import {fetchBalance, getTokenInfo, isETH} from 'utils/tokens';
 import {
   validateAddress,
   validateTokenAddress,
   validateTokenAmount,
 } from 'utils/validators';
-import {useApolloClient} from 'context/apolloClient';
+
+// TO BE REMOVED during integration
+const DAOVaultAddress = '0x79fde96a6182adbd9ca4a803ba26f65a893fbf4f';
 
 const ConfigureWithdrawForm: React.FC = () => {
   const client = useApolloClient();
@@ -57,11 +61,10 @@ const ConfigureWithdrawForm: React.FC = () => {
 
       try {
         // fetch token balance and token metadata
-        // TODO: replace with commented out code when integrating backend
         const allTokenInfoPromise = Promise.all([
           isETH(tokenAddress)
-            ? formatUnits('4242424242400000000000', 18) //provider.getBalance(DAOVaultAddress)
-            : formatUnits('4242424242400000000000', 18), //fetchBalance(tokenAddress, DAOVaultAddress, provider),
+            ? provider.getBalance(DAOVaultAddress)
+            : fetchBalance(tokenAddress, DAOVaultAddress, provider),
           fetchTokenData(tokenAddress, client),
         ]);
 

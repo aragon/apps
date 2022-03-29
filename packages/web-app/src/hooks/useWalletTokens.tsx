@@ -1,5 +1,5 @@
 import {constants} from 'ethers';
-import {formatUnits, Interface, getAddress, hexZeroPad} from 'ethers/lib/utils';
+import {Interface, getAddress, hexZeroPad} from 'ethers/lib/utils';
 import {Log} from '@ethersproject/providers';
 import {useState, useEffect} from 'react';
 
@@ -7,8 +7,8 @@ import {erc20TokenABI} from 'abis/erc20TokenABI';
 import {useWallet} from 'context/augmentedWallet';
 import {useProviders} from 'context/providers';
 import {useWalletProps} from 'containers/walletMenu';
-import {isETH, fetchBalance} from 'utils/tokens';
-import {HookData, TokenBalance} from 'utils/types';
+import {isETH, fetchBalance, getTokenInfo} from 'utils/tokens';
+import {TokenBalance, HookData} from 'utils/types';
 
 // TODO The two hooks in this file are very similar and should probably be
 // merged into one. The reason I'm not doing it now is that I'm not sure if
@@ -105,18 +105,43 @@ export function useWalletTokens(): HookData<TokenBalance[]> {
         tokenList.push(constants.AddressZero);
 
       // get tokens balance from wallet
-      const balances = await Promise.all(
+      const balances: [
+        string,
+        {
+          name: string;
+          symbol: string;
+          decimals: number;
+        }
+      ][] = await Promise.all(
         tokenList.map(address => {
-          if (isETH(address)) return formatUnits(balance, 18);
-          else return fetchBalance(address, account, provider, false);
+          if (isETH(address)) {
+            return [
+              balance,
+              {
+                name: 'Ethereum (Canonical)',
+                symbol: 'ETH',
+                decimals: 18,
+              },
+            ];
+          }
+
+          return Promise.all([
+            fetchBalance(address, account, provider, false),
+            getTokenInfo(address, provider),
+          ]);
         })
       );
 
       // map tokens with their balance
       setWalletTokens(
         tokenList?.map((token, index) => ({
-          address: token,
-          count: balances[index],
+          token: {
+            id: token,
+            name: balances[index][1].name,
+            symbol: balances[index][1].symbol,
+            decimals: balances[index][1].decimals,
+          },
+          balance: BigInt(balances[index][0]),
         }))
       );
       setIsLoading(false);

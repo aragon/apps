@@ -8,7 +8,6 @@ import React, {useEffect} from 'react';
 import TokenMenu from 'containers/tokenMenu';
 import {useWallet} from 'context/augmentedWallet';
 import {formatUnits} from 'utils/library';
-import {useDaoTokens} from 'hooks/useDaoTokens';
 import {BaseTokenInfo} from 'utils/types';
 import {TransferTypes} from 'utils/constants';
 import {useWalletProps} from 'containers/walletMenu';
@@ -19,6 +18,7 @@ import DefineProposal from 'containers/defineProposal';
 import ReviewProposal from 'containers/reviewProposal';
 import {fetchTokenPrice} from 'services/prices';
 import {Finance} from 'utils/paths';
+import {useDaoBalances} from 'hooks/useDaoBalances';
 
 export type TransferData = {
   amount: string;
@@ -77,7 +77,8 @@ const NewWithdraw: React.FC = () => {
     defaultValues,
     mode: 'onChange',
   });
-  const {data: tokens} = useDaoTokens('myDaoAddress');
+
+  const {data: balances} = useDaoBalances();
   const {account}: useWalletProps = useWallet();
 
   useEffect(() => {
@@ -168,7 +169,7 @@ const NewWithdraw: React.FC = () => {
       <TokenMenu
         isWallet={false}
         onTokenSelect={handleTokenSelect}
-        tokenBalances={tokens}
+        tokenBalances={balances}
       />
     </FormProvider>
   );

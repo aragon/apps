@@ -4,9 +4,9 @@ import {useEffect, useState} from 'react';
 import {fetchTokenData} from 'services/prices';
 import {useApolloClient} from 'context/apolloClient';
 import {ASSET_PLATFORMS} from 'utils/constants';
-import {DaoTokenBalance, TokenWithMetadata} from 'utils/types';
+import {TokenBalance, TokenWithMetadata} from 'utils/types';
 
-export const useTokenMetadata = (balances: DaoTokenBalance[]) => {
+export const useTokenMetadata = (balances: TokenBalance[]) => {
   const client = useApolloClient();
   const {chainId} = useWallet();
   const [data, setData] = useState<TokenWithMetadata[]>([]);
@@ -29,7 +29,7 @@ export const useTokenMetadata = (balances: DaoTokenBalance[]) => {
         metadata: {
           ...balance.token,
           apiId: metadata[index]?.id,
-          imgUrl: metadata[index]?.imgUrl,
+          imgUrl: metadata[index]?.imgUrl || '',
         },
       }));
 

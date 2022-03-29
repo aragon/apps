@@ -53,11 +53,12 @@ export const usePollTokenPrices = (
 
         tokenMarketData = fetchedMarketData[token.metadata.apiId];
 
-        // update total change during interval and total volume
+        // calculate total volume
         treasuryShare =
           tokenMarketData.price *
           Number(formatUnits(token.balance, token.metadata.decimals));
 
+        // calculate total change during interval
         valueChangeDuringInterval =
           treasuryShare * (tokenMarketData.percentages[options.filter] / 100);
 

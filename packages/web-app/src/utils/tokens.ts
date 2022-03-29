@@ -10,8 +10,7 @@ import {formatUnits} from 'utils/library';
  * of the information object that can be compared using '<', '>'.
  *
  * @param tokens List of token (basic) token information
- * @param criteria Field of the information object that determines the sort
- * order. Must be a key of BaseTokenInfo.
+ * @param criteria Field of the information object that determines the sort order.
  * @param reverse reverses the order in which the token are sorted. Note that in
  * either cases, any objects with undefined fields will moved to the end of the
  * array.
@@ -19,12 +18,8 @@ import {formatUnits} from 'utils/library';
  * @example sortTokens(baseTokenInfos[], 'name');
  * @example sortTokens(baseTokenInfos[], 'count');
  */
-export function sortTokens<Type>(
-  tokens: Type[],
-  criteria: keyof Type,
-  reverse = false
-) {
-  function sorter(a: Type, b: Type) {
+export function sortTokens<T>(tokens: T[], criteria: keyof T, reverse = false) {
+  function sorter(a: T, b: T) {
     // ensure that undefined fields are placed last.
     if (!a[criteria]) return 1;
     if (!b[criteria]) return -1;
