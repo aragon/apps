@@ -13,7 +13,7 @@ import {useGlobalModalContext} from 'context/globalModals';
 const Tokens: React.FC = () => {
   const {t} = useTranslation();
   const {open} = useGlobalModalContext();
-  const {tokens} = useDaoVault('0x79fde96a6182adbd9ca4a803ba26f65a893fbf4f');
+  const {tokens} = useDaoVault('0x51c3ddb42529bfc24d4c13192e2e31421de459bc');
 
   const [searchTerm, setSearchTerm] = useState('');
 

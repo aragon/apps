@@ -29,7 +29,7 @@ import {
 } from 'utils/validators';
 
 // TO BE REMOVED during integration
-const DAOVaultAddress = '0x79fde96a6182adbd9ca4a803ba26f65a893fbf4f';
+const DAOVaultAddress = '0x51c3ddb42529bfc24d4c13192e2e31421de459bc';
 
 const ConfigureWithdrawForm: React.FC = () => {
   const client = useApolloClient();

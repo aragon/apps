@@ -5,7 +5,7 @@ import {TokenBalance} from 'utils/types';
 import {DAO_BALANCE_LIST} from 'queries/finances';
 
 export const useDaoBalances = (
-  daoAddress: Address = '0x79fde96a6182adbd9ca4a803ba26f65a893fbf4f'
+  daoAddress: Address = '0x51c3ddb42529bfc24d4c13192e2e31421de459bc'
 ) => {
   const {data, error, loading, refetch} = useQuery(DAO_BALANCE_LIST, {
     variables: {dao: daoAddress},

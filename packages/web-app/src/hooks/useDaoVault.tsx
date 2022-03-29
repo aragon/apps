@@ -25,7 +25,7 @@ export const useDaoVault = (daoAddress: string, options?: PollTokenOptions) => {
   const [tokens, setTokens] = useState<VaultToken[]>([]);
 
   useEffect(() => {
-    console.log('seetransfersData', transfersData, balances);
+    console.log('seetransfersData', transfers, tokensWithMetadata);
 
     const values = data.tokens.map(token => {
       return {
@@ -40,7 +40,14 @@ export const useDaoVault = (daoAddress: string, options?: PollTokenOptions) => {
     });
 
     setTokens(values);
-  }, [balances, data.tokens, data?.totalAssetValue, transfersData]);
+  }, [
+    balances,
+    data.tokens,
+    data?.totalAssetValue,
+    tokensWithMetadata,
+    transfers,
+    transfersData,
+  ]);
 
   return {
     tokens,
