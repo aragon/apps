@@ -41,9 +41,9 @@ const Icons: {[key: string]: JSX.Element} = {
 };
 
 const bgColors: {[key: string]: string} = {
-  Deposit: 'bg-success-100',
+  VaultDeposit: 'bg-success-100',
   Pending: 'bg-primary-50',
-  Withdraw: 'bg-warning-100',
+  VaultWithdraw: 'bg-warning-100',
 };
 
 export const TransferListItem: React.FC<TransferListItemProps> = ({
