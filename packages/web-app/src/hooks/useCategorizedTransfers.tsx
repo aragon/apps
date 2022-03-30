@@ -69,7 +69,7 @@ const transfers: Array<Transfer> = [
   //this week -> today
   {
     title: 'Deposit',
-    tokenAmount: 42,
+    tokenAmount: '42',
     transferDate: 'Pending...',
     tokenSymbol: 'DAI',
     transferType: TransferTypes.Deposit,
@@ -78,7 +78,7 @@ const transfers: Array<Transfer> = [
   },
   {
     title: 'Deposit With some Reference',
-    tokenAmount: 300,
+    tokenAmount: '300',
     tokenSymbol: 'DAI',
     transferDate: 'Yesterday',
     transferType: TransferTypes.Deposit,
@@ -86,7 +86,7 @@ const transfers: Array<Transfer> = [
   },
   {
     title: 'Withdraw',
-    tokenAmount: 1337,
+    tokenAmount: '1337',
     transferDate: 'Yesterday',
     tokenSymbol: 'DAI',
     transferType: TransferTypes.Withdraw,
@@ -96,7 +96,7 @@ const transfers: Array<Transfer> = [
   //this month -> this week
   {
     title: 'Deposit',
-    tokenAmount: 1,
+    tokenAmount: '1',
     transferDate: 'Last Week',
     tokenSymbol: 'DAI',
     transferType: TransferTypes.Deposit,
@@ -104,7 +104,7 @@ const transfers: Array<Transfer> = [
   },
   {
     title: 'Deposit DAI so I can do whatever I want whenever I want',
-    tokenAmount: 2,
+    tokenAmount: '2',
     tokenSymbol: 'DAI',
     transferDate: 'Last Week',
     transferType: TransferTypes.Deposit,
@@ -112,7 +112,7 @@ const transfers: Array<Transfer> = [
   },
   {
     title: 'Withdraw',
-    tokenAmount: 3,
+    tokenAmount: '3',
     transferDate: 'Last Week',
     tokenSymbol: 'DAI',
     transferType: TransferTypes.Withdraw,
@@ -121,7 +121,7 @@ const transfers: Array<Transfer> = [
   //this year -> this month
   {
     title: 'Deposit',
-    tokenAmount: 1,
+    tokenAmount: '1',
     transferDate: 'Last Month',
     tokenSymbol: 'DAI',
     transferType: TransferTypes.Deposit,
@@ -129,7 +129,7 @@ const transfers: Array<Transfer> = [
   },
   {
     title: 'Deposit DAI so I can do whatever I want whenever I want',
-    tokenAmount: 2,
+    tokenAmount: '2',
     tokenSymbol: 'DAI',
     transferDate: 'Last Month',
     transferType: TransferTypes.Deposit,
@@ -137,7 +137,7 @@ const transfers: Array<Transfer> = [
   },
   {
     title: 'Withdraw',
-    tokenAmount: 3,
+    tokenAmount: '3',
     transferDate: 'Last Month',
     tokenSymbol: 'DAI',
     transferType: TransferTypes.Withdraw,

@@ -76,11 +76,11 @@ export type PollTokenOptions = {interval?: number; filter: TimeFilter};
 /** A transfer transaction */
 export type Transfer = {
   title: string;
-  tokenAmount: number;
+  tokenAmount: string;
   tokenSymbol: string;
-  transferDate: number;
+  transferDate: string;
   transferType: string;
-  usdValue?: number;
+  usdValue?: string;
   isPending?: boolean;
 };
 

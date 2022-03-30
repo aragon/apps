@@ -1,6 +1,12 @@
 import {i18n} from '../../i18n.config';
+import {format, formatRelative, formatDistance} from 'date-fns';
 
 import {ProposalData, VotingData} from './types';
+
+const KNOWN_FORMATS = {
+  standard: 'MMM dd yyyy HH:mm', // This is our standard used for showing dates.
+};
+
 /**
  * Note: This function will return a list of timestamp that we can use to categorize transfers
  * @return a object with milliseconds params
@@ -194,4 +200,37 @@ export function translateProposalDate(
   const days = Math.floor(leftTimestamp / 86400);
   const hours = Math.floor((leftTimestamp % 86400) / 3600);
   return i18n.t(`governance.proposals.${type}`, {days, hours}) as string;
+}
+
+/**
+ * @param date number or string in seconds (not milliseconds)
+ * @param formatType KNOWN_FORMATS
+ */
+export function formatDate(date: number | string, formatType?: string) {
+  try {
+    if (typeof date === 'string') {
+      date = parseInt(date, 10);
+    }
+    date = date * 1000;
+    if (formatType === 'relative') {
+      return formatRelative(date, new Date()); // Relative Format for Human Readable Date format
+    } else {
+      formatType = formatType || KNOWN_FORMATS.standard;
+      return format(date, formatType, {});
+    }
+  } catch (e) {
+    return date;
+  }
+}
+
+export function formatTime(time: number | string) {
+  //converting delay time into human readable format
+  try {
+    if (typeof time === 'string') {
+      time = parseInt(time, 10);
+    }
+    return formatDistance(0, time * 1000, {includeSeconds: true});
+  } catch (e) {
+    return time;
+  }
 }
