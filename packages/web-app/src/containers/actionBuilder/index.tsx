@@ -34,7 +34,9 @@ const Action: React.FC<actionsComponentType> = ({name, index}) => {
 
 const ActionBuilder: React.FC = () => {
   const {actionsCounter: index, actions} = useActionsContext();
-  const {data: tokens} = useDaoBalances();
+  const {data: tokens} = useDaoBalances(
+    '0x51c3ddb42529bfc24d4c13192e2e31421de459bc'
+  );
   const {setValue, resetField, clearErrors} = useFormContext();
 
   /*************************************************

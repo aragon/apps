@@ -14,37 +14,6 @@ import {useDaoVault} from 'hooks/useDaoVault';
 import {useDaoTransfers} from 'hooks/useDaoTransfers';
 import {useGlobalModalContext} from 'context/globalModals';
 
-// TODO remove this. Instead use first x transfers returned by categorized
-// transfers hook.
-// const TEMP_TRANSFERS: Transfer[] = [
-//   {
-//     title: 'Deposit',
-//     tokenAmount: 300,
-//     tokenSymbol: 'DAI',
-//     transferDate: 'Pending...',
-//     transferType: TransferTypes.Deposit,
-//     usdValue: '$200.00',
-//     isPending: true,
-//   },
-//   {
-//     title:
-//       'Deposit DAI so I can do whatever I want whenever I want and I really want this reference to be long',
-//     tokenAmount: 300,
-//     tokenSymbol: 'DAI',
-//     transferDate: 'Yesterday',
-//     transferType: TransferTypes.Deposit,
-//     usdValue: '$200.00',
-//   },
-//   {
-//     title: 'Withdraw',
-//     tokenAmount: 300,
-//     tokenSymbol: 'DAI',
-//     transferDate: 'Yesterday',
-//     transferType: TransferTypes.Withdraw,
-//     usdValue: '$200.00',
-//   },
-// ];
-
 const Finance: React.FC = () => {
   const {t} = useTranslation();
   const {open} = useGlobalModalContext();
