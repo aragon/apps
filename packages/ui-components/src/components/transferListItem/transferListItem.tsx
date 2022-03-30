@@ -23,19 +23,19 @@ export type TransferListItemProps = {
    * Date transfer was executed or a loading indication if transfer is still pending
    */
   transferDate: string;
-  transferType: 'Deposit' | 'Withdraw';
+  transferType: 'VaultDeposit' | 'VaultWithdraw';
   usdValue: string;
   onClick?: () => void;
 };
 
 const Icons: {[key: string]: JSX.Element} = {
-  Deposit: (
+  VaultDeposit: (
     <IconDeposit className="w-1.5 desktop:w-2 h-1.5 desktop:h-2 text-success-600" />
   ),
   Pending: (
     <IconSpinner className="w-1.5 desktop:w-2 h-1.5 desktop:h-2 text-primary-500" />
   ),
-  Withdraw: (
+  VaultWithdraw: (
     <IconWithdraw className="w-1.5 desktop:w-2 h-1.5 desktop:h-2 text-warning-600" />
   ),
 };
@@ -69,9 +69,9 @@ export const TransferListItem: React.FC<TransferListItemProps> = ({
       </Content>
       <Value>
         <USDValue>{`${
-          transferType === 'Deposit' ? '+' : '-'
-        } ${usdValue}`}</USDValue>
-        <TokenAmount>{`${tokenAmount} ${tokenSymbol}`}</TokenAmount>
+          transferType === 'VaultDeposit' ? '+' : '-'
+        } ${tokenAmount} ${tokenSymbol}`}</USDValue>
+        <TokenAmount>{usdValue}</TokenAmount>
       </Value>
       <IconChevronRight className="text-ui-300 group-hover:text-primary-500" />
     </Container>

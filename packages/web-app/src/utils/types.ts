@@ -44,6 +44,7 @@ export type TokenWithMetadata = {
 
 /** The Dao transfer */
 export type DaoTransfer = {
+  __typename: string;
   amount: number;
   createdAt: number;
   dao: {

@@ -18,7 +18,7 @@ Pending.args = {
   tokenAmount: 300,
   tokenSymbol: 'DAI',
   transferDate: 'Pending...',
-  transferType: 'Deposit',
+  transferType: 'VaultDeposit',
   usdValue: '$200.00',
 };
 
@@ -28,7 +28,7 @@ Deposit.args = {
   tokenAmount: 300,
   transferDate: 'Yesterday',
   tokenSymbol: 'DAI',
-  transferType: 'Deposit',
+  transferType: 'VaultDeposit',
   usdValue: '$200.00',
 };
 
@@ -38,6 +38,6 @@ Withdraw.args = {
   tokenAmount: 300,
   tokenSymbol: 'DAI',
   transferDate: 'Yesterday',
-  transferType: 'Withdraw',
+  transferType: 'VaultWithdraw',
   usdValue: '$200.00',
 };

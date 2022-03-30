@@ -32,7 +32,7 @@ export const usePollTransfersPrices = (transfers: DaoTransfer[]) => {
           tokenAmount: formatUnits(transfer.amount, transfer.token.decimals),
           tokenSymbol: transfer.token.symbol,
           transferDate: `${formatDate(transfer.createdAt, 'relative')}`,
-          transferType: 'Deposit',
+          transferType: transfer.__typename,
           usdValue: `$${
             metadata[index]?.price
               ? (
