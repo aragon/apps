@@ -10,6 +10,7 @@ import useCategorizedTransfers from 'hooks/useCategorizedTransfers';
 import {TransferSectionWrapper} from 'components/wrappers';
 import {useGlobalModalContext} from 'context/globalModals';
 import {Transfer} from 'utils/types';
+import {TEST_DAO} from 'utils/constants';
 
 const Transfers: React.FC = () => {
   const {t} = useTranslation();
@@ -17,7 +18,7 @@ const Transfers: React.FC = () => {
   const [filterValue, setFilterValue] = useState('');
   const [searchValue, setSearchValue] = useState('');
   const {data: categorizedTransfers, totalTransfers} =
-    useCategorizedTransfers();
+    useCategorizedTransfers(TEST_DAO);
 
   const handleButtonGroupChange = (selected: string) => {
     const val = selected === 'all' ? '' : selected;

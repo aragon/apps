@@ -10,6 +10,7 @@ import {fetchTokenPrice} from 'services/prices';
 import {formatUnits} from 'utils/library';
 import {useFormContext} from 'react-hook-form';
 import {useDaoBalances} from 'hooks/useDaoBalances';
+import {TEST_DAO} from 'utils/constants';
 
 /**
  * This Component is responsible for generating all actions that append to pipeline context (actions)
@@ -34,9 +35,7 @@ const Action: React.FC<actionsComponentType> = ({name, index}) => {
 
 const ActionBuilder: React.FC = () => {
   const {actionsCounter: index, actions} = useActionsContext();
-  const {data: tokens} = useDaoBalances(
-    '0x51c3ddb42529bfc24d4c13192e2e31421de459bc'
-  );
+  const {data: tokens} = useDaoBalances(TEST_DAO);
   const {setValue, resetField, clearErrors, formState, trigger} =
     useFormContext();
 

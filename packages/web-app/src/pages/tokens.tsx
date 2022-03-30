@@ -4,6 +4,7 @@ import {withTransaction} from '@elastic/apm-rum-react';
 import React, {useState} from 'react';
 
 import TokenList from 'components/tokenList';
+import {TEST_DAO} from 'utils/constants';
 import {useDaoVault} from 'hooks/useDaoVault';
 import {PageWrapper} from 'components/wrappers';
 import {filterTokens} from 'utils/tokens';
@@ -13,7 +14,7 @@ import {useGlobalModalContext} from 'context/globalModals';
 const Tokens: React.FC = () => {
   const {t} = useTranslation();
   const {open} = useGlobalModalContext();
-  const {tokens} = useDaoVault('0x51c3ddb42529bfc24d4c13192e2e31421de459bc');
+  const {tokens} = useDaoVault(TEST_DAO);
 
   const [searchTerm, setSearchTerm] = useState('');
 

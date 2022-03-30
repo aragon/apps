@@ -21,12 +21,12 @@ export type CategorizedTransfer = {
  * (excluding the last week), and one containing only this weeks transfers.
  *
  */
-export default function useCategorizedTransfers(): HookData<CategorizedTransfer> & {
+export default function useCategorizedTransfers(
+  daoAddress: string
+): HookData<CategorizedTransfer> & {
   totalTransfers: string;
 } {
-  const {data: daoTransfers} = useDaoTransfers(
-    '0x51c3ddb42529bfc24d4c13192e2e31421de459bc'
-  );
+  const {data: daoTransfers} = useDaoTransfers(daoAddress);
   const {data: transfers, total} = usePollTransfersPrices(daoTransfers);
 
   // const sections = getDateSections(); // Sections will dynamically set based

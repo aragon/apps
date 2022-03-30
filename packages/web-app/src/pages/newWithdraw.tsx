@@ -9,7 +9,7 @@ import TokenMenu from 'containers/tokenMenu';
 import {useWallet} from 'context/augmentedWallet';
 import {formatUnits} from 'utils/library';
 import {BaseTokenInfo} from 'utils/types';
-import {TransferTypes} from 'utils/constants';
+import {TEST_DAO, TransferTypes} from 'utils/constants';
 import {useWalletProps} from 'containers/walletMenu';
 import ConfigureWithdrawForm from 'containers/configureWithdraw';
 import {FullScreenStepper, Step} from 'components/fullScreenStepper';
@@ -78,9 +78,7 @@ const NewWithdraw: React.FC = () => {
     mode: 'onChange',
   });
 
-  const {data: balances} = useDaoBalances(
-    '0x51c3ddb42529bfc24d4c13192e2e31421de459bc'
-  );
+  const {data: balances} = useDaoBalances(TEST_DAO);
 
   const {account}: useWalletProps = useWallet();
 

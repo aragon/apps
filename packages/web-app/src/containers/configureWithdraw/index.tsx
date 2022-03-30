@@ -27,9 +27,7 @@ import {
   validateTokenAddress,
   validateTokenAmount,
 } from 'utils/validators';
-
-// TO BE REMOVED during integration
-const DAOVaultAddress = '0x51c3ddb42529bfc24d4c13192e2e31421de459bc';
+import {TEST_DAO} from 'utils/constants';
 
 const ConfigureWithdrawForm: React.FC = () => {
   const client = useApolloClient();
@@ -63,8 +61,8 @@ const ConfigureWithdrawForm: React.FC = () => {
         // fetch token balance and token metadata
         const allTokenInfoPromise = Promise.all([
           isETH(tokenAddress)
-            ? provider.getBalance(DAOVaultAddress)
-            : fetchBalance(tokenAddress, DAOVaultAddress, provider),
+            ? provider.getBalance(TEST_DAO)
+            : fetchBalance(tokenAddress, TEST_DAO, provider),
           fetchTokenData(tokenAddress, client),
         ]);
 
