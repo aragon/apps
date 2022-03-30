@@ -15,6 +15,7 @@ import {BaseTokenInfo} from 'utils/types';
 import {useDaoBalances} from 'hooks/useDaoBalances';
 import ConfigureWithdrawForm from 'containers/configureWithdraw';
 import {FullScreenStepper, Step} from 'components/fullScreenStepper';
+import {fetchTokenPrice} from 'services/prices';
 
 export type TokenFormData = {
   tokenName: string;
@@ -111,6 +112,10 @@ const NewWithdraw: React.FC = () => {
       'actions.0.tokenBalance',
       formatUnits(token.count, token.decimals)
     );
+
+    fetchTokenPrice(token.address).then(price => {
+      formMethods.setValue('actions.0.tokenPrice', price);
+    });
 
     if (formMethods.formState.dirtyFields.actions?.[0].amount) {
       formMethods.trigger('actions.0.amount');

@@ -44,7 +44,7 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
   const {account} = useWallet();
   const {infura: provider} = useProviders();
 
-  const {control, getValues, trigger, resetField, setFocus, setValue} =
+  const {control, getValues, trigger, resetField, setFocus, setValue, watch} =
     useFormContext();
 
   const {errors, dirtyFields} = useFormState({control});
@@ -95,8 +95,6 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
           setValue(`actions.${index}.tokenName`, data.name);
           setValue(`actions.${index}.tokenSymbol`, data.symbol);
           setValue(`actions.${index}.tokenImgUrl`, data.imgUrl);
-
-          // TODO: @Rakesh: is this the proper place to pull this in?
           setValue(`actions.${index}.tokenPrice`, data.price);
         } else {
           const {name, symbol} = await getTokenInfo(tokenAddress, provider);
