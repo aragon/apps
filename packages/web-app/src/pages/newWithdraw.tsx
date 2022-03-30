@@ -1,30 +1,42 @@
+import React from 'react';
 import {Address} from '@aragon/ui-components/dist/utils/addresses';
-import {constants} from 'ethers';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
 import {useForm, FormProvider} from 'react-hook-form';
-import React, {useEffect} from 'react';
 
 import TokenMenu from 'containers/tokenMenu';
-import {useWallet} from 'context/augmentedWallet';
+import {Finance} from 'utils/paths';
+import {TEST_DAO} from 'utils/constants';
 import {formatUnits} from 'utils/library';
-import {BaseTokenInfo} from 'utils/types';
-import {TEST_DAO, TransferTypes} from 'utils/constants';
-import {useWalletProps} from 'containers/walletMenu';
-import ConfigureWithdrawForm from 'containers/configureWithdraw';
-import {FullScreenStepper, Step} from 'components/fullScreenStepper';
-import SetupVotingForm from 'containers/setupVotingForm';
 import DefineProposal from 'containers/defineProposal';
 import ReviewProposal from 'containers/reviewProposal';
-import {fetchTokenPrice} from 'services/prices';
-import {Finance} from 'utils/paths';
+import SetupVotingForm from 'containers/setupVotingForm';
+import {BaseTokenInfo} from 'utils/types';
 import {useDaoBalances} from 'hooks/useDaoBalances';
+import ConfigureWithdrawForm from 'containers/configureWithdraw';
+import {FullScreenStepper, Step} from 'components/fullScreenStepper';
 
-export type TransferData = {
-  amount: string;
-  tokenPrice: number | undefined;
-  from: Address;
+export type TokenFormData = {
+  tokenName: string;
+  tokenSymbol: string;
+  tokenImgUrl: string;
+  tokenAddress: Address;
+  tokenBalance: string;
+  tokenPrice?: number;
+  isCustomToken: boolean;
+};
+
+type WithdrawAction = TokenFormData & {
   to: Address;
+  from: Address;
+  amount: string;
+  name: string; // This indicates the type of action; Deposit is NOT an action
+};
+
+type WithdrawFormData = {
+  actions: WithdrawAction[];
+
+  // Proposal data
   startDate: string;
   startTime: string;
   endDate: string;
@@ -34,41 +46,31 @@ export type TransferData = {
   endUtc: string;
 };
 
-export type TokenFormData = {
-  tokenName: string;
-  tokenSymbol: string;
-  tokenImgUrl: string;
-  tokenAddress: Address;
-  tokenBalance: string;
-};
-
-export type TransferFormData = TransferData &
-  TokenFormData & {
-    isCustomToken: boolean;
-    type: TransferTypes;
-  };
-
-export type WithdrawFormData = TransferFormData & {
-  // NOTE: Is this really just a withdrawl thing?
-  tokenDecimals: number;
-};
-
 export const defaultValues = {
-  to: '',
-  amount: '',
-  tokenAddress: '',
-  tokenSymbol: '',
-  tokenName: '',
-  tokenImgUrl: '',
-  tokenPrice: undefined,
-  isCustomToken: false,
-  duration: 5,
+  actions: [
+    {
+      name: 'withdraw_assets',
+      to: '',
+      from: '',
+      amount: '',
+      tokenAddress: '',
+      tokenSymbol: '',
+      tokenName: '',
+      tokenImgUrl: '',
+    },
+  ],
+
+  // Proposal data
   startDate: '',
   startTime: '',
   endDate: '',
   endTime: '',
+  duration: 5,
   startUtc: '',
   endUtc: '',
+
+  // Form metadata
+  isCustomToken: false,
 };
 
 const NewWithdraw: React.FC = () => {
@@ -80,104 +82,95 @@ const NewWithdraw: React.FC = () => {
 
   const {data: balances} = useDaoBalances(TEST_DAO);
 
-  const {account}: useWalletProps = useWallet();
-
-  useEffect(() => {
-    if (account) {
-      // TODO: Change from to proper address
-      formMethods.setValue('from', constants.AddressZero);
-      formMethods.setValue('type', TransferTypes.Withdraw);
-    }
-  }, [account, formMethods]);
-
   /*************************************************
    *             Callbacks and Handlers            *
    *************************************************/
 
   const handleTokenSelect = (token: BaseTokenInfo) => {
-    formMethods.setValue('tokenSymbol', token.symbol);
+    formMethods.setValue('actions.0.tokenSymbol', token.symbol);
 
     if (token.address === '') {
-      formMethods.setValue('isCustomToken', true);
-      formMethods.resetField('tokenName');
-      formMethods.resetField('tokenImgUrl');
-      formMethods.resetField('tokenAddress');
-      formMethods.resetField('tokenBalance');
-      formMethods.clearErrors('amount');
+      formMethods.setValue('actions.0.isCustomToken', true);
+      formMethods.resetField('actions.0.tokenName');
+      formMethods.resetField('actions.0.tokenImgUrl');
+      formMethods.resetField('actions.0.tokenAddress');
+      formMethods.resetField('actions.0.tokenBalance');
+      formMethods.clearErrors('actions.0.amount');
       return;
     }
 
-    formMethods.clearErrors(['tokenAddress', 'tokenSymbol']);
-    formMethods.setValue('isCustomToken', false);
-    formMethods.setValue('tokenName', token.name);
-    formMethods.setValue('tokenImgUrl', token.imgUrl);
-    formMethods.setValue('tokenAddress', token.address);
+    formMethods.clearErrors([
+      'actions.0.tokenAddress',
+      'actions.0.tokenSymbol',
+    ]);
+    formMethods.setValue('actions.0.isCustomToken', false);
+    formMethods.setValue('actions.0.tokenName', token.name);
+    formMethods.setValue('actions.0.tokenImgUrl', token.imgUrl);
+    formMethods.setValue('actions.0.tokenAddress', token.address);
     formMethods.setValue(
-      'tokenBalance',
+      'actions.0.tokenBalance',
       formatUnits(token.count, token.decimals)
     );
 
-    if (formMethods.formState.dirtyFields.amount) {
-      formMethods.trigger('amount');
+    if (formMethods.formState.dirtyFields.actions?.[0].amount) {
+      formMethods.trigger('actions.0.amount');
     }
-
-    fetchTokenPrice(token.address).then(price => {
-      formMethods.setValue('tokenPrice', price);
-    });
   };
 
   /*************************************************
    *                    Render                     *
    *************************************************/
   return (
-    <FormProvider {...formMethods}>
-      <FullScreenStepper
-        wizardProcessName={t('newWithdraw.withdrawAssets')}
-        navLabel={t('allTransfer.newTransfer')}
-        returnPath={Finance}
-      >
-        {/* FIXME: Each step needs to be able to disable the back
+    <>
+      <FormProvider {...formMethods}>
+        <FullScreenStepper
+          wizardProcessName={t('newWithdraw.withdrawAssets')}
+          navLabel={t('allTransfer.newTransfer')}
+          returnPath={Finance}
+        >
+          {/* FIXME: Each step needs to be able to disable the back
         button. Otherwise, if the user leaves step x in an invalid state and
         goes back to a step < x, they won't be able to move forward. */}
 
-        {/* TODO: Removing isNextButtonDisabled is disabled till the above is fixed */}
-        <Step
-          wizardTitle={t('newWithdraw.configureWithdraw.title')}
-          wizardDescription={t('newWithdraw.configureWithdraw.subtitle')}
-          // isNextButtonDisabled={!formMethods.formState.isValid}
-        >
-          <ConfigureWithdrawForm />
-        </Step>
-        <Step
-          wizardTitle={t('newWithdraw.setupVoting.title')}
-          wizardDescription={t('newWithdraw.setupVoting.description')}
-          // isNextButtonDisabled={!formMethods.formState.isValid}
-        >
-          <SetupVotingForm />
-        </Step>
-        <Step
-          wizardTitle={t('newWithdraw.defineProposal.heading')}
-          wizardDescription={t('newWithdraw.defineProposal.description')}
-          // isNextButtonDisabled={!formMethods.formState.isValid}
-        >
-          <DefineProposal />
-        </Step>
-        <Step
-          wizardTitle={t('newWithdraw.reviewProposal.heading')}
-          wizardDescription={t('newWithdraw.reviewProposal.description')}
-          nextButtonLabel={t('labels.submitWithdraw')}
-          isNextButtonDisabled
-          fullWidth
-        >
-          <ReviewProposal />
-        </Step>
-      </FullScreenStepper>
-      <TokenMenu
-        isWallet={false}
-        onTokenSelect={handleTokenSelect}
-        tokenBalances={balances}
-      />
-    </FormProvider>
+          {/* TODO: Removing isNextButtonDisabled is disabled till the above is fixed */}
+          <Step
+            wizardTitle={t('newWithdraw.configureWithdraw.title')}
+            wizardDescription={t('newWithdraw.configureWithdraw.subtitle')}
+            // isNextButtonDisabled={!formMethods.formState.isValid}
+          >
+            <ConfigureWithdrawForm />
+          </Step>
+          <Step
+            wizardTitle={t('newWithdraw.setupVoting.title')}
+            wizardDescription={t('newWithdraw.setupVoting.description')}
+            // isNextButtonDisabled={!formMethods.formState.isValid}
+          >
+            <SetupVotingForm />
+          </Step>
+          <Step
+            wizardTitle={t('newWithdraw.defineProposal.heading')}
+            wizardDescription={t('newWithdraw.defineProposal.description')}
+            // isNextButtonDisabled={!formMethods.formState.isValid}
+          >
+            <DefineProposal />
+          </Step>
+          <Step
+            wizardTitle={t('newWithdraw.reviewProposal.heading')}
+            wizardDescription={t('newWithdraw.reviewProposal.description')}
+            nextButtonLabel={t('labels.submitWithdraw')}
+            isNextButtonDisabled
+            fullWidth
+          >
+            <ReviewProposal />
+          </Step>
+        </FullScreenStepper>
+        <TokenMenu
+          isWallet={false}
+          onTokenSelect={handleTokenSelect}
+          tokenBalances={balances}
+        />
+      </FormProvider>
+    </>
   );
 };
 
