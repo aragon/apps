@@ -1,9 +1,11 @@
 // import {getDateSections} from 'utils/date';
 
+import {isThisMonth, isThisWeek} from 'date-fns';
 import {useEffect, useState} from 'react';
 
-import {TransferTypes} from 'utils/constants';
 import {HookData, Transfer} from 'utils/types';
+import {useDaoTransfers} from './useDaoTransfers';
+import {usePollTransfersPrices} from './usePollTransfersPrices';
 
 export type CategorizedTransfer = {
   week: Transfer[];
@@ -19,7 +21,15 @@ export type CategorizedTransfer = {
  * (excluding the last week), and one containing only this weeks transfers.
  *
  */
-export default function useCategorizedTransfers(): HookData<CategorizedTransfer> {
+export default function useCategorizedTransfers(): HookData<CategorizedTransfer> & {
+  totalTransfers: string;
+} {
+  const {data: daoTransfers} = useDaoTransfers(
+    '0x51c3ddb42529bfc24d4c13192e2e31421de459bc'
+  );
+  const {data: transfers, total} = usePollTransfersPrices(daoTransfers);
+
+  console.log('transfers', total);
   // const sections = getDateSections(); // Sections will dynamically set based
   // on today date
 
@@ -40,19 +50,13 @@ export default function useCategorizedTransfers(): HookData<CategorizedTransfer>
     const year: Transfer[] = [];
 
     transfers.forEach(t => {
-      switch (t.transferDate) {
-        case 'Yesterday':
-          week.push(t);
-          break;
-        case 'Last Week':
-          month.push(t);
-          break;
-        case 'Last Month':
-          year.push(t);
-          break;
-        default:
-          week.push(t);
-          break;
+      const millisecondsTimestamp = (t.transferTimestamp as number) * 1000;
+      if (isThisWeek(millisecondsTimestamp)) {
+        week.push(t);
+      } else if (isThisMonth(millisecondsTimestamp)) {
+        month.push(t);
+      } else {
+        year.push(t);
       }
     });
     setCategorizedTransfers({
@@ -60,87 +64,7 @@ export default function useCategorizedTransfers(): HookData<CategorizedTransfer>
       month,
       year,
     });
-  }, []);
+  }, [transfers, setCategorizedTransfers]);
 
-  return {data: categorizedTransfers, isLoading: false};
+  return {data: categorizedTransfers, totalTransfers: total, isLoading: false};
 }
-
-const transfers: Array<Transfer> = [
-  //this week -> today
-  {
-    title: 'Deposit',
-    tokenAmount: '42',
-    transferDate: 'Pending...',
-    tokenSymbol: 'DAI',
-    transferType: TransferTypes.Deposit,
-    usdValue: '$200.00',
-    isPending: true,
-  },
-  {
-    title: 'Deposit With some Reference',
-    tokenAmount: '300',
-    tokenSymbol: 'DAI',
-    transferDate: 'Yesterday',
-    transferType: TransferTypes.Deposit,
-    usdValue: '$200.00',
-  },
-  {
-    title: 'Withdraw',
-    tokenAmount: '1337',
-    transferDate: 'Yesterday',
-    tokenSymbol: 'DAI',
-    transferType: TransferTypes.Withdraw,
-    usdValue: '$200.00',
-    isPending: true,
-  },
-  //this month -> this week
-  {
-    title: 'Deposit',
-    tokenAmount: '1',
-    transferDate: 'Last Week',
-    tokenSymbol: 'DAI',
-    transferType: TransferTypes.Deposit,
-    usdValue: '$200.00',
-  },
-  {
-    title: 'Deposit DAI so I can do whatever I want whenever I want',
-    tokenAmount: '2',
-    tokenSymbol: 'DAI',
-    transferDate: 'Last Week',
-    transferType: TransferTypes.Deposit,
-    usdValue: '$200.00',
-  },
-  {
-    title: 'Withdraw',
-    tokenAmount: '3',
-    transferDate: 'Last Week',
-    tokenSymbol: 'DAI',
-    transferType: TransferTypes.Withdraw,
-    usdValue: '$200.00',
-  },
-  //this year -> this month
-  {
-    title: 'Deposit',
-    tokenAmount: '1',
-    transferDate: 'Last Month',
-    tokenSymbol: 'DAI',
-    transferType: TransferTypes.Deposit,
-    usdValue: '$200.00',
-  },
-  {
-    title: 'Deposit DAI so I can do whatever I want whenever I want',
-    tokenAmount: '2',
-    tokenSymbol: 'DAI',
-    transferDate: 'Last Month',
-    transferType: TransferTypes.Deposit,
-    usdValue: '$200.00',
-  },
-  {
-    title: 'Withdraw',
-    tokenAmount: '3',
-    transferDate: 'Last Month',
-    tokenSymbol: 'DAI',
-    transferType: TransferTypes.Withdraw,
-    usdValue: '$200.00',
-  },
-];

@@ -1,5 +1,5 @@
 import {Address} from '@aragon/ui-components/dist/utils/addresses';
-import {TimeFilter, TransferTypes} from './constants';
+import {TimeFilter} from './constants';
 
 /*************************************************
  *                   Finance types               *
@@ -44,7 +44,7 @@ export type TokenWithMetadata = {
 
 /** The Dao transfer */
 export type DaoTransfer = {
-  __typename: string;
+  __typename: 'VaultDeposit' | 'VaultWithdraw';
   amount: number;
   createdAt: number;
   dao: {
@@ -80,8 +80,9 @@ export type Transfer = {
   tokenAmount: string;
   tokenSymbol: string;
   transferDate: string;
-  transferType: string;
-  usdValue?: string;
+  transferType: 'VaultDeposit' | 'VaultWithdraw';
+  transferTimestamp?: string | number;
+  usdValue: string;
   isPending?: boolean;
 };
 
