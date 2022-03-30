@@ -39,6 +39,7 @@ const DefineProposal: React.FC = () => {
         />
         <Controller
           name="proposalTitle"
+          defaultValue=""
           control={control}
           rules={{
             required: t('errors.required.title'),
