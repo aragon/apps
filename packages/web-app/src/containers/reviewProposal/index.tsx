@@ -89,33 +89,37 @@ const ReviewProposal: React.FC = () => {
               />
             </>
           )}
-
           {/*
             TODO: All the values inside the voting terminal is hardcoded.
             The info tab needs to display data from the form context & graph query
           */}
           <VotingTerminal breakdownTabDisabled votersTabDisabled />
 
-          <CardExecution
-            title={t('governance.executionCard.title')}
-            description={t('governance.executionCard.description')}
-            to={values.to}
-            from={values.from}
-            toLabel={t('labels.to')}
-            fromLabel={t('labels.from')}
-            tokenName={values.tokenName}
-            tokenImageUrl={values.tokenImgUrl}
-            tokenSymbol={values.tokenSymbol}
-            tokenCount={values.amount}
-            treasuryShare={
-              values.tokenPrice
-                ? new Intl.NumberFormat('en-US', {
-                    style: 'currency',
-                    currency: 'USD',
-                  }).format(values.tokenPrice * values.amount)
-                : t('finance.unknownUSDValue')
-            }
-          />
+          {/* TODO: generalize types so that proper execution card can be rendered */}
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+          {values.actions.map((action: any, index: number) => (
+            <CardExecution
+              key={index}
+              title={t('governance.executionCard.title')}
+              description={t('governance.executionCard.description')}
+              to={action.to}
+              from="DAO Name" // TODO: get daoName, DAO name should be shown, but not sent
+              toLabel={t('labels.to')}
+              fromLabel={t('labels.from')}
+              tokenName={action.tokenName}
+              tokenImageUrl={action.tokenImgUrl}
+              tokenSymbol={action.tokenSymbol}
+              tokenCount={action.amount}
+              treasuryShare={
+                action.tokenPrice
+                  ? new Intl.NumberFormat('en-US', {
+                      style: 'currency',
+                      currency: 'USD',
+                    }).format(action.tokenPrice * action.amount)
+                  : t('finance.unknownUSDValue')
+              }
+            />
+          ))}
         </ProposalContainer>
 
         <AdditionalInfoContainer>

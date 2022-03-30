@@ -1,16 +1,16 @@
-import React, {useState} from 'react';
-import {useTranslation} from 'react-i18next';
-import styled from 'styled-components';
 import {
   Popover,
   ListItemAction,
   ButtonIcon,
   IconMenuVertical,
 } from '@aragon/ui-components';
+import styled from 'styled-components';
+import {useTranslation} from 'react-i18next';
 import {useFormContext} from 'react-hook-form';
+import React, {useState} from 'react';
 
 import {useActionsContext} from 'context/actions';
-import WithdrawActionForm from './withdrawActionForm';
+import ConfigureWithdrawForm from 'containers/configureWithdraw';
 
 type Props = {
   index: number;
@@ -19,7 +19,8 @@ type Props = {
 const WithdrawAction: React.FC<Props> = ({index}) => {
   const {t} = useTranslation();
   const [openMenu, setOpenMenu] = useState<boolean>(false);
-  const {removeAction, duplicateAction} = useActionsContext();
+  const {removeAction, duplicateAction, setActionsCounter} =
+    useActionsContext();
   const {setValue, clearErrors} = useFormContext();
 
   const resetWithdrawFields = () => {
@@ -85,7 +86,10 @@ const WithdrawAction: React.FC<Props> = ({index}) => {
         </Popover>
       </Header>
       <Body>
-        <WithdrawActionForm index={index} />
+        <ConfigureWithdrawForm
+          index={index}
+          setActionsCounter={setActionsCounter}
+        />
       </Body>
     </Container>
   );
