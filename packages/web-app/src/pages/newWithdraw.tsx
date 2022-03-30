@@ -109,6 +109,7 @@ const NewWithdraw: React.FC = () => {
       return;
     }
 
+    formMethods.clearErrors(['tokenAddress', 'tokenSymbol']);
     formMethods.setValue('isCustomToken', false);
     formMethods.setValue('tokenName', token.name);
     formMethods.setValue('tokenImgUrl', token.imgUrl);
@@ -117,6 +118,10 @@ const NewWithdraw: React.FC = () => {
       'tokenBalance',
       formatUnits(token.count, token.decimals)
     );
+
+    if (formMethods.formState.dirtyFields.amount) {
+      formMethods.trigger('amount');
+    }
 
     fetchTokenPrice(token.address).then(price => {
       formMethods.setValue('tokenPrice', price);

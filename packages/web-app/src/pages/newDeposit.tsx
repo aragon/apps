@@ -62,6 +62,7 @@ const NewDeposit: React.FC = () => {
       formMethods.resetField('tokenImgUrl');
       formMethods.resetField('tokenAddress');
       formMethods.resetField('tokenBalance');
+      formMethods.clearErrors('amount');
       return;
     }
 
