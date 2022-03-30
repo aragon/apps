@@ -66,6 +66,7 @@ const NewDeposit: React.FC = () => {
     }
 
     // fill form with curated token values
+    formMethods.clearErrors(['tokenAddress', 'tokenSymbol']);
     formMethods.setValue('isCustomToken', false);
     formMethods.setValue('tokenName', token.name);
     formMethods.setValue('tokenImgUrl', token.imgUrl);
