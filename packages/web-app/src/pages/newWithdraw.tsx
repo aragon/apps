@@ -78,7 +78,10 @@ const NewWithdraw: React.FC = () => {
     mode: 'onChange',
   });
 
-  const {data: balances} = useDaoBalances();
+  const {data: balances} = useDaoBalances(
+    '0x51c3ddb42529bfc24d4c13192e2e31421de459bc'
+  );
+
   const {account}: useWalletProps = useWallet();
 
   useEffect(() => {
