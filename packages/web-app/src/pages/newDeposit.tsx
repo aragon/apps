@@ -1,21 +1,29 @@
+import {Address} from '@aragon/ui-components/src/utils/addresses';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
-import {useForm, FormProvider} from 'react-hook-form';
 import React, {useEffect} from 'react';
+import {useForm, FormProvider} from 'react-hook-form';
 
+import {Finance} from 'utils/paths';
 import TokenMenu from 'containers/tokenMenu';
 import {useWallet} from 'context/augmentedWallet';
 import DepositForm from 'containers/depositForm';
 import {formatUnits} from 'utils/library';
 import ReviewDeposit from 'containers/reviewDeposit';
-import {TransferTypes} from 'utils/constants';
 import {BaseTokenInfo} from 'utils/types';
+import {TokenFormData} from './newWithdraw';
 import {useWalletTokens} from 'hooks/useWalletTokens';
 import {FullScreenStepper, Step} from 'components/fullScreenStepper';
-import {TransferFormData} from './newWithdraw';
-import {Finance} from 'utils/paths';
 
-export type DepositFormData = TransferFormData;
+type DepositFormData = TokenFormData & {
+  // Deposit data
+  to: Address;
+  from: Address;
+  amount: string;
+
+  // Form metadata
+  isCustomToken: boolean;
+};
 
 const defaultValues = {
   amount: '',
@@ -44,7 +52,6 @@ const NewDeposit: React.FC = () => {
     // add form metadata
     if (account) {
       formMethods.setValue('from', account);
-      formMethods.setValue('type', TransferTypes.Deposit);
     }
   }, [account, formMethods]);
 
