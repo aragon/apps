@@ -44,7 +44,7 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
   const {account} = useWallet();
   const {infura: provider} = useProviders();
 
-  const {control, getValues, trigger, resetField, setFocus, setValue, watch} =
+  const {control, getValues, trigger, resetField, setFocus, setValue} =
     useFormContext();
 
   const {errors, dirtyFields} = useFormState({control});
