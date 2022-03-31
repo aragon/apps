@@ -220,6 +220,7 @@
   "allTokens": {
     "title": "All Tokens",
     "subtitle": "{{count}} Tokens",
+    "subtitleSingular:": "1 Token",
     "callToAction": "New Transfer",
     "noTokens": "No token information available."
   },

@@ -26,7 +26,11 @@ const Tokens: React.FC = () => {
   return (
     <PageWrapper
       title={t('allTokens.title') as string}
-      subtitle={t('allTokens.subtitle', {count: tokens.length})}
+      subtitle={
+        tokens.length === 1
+          ? t('allTokens.subtitleSingular:')
+          : t('allTokens.subtitle', {count: tokens.length})
+      }
       buttonLabel={t('TransferModal.newTransfer') as string}
       onClick={open}
     >
