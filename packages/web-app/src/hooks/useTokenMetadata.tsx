@@ -23,8 +23,6 @@ export const useTokenMetadata = (balances: TokenBalance[]) => {
         )
       );
 
-      console.log('seeMeta', metadata, balances);
-
       // map metadata to token balances
       const tokensWithMetadata = balances?.map((balance, index) => ({
         balance: balance.balance,

@@ -29,7 +29,6 @@ export default function useCategorizedTransfers(): HookData<CategorizedTransfer>
   );
   const {data: transfers, total} = usePollTransfersPrices(daoTransfers);
 
-  console.log('transfers', total);
   // const sections = getDateSections(); // Sections will dynamically set based
   // on today date
 

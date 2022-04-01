@@ -21,8 +21,6 @@ const Finance: React.FC = () => {
     '0x51c3ddb42529bfc24d4c13192e2e31421de459bc'
   );
 
-  console.log('transfers', transfers);
-
   useDaoTransfers();
 
   sortTokens(tokens, 'treasurySharePercentage');
