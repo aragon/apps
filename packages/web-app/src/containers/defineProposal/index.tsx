@@ -1,6 +1,3 @@
-import React from 'react';
-import {useTranslation} from 'react-i18next';
-import styled from 'styled-components';
 import {
   AlertInline,
   ButtonWallet,
@@ -9,9 +6,14 @@ import {
   TextareaWYSIWYG,
   TextInput,
 } from '@aragon/ui-components';
-import {useWallet} from 'context/augmentedWallet';
-import {useWalletProps} from 'containers/walletMenu';
+import React from 'react';
+import styled from 'styled-components';
+import {useTranslation} from 'react-i18next';
+
 import AddLinks from 'components/addLinks';
+import {useWallet} from 'context/augmentedWallet';
+import {StringIndexed} from 'utils/types';
+import {useWalletProps} from 'containers/walletMenu';
 import {Controller, useFormContext} from 'react-hook-form';
 
 const DefineProposal: React.FC = () => {
@@ -128,11 +130,6 @@ const DefineProposal: React.FC = () => {
 };
 
 export default DefineProposal;
-
-type StringIndexed = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [key: string]: any;
-};
 
 /**
  * Check if the screen is valid
