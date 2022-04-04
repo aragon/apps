@@ -373,6 +373,7 @@ export default ConfigureWithdrawForm;
  * Check if the screen is valid
  * @param dirtyFields List of fields that have been changed
  * @param errors List of fields that have errors
+ * @param tokenAddress Token address
  * @returns Whether the screen is valid
  */
 export function isValid(
