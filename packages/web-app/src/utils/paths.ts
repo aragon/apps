@@ -1,12 +1,43 @@
-export const Community = '/community';
+import {SupportedNetworks} from './constants';
+
+/* TOP LEVEL PAGES ========================================================== */
+
 export const Dashboard = '/';
-export const Finance = '/finance';
-export const Governance = '/governance';
-export const NotFound = '/notfound';
-export const AllTokens = '/finance/tokens';
-export const AllTransfers = '/finance/transfers';
-export const NewDeposit = '/finance/new-deposit';
-export const NewWithDraw = '/finance/new-withdraw';
-export const Proposal = '/governance/proposals/:id';
+export const Community = '/community';
 export const CreateDAO = '/create-dao';
-export const NewProposal = '/new-proposal';
+export const NotFound = '/notfound';
+
+export const Finance = ':network/finance';
+export const Governance = ':network/governance';
+
+/* FINANCE PAGES ============================================================ */
+export const AllTokens = ':network/finance/tokens';
+export const AllTransfers = ':network/finance/transfers';
+export const NewDeposit = ':network/finance/new-deposit';
+export const NewWithDraw = ':network/finance/new-withdraw';
+
+/* GOVERNANCE PAGES ========================================================= */
+export const Proposal = ':network/governance/proposals/:id';
+export const NewProposal = ':network/new-proposal';
+
+/**
+ * Replaces the network parameter in certain URLs. If the path passed to this
+ * function has no parameter, the function will return that path unchanged.
+ *
+ * @param path parametrized path that needs its paramter replaced
+ * @param network network paramater that will replace ":network" in the path
+ * @returns concrete path with network.
+ */
+export function replaceNetworkParam(path: string, network: SupportedNetworks) {
+  if (path.startsWith(':network')) {
+    return network + path.slice(8);
+  }
+
+  if (path.includes(':network')) {
+    throw Error(
+      'URL is malformed. Network paramater is expected to either be the first parameter or not be in the URL at all.'
+    );
+  }
+
+  return path;
+}
