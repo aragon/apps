@@ -2,22 +2,26 @@ import React from 'react';
 import {Address} from '@aragon/ui-components/dist/utils/addresses';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
-import {useForm, FormProvider, useWatch} from 'react-hook-form';
+import {useForm, FormProvider, useWatch, useFormState} from 'react-hook-form';
 
 import TokenMenu from 'containers/tokenMenu';
 import {Finance} from 'utils/paths';
 import {TEST_DAO} from 'utils/constants';
 import {formatUnits} from 'utils/library';
-import DefineProposal from 'containers/defineProposal';
 import ReviewProposal from 'containers/reviewProposal';
 import SetupVotingForm from 'containers/setupVotingForm';
 import {BaseTokenInfo} from 'utils/types';
 import {useDaoBalances} from 'hooks/useDaoBalances';
 import {fetchTokenPrice} from 'services/prices';
 import {FullScreenStepper, Step} from 'components/fullScreenStepper';
+
 import ConfigureWithdrawForm, {
   isValid as configureWithdrawScreenIsValid,
 } from 'containers/configureWithdraw';
+
+import DefineProposal, {
+  isValid as defineProposalIsValid,
+} from 'containers/defineProposal';
 
 export type TokenFormData = {
   tokenName: string;
@@ -80,6 +84,8 @@ const NewWithdraw: React.FC = () => {
     mode: 'onChange',
   });
 
+  const {errors, dirtyFields} = useFormState({control: formMethods.control});
+
   const [tokenAddress] = useWatch({
     name: ['actions.0.tokenAddress'],
     control: formMethods.control,
@@ -121,7 +127,7 @@ const NewWithdraw: React.FC = () => {
       formMethods.setValue('actions.0.tokenPrice', price);
     });
 
-    if (formMethods.formState.dirtyFields.actions?.[0].amount) {
+    if (dirtyFields.actions?.[0].amount) {
       formMethods.trigger('actions.0.amount');
     }
   };
@@ -147,8 +153,8 @@ const NewWithdraw: React.FC = () => {
             wizardDescription={t('newWithdraw.configureWithdraw.subtitle')}
             isNextButtonDisabled={
               !configureWithdrawScreenIsValid(
-                formMethods.formState.dirtyFields.actions?.[0],
-                formMethods.formState.errors.actions?.[0],
+                dirtyFields.actions?.[0],
+                errors.actions?.[0],
                 tokenAddress
               )
             }
@@ -158,14 +164,14 @@ const NewWithdraw: React.FC = () => {
           <Step
             wizardTitle={t('newWithdraw.setupVoting.title')}
             wizardDescription={t('newWithdraw.setupVoting.description')}
-            // isNextButtonDisabled={!formMethods.formState.isValid}
+            // isNextButtonDisabled={!defineProposalIsValid(dirtyFields, errors)}
           >
             <SetupVotingForm />
           </Step>
           <Step
             wizardTitle={t('newWithdraw.defineProposal.heading')}
             wizardDescription={t('newWithdraw.defineProposal.description')}
-            // isNextButtonDisabled={!formMethods.formState.isValid}
+            isNextButtonDisabled={!defineProposalIsValid(dirtyFields, errors)}
           >
             <DefineProposal />
           </Step>

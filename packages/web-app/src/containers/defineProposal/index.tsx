@@ -129,6 +129,29 @@ const DefineProposal: React.FC = () => {
 
 export default DefineProposal;
 
+type StringIndexed = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
+};
+
+/**
+ * Check if the screen is valid
+ * @param dirtyFields - The fields that have been changed
+ * @param errors List of fields with errors
+ * @returns Whether the screen is valid
+ */
+export function isValid(dirtyFields: StringIndexed, errors: StringIndexed) {
+  // required fields not dirty
+  if (
+    !dirtyFields.proposalTitle ||
+    !dirtyFields.proposalSummary ||
+    errors.proposalTitle ||
+    errors.proposalSummary
+  )
+    return false;
+  return true;
+}
+
 const FormItem = styled.div.attrs({
   className: 'space-y-1.5',
 })``;
