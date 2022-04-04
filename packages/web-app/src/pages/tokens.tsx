@@ -29,7 +29,7 @@ const Tokens: React.FC = () => {
       title={t('allTokens.title') as string}
       subtitle={
         tokens.length === 1
-          ? t('allTokens.subtitleSingular:')
+          ? t('allTokens.subtitleSingular')
           : t('allTokens.subtitle', {count: tokens.length})
       }
       buttonLabel={t('TransferModal.newTransfer') as string}
