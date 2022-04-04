@@ -2,7 +2,7 @@ import React from 'react';
 import {Address} from '@aragon/ui-components/dist/utils/addresses';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
-import {useForm, FormProvider} from 'react-hook-form';
+import {useForm, FormProvider, useWatch} from 'react-hook-form';
 
 import TokenMenu from 'containers/tokenMenu';
 import {Finance} from 'utils/paths';
@@ -13,9 +13,11 @@ import ReviewProposal from 'containers/reviewProposal';
 import SetupVotingForm from 'containers/setupVotingForm';
 import {BaseTokenInfo} from 'utils/types';
 import {useDaoBalances} from 'hooks/useDaoBalances';
-import ConfigureWithdrawForm from 'containers/configureWithdraw';
-import {FullScreenStepper, Step} from 'components/fullScreenStepper';
 import {fetchTokenPrice} from 'services/prices';
+import {FullScreenStepper, Step} from 'components/fullScreenStepper';
+import ConfigureWithdrawForm, {
+  isValid as configureWithdrawScreenIsValid,
+} from 'containers/configureWithdraw';
 
 export type TokenFormData = {
   tokenName: string;
@@ -27,7 +29,7 @@ export type TokenFormData = {
   isCustomToken: boolean;
 };
 
-type WithdrawAction = TokenFormData & {
+export type WithdrawAction = TokenFormData & {
   to: Address;
   from: Address;
   amount: string;
@@ -69,9 +71,6 @@ export const defaultValues = {
   duration: 5,
   startUtc: '',
   endUtc: '',
-
-  // Form metadata
-  isCustomToken: false,
 };
 
 const NewWithdraw: React.FC = () => {
@@ -79,6 +78,11 @@ const NewWithdraw: React.FC = () => {
   const formMethods = useForm<WithdrawFormData>({
     defaultValues,
     mode: 'onChange',
+  });
+
+  const [tokenAddress] = useWatch({
+    name: ['actions.0.tokenAddress'],
+    control: formMethods.control,
   });
 
   const {data: balances} = useDaoBalances(TEST_DAO);
@@ -141,7 +145,13 @@ const NewWithdraw: React.FC = () => {
           <Step
             wizardTitle={t('newWithdraw.configureWithdraw.title')}
             wizardDescription={t('newWithdraw.configureWithdraw.subtitle')}
-            // isNextButtonDisabled={!formMethods.formState.isValid}
+            isNextButtonDisabled={
+              !configureWithdrawScreenIsValid(
+                formMethods.formState.dirtyFields.actions?.[0],
+                formMethods.formState.errors.actions?.[0],
+                tokenAddress
+              )
+            }
           >
             <ConfigureWithdrawForm />
           </Step>
