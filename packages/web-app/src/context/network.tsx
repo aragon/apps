@@ -6,7 +6,7 @@ import React, {
   useState,
 } from 'react';
 import {useLocation, useParams} from 'react-router-dom';
-import {SupportedNetworks} from 'utils/constants/chains';
+import {SupportedNetworks} from 'utils/constants';
 
 import {Nullable} from 'utils/types';
 

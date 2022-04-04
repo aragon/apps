@@ -1,5 +1,5 @@
 import {Address} from '@aragon/ui-components/dist/utils/addresses';
-import {TimeFilter} from './constants';
+import {TimeFilter} from './constants/misc';
 
 /*************************************************
  *                   Finance types               *
@@ -173,11 +173,3 @@ export type ActionItem = {
 };
 
 export type NetworkIndicatorStatus = 'default' | 'testnet' | 'unsupported';
-
-export type SupportedNetworks =
-  | 'ethereum'
-  | 'rinkeby'
-  | 'polygon'
-  | 'mumbai'
-  | 'arbitrum'
-  | 'arbitrum-test';

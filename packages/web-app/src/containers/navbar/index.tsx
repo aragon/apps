@@ -17,7 +17,7 @@ import useScreen from 'hooks/useScreen';
 import DesktopNav from './desktop';
 import {useWallet} from 'context/augmentedWallet';
 import {useWalletMenuContext} from 'context/walletMenu';
-import {CHAIN_METADATA as chains} from 'utils/constants';
+import {CHAIN_METADATA, isSupportedNetwork} from 'utils/constants';
 
 type NumberIndexed = {[key: number]: {}};
 type StringIndexed = {[key: string]: {processLabel: string; returnURL: string}};
@@ -45,17 +45,21 @@ const processes: StringIndexed = {
   },
 };
 
-const getNetworkStatus = (id: number) => {
-  if ((chains.test as NumberIndexed)[id]) return 'testnet';
-  if (!(chains.main as NumberIndexed)[id]) return 'unsupported';
-  return 'default';
+const getNetworkType = (network: string) => {
+  if (!isSupportedNetwork(network)) {
+    return 'unsupported';
+  } else if (CHAIN_METADATA[network].testnet) {
+    return 'testnet';
+  } else {
+    return 'default';
+  }
 };
 
 const Navbar: React.FC = () => {
   const {open} = useWalletMenuContext();
   const {pathname} = useLocation();
   const {isDesktop} = useScreen();
-  const {chainId, connect, isConnected} = useWallet();
+  const {networkName, connect, isConnected} = useWallet();
 
   const processName = useMemo(() => {
     const results = matchRoutes(processPaths, pathname);
@@ -63,8 +67,10 @@ const Navbar: React.FC = () => {
   }, [pathname]);
 
   const status = useMemo(() => {
-    return isConnected() ? getNetworkStatus(chainId!) : 'default';
-  }, [chainId, isConnected]);
+    return isConnected()
+      ? getNetworkType(networkName || 'ethereum')
+      : 'default';
+  }, [networkName, isConnected]);
 
   const handleWalletButtonClick = () => {
     isConnected() ? open() : connect('injected');

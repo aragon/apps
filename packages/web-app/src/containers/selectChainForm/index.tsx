@@ -7,7 +7,6 @@ import {
   Popover,
 } from '@aragon/ui-components';
 import styled from 'styled-components';
-import {chains} from 'use-wallet';
 import {useTranslation} from 'react-i18next';
 import {Controller, useFormContext} from 'react-hook-form';
 import React, {useCallback, useState} from 'react';
@@ -20,26 +19,16 @@ import {CHAIN_METADATA} from 'utils/constants';
 type NetworkType = 'main' | 'test';
 type SortFilter = 'cost' | 'popularity' | 'security';
 
-function getNetworkType(id: number | undefined) {
-  if (!id) return 'main';
-
-  try {
-    return chains.getChainInformation(id).testnet ? 'test' : 'main';
-  } catch (error) {
-    console.error('Unknown chain, defaulting to main', error);
-    return 'main';
-  }
-}
-
 const SelectChainForm: React.FC = () => {
   const {t} = useTranslation();
   const {isMobile} = useScreen();
   const {account, chainId, networkName} = useWallet();
-  const [isOpen, setIsOpen] = useState(false);
   const {control, getValues} = useFormContext();
+
+  const [isOpen, setIsOpen] = useState(false);
   const [sortFilter, setFilter] = useState<SortFilter>('cost');
   const [networkType, setNetworkType] = useState<NetworkType>(
-    () => getValues('blockchain')?.network || getNetworkType(chainId)
+    () => getValues('blockchain')?.network || 'main'
   );
 
   const handleFilterChanged = useCallback(
@@ -182,36 +171,36 @@ const labels = {
 const networks = {
   main: {
     cost: [
-      CHAIN_METADATA.main[137], //polygon
-      CHAIN_METADATA.main[42161], //arbitrum
-      CHAIN_METADATA.main[1], //ethereum
+      CHAIN_METADATA['polygon'],
+      CHAIN_METADATA['arbitrum'],
+      CHAIN_METADATA['ethereum'],
     ],
     popularity: [
-      CHAIN_METADATA.main[137], //polygon
-      CHAIN_METADATA.main[1], //ethereum
-      CHAIN_METADATA.main[42161], //arbitrum
+      CHAIN_METADATA['polygon'],
+      CHAIN_METADATA['ethereum'],
+      CHAIN_METADATA['arbitrum'],
     ],
     security: [
-      CHAIN_METADATA.main[1], //ethereum
-      CHAIN_METADATA.main[42161], //arbitrum
-      CHAIN_METADATA.main[137], //polygon
+      CHAIN_METADATA['ethereum'],
+      CHAIN_METADATA['arbitrum'],
+      CHAIN_METADATA['polygon'],
     ],
   },
   test: {
     cost: [
-      CHAIN_METADATA.test[80001], //mumbai
-      CHAIN_METADATA.test[421611], //arbitrum
-      CHAIN_METADATA.test[4], //ethereum
+      CHAIN_METADATA['mumbai'],
+      CHAIN_METADATA['arbitrum-test'],
+      CHAIN_METADATA['ethereum'],
     ],
     popularity: [
-      CHAIN_METADATA.test[80001], //mumbai
-      CHAIN_METADATA.test[4], //ethereum
-      CHAIN_METADATA.test[421611], //arbitrum
+      CHAIN_METADATA['mumbai'],
+      CHAIN_METADATA['ethereum'],
+      CHAIN_METADATA['arbitrum-test'],
     ],
     security: [
-      CHAIN_METADATA.test[4], //ethereum
-      CHAIN_METADATA.test[421611], //arbitrum
-      CHAIN_METADATA.test[80001], //Mumbai
+      CHAIN_METADATA['ethereum'],
+      CHAIN_METADATA['arbitrum-test'],
+      CHAIN_METADATA['mumbai'],
     ],
   },
 };
