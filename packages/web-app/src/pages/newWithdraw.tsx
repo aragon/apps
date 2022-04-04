@@ -9,7 +9,6 @@ import {Finance} from 'utils/paths';
 import {TEST_DAO} from 'utils/constants';
 import {formatUnits} from 'utils/library';
 import ReviewProposal from 'containers/reviewProposal';
-import SetupVotingForm from 'containers/setupVotingForm';
 import {BaseTokenInfo} from 'utils/types';
 import {useDaoBalances} from 'hooks/useDaoBalances';
 import {fetchTokenPrice} from 'services/prices';
@@ -22,6 +21,10 @@ import ConfigureWithdrawForm, {
 import DefineProposal, {
   isValid as defineProposalIsValid,
 } from 'containers/defineProposal';
+
+import SetupVotingForm, {
+  isValid as setupVotingIsValid,
+} from 'containers/setupVotingForm';
 
 export type TokenFormData = {
   tokenName: string;
@@ -51,6 +54,7 @@ type WithdrawFormData = {
   duration: number;
   startUtc: string;
   endUtc: string;
+  durationSwitch: string;
 };
 
 export const defaultValues = {
@@ -66,15 +70,6 @@ export const defaultValues = {
       tokenImgUrl: '',
     },
   ],
-
-  // Proposal data
-  startDate: '',
-  startTime: '',
-  endDate: '',
-  endTime: '',
-  duration: 5,
-  startUtc: '',
-  endUtc: '',
 };
 
 const NewWithdraw: React.FC = () => {
@@ -86,8 +81,8 @@ const NewWithdraw: React.FC = () => {
 
   const {errors, dirtyFields} = useFormState({control: formMethods.control});
 
-  const [tokenAddress] = useWatch({
-    name: ['actions.0.tokenAddress'],
+  const [durationSwitch, tokenAddress] = useWatch({
+    name: ['durationSwitch', 'actions.0.tokenAddress'],
     control: formMethods.control,
   });
 
@@ -143,11 +138,6 @@ const NewWithdraw: React.FC = () => {
           navLabel={t('allTransfer.newTransfer')}
           returnPath={Finance}
         >
-          {/* FIXME: Each step needs to be able to disable the back
-        button. Otherwise, if the user leaves step x in an invalid state and
-        goes back to a step < x, they won't be able to move forward. */}
-
-          {/* TODO: Removing isNextButtonDisabled is disabled till the above is fixed */}
           <Step
             wizardTitle={t('newWithdraw.configureWithdraw.title')}
             wizardDescription={t('newWithdraw.configureWithdraw.subtitle')}
@@ -164,7 +154,9 @@ const NewWithdraw: React.FC = () => {
           <Step
             wizardTitle={t('newWithdraw.setupVoting.title')}
             wizardDescription={t('newWithdraw.setupVoting.description')}
-            // isNextButtonDisabled={!defineProposalIsValid(dirtyFields, errors)}
+            isNextButtonDisabled={
+              !setupVotingIsValid(dirtyFields, errors, durationSwitch)
+            }
           >
             <SetupVotingForm />
           </Step>
