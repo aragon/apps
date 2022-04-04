@@ -7,6 +7,7 @@ import {
 
 import {
   Controller,
+  FormState,
   useFormContext,
   useFormState,
   useWatch,
@@ -28,6 +29,7 @@ import {useApolloClient} from 'context/apolloClient';
 import {useGlobalModalContext} from 'context/globalModals';
 import {handleClipboardActions} from 'utils/library';
 import {fetchBalance, getTokenInfo, isETH} from 'utils/tokens';
+import {WithdrawAction} from 'pages/newWithdraw';
 
 type ConfigureWithdrawFormProps = {
   index?: number;
@@ -57,6 +59,7 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
       `actions.${index}.tokenSymbol`,
     ],
   });
+
   /*************************************************
    *                    Hooks                      *
    *************************************************/
@@ -365,6 +368,30 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
 };
 
 export default ConfigureWithdrawForm;
+
+/**
+ * Check if the screen is valid
+ * @param dirtyFields List of fields that have been changed
+ * @param errors List of fields that have errors
+ * @returns Whether the screen is valid
+ */
+export function isValid(
+  dirtyFields?: FormState<WithdrawAction>['dirtyFields'],
+  errors?: FormState<WithdrawAction>['errors'],
+  tokenAddress?: string
+) {
+  // check if fields are dirty
+  if (!dirtyFields?.to || !dirtyFields?.amount || !tokenAddress) return false;
+
+  // check if fields have errors
+  if (errors?.to || errors?.amount || errors?.tokenAddress) return false;
+
+  return true;
+}
+
+/*************************************************
+ *               Styled Components               *
+ *************************************************/
 
 const FormItem = styled.div.attrs({
   className: 'space-y-1.5',
