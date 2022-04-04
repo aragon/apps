@@ -1,5 +1,8 @@
+/* SUPPORTED NETWORK TYPES ================================================== */
+
 const SUPPORTED_CHAIN_ID = [1, 4, 137, 80001, 42161, 421611] as const;
 export type SupportedChainID = typeof SUPPORTED_CHAIN_ID[number];
+
 export function isSupportedChainId(
   chainId: number
 ): chainId is SupportedChainID {
@@ -15,6 +18,7 @@ const SUPPORTED_NETWORKS = [
   'arbitrum-test',
 ] as const;
 export type SupportedNetworks = typeof SUPPORTED_NETWORKS[number];
+
 export function isSupportedNetwork(
   network: string
 ): network is SupportedNetworks {
@@ -22,6 +26,8 @@ export function isSupportedNetwork(
 }
 
 export type NetworkDomain = 'L1 Blockchain' | 'L2 Blockchain';
+
+/* CHAIN DATA =============================================================== */
 
 export type ChainData = {
   id: SupportedChainID;

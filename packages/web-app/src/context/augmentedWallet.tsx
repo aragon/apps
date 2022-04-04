@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // Workarounds are used that necessitate the any escape hatch
 
 import React, {useContext, useEffect, useMemo} from 'react';
@@ -7,8 +6,13 @@ import {Wallet} from 'use-wallet/dist/cjs/types';
 
 import {identifyUser} from 'services/analytics';
 import {updateAPMContext, useAPM} from './elasticAPM';
+import {useNetwork} from './network';
+import {SupportedNetworks} from 'utils/constants';
 
-export type WalletAugmented = Wallet & {};
+export type WalletAugmented = Wallet & {
+  isOnCorrectNetwork: boolean;
+};
+
 // Any is a workaround so TS doesn't ask for a filled out default
 const WalletAugmentedContext = React.createContext<WalletAugmented | any>({});
 
@@ -18,6 +22,20 @@ function useWalletAugmented(): WalletAugmented {
 
 const WalletAugmented: React.FC<unknown> = ({children}) => {
   const wallet = useWallet();
+  const {network} = useNetwork();
+
+  const isOnCorrectNetwork = useMemo(() => {
+    // This is necessary as long as we're using useWallet. Once we switch to
+    // web3modal entirely, we'll no londer need to rely on the chains defined in
+    // useWallet and we'll be able to rely on the data defined in
+    // constants/chains.tsx
+    switch (wallet.networkName) {
+      case 'main':
+        return network === 'ethereum';
+      default:
+        break;
+    }
+  }, [wallet]);
 
   // TODO this should be moved into a separate hook and then called from within
   // the app component. Afterwards, the wallet should no longer need to be
@@ -35,6 +53,7 @@ const WalletAugmented: React.FC<unknown> = ({children}) => {
 
   const contextValue = useMemo(() => {
     return {
+      isOnCorrectNetwork,
       ...wallet,
     };
   }, [wallet]);

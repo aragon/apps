@@ -5,8 +5,8 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import {useLocation, useParams} from 'react-router-dom';
-import {SupportedNetworks} from 'utils/constants';
+import {useParams} from 'react-router-dom';
+import {isSupportedNetwork, SupportedNetworks} from 'utils/constants';
 
 import {Nullable} from 'utils/types';
 
@@ -33,7 +33,6 @@ type NetworkProviderProps = {
  * therefore be null if no wallet is connected.
  */
 export function NetworkProvider({children}: NetworkProviderProps) {
-  const {pathname} = useLocation();
   const {networkParam} = useParams();
 
   const initialNetwork = networkParam
@@ -47,13 +46,15 @@ export function NetworkProvider({children}: NetworkProviderProps) {
   }, []);
 
   useEffect(() => {
-    if (networkParam) {
-      changeNetwork(networkParam);
+    if (networkParam && isSupportedNetwork(networkParam)) {
+      setNetwork(networkParam);
+    } else {
+      setNetwork('ethereum');
     }
   }, [networkParam]);
 
   return (
-    <NetworkContext.Provider value={{network, setNetwork}}>
+    <NetworkContext.Provider value={{network, setNetwork: changeNetwork}}>
       {children}
     </NetworkContext.Provider>
   );
