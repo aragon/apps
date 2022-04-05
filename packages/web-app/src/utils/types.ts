@@ -89,6 +89,7 @@ export type DaoTransfer = {
 
 /** A transfer transaction */
 export type Transfer = {
+  id: string;
   title: string;
   tokenAmount: string;
   tokenSymbol: string;

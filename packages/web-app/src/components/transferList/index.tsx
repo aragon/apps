@@ -6,9 +6,13 @@ import {Transfer} from 'utils/types';
 // types might come from subgraph - not adding any now
 type TransferListProps = {
   transfers: Array<Transfer>;
+  onTransferClick: (transfer: Transfer) => void;
 };
 
-const TransferList: React.FC<TransferListProps> = ({transfers}) => {
+const TransferList: React.FC<TransferListProps> = ({
+  transfers,
+  onTransferClick,
+}) => {
   const {t} = useTranslation();
 
   if (transfers.length === 0)
@@ -16,9 +20,14 @@ const TransferList: React.FC<TransferListProps> = ({transfers}) => {
 
   return (
     <div className="space-y-2" data-testid="transferList">
-      {transfers.map((transfer, index) => {
-        // key should be changed later
-        return <TransferListItem key={index} {...transfer} />;
+      {transfers.map(transfer => {
+        return (
+          <TransferListItem
+            key={transfer.id}
+            {...transfer}
+            onClick={() => onTransferClick(transfer)}
+          />
+        );
       })}
     </div>
   );
