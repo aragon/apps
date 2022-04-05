@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import {useParams} from 'react-router-dom';
+import {useMatch, useParams} from 'react-router-dom';
 import {isSupportedNetwork, SupportedNetworks} from 'utils/constants';
 
 import {Nullable} from 'utils/types';
@@ -24,37 +24,42 @@ type NetworkProviderProps = {
 };
 
 /**
- * Returns two blockchain providers.
+ * Returns the network on which the app operates.
  *
- * The infura provider is always available, regardless of whether or not a
- * wallet is connected.
+ * Note that, in most cases, the network is determined by the URL. I.e., on any
+ * page load, the URL is parsed and the network adapted to the network specified
+ * in the URL. If no network is present, the app defaults to mainnet.
  *
- * The web3 provider, however, is based on the conencted and wallet and will
- * therefore be null if no wallet is connected.
+ * There exist cases where the app is in a "neutral" state (for example, during
+ * DAO creation). In these cases, the url does NOT contain network information.
+ * The app therefore also defaults to ethereum mainnet. However, this context
+ * exposes a setter that allows to change the network for
+ *
  */
 export function NetworkProvider({children}: NetworkProviderProps) {
-  const {networkParam} = useParams();
+  const urlMatch = useMatch(':network/:rest');
 
-  const initialNetwork = networkParam
-    ? (networkParam as SupportedNetworks)
-    : 'ethereum';
-
-  const [network, setNetwork] = useState<SupportedNetworks>(initialNetwork);
+  const [networkState, setNetworkState] = useState<SupportedNetworks>(() => {
+    const networkParam = urlMatch?.params?.network;
+    if (!networkParam || !isSupportedNetwork(networkParam)) return 'ethereum';
+    else return networkParam;
+  });
 
   const changeNetwork = useCallback(newNetwork => {
-    setNetwork(newNetwork);
+    setNetworkState(newNetwork);
   }, []);
 
   useEffect(() => {
-    if (networkParam && isSupportedNetwork(networkParam)) {
-      setNetwork(networkParam);
-    } else {
-      setNetwork('ethereum');
-    }
-  }, [networkParam]);
+    const networkParam = urlMatch?.params?.network;
+    if (!networkParam || !isSupportedNetwork(networkParam))
+      setNetworkState('ethereum');
+    else setNetworkState(networkParam);
+  }, [urlMatch]);
 
   return (
-    <NetworkContext.Provider value={{network, setNetwork: changeNetwork}}>
+    <NetworkContext.Provider
+      value={{network: networkState, setNetwork: changeNetwork}}
+    >
       {children}
     </NetworkContext.Provider>
   );
@@ -64,4 +69,29 @@ export function NetworkProvider({children}: NetworkProviderProps) {
 
 export function useNetwork(): NonNullable<NetworkContext> {
   return useContext(NetworkContext) as NetworkContext;
+}
+
+/* HOOK ===================================================================== */
+
+export function useNetworkLocal() {
+  const {network} = useParams();
+
+  const [networkState, setNetworkState] = useState<
+    SupportedNetworks | 'neutral'
+  >('neutral');
+
+  const changeNetwork = useCallback(newNetwork => {
+    setNetworkState(newNetwork);
+  }, []);
+
+  useEffect(() => {
+    console.log('LOGGING network in hooks uef ' + network);
+    if (network && isSupportedNetwork(network)) {
+      setNetworkState(network);
+    } else {
+      setNetworkState('neutral');
+    }
+  }, [network]);
+
+  return {network: networkState, setNetwork: changeNetwork};
 }
