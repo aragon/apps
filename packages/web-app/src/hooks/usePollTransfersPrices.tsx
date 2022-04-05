@@ -36,14 +36,28 @@ export const usePollTransfersPrices = (transfers: DaoTransfer[]) => {
             : 0;
           totalTransfers = totalTransfers + calculatedPrice;
           return {
+            id: transfer.id,
             title: transfer.reference ? transfer.reference : 'deposit',
+            tokenName: transfer.token.name,
             tokenAmount: formatUnits(transfer.amount, transfer.token.decimals),
+            tokenImgUrl: metadata[index]?.imgUrl || '',
             tokenSymbol: transfer.token.symbol,
             transferDate: `${formatDate(transfer.createdAt, 'relative')}`,
             transferTimestamp: transfer.createdAt,
-            transferType: transfer.__typename,
             usdValue: `$${calculatedPrice.toFixed(2)}`,
             isPending: false,
+            transaction: transfer.transaction,
+            reference: transfer.reference,
+            ...(transfer.__typename === 'VaultDeposit'
+              ? {
+                  sender: transfer.sender,
+                  transferType: transfer.__typename,
+                }
+              : {
+                  to: transfer.to,
+                  proposalId: transfer.proposal.id,
+                  transferType: transfer.__typename,
+                }),
           };
         }
       );
