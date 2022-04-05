@@ -433,5 +433,9 @@
     "cancel": "Cancel",
     "remainingTime": "Remaining time",
     "voteNow": "Vote now"
+  },
+  "transactionDetail": {
+    "title": "Transaction Detail",
+    "viewTransaction": "View on Block Explorer"
   }
 }

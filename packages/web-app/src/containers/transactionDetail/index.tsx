@@ -7,11 +7,14 @@ import {
   IconLinkExternal,
   ListItemAction,
 } from '@aragon/ui-components';
-import React from 'react';
 import styled from 'styled-components';
+import React, {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
+import {chains} from 'use-wallet';
 import {Transfer} from 'utils/types';
+import {useWallet} from 'context/augmentedWallet';
+import {ChainInformation} from 'use-wallet/dist/cjs/types';
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 
 type TransactionDetailProps = {
@@ -26,12 +29,18 @@ const TransactionDetail: React.FC<TransactionDetailProps> = ({
   onClose,
 }) => {
   const {t} = useTranslation();
+  const {chainId} = useWallet();
 
-  console.log('transfer', transfer);
+  const transactionUrl = useMemo(() => {
+    return `${
+      (chains.getChainInformation(chainId || 1) as ChainInformation).explorerUrl
+    }/tx/${transfer.transaction}`;
+  }, [chainId, transfer.transaction]);
+
   return (
     <ModalBottomSheetSwitcher isOpen={isOpen} onClose={onClose}>
       <ModalHeader>
-        <Title>Transaction Detail</Title>
+        <Title>{t('transactionDetail.title')}</Title>
         <ButtonIcon
           mode="secondary"
           size="small"
@@ -67,10 +76,14 @@ const TransactionDetail: React.FC<TransactionDetailProps> = ({
           />
         )}
 
-        <ListItemAction
-          title="View on Block Explorer"
-          iconRight={<IconLinkExternal />}
-        />
+        <div>
+          <a href={transactionUrl} target="_blank" rel="noreferrer">
+            <ListItemAction
+              title={t('transactionDetail.viewTransaction')}
+              iconRight={<IconLinkExternal />}
+            />
+          </a>
+        </div>
       </Content>
     </ModalBottomSheetSwitcher>
   );
@@ -86,8 +99,8 @@ const ModalHeader = styled.div.attrs({
     0px 0px 2px rgba(31, 41, 51, 0.06), 0px 0px 1px rgba(31, 41, 51, 0.04);
 `;
 
-const Content = styled.div.attrs({className: 'p-3 space-y-1.5 w-'})`
-  width: 448px;
+const Content = styled.div.attrs({className: 'p-3 space-y-1.5'})`
+  max-width: 448px;
 `;
 
 const Title = styled.p.attrs({
