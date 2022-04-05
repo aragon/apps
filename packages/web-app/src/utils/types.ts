@@ -42,21 +42,6 @@ export type TokenWithMetadata = {
   };
 };
 
-/** The Dao transfer */
-export type DaoTransfer = {
-  __typename: 'VaultDeposit' | 'VaultWithdraw';
-  amount: number;
-  createdAt: number;
-  dao: {
-    id: string;
-  };
-  token: TokenBalance['token'];
-  id: string;
-  reference: string;
-  sender: Address;
-  transaction: string;
-};
-
 /** Token populated with the current price, and price change percentage for given filter */
 export type TokenWithMarketData = TokenWithMetadata & {
   marketData?: {
@@ -74,17 +59,51 @@ export type VaultToken = TokenWithMarketData & {
 
 export type PollTokenOptions = {interval?: number; filter: TimeFilter};
 
+// Transfers
+type Deposit = {
+  __typename: 'VaultDeposit';
+  sender: Address;
+};
+
+type Withdraw = {
+  __typename: 'VaultWithdraw';
+
+  to: Address;
+  proposal: {
+    id: string;
+  };
+};
+
+/** The Dao transfer */
+export type DaoTransfer = {
+  amount: number;
+  createdAt: number;
+  dao: {
+    id: string;
+  };
+  token: TokenBalance['token'];
+  id: string;
+  reference: string;
+  transaction: string;
+} & (Withdraw | Deposit);
+
 /** A transfer transaction */
 export type Transfer = {
   title: string;
   tokenAmount: string;
   tokenSymbol: string;
   transferDate: string;
-  transferType: 'VaultDeposit' | 'VaultWithdraw';
   transferTimestamp?: string | number;
   usdValue: string;
   isPending?: boolean;
-};
+  tokenImgUrl: string;
+  tokenName: string;
+  reference?: string;
+  transaction: string;
+} & (
+  | {transferType: 'VaultDeposit'; sender: Address}
+  | {transferType: 'VaultWithdraw'; to: Address; proposalId: string}
+);
 
 /*************************************************
  *                  Proposal types               *
