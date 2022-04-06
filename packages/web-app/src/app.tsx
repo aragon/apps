@@ -7,7 +7,6 @@ import {Navigate, Routes, Route, useLocation} from 'react-router-dom';
 import Navbar from 'containers/navbar';
 import WalletMenu from 'containers/walletMenu';
 import TransferMenu from 'containers/transferMenu';
-import TransactionModal, {TransactionState} from 'containers/transactionModal';
 import {trackPage} from 'services/analytics';
 import '../i18n.config';
 

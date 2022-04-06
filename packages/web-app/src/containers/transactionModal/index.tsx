@@ -47,7 +47,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
   successLabel,
   errorLabel,
   approveStepNeeded = false,
-  approveCallback,
+  // approveCallback,
 }) => {
   const {currentStep, next} = useStepper(2);
   const {isModalOpen, setIsModalOpen} = useTransactionContext();

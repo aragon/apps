@@ -1,5 +1,4 @@
 import {Address} from '@aragon/ui-components/dist/utils/addresses';
-import {TransactionState} from 'containers/transactionModal';
 import {TimeFilter, TransferTypes} from './constants';
 
 /*************************************************

@@ -10,7 +10,6 @@ import {useTranslation} from 'react-i18next';
 
 import {TransactionItem} from 'utils/types';
 import TransactionModal, {TransactionState} from 'containers/transactionModal';
-import {TransferTypes} from 'utils/constants';
 
 const TransactionsContext = createContext<TransactionsContextType | null>(null);
 
@@ -58,30 +57,30 @@ const TransactionsProvider: React.FC<Props> = ({children}) => {
     [activeIndex, gotoNextAction, isModalOpen, transactions]
   );
 
-  const renderModal = useMemo(() => {
-    let modal;
-    switch (transactions[activeIndex]?.type) {
-      case TransferTypes.Deposit:
-        modal = (
-          <TransactionModal
-            title={t('TransactionModal.depositTitle')}
-            footerButtonLabel="Sign Deposit"
-            state={transactionState}
-            callback={console.log}
-            approveStepNeeded
-          />
-        );
-        break;
-      default:
-        break;
-    }
-    return (
-      <>
-        {children}
-        {modal}
-      </>
-    );
-  }, [activeIndex, children, t, transactionState, transactions]);
+  // const renderModal = useMemo(() => {
+  //   let modal;
+  //   switch (transactions[activeIndex]?.type) {
+  //     case TransferTypes.Deposit:
+  //       modal = (
+  //         <TransactionModal
+  //           title={t('TransactionModal.depositTitle')}
+  //           footerButtonLabel="Sign Deposit"
+  //           state={transactionState}
+  //           callback={console.log}
+  //           approveStepNeeded
+  //         />
+  //       );
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  //   return (
+  //     <>
+  //       {children}
+  //       {modal}
+  //     </>
+  //   );
+  // }, [activeIndex, children, t, transactionState, transactions]);
 
   return (
     <TransactionsContext.Provider value={value}>
