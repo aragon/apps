@@ -60,13 +60,10 @@ const CreateDAO: React.FC = () => {
     // required fields not dirty
     if (!dirtyFields.daoName || !dirtyFields.daoSummary) return false;
 
-    return errors.daoLogo || errors.daoName || errors.links || errors.daoSummary
-      ? false
-      : true;
+    return errors.daoName || errors.links || errors.daoSummary ? false : true;
   }, [
     dirtyFields.daoName,
     dirtyFields.daoSummary,
-    errors.daoLogo,
     errors.daoName,
     errors.daoSummary,
     errors.links,
