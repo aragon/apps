@@ -10,7 +10,6 @@ import {
 import styled from 'styled-components';
 import NavLinks from 'components/navLinks';
 import {useNavigate} from 'react-router-dom';
-import useBreadcrumbs from 'use-react-router-breadcrumbs';
 import {useTranslation} from 'react-i18next';
 import React, {useMemo, useState} from 'react';
 
@@ -20,18 +19,12 @@ import NetworkIndicator from './networkIndicator';
 import {BreadcrumbDropdown} from './breadcrumbDropdown';
 import {useGlobalModalContext} from 'context/globalModals';
 import {NetworkIndicatorStatus} from 'utils/types';
-import {Community, Dashboard, Finance, Governance, NotFound} from 'utils/paths';
+import {Community, Dashboard, Finance, Governance} from 'utils/paths';
 import {selectedDAO} from 'context/apolloClient';
 import {useReactiveVar} from '@apollo/client';
+import {useMappedBreadcrumbs} from 'hooks/useMappedBreadcrumbs';
 
 const MIN_ROUTE_DEPTH_FOR_BREADCRUMBS = 2;
-
-export const basePathIcons: {[key: string]: JSX.Element} = {
-  [Dashboard]: <IconDashboard />,
-  [Community]: <IconCommunity />,
-  [Finance]: <IconFinance />,
-  [Governance]: <IconGovernance />,
-};
 
 type DesktopNavProp = {
   status?: NetworkIndicatorStatus;
@@ -48,18 +41,12 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
   const [showCrumbMenu, setShowCrumbMenu] = useState(false);
   const {isConnected, account, ensName, ensAvatarUrl}: useWalletProps =
     useWallet();
+  const {breadcrumbs, icon} = useMappedBreadcrumbs();
 
   const isProcess = useMemo(
     () => props.returnURL && props.processLabel,
     [props.processLabel, props.returnURL]
   );
-
-  const breadcrumbs = useBreadcrumbs(undefined, {
-    excludePaths: [Dashboard, NotFound, 'governance/proposals'],
-  }).map(item => ({
-    path: item.match.pathname,
-    label: item.breadcrumb as string,
-  }));
 
   if (isProcess) {
     return (
@@ -102,14 +89,14 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
               <>
                 <BreadcrumbDropdown
                   open={showCrumbMenu}
-                  icon={basePathIcons[breadcrumbs[0].path]}
+                  icon={icon}
                   crumbs={breadcrumbs}
                   onClose={() => setShowCrumbMenu(false)}
                   onCrumbClick={navigate}
                   onOpenChange={setShowCrumbMenu}
                 />
                 <Breadcrumb
-                  icon={basePathIcons[breadcrumbs[0].path]}
+                  icon={icon}
                   crumbs={breadcrumbs}
                   onClick={navigate}
                 />

@@ -1,13 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import {useNavigate} from 'react-router-dom';
-import useBreadcrumbs from 'use-react-router-breadcrumbs';
 import {Badge, Breadcrumb, ButtonText, IconAdd} from '@aragon/ui-components';
 
 import useScreen from 'hooks/useScreen';
-import {basePathIcons} from 'containers/navbar/desktop';
 import {SectionWrapperProps} from './sectionWrappers';
-import {Dashboard, NotFound} from 'utils/paths';
+import {useMappedBreadcrumbs} from 'hooks/useMappedBreadcrumbs';
 
 type ChangeSign = -1 | 0 | 1;
 
@@ -40,23 +38,13 @@ export const PageWrapper = ({
 }: PageWrapperProps) => {
   const {isDesktop} = useScreen();
   const navigate = useNavigate();
-
-  const breadcrumbs = useBreadcrumbs(undefined, {
-    excludePaths: [Dashboard, NotFound, 'governance/proposals'],
-  }).map(item => ({
-    path: item.match.pathname,
-    label: item.breadcrumb as string,
-  }));
+  const {breadcrumbs, icon} = useMappedBreadcrumbs();
 
   return (
     <div className="col-span-full desktop:col-start-3 desktop:col-end-11">
       <HeaderContainer className="-mx-2 tablet:mx-0 tablet:mt-3">
         {!isDesktop && (
-          <Breadcrumb
-            icon={basePathIcons[breadcrumbs[0].path]}
-            crumbs={breadcrumbs}
-            onClick={navigate}
-          />
+          <Breadcrumb icon={icon} crumbs={breadcrumbs} onClick={navigate} />
         )}
         <ContentWrapper>
           <TextWrapper>
