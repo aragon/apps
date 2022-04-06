@@ -65,14 +65,6 @@ function App() {
       <WalletMenu />
       <TransferMenu />
       <DaoSelectMenu />
-      <TransactionModal
-        title="Sign Deposit"
-        subtitle="To register your deposit, you need to submit a transaction which costs you following."
-        footerButtonLabel="Sign Deposit"
-        state={TransactionState.SUCCESS}
-        callback={console.log}
-        approveStepNeeded
-      />
     </div>
   );
 }

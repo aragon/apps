@@ -8,9 +8,9 @@ import {
 } from '@aragon/ui-components';
 import {useStepper} from 'hooks/useStepper';
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
-import {useGlobalModalContext} from 'context/globalModals';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
+import {useTransactionContext} from 'context/transactions';
 
 export enum TransactionState {
   WAITING = 'WAITING',
@@ -28,6 +28,8 @@ type TransactionModalProps = {
   successLabel?: string;
   errorLabel?: string;
   approveStepNeeded?: boolean;
+  isModalOpen: boolean;
+  setIsModalOpen: (value: boolean) => void;
   approveCallback?: () => void;
 };
 
@@ -47,10 +49,13 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
   successLabel,
   errorLabel,
   approveStepNeeded = false,
+  isModalOpen,
+  setIsModalOpen,
   approveCallback,
 }) => {
-  const {isTransactionOpen, close} = useGlobalModalContext();
   const {currentStep, next} = useStepper(2);
+  const {transactions, activeIndex, setTransactionState} =
+    useTransactionContext();
   const {t} = useTranslation();
 
   const label = {
@@ -69,12 +74,19 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
 
   return (
     <ModalBottomSheetSwitcher
-      isOpen={isTransactionOpen}
-      onClose={() => close('transaction')}
+      isOpen={isModalOpen}
+      onClose={() => setIsModalOpen(false)}
       title={title}
       subtitle={subtitle}
     >
       <GasCostTableContainer>
+        <ActionAmountEthContainer>
+          <Label>Deposit</Label>
+          <VStack>
+            <StrongText>{'0.0015ETH'}</StrongText>
+            <p className="text-sm text-right text-ui-500">{'$6.00'}</p>
+          </VStack>
+        </ActionAmountEthContainer>
         <GasCostEthContainer>
           <VStack>
             <Label>{t('TransactionModal.estimatedFees')}</Label>
@@ -180,7 +192,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
 export default TransactionModal;
 
 const GasCostTableContainer = styled.div.attrs({
-  className: 'm-3 bg-white rounded-xl border border-ui-100',
+  className: 'm-3 bg-white rounded-xl border border-ui-100 divide-y',
 })``;
 
 const GasCostEthContainer = styled.div.attrs({
@@ -189,6 +201,10 @@ const GasCostEthContainer = styled.div.attrs({
 
 const GasCostUSDContainer = styled.div.attrs({
   className: 'flex justify-between py-1.5 px-2 rounded-b-xl bg-ui-100',
+})``;
+
+const ActionAmountEthContainer = styled.div.attrs({
+  className: 'flex flex justify-between py-1.5 px-2',
 })``;
 
 const ApproveTxContainer = styled.div.attrs({

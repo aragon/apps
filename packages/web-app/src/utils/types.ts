@@ -1,5 +1,6 @@
 import {Address} from '@aragon/ui-components/dist/utils/addresses';
-import {TimeFilter} from './constants';
+import {TransactionState} from 'containers/transactionModal';
+import {TimeFilter, TransferTypes} from './constants';
 
 /*************************************************
  *                   Finance types               *
@@ -171,4 +172,14 @@ export type ActionItem = {
   name: ActionsTypes;
   inputs?: ParamType[];
 };
+
+export type TransactionItem = {
+  type: TransferTypes;
+  data: {
+    sender: string;
+    amount: number;
+    tokenContract: Address;
+  };
+};
+
 export type NetworkIndicatorStatus = 'default' | 'testnet' | 'unsupported';

@@ -25,12 +25,6 @@ const Home: React.FC = () => {
         size="large"
         onClick={() => navigate('/create-dao')}
       />
-      <ButtonText
-        label="Open Transaction Modal"
-        className="mx-auto mt-3"
-        size="large"
-        onClick={() => open('transaction')}
-      />
     </div>
   );
 };

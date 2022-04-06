@@ -245,6 +245,7 @@
     "noAddresses": "No address Found"
   },
   "TransactionModal": {
+    "depositTitle": "Sign Deposit",
     "estimatedFees": "Estimated Gas Fees",
     "synced": "Synced {{time}} sec ag",
     "totalCost": "Total Cost",

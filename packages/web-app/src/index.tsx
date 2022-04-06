@@ -10,6 +10,7 @@ import {GlobalModalsProvider} from 'context/globalModals';
 import {ApolloClientProvider} from 'context/apolloClient';
 import 'tailwindcss/tailwind.css';
 import {ProvidersProvider} from 'context/providers';
+import {TransactionsProvider} from 'context/transactions';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -18,11 +19,13 @@ ReactDOM.render(
         <ProvidersProvider>
           <WalletMenuProvider>
             <GlobalModalsProvider>
-              <Router>
-                <ApolloClientProvider>
-                  <App />
-                </ApolloClientProvider>
-              </Router>
+              <TransactionsProvider>
+                <Router>
+                  <ApolloClientProvider>
+                    <App />
+                  </ApolloClientProvider>
+                </Router>
+              </TransactionsProvider>
             </GlobalModalsProvider>
           </WalletMenuProvider>
         </ProvidersProvider>
