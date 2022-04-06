@@ -14,21 +14,27 @@ import Community from './community';
 import Governance from './governance';
 import goLive from 'public/goLive.svg';
 import {useNavigate} from 'react-router-dom';
-import {Dashboard} from 'utils/paths';
+import {Dashboard, replaceNetworkParam} from 'utils/paths';
 import DAOFactoryABI from 'abis/DAOFactory.json';
 
 import {useProviders} from 'context/providers';
+import {useNetwork} from 'context/network';
 
 export const GoLiveHeader: React.FC = () => {
   const {t} = useTranslation();
   const navigate = useNavigate();
+  const {network} = useNetwork();
+
+  const clickHandler = (path: string) => {
+    navigate(replaceNetworkParam(path, network));
+  };
 
   return (
     <div className="tablet:p-3 desktop:p-6 px-2 pt-2 desktop:pt-3 pb-3 bg-ui-0 tablet:rounded-xl">
       <div className="desktop:hidden">
         <Breadcrumb
           crumbs={{label: t('createDAO.title'), path: Dashboard}}
-          onClick={(path: string) => navigate(path)}
+          onClick={clickHandler}
         />
       </div>
       <div className="flex justify-between">

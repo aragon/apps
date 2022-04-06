@@ -51,6 +51,7 @@ const Proposal: React.FC = () => {
   const {t} = useTranslation();
   const {id} = useParams();
   const navigate = useNavigate();
+  const {network} = useNetwork();
   const {isDesktop} = useScreen();
   const {breadcrumbs} = useMappedBreadcrumbs();
 
@@ -70,7 +71,9 @@ const Proposal: React.FC = () => {
       <HeaderContainer>
         {!isDesktop && (
           <Breadcrumb
-            onClick={navigate}
+            onClick={(path: string) =>
+              navigate(replaceNetworkParam(path, network))
+            }
             crumbs={breadcrumbs}
             icon={<IconGovernance />}
           />

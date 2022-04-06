@@ -5,31 +5,27 @@ import {useTranslation} from 'react-i18next';
 import {ActionListItem, IconChevronRight} from '@aragon/ui-components';
 
 import {useWallet} from 'context/augmentedWallet';
-import {NewDeposit, NewWithDraw} from 'utils/paths';
+import {NewDeposit, NewWithDraw, replaceNetworkParam} from 'utils/paths';
 import {useGlobalModalContext} from 'context/globalModals';
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
+import {useNetwork} from 'context/network';
+
+type Action = 'deposit' | 'withdraw';
 
 const TransferMenu: React.FC = () => {
   const {isTransferOpen, close} = useGlobalModalContext();
   const {t} = useTranslation();
+  const {network} = useNetwork();
   const navigate = useNavigate();
   const {isConnected} = useWallet();
 
-  /* TODO: Those should be one method with an argument. */
-  const handleNewDepositClick = () => {
+  const handleClick = (action: Action) => {
     // TODO: change alert to proper error reporting mechanism,
     // Move to proper placing
     if (isConnected()) {
-      navigate(NewDeposit);
-      close('default');
-    } else alert('Please connect your wallet');
-  };
-
-  const handleNewWithdrawClick = () => {
-    // TODO: change alert to proper error reporting mechanism,
-    if (isConnected()) {
-      // TODO: Check if wallet address is authorized to access new withdraw page and then navigate
-      navigate(NewWithDraw);
+      if (action === 'deposit')
+        navigate(replaceNetworkParam(NewDeposit, network));
+      else navigate(replaceNetworkParam(NewWithDraw, network));
       close('default');
     } else alert('Please connect your wallet');
   };
@@ -45,13 +41,13 @@ const TransferMenu: React.FC = () => {
           title={t('TransferModal.item1Title') as string}
           subtitle={t('TransferModal.item1Subtitle') as string}
           icon={<IconChevronRight />}
-          onClick={handleNewDepositClick}
+          onClick={() => handleClick('deposit')}
         />
         <ActionListItem
           title={t('TransferModal.item2Title') as string}
           subtitle={t('TransferModal.item2Subtitle') as string}
           icon={<IconChevronRight />}
-          onClick={handleNewWithdrawClick}
+          onClick={() => handleClick('withdraw')}
         />
       </Container>
     </ModalBottomSheetSwitcher>

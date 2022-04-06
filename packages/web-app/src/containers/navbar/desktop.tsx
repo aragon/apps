@@ -11,10 +11,11 @@ import NetworkIndicator from './networkIndicator';
 import {BreadcrumbDropdown} from './breadcrumbDropdown';
 import {useGlobalModalContext} from 'context/globalModals';
 import {NetworkIndicatorStatus} from 'utils/types';
-import {Community, Dashboard, Finance, Governance} from 'utils/paths';
+import {replaceNetworkParam} from 'utils/paths';
 import {selectedDAO} from 'context/apolloClient';
 import {useReactiveVar} from '@apollo/client';
 import {useMappedBreadcrumbs} from 'hooks/useMappedBreadcrumbs';
+import {useNetwork} from 'context/network';
 
 const MIN_ROUTE_DEPTH_FOR_BREADCRUMBS = 2;
 
@@ -29,16 +30,22 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
   const {t} = useTranslation();
   const {open} = useGlobalModalContext();
   const navigate = useNavigate();
+  const {network} = useNetwork();
   const selectedDao = useReactiveVar(selectedDAO);
-  const [showCrumbMenu, setShowCrumbMenu] = useState(false);
   const {isConnected, account, ensName, ensAvatarUrl}: useWalletProps =
     useWallet();
   const {breadcrumbs, icon} = useMappedBreadcrumbs();
+
+  const [showCrumbMenu, setShowCrumbMenu] = useState(false);
 
   const isProcess = useMemo(
     () => props.returnURL && props.processLabel,
     [props.processLabel, props.returnURL]
   );
+
+  const clickHandler = (path: string) => {
+    navigate(replaceNetworkParam(path, network));
+  };
 
   if (isProcess) {
     return (
@@ -47,7 +54,7 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
         <Menu>
           <Breadcrumb
             crumbs={{label: props.processLabel!, path: props.returnURL!}}
-            onClick={navigate}
+            onClick={clickHandler}
           />
 
           <ButtonWallet
@@ -84,13 +91,13 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
                   icon={icon}
                   crumbs={breadcrumbs}
                   onClose={() => setShowCrumbMenu(false)}
-                  onCrumbClick={navigate}
+                  onCrumbClick={clickHandler}
                   onOpenChange={setShowCrumbMenu}
                 />
                 <Breadcrumb
                   icon={icon}
                   crumbs={breadcrumbs}
-                  onClick={navigate}
+                  onClick={clickHandler}
                 />
               </>
             )}
