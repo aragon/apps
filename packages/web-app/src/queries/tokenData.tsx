@@ -10,7 +10,6 @@ export const TOKEN_DATA_QUERY = gql`
       image {
         large
       }
-      address
       market_data {
         current_price {
           usd

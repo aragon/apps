@@ -67,7 +67,7 @@ const Proposal: React.FC = () => {
   }));
 
   return (
-    <Content>
+    <Container>
       {/* Proposal Header */}
       <HeaderContainer>
         {!isDesktop && (
@@ -181,14 +181,14 @@ const Proposal: React.FC = () => {
           <WidgetStatus steps={stepDataRunning} />
         </AdditionalInfoContainer>
       </ContentContainer>
-    </Content>
+    </Container>
   );
 };
 
 export default withTransaction('Proposal', 'component')(Proposal);
 
-const Content = styled.div.attrs({
-  className: 'tablet:w-4/5 mx-auto px-2 pt-3 pb-14',
+const Container = styled.div.attrs({
+  className: 'col-span-full desktop:col-start-2 desktop:col-end-12',
 })``;
 
 const HeaderContainer = styled.div.attrs({
