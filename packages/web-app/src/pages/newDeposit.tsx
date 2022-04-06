@@ -14,6 +14,7 @@ import {useWalletTokens} from 'hooks/useWalletTokens';
 import {FullScreenStepper, Step} from 'components/fullScreenStepper';
 import {TransferFormData} from './newWithdraw';
 import {Finance} from 'utils/paths';
+import {useTransactionContext} from 'context/transactions';
 
 export type DepositFormData = TransferFormData;
 
@@ -35,6 +36,7 @@ const NewDeposit: React.FC = () => {
     mode: 'onChange',
   });
   const {data: walletTokens} = useWalletTokens();
+  const {setIsModalOpen} = useTransactionContext();
 
   /*************************************************
    *                    Hooks                      *
@@ -101,6 +103,7 @@ const NewDeposit: React.FC = () => {
           wizardTitle={t('newDeposit.reviewTransfer')}
           wizardDescription={t('newDeposit.reviewTransferSubtitle')}
           nextButtonLabel={t('labels.submitDeposit')}
+          onNextButtonClicked={() => setIsModalOpen(true)}
         >
           <ReviewDeposit />
         </Step>

@@ -28,8 +28,6 @@ type TransactionModalProps = {
   successLabel?: string;
   errorLabel?: string;
   approveStepNeeded?: boolean;
-  isModalOpen: boolean;
-  setIsModalOpen: (value: boolean) => void;
   approveCallback?: () => void;
 };
 
@@ -49,13 +47,10 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
   successLabel,
   errorLabel,
   approveStepNeeded = false,
-  isModalOpen,
-  setIsModalOpen,
   approveCallback,
 }) => {
   const {currentStep, next} = useStepper(2);
-  const {transactions, activeIndex, setTransactionState} =
-    useTransactionContext();
+  const {isModalOpen, setIsModalOpen} = useTransactionContext();
   const {t} = useTranslation();
 
   const label = {
@@ -66,9 +61,6 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
   };
 
   const handleApproveClick = () => {
-    if (approveCallback) {
-      approveCallback();
-    }
     next();
   };
 

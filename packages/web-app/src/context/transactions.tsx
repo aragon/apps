@@ -20,6 +20,8 @@ type TransactionsContextType = {
   setTransactionState: (value: TransactionState) => void;
   setActiveIndex: (value: number) => void;
   gotoNextAction: () => void;
+  isModalOpen: boolean;
+  setIsModalOpen: (value: boolean) => void;
   setTransactions: (value: TransactionItem[]) => void;
 };
 
@@ -48,10 +50,12 @@ const TransactionsProvider: React.FC<Props> = ({children}) => {
       setTransactionState,
       setActiveIndex,
       activeIndex,
+      isModalOpen,
+      setIsModalOpen,
       setTransactions,
       gotoNextAction,
     }),
-    [activeIndex, gotoNextAction, transactions]
+    [activeIndex, gotoNextAction, isModalOpen, transactions]
   );
 
   const renderModal = useMemo(() => {
@@ -65,7 +69,6 @@ const TransactionsProvider: React.FC<Props> = ({children}) => {
             state={transactionState}
             callback={console.log}
             approveStepNeeded
-            {...{isModalOpen, setIsModalOpen}}
           />
         );
         break;
@@ -78,11 +81,18 @@ const TransactionsProvider: React.FC<Props> = ({children}) => {
         {modal}
       </>
     );
-  }, [activeIndex, children, isModalOpen, t, transactionState, transactions]);
+  }, [activeIndex, children, t, transactionState, transactions]);
 
   return (
     <TransactionsContext.Provider value={value}>
-      {renderModal}
+      {children}
+      <TransactionModal
+        title={t('TransactionModal.depositTitle')}
+        footerButtonLabel="Sign Deposit"
+        state={transactionState}
+        callback={console.log}
+        approveStepNeeded
+      />
     </TransactionsContext.Provider>
   );
 };
