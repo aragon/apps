@@ -1,12 +1,4 @@
-import {
-  Breadcrumb,
-  ButtonWallet,
-  CardDao,
-  IconCommunity,
-  IconDashboard,
-  IconFinance,
-  IconGovernance,
-} from '@aragon/ui-components';
+import {Breadcrumb, ButtonWallet, CardDao} from '@aragon/ui-components';
 import styled from 'styled-components';
 import NavLinks from 'components/navLinks';
 import {useNavigate} from 'react-router-dom';

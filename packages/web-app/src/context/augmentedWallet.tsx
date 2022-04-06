@@ -7,7 +7,6 @@ import {Wallet} from 'use-wallet/dist/cjs/types';
 import {identifyUser} from 'services/analytics';
 import {updateAPMContext, useAPM} from './elasticAPM';
 import {useNetwork} from './network';
-import {SupportedNetworks} from 'utils/constants';
 
 export type WalletAugmented = Wallet & {
   isOnCorrectNetwork: boolean;
@@ -26,8 +25,8 @@ const WalletAugmented: React.FC<unknown> = ({children}) => {
 
   const isOnCorrectNetwork = useMemo(() => {
     // This is necessary as long as we're using useWallet. Once we switch to
-    // web3modal entirely, we'll no londer need to rely on the chains defined in
-    // useWallet and we'll be able to rely on the data defined in
+    // web3modal entirely, we'll no longer need to rely on the chains defined in
+    // useWallet. Instead we'll be rely entirely on the data defined in
     // constants/chains.tsx
     switch (wallet.networkName) {
       case 'main':

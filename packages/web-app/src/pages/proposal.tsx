@@ -12,15 +12,18 @@ import {
 } from '@aragon/ui-components';
 import styled from 'styled-components';
 import useScreen from 'hooks/useScreen';
-import useBreadcrumbs from 'use-react-router-breadcrumbs';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
 import {useNavigate, useParams} from 'react-router-dom';
 import React, {useMemo, useState} from 'react';
 
-import * as paths from 'utils/paths';
 import ResourceList from 'components/resourceList';
 import {VotingTerminal} from 'containers/votingTerminal';
+import {useMappedBreadcrumbs} from 'hooks/useMappedBreadcrumbs';
+import {useNetwork} from 'context/network';
+import {NotFound, replaceNetworkParam} from 'utils/paths';
+
+/* MOCK DATA ================================================================ */
 
 // TODO: This is just some mock data. Remove this while integration
 const publishedDone: ProgressStatusProps = {
@@ -40,7 +43,8 @@ const stepDataRunning: ProgressStatusProps[] = [
 ];
 
 const proposalTags = ['Finance', 'Withdraw'];
-//////////////////////////////////////////////////////////////////////
+
+/* PROPOSAL COMPONENT ======================================================= */
 
 const Proposal: React.FC = () => {
   const [expandedProposal, setExpandedProposal] = useState(false);
@@ -48,6 +52,7 @@ const Proposal: React.FC = () => {
   const {id} = useParams();
   const navigate = useNavigate();
   const {isDesktop} = useScreen();
+  const {breadcrumbs} = useMappedBreadcrumbs();
 
   const publisher = useMemo(() => {
     // if (publisherAddress === account) return 'you';
@@ -56,15 +61,8 @@ const Proposal: React.FC = () => {
   }, []);
 
   if (!id) {
-    navigate(paths.NotFound);
+    navigate(NotFound);
   }
-
-  const breadcrumbs = useBreadcrumbs(undefined, {
-    excludePaths: [paths.Dashboard, paths.NotFound, 'governance/proposals'],
-  }).map(item => ({
-    path: item.match.pathname,
-    label: item.breadcrumb as string,
-  }));
 
   return (
     <Container>

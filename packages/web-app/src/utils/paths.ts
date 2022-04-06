@@ -3,22 +3,22 @@ import {SupportedNetworks} from './constants';
 /* TOP LEVEL PAGES ========================================================== */
 
 export const Dashboard = '/';
-export const Community = '/community';
+export const Community = 'community';
 export const CreateDAO = '/create-dao';
 export const NotFound = '/notfound';
 
-export const Finance = ':network/finance';
-export const Governance = ':network/governance';
+export const Finance = '/:network/finance';
+export const Governance = '/:network/governance';
 
 /* FINANCE PAGES ============================================================ */
-export const AllTokens = ':network/finance/tokens';
-export const AllTransfers = ':network/finance/transfers';
-export const NewDeposit = ':network/finance/new-deposit';
-export const NewWithDraw = ':network/finance/new-withdraw';
+export const AllTokens = '/:network/finance/tokens';
+export const AllTransfers = '/:network/finance/transfers';
+export const NewDeposit = '/:network/finance/new-deposit';
+export const NewWithDraw = '/:network/finance/new-withdraw';
 
 /* GOVERNANCE PAGES ========================================================= */
-export const Proposal = ':network/governance/proposals/:id';
-export const NewProposal = ':network/new-proposal';
+export const Proposal = '/:network/governance/proposals/:id';
+export const NewProposal = '/:network/governance/new-proposal';
 
 /**
  * Replaces the network parameter in certain URLs. If the path passed to this
@@ -29,11 +29,13 @@ export const NewProposal = ':network/new-proposal';
  * @returns concrete path with network.
  */
 export function replaceNetworkParam(path: string, network: SupportedNetworks) {
-  if (path.startsWith(':network')) {
-    return network + path.slice(8);
+  const crumbs = path.split('/');
+  if (crumbs[1] === ':network') {
+    crumbs[1] = network;
+    return crumbs.join('/');
   }
 
-  if (path.includes(':network')) {
+  if (crumbs.some(s => s === ':network')) {
     throw Error(
       'URL is malformed. Network paramater is expected to either be the first parameter or not be in the URL at all.'
     );
