@@ -37,10 +37,11 @@ type NetworkProviderProps = {
  *
  */
 export function NetworkProvider({children}: NetworkProviderProps) {
-  const urlMatch = useMatch(':network/:rest');
+  const urlMatch = useMatch(':network/*');
 
   const [networkState, setNetworkState] = useState<SupportedNetworks>(() => {
     const networkParam = urlMatch?.params?.network;
+    console.log('[LOGGING] networkParam from state init ' + networkParam);
     if (!networkParam || !isSupportedNetwork(networkParam)) return 'ethereum';
     else return networkParam;
   });
@@ -50,11 +51,15 @@ export function NetworkProvider({children}: NetworkProviderProps) {
   }, []);
 
   useEffect(() => {
+    console.log('[LOGGING] urlMatch ' + JSON.stringify(urlMatch, null, 2));
     const networkParam = urlMatch?.params?.network;
+    console.log('[LOGGING] networkParam from useEffect ' + networkParam);
     if (!networkParam || !isSupportedNetwork(networkParam))
       setNetworkState('ethereum');
     else setNetworkState(networkParam);
   }, [urlMatch]);
+
+  console.log('[LOGGING] networkState from Context: ' + networkState);
 
   return (
     <NetworkContext.Provider
