@@ -104,11 +104,6 @@ const useWalletConnectors: UseWalletConnector = connectors.reduce(
   {} as UseWalletConnector
 );
 
-console.log(
-  '[LOGGING] useWalletConnectors ' +
-    JSON.stringify(useWalletConnectors, null, 2)
-);
-
 const WalletProvider: React.FC<unknown> = ({children}) => {
   return (
     <UseWalletProvider connectors={useWalletConnectors}>
