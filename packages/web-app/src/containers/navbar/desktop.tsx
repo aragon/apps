@@ -23,6 +23,8 @@ import {NetworkIndicatorStatus} from 'utils/types';
 import {Community, Dashboard, Finance, Governance, NotFound} from 'utils/paths';
 import {selectedDAO} from 'context/apolloClient';
 import {useReactiveVar} from '@apollo/client';
+import { useSigner } from 'use-signer';
+import { useEnsAvatar, useEnsName } from 'hooks/useEnsData';
 
 const MIN_ROUTE_DEPTH_FOR_BREADCRUMBS = 2;
 
@@ -46,8 +48,10 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
   const navigate = useNavigate();
   const selectedDao = useReactiveVar(selectedDAO);
   const [showCrumbMenu, setShowCrumbMenu] = useState(false);
-  const {isConnected, account, ensName, ensAvatarUrl}: useWalletProps =
-    useWallet();
+  const { status, address } = useSigner();
+  const { data: ensName } = useEnsName(address || '');
+  const { data: ensAvatarUrl } = useEnsAvatar(address || '');
+  const isConnected = status === 'connected';
 
   const isProcess = useMemo(
     () => props.returnURL && props.processLabel,
@@ -72,11 +76,11 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
           />
 
           <ButtonWallet
-            src={ensAvatarUrl || account}
+            src={ensAvatarUrl || address}
             onClick={props.onWalletClick}
-            isConnected={isConnected()}
+            isConnected={isConnected}
             label={
-              isConnected() ? ensName || account : t('navButtons.connectWallet')
+              isConnected ? ensName || address : t('navButtons.connectWallet')
             }
           />
         </Menu>
@@ -119,11 +123,11 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
         </Content>
 
         <ButtonWallet
-          src={ensAvatarUrl || account}
+          src={ensAvatarUrl || address}
           onClick={props.onWalletClick}
-          isConnected={isConnected()}
+          isConnected={isConnected}
           label={
-            isConnected() ? ensName || account : t('navButtons.connectWallet')
+            isConnected ? ensName || address : t('navButtons.connectWallet')
           }
         />
       </Menu>

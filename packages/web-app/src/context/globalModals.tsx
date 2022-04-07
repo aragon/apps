@@ -16,6 +16,7 @@ type GlobalModalsContextType = {
   isSelectDaoOpen: boolean;
   isAddActionOpen: boolean;
   isAddressesOpen: boolean;
+  isWalletOpen: boolean;
   open: (arg?: MenuTypes) => void;
   close: (arg?: MenuTypes) => void;
 };
@@ -27,7 +28,9 @@ type MenuTypes =
   | 'addAction'
   | 'selectDao'
   | 'default'
-  | 'addresses';
+  | 'addresses'
+  | 'wallet'
+  ;
 
 type Props = Record<'children', ReactNode>;
 
@@ -35,7 +38,7 @@ type Props = Record<'children', ReactNode>;
 instead of one boolean state for each of the menus. This can be done based on a
 type like MenuType. Then this context can be extended simply by adding a new
 type to MenuTypes. */
-const GlobalModalsProvider: React.FC<Props> = ({children}) => {
+const GlobalModalsProvider: React.FC<Props> = ({ children }) => {
   const [isTransferOpen, setIsTransferOpen] =
     useState<GlobalModalsContextType['isTransferOpen']>(false);
   const [isTokenOpen, setIsTokenOpen] =
@@ -50,6 +53,8 @@ const GlobalModalsProvider: React.FC<Props> = ({children}) => {
     useState<GlobalModalsContextType['isSelectDaoOpen']>(false);
   const [isAddressesOpen, setAddressesOpen] =
     useState<GlobalModalsContextType['isAddressesOpen']>(false);
+  const [isWalletOpen, setWalletOpen] =
+    useState<GlobalModalsContextType['isWalletOpen']>(false);
 
   const open = (type?: MenuTypes) => {
     switch (type) {
@@ -70,6 +75,9 @@ const GlobalModalsProvider: React.FC<Props> = ({children}) => {
         break;
       case 'addresses':
         setAddressesOpen(true);
+        break;
+      case 'wallet':
+        setWalletOpen(true);
         break;
       default:
         setIsTransferOpen(true);
@@ -97,6 +105,9 @@ const GlobalModalsProvider: React.FC<Props> = ({children}) => {
       case 'addresses':
         setAddressesOpen(false);
         break;
+      case 'wallet':
+        setWalletOpen(false);
+        break;
       default:
         setIsTransferOpen(false);
         break;
@@ -121,6 +132,7 @@ const GlobalModalsProvider: React.FC<Props> = ({children}) => {
       isAddActionOpen,
       isSelectDaoOpen,
       isAddressesOpen,
+      isWalletOpen,
       open,
       close,
     }),
@@ -132,6 +144,7 @@ const GlobalModalsProvider: React.FC<Props> = ({children}) => {
       isAddActionOpen,
       isSelectDaoOpen,
       isAddressesOpen,
+      isWalletOpen
     ]
   );
 
@@ -146,4 +159,4 @@ function useGlobalModalContext(): GlobalModalsContextType {
   return useContext(GlobalModalsContext) as GlobalModalsContextType;
 }
 
-export {useGlobalModalContext, GlobalModalsProvider};
+export { useGlobalModalContext, GlobalModalsProvider };

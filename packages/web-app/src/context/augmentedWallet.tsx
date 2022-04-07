@@ -7,6 +7,7 @@ import {Wallet} from 'use-wallet/dist/cjs/types';
 
 import {identifyUser} from 'services/analytics';
 import {updateAPMContext, useAPM} from './elasticAPM';
+import { useSigner } from 'use-signer';
 
 export type WalletAugmented = Wallet & {};
 // Any is a workaround so TS doesn't ask for a filled out default
