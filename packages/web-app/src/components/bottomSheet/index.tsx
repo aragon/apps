@@ -5,12 +5,13 @@ import styled from 'styled-components';
 
 import usePrevious from 'hooks/usePrevious';
 
-type InputProps = {
+export type BottomSheetProps = {
   children?: ReactNode;
   isOpen: boolean;
   onClose: () => void;
   title?: string;
   subtitle?: string;
+  closeOnDrag?: boolean;
 };
 
 export default function BottomSheet({
@@ -19,12 +20,18 @@ export default function BottomSheet({
   onClose,
   title,
   subtitle,
-}: InputProps) {
+  closeOnDrag = true,
+}: BottomSheetProps) {
   const prevIsOpen = usePrevious(isOpen);
   const controls = useAnimation();
 
   // For adding drag on bottom sheet
   function onDragEnd(_: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) {
+    if (!closeOnDrag) {
+      controls.start('visible');
+      return;
+    }
+
     const shouldClose =
       info.velocity.y > 20 || (info.velocity.y >= 0 && info.point.y > 45);
     if (shouldClose) {
@@ -96,7 +103,10 @@ const StyledMotionContainer = styled(motion.div).attrs({
 
 const ModalTitleContainer = styled.div.attrs({
   className: 'bg-white rounded-xl p-3 space-y-0.5 text-center',
-})``;
+})`
+  box-shadow: 0px 10px 20px rgba(31, 41, 51, 0.04),
+    0px 2px 6px rgba(31, 41, 51, 0.04), 0px 0px 1px rgba(31, 41, 51, 0.04);
+`;
 
 const ModalTitle = styled.h1.attrs({
   className: 'font-bold text-ui-800',

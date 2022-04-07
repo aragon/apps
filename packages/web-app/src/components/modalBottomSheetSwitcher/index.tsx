@@ -1,14 +1,16 @@
 import React from 'react';
 import {Modal, ModalProps} from '@aragon/ui-components';
-import BottomSheet from 'components/bottomSheet';
+import BottomSheet, {BottomSheetProps} from 'components/bottomSheet';
 import useScreen from 'hooks/useScreen';
 
-const ModalBottomSheetSwitcher: React.FC<ModalProps> = ({
+const ModalBottomSheetSwitcher: React.FC<ModalProps & BottomSheetProps> = ({
   title,
   subtitle,
   isOpen,
   onClose,
   children,
+  style,
+  closeOnDrag,
 }) => {
   const {isDesktop} = useScreen();
 
@@ -19,6 +21,7 @@ const ModalBottomSheetSwitcher: React.FC<ModalProps> = ({
           isOpen={isOpen}
           onClose={() => onClose && onClose()}
           title={title}
+          style={style}
           subtitle={subtitle}
         >
           {children}
@@ -26,9 +29,10 @@ const ModalBottomSheetSwitcher: React.FC<ModalProps> = ({
       ) : (
         <BottomSheet
           isOpen={isOpen || false}
-          onClose={() => onClose && onClose()}
+          onClose={() => onClose?.()}
           title={title}
           subtitle={subtitle}
+          closeOnDrag={closeOnDrag}
         >
           {children}
         </BottomSheet>

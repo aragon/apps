@@ -85,7 +85,8 @@ const PrivacyPolicy: React.FC = () => {
         <BottomSheet
           title={t('privacyPolicy.title')}
           isOpen={showPrivacyPolicy}
-          onClose={() => {}}
+          onClose={() => null}
+          closeOnDrag={false}
         >
           <BottomSheetContentContainer>
             <PrivacyPolicyContent
