@@ -13,8 +13,8 @@ import React, {useCallback, useState} from 'react';
 
 import {i18n} from '../../../i18n.config';
 import useScreen from 'hooks/useScreen';
-import {useWallet} from 'context/augmentedWallet';
-import {CHAIN_METADATA} from 'utils/constants';
+import {CHAIN_METADATA, SupportedNetworks} from 'utils/constants';
+import {useNetwork} from 'context/network';
 
 type NetworkType = 'main' | 'test';
 type SortFilter = 'cost' | 'popularity' | 'security';
@@ -22,7 +22,7 @@ type SortFilter = 'cost' | 'popularity' | 'security';
 const SelectChainForm: React.FC = () => {
   const {t} = useTranslation();
   const {isMobile} = useScreen();
-  const {account, chainId, networkName} = useWallet();
+  const {setNetwork} = useNetwork();
   const {control, getValues} = useFormContext();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -108,26 +108,30 @@ const SelectChainForm: React.FC = () => {
         </SortFilter>
       </Header>
       <FormItem>
-        {networks[networkType][sortFilter].map(({id, name, ...rest}, index) => (
+        {networks[networkType][sortFilter].map((selectedNetwork, index) => (
           <Controller
-            key={id}
+            key={selectedNetwork}
             name="blockchain"
             rules={{required: true}}
             control={control}
             defaultValue={{
-              id: (account && chainId) || 1,
-              label: (account && networkName) || 'Ethereum',
-              network: networkType,
+              id: CHAIN_METADATA['ethereum'].id,
+              label: CHAIN_METADATA['ethereum'].name,
+              network: 'main',
             }}
             render={({field}) => (
               <ListItemBlockchain
-                onClick={() =>
-                  field.onChange({id: id, label: name, network: networkType})
-                }
-                selected={id === field.value.id}
-                {...{name}}
-                {...(index === 0 ? {tag: labels[sortFilter].tag} : {})}
-                {...rest}
+                onClick={() => {
+                  setNetwork(selectedNetwork);
+                  field.onChange({
+                    id: CHAIN_METADATA[selectedNetwork].id,
+                    label: CHAIN_METADATA[selectedNetwork].name,
+                    network: networkType,
+                  });
+                }}
+                selected={CHAIN_METADATA[selectedNetwork].id === field.value.id}
+                tag={index === 0 && labels[sortFilter].tag}
+                {...CHAIN_METADATA[selectedNetwork]}
               />
             )}
           />
@@ -168,39 +172,24 @@ const labels = {
 };
 
 // Note: Default Network name in polygon network is different than Below list
-const networks = {
+type SelectableNetworks = Record<
+  NetworkType,
+  {
+    cost: SupportedNetworks[];
+    popularity: SupportedNetworks[];
+    security: SupportedNetworks[];
+  }
+>;
+
+const networks: SelectableNetworks = {
   main: {
-    cost: [
-      CHAIN_METADATA['polygon'],
-      CHAIN_METADATA['arbitrum'],
-      CHAIN_METADATA['ethereum'],
-    ],
-    popularity: [
-      CHAIN_METADATA['polygon'],
-      CHAIN_METADATA['ethereum'],
-      CHAIN_METADATA['arbitrum'],
-    ],
-    security: [
-      CHAIN_METADATA['ethereum'],
-      CHAIN_METADATA['arbitrum'],
-      CHAIN_METADATA['polygon'],
-    ],
+    cost: ['polygon', 'arbitrum', 'ethereum'],
+    popularity: ['polygon', 'ethereum', 'arbitrum'],
+    security: ['ethereum', 'arbitrum', 'polygon'],
   },
   test: {
-    cost: [
-      CHAIN_METADATA['mumbai'],
-      CHAIN_METADATA['arbitrum-test'],
-      CHAIN_METADATA['ethereum'],
-    ],
-    popularity: [
-      CHAIN_METADATA['mumbai'],
-      CHAIN_METADATA['ethereum'],
-      CHAIN_METADATA['arbitrum-test'],
-    ],
-    security: [
-      CHAIN_METADATA['ethereum'],
-      CHAIN_METADATA['arbitrum-test'],
-      CHAIN_METADATA['mumbai'],
-    ],
+    cost: ['mumbai', 'arbitrum-test', 'ethereum'],
+    popularity: ['mumbai', 'ethereum', 'arbitrum-test'],
+    security: ['ethereum', 'arbitrum-test', 'mumbai'],
   },
 };

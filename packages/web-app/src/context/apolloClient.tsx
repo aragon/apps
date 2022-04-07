@@ -13,7 +13,7 @@ import {
 import {RestLink} from 'apollo-link-rest';
 import {CachePersistor, LocalStorageWrapper} from 'apollo3-cache-persist';
 import {BASE_URL, SUBGRAPH_API_URL} from 'utils/constants';
-import {useWallet} from 'context/augmentedWallet';
+import {useNetwork} from './network';
 
 /**
  * IApolloClientContext
@@ -27,17 +27,17 @@ const UseApolloClientContext = React.createContext<IApolloClientContext | any>(
 );
 
 const ApolloClientProvider: React.FC<unknown> = ({children}) => {
-  const {networkName} = useWallet();
+  const {network} = useNetwork();
 
   const graphLink = useMemo(() => {
-    if (networkName) {
+    if (network) {
       return new HttpLink({
         uri:
           'https://api.thegraph.com/subgraphs/name/rekard0/rekard0-zaragoza-rinkeby' ||
-          SUBGRAPH_API_URL[networkName],
+          SUBGRAPH_API_URL[network],
       });
     }
-  }, [networkName]);
+  }, [network]);
 
   const restLink = useMemo(() => {
     return new RestLink({

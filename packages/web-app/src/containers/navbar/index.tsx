@@ -17,7 +17,8 @@ import useScreen from 'hooks/useScreen';
 import DesktopNav from './desktop';
 import {useWallet} from 'context/augmentedWallet';
 import {useWalletMenuContext} from 'context/walletMenu';
-import {CHAIN_METADATA, isSupportedNetwork} from 'utils/constants';
+import {CHAIN_METADATA} from 'utils/constants';
+import {useNetwork} from 'context/network';
 
 type StringIndexed = {[key: string]: {processLabel: string; returnURL: string}};
 
@@ -44,32 +45,30 @@ const processes: StringIndexed = {
   },
 };
 
-const getNetworkType = (network: string) => {
-  if (!isSupportedNetwork(network)) {
-    return 'unsupported';
-  } else if (CHAIN_METADATA[network].testnet) {
-    return 'testnet';
-  } else {
-    return 'default';
-  }
-};
-
 const Navbar: React.FC = () => {
   const {open} = useWalletMenuContext();
   const {pathname} = useLocation();
   const {isDesktop} = useScreen();
-  const {networkName, connect, isConnected} = useWallet();
+  const {network} = useNetwork();
+  const {connect, isConnected} = useWallet();
 
   const processName = useMemo(() => {
     const results = matchRoutes(processPaths, pathname);
     if (results) return results[0].route.path;
   }, [pathname]);
 
+  // NOTE: Since the wallet is no longer the determining factor for the app's
+  // network, this logic needs to be reconsidered. Currently, the app can no
+  // longer be on an "unsupported network" (the user would be redirected to a
+  // "not found" page instead). So the status currently really just shows
+  // whether the app operates on a testnet or on a mainnet ("default").
   const status = useMemo(() => {
-    return isConnected()
-      ? getNetworkType(networkName || 'ethereum')
-      : 'default';
-  }, [networkName, isConnected]);
+    if (CHAIN_METADATA[network].testnet) {
+      return 'testnet';
+    } else {
+      return 'default';
+    }
+  }, [network]);
 
   const handleWalletButtonClick = () => {
     isConnected() ? open() : connect('injected');
