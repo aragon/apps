@@ -2,10 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import {
   ButtonText,
-  Popover,
   ListItemAction,
   IconMenuVertical,
   ButtonIcon,
+  Dropdown,
 } from '@aragon/ui-components';
 import {useTranslation} from 'react-i18next';
 import {useFormContext, useFieldArray} from 'react-hook-form';
@@ -64,37 +64,40 @@ const AddWallets: React.FC = () => {
           size="large"
           onClick={handleAddWallet}
         />
-        <Popover
-          side="bottom"
-          align="end"
-          width={264}
-          content={
-            <div className="p-1.5 space-y-0.5">
-              <ListItemAction
-                title={t('labels.resetDistribution')}
-                onClick={resetDistribution}
-                bgWhite
-              />
-              <ListItemAction
-                title={t('labels.deleteAllAddresses')}
-                onClick={() => {
-                  remove();
-                  append([{address: 'DAO Treasury', amount: '0'}]);
-                  resetField('tokenTotalSupply');
-                }}
-                bgWhite
-              />
-            </div>
+        <Dropdown
+          align="start"
+          trigger={
+            <ButtonIcon
+              mode="ghost"
+              size="large"
+              bgWhite
+              icon={<IconMenuVertical />}
+              data-testid="trigger"
+            />
           }
-        >
-          <ButtonIcon
-            mode="ghost"
-            size="large"
-            bgWhite
-            icon={<IconMenuVertical />}
-            data-testid="trigger"
-          />
-        </Popover>
+          sideOffset={8}
+          listItems={[
+            {
+              component: (
+                <ListItemAction title={t('labels.resetDistribution')} bgWhite />
+              ),
+              callback: resetDistribution,
+            },
+            {
+              component: (
+                <ListItemAction
+                  title={t('labels.deleteAllAddresses')}
+                  bgWhite
+                />
+              ),
+              callback: () => {
+                remove();
+                append([{address: 'DAO Treasury', amount: '0'}]);
+                resetField('tokenTotalSupply');
+              },
+            },
+          ]}
+        />
       </ActionsWrapper>
     </Container>
   );
