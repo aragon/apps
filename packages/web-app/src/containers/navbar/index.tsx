@@ -19,7 +19,6 @@ import {useWallet} from 'context/augmentedWallet';
 import {useWalletMenuContext} from 'context/walletMenu';
 import {CHAIN_METADATA, isSupportedNetwork} from 'utils/constants';
 
-type NumberIndexed = {[key: number]: {}};
 type StringIndexed = {[key: string]: {processLabel: string; returnURL: string}};
 
 const processPaths = [

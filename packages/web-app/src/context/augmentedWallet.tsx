@@ -1,5 +1,3 @@
-// Workarounds are used that necessitate the any escape hatch
-
 import React, {useContext, useEffect, useMemo} from 'react';
 import {UseWalletProvider, useWallet} from 'use-wallet';
 import {Wallet} from 'use-wallet/dist/cjs/types';
@@ -7,17 +5,17 @@ import {Wallet} from 'use-wallet/dist/cjs/types';
 import {identifyUser} from 'services/analytics';
 import {updateAPMContext, useAPM} from './elasticAPM';
 import {useNetwork} from './network';
+import {Nullable} from 'utils/types';
+import {SupportedChainID} from 'utils/constants';
 
 export type WalletAugmented = Wallet & {
   isOnCorrectNetwork: boolean;
 };
 
-// Any is a workaround so TS doesn't ask for a filled out default
-const WalletAugmentedContext = React.createContext<WalletAugmented | any>({});
+/* CONTEXT PROVIDER ========================================================= */
 
-function useWalletAugmented(): WalletAugmented {
-  return useContext(WalletAugmentedContext);
-}
+const WalletAugmentedContext =
+  React.createContext<Nullable<WalletAugmented>>(null);
 
 const WalletAugmented: React.FC<unknown> = ({children}) => {
   const wallet = useWallet();
@@ -28,13 +26,9 @@ const WalletAugmented: React.FC<unknown> = ({children}) => {
     // web3modal entirely, we'll no longer need to rely on the chains defined in
     // useWallet. Instead we'll be rely entirely on the data defined in
     // constants/chains.tsx
-    switch (wallet.networkName) {
-      case 'main':
-        return network === 'ethereum';
-      default:
-        break;
-    }
-  }, [wallet]);
+    if (wallet.networkName === 'main') return network === 'ethereum';
+    else return network === wallet.networkName;
+  }, [wallet, network]);
 
   // TODO this should be moved into a separate hook and then called from within
   // the app component. Afterwards, the wallet should no longer need to be
@@ -55,7 +49,7 @@ const WalletAugmented: React.FC<unknown> = ({children}) => {
       isOnCorrectNetwork,
       ...wallet,
     };
-  }, [wallet]);
+  }, [wallet, isOnCorrectNetwork]);
 
   const {apm} = useAPM();
   useEffect(() => {
@@ -69,7 +63,16 @@ const WalletAugmented: React.FC<unknown> = ({children}) => {
   );
 };
 
-export const connectors = [
+type NonEmptyArray<T> = [T, ...T[]];
+
+type Connector = {
+  id: string;
+  properties: {
+    chainId: NonEmptyArray<SupportedChainID>;
+  };
+};
+
+export const connectors: Connector[] = [
   {
     id: 'injected',
     properties: {
@@ -84,12 +87,26 @@ export const connectors = [
   },
 ];
 
-const useWalletConnectors = connectors.reduce(
-  (current: any, connector: any) => {
-    current[connector.id] = connector.properties || {};
-    return current;
+type UseWalletConnector = Record<
+  string,
+  {
+    chaindId: number[];
+  }
+>;
+
+const useWalletConnectors: UseWalletConnector = connectors.reduce(
+  (prev: UseWalletConnector, curr: Connector) => {
+    return {
+      ...prev,
+      [curr.id]: {chainId: curr.properties.chainId},
+    } as UseWalletConnector;
   },
-  {}
+  {} as UseWalletConnector
+);
+
+console.log(
+  '[LOGGING] useWalletConnectors ' +
+    JSON.stringify(useWalletConnectors, null, 2)
 );
 
 const WalletProvider: React.FC<unknown> = ({children}) => {
@@ -99,5 +116,11 @@ const WalletProvider: React.FC<unknown> = ({children}) => {
     </UseWalletProvider>
   );
 };
+
+/* CONTEXT CONSUMERS ======================================================== */
+
+function useWalletAugmented(): WalletAugmented {
+  return useContext(WalletAugmentedContext) as WalletAugmented;
+}
 
 export {useWalletAugmented as useWallet, WalletProvider};
