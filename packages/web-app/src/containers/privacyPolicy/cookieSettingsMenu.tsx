@@ -60,7 +60,7 @@ const CookieSettingsMenu: React.FC<CookieSettingsMenuProps> = props => {
           </div>
           <div className="flex space-x-2">
             <ButtonText
-              label={t('privacyPolicy.acceptAllCookies')}
+              label={t('privacyPolicy.rejectAllCookies')}
               size="large"
               mode="secondary"
               onClick={props.onRejectAllClick}
