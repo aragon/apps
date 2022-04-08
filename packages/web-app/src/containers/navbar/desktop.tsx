@@ -45,7 +45,7 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
   const navigate = useNavigate();
   const selectedDao = useReactiveVar(selectedDAO);
   const [showCrumbMenu, setShowCrumbMenu] = useState(false);
-  const { status, address, ensName, ensAvatarUrl } = useWallet();
+  const {status, address, ensName, ensAvatarUrl} = useWallet();
   const isConnected = status === 'connected';
 
   const isProcess = useMemo(

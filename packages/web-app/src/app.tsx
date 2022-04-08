@@ -3,7 +3,7 @@ import React, {useEffect, lazy, Suspense} from 'react';
 
 // FIXME: Change route to ApmRoute once package has been updated to be
 // compatible with react-router-dom v6
-import { Navigate, Routes, Route, useLocation } from 'react-router-dom';
+import {Navigate, Routes, Route, useLocation} from 'react-router-dom';
 
 import Navbar from 'containers/navbar';
 import {WalletMenu} from 'containers/navbar/walletMenu';
@@ -33,7 +33,7 @@ const CreateDAOPage = lazy(() => import('pages/createDAO'));
 const NewProposalPage = lazy(() => import('pages/newProposal'));
 
 function App() {
-  const { pathname } = useLocation();
+  const {pathname} = useLocation();
 
   useEffect(() => {
     trackPage(pathname);

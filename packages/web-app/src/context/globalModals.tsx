@@ -29,8 +29,7 @@ type MenuTypes =
   | 'selectDao'
   | 'default'
   | 'addresses'
-  | 'wallet'
-  ;
+  | 'wallet';
 
 type Props = Record<'children', ReactNode>;
 
@@ -38,7 +37,7 @@ type Props = Record<'children', ReactNode>;
 instead of one boolean state for each of the menus. This can be done based on a
 type like MenuType. Then this context can be extended simply by adding a new
 type to MenuTypes. */
-const GlobalModalsProvider: React.FC<Props> = ({ children }) => {
+const GlobalModalsProvider: React.FC<Props> = ({children}) => {
   const [isTransferOpen, setIsTransferOpen] =
     useState<GlobalModalsContextType['isTransferOpen']>(false);
   const [isTokenOpen, setIsTokenOpen] =
@@ -144,7 +143,7 @@ const GlobalModalsProvider: React.FC<Props> = ({ children }) => {
       isAddActionOpen,
       isSelectDaoOpen,
       isAddressesOpen,
-      isWalletOpen
+      isWalletOpen,
     ]
   );
 
@@ -159,4 +158,4 @@ function useGlobalModalContext(): GlobalModalsContextType {
   return useContext(GlobalModalsContext) as GlobalModalsContextType;
 }
 
-export { useGlobalModalContext, GlobalModalsProvider };
+export {useGlobalModalContext, GlobalModalsProvider};

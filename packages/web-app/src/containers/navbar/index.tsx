@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import React, { useMemo } from 'react';
-import { matchRoutes, useLocation } from 'react-router-dom';
+import React, {useMemo} from 'react';
+import {matchRoutes, useLocation} from 'react-router-dom';
 
 import {
   CreateDAO,
@@ -11,28 +11,26 @@ import {
   NewProposal,
   NewWithDraw,
 } from 'utils/paths';
-import { i18n } from '../../../i18n.config';
+import {i18n} from '../../../i18n.config';
 import MobileNav from './mobile';
 import useScreen from 'hooks/useScreen';
 import DesktopNav from './desktop';
-import { useWallet } from 'hooks/useWallet';
-import { CHAIN_METADATA as chains } from 'utils/constants';
-import { useSigner } from 'use-signer';
-import { useGlobalModalContext } from 'context/globalModals';
-import { Modal } from '@aragon/ui-components';
+import {useWallet} from 'hooks/useWallet';
+import {CHAIN_METADATA as chains} from 'utils/constants';
+import {useGlobalModalContext} from 'context/globalModals';
 
-type NumberIndexed = { [key: number]: {} };
-type StringIndexed = { [key: string]: { processLabel: string; returnURL: string } };
+type NumberIndexed = {[key: number]: {}};
+type StringIndexed = {[key: string]: {processLabel: string; returnURL: string}};
 
 const processPaths = [
-  { path: NewDeposit },
-  { path: NewWithDraw },
-  { path: CreateDAO },
-  { path: NewProposal },
+  {path: NewDeposit},
+  {path: NewWithDraw},
+  {path: CreateDAO},
+  {path: NewProposal},
 ];
 
 const processes: StringIndexed = {
-  [CreateDAO]: { processLabel: i18n.t('createDAO.title'), returnURL: Dashboard },
+  [CreateDAO]: {processLabel: i18n.t('createDAO.title'), returnURL: Dashboard},
   [NewDeposit]: {
     processLabel: i18n.t('allTransfer.newTransfer'),
     returnURL: Finance,
@@ -54,10 +52,10 @@ const getNetworkStatus = (id: number) => {
 };
 
 const Navbar: React.FC = () => {
-  const { open, isWalletOpen } = useGlobalModalContext();
-  const { pathname } = useLocation();
-  const { isDesktop } = useScreen();
-  const { chainId, methods, isConnected } = useWallet();
+  const {open, isWalletOpen} = useGlobalModalContext();
+  const {pathname} = useLocation();
+  const {isDesktop} = useScreen();
+  const {chainId, methods, isConnected} = useWallet();
 
   const processName = useMemo(() => {
     const results = matchRoutes(processPaths, pathname);
@@ -70,8 +68,8 @@ const Navbar: React.FC = () => {
 
   const handleWalletButtonClick = () => {
     if (isConnected) {
-      console.log(isWalletOpen)
-      open('wallet')
+      console.log(isWalletOpen);
+      open('wallet');
       return;
     }
     methods.selectWallet().catch((err: Error) => {
@@ -84,7 +82,7 @@ const Navbar: React.FC = () => {
   return isDesktop ? (
     <DesktopNav
       status={status}
-      {...(processName ? { ...processes[processName] } : {})}
+      {...(processName ? {...processes[processName]} : {})}
       onWalletClick={handleWalletButtonClick}
     />
   ) : (

@@ -13,28 +13,28 @@ import {
   useWatch,
 } from 'react-hook-form';
 import styled from 'styled-components';
-import { useTranslation } from 'react-i18next';
-import { constants, utils } from 'ethers';
-import React, { useCallback, useEffect } from 'react';
+import {useTranslation} from 'react-i18next';
+import {constants, utils} from 'ethers';
+import React, {useCallback, useEffect} from 'react';
 
-import { useWallet } from 'hooks/useWallet';
-import { useGlobalModalContext } from 'context/globalModals';
-import { useProviders } from 'context/providers';
-import { fetchTokenData } from 'services/prices';
-import { handleClipboardActions } from 'utils/library';
-import { fetchBalance, getTokenInfo, isETH } from 'utils/tokens';
-import { validateTokenAddress, validateTokenAmount } from 'utils/validators';
-import { useApolloClient } from 'context/apolloClient';
+import {useWallet} from 'hooks/useWallet';
+import {useGlobalModalContext} from 'context/globalModals';
+import {useProviders} from 'context/providers';
+import {fetchTokenData} from 'services/prices';
+import {handleClipboardActions} from 'utils/library';
+import {fetchBalance, getTokenInfo, isETH} from 'utils/tokens';
+import {validateTokenAddress, validateTokenAmount} from 'utils/validators';
+import {useApolloClient} from 'context/apolloClient';
 
 const DepositForm: React.FC = () => {
   const client = useApolloClient();
-  const { t } = useTranslation();
-  const { open } = useGlobalModalContext();
-  const { account, balance: walletBalance } = useWallet();
-  const { infura: provider } = useProviders();
-  const { control, resetField, setValue, setFocus, trigger, getValues } =
+  const {t} = useTranslation();
+  const {open} = useGlobalModalContext();
+  const {account, balance: walletBalance} = useWallet();
+  const {infura: provider} = useProviders();
+  const {control, resetField, setValue, setFocus, trigger, getValues} =
     useFormContext();
-  const { errors, dirtyFields } = useFormState({ control });
+  const {errors, dirtyFields} = useFormState({control});
   const [tokenAddress, isCustomToken, tokenBalance, tokenSymbol] = useWatch({
     name: ['tokenAddress', 'isCustomToken', 'tokenBalance', 'tokenSymbol'],
   });
@@ -71,7 +71,7 @@ const DepositForm: React.FC = () => {
           setValue('tokenSymbol', data.symbol);
           setValue('tokenImgUrl', data.imgUrl);
         } else {
-          const { name, symbol } = await getTokenInfo(tokenAddress, provider);
+          const {name, symbol} = await getTokenInfo(tokenAddress, provider);
           setValue('tokenName', name);
           setValue('tokenSymbol', symbol);
         }
@@ -138,7 +138,7 @@ const DepositForm: React.FC = () => {
       if (errors.tokenAddress) return t('errors.amountWithInvalidToken');
 
       try {
-        const { decimals } = await getTokenInfo(tokenAddress, provider);
+        const {decimals} = await getTokenInfo(tokenAddress, provider);
 
         // run amount rules
         return validateTokenAmount(amount, decimals, tokenBalance);
@@ -191,8 +191,8 @@ const DepositForm: React.FC = () => {
         <Controller
           name="tokenSymbol"
           control={control}
-          rules={{ required: t('errors.required.token') }}
-          render={({ field: { name, value }, fieldState: { error } }) => (
+          rules={{required: t('errors.required.token')}}
+          render={({field: {name, value}, fieldState: {error}}) => (
             <>
               <DropdownInput
                 name={name}
@@ -224,8 +224,8 @@ const DepositForm: React.FC = () => {
               validate: addressValidator,
             }}
             render={({
-              field: { name, onBlur, onChange, value, ref },
-              fieldState: { error },
+              field: {name, onBlur, onChange, value, ref},
+              fieldState: {error},
             }) => (
               <>
                 <ValueInput
@@ -263,8 +263,8 @@ const DepositForm: React.FC = () => {
             validate: amountValidator,
           }}
           render={({
-            field: { name, onBlur, onChange, value },
-            fieldState: { error },
+            field: {name, onBlur, onChange, value},
+            fieldState: {error},
           }) => (
             <>
               <StyledInput
@@ -306,7 +306,7 @@ const DepositForm: React.FC = () => {
         <Controller
           name="reference"
           control={control}
-          render={({ field: { name, onBlur, onChange, value } }) => (
+          render={({field: {name, onBlur, onChange, value}}) => (
             <TextareaSimple
               name={name}
               value={value}
