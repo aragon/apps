@@ -8,11 +8,11 @@ import {
   TransferSectionWrapper,
 } from 'components/wrappers';
 import TokenList from 'components/tokenList';
+import {TEST_DAO} from 'utils/constants';
 import {sortTokens} from 'utils/tokens';
 import TransferList from 'components/transferList';
 import {useDaoVault} from 'hooks/useDaoVault';
 import {useGlobalModalContext} from 'context/globalModals';
-import {TEST_DAO} from 'utils/constants';
 
 const Finance: React.FC = () => {
   const {t} = useTranslation();
