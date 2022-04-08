@@ -13,7 +13,7 @@ import {
 import {RestLink} from 'apollo-link-rest';
 import {CachePersistor, LocalStorageWrapper} from 'apollo3-cache-persist';
 import {BASE_URL, SUBGRAPH_API_URL} from 'utils/constants';
-import {useWallet} from 'context/augmentedWallet';
+import {useWallet} from 'hooks/useWallet';
 
 /**
  * IApolloClientContext

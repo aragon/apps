@@ -4,7 +4,7 @@ import {useNavigate} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
 import {ActionListItem, IconChevronRight} from '@aragon/ui-components';
 
-import {useWallet} from 'context/augmentedWallet';
+import {useWallet} from 'hooks/useWallet';
 import {NewDeposit, NewWithDraw} from 'utils/paths';
 import {useGlobalModalContext} from 'context/globalModals';
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
@@ -19,7 +19,7 @@ const TransferMenu: React.FC = () => {
   const handleNewDepositClick = () => {
     // TODO: change alert to proper error reporting mechanism,
     // Move to proper placing
-    if (isConnected()) {
+    if (isConnected) {
       navigate(NewDeposit);
       close('default');
     } else alert('Please connect your wallet');
@@ -27,7 +27,7 @@ const TransferMenu: React.FC = () => {
 
   const handleNewWithdrawClick = () => {
     // TODO: change alert to proper error reporting mechanism,
-    if (isConnected()) {
+    if (isConnected) {
       // TODO: Check if wallet address is authorized to access new withdraw page and then navigate
       navigate(NewWithDraw);
       close('default');

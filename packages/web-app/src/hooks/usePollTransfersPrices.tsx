@@ -1,4 +1,4 @@
-import {useWallet} from 'use-wallet';
+import {useWallet} from 'hooks/useWallet';
 import {useEffect, useState} from 'react';
 
 import {fetchTokenData} from 'services/prices';

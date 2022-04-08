@@ -3,8 +3,9 @@ import styled from 'styled-components';
 import {ActionListItem, CardWallet, IconTurnOff} from '@aragon/ui-components';
 
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
+import {useWallet} from 'hooks/useWallet';
 import {useWalletMenuContext} from 'context/walletMenu';
-import {useWallet, WalletAugmented} from 'context/augmentedWallet';
+import {WalletAugmented} from 'context/augmentedWallet';
 
 export type useWalletProps = {
   ensName?: string | null;
@@ -13,7 +14,7 @@ export type useWalletProps = {
 
 const WalletMenu: React.FC = () => {
   const {isOpen, close} = useWalletMenuContext();
-  const {reset, account, ensName, ensAvatarUrl}: useWalletProps = useWallet();
+  const {methods, account, ensName, ensAvatarUrl} = useWallet();
 
   return (
     <ModalBottomSheetSwitcher
@@ -33,7 +34,7 @@ const WalletMenu: React.FC = () => {
             title="Disconnect Wallet"
             icon={<IconTurnOff />}
             onClick={() => {
-              reset();
+              methods.disconnect();
               close();
             }}
           />

@@ -10,7 +10,7 @@ import {Controller, useFormContext, useWatch} from 'react-hook-form';
 import styled from 'styled-components';
 import {chains} from 'use-wallet';
 import {useTranslation} from 'react-i18next';
-import {useWallet} from 'context/augmentedWallet';
+import {useWallet} from 'hooks/useWallet';
 import {useProviders} from 'context/providers';
 import {ChainInformation} from 'use-wallet/dist/cjs/types';
 import {formatUnits} from 'utils/library';
@@ -66,7 +66,7 @@ const AddExistingToken: React.FC<AddExistingTokenType> = ({
   const addressValidator = useCallback(
     async contractAddress => {
       // No wallet
-      if (!isConnected()) {
+      if (!isConnected) {
         alert('Connect Wallet');
         return 'Connect Wallet'; // Temporary
       }

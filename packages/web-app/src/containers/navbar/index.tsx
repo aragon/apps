@@ -15,8 +15,7 @@ import { i18n } from '../../../i18n.config';
 import MobileNav from './mobile';
 import useScreen from 'hooks/useScreen';
 import DesktopNav from './desktop';
-import { useWallet } from 'context/augmentedWallet';
-import { useWalletMenuContext } from 'context/walletMenu';
+import { useWallet } from 'hooks/useWallet';
 import { CHAIN_METADATA as chains } from 'utils/constants';
 import { useSigner } from 'use-signer';
 import { useGlobalModalContext } from 'context/globalModals';
@@ -55,13 +54,10 @@ const getNetworkStatus = (id: number) => {
 };
 
 const Navbar: React.FC = () => {
-  // const { open } = useWalletMenuContext();
   const { open, isWalletOpen } = useGlobalModalContext();
   const { pathname } = useLocation();
   const { isDesktop } = useScreen();
-  // const {chainId, connect, isConnected} = useWallet();
-  const { chainId, status: walletStatus, methods } = useSigner();
-  const isConnected = walletStatus === 'connected';
+  const { chainId, methods, isConnected } = useWallet();
 
   const processName = useMemo(() => {
     const results = matchRoutes(processPaths, pathname);

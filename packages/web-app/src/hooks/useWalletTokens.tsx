@@ -1,14 +1,14 @@
-import {constants} from 'ethers';
-import {Interface, getAddress, hexZeroPad} from 'ethers/lib/utils';
-import {Log} from '@ethersproject/providers';
-import {useState, useEffect} from 'react';
+import { constants } from 'ethers';
+import { Interface, getAddress, hexZeroPad } from 'ethers/lib/utils';
+import { Log } from '@ethersproject/providers';
+import { useState, useEffect } from 'react';
 
-import {erc20TokenABI} from 'abis/erc20TokenABI';
-import {useWallet} from 'context/augmentedWallet';
-import {useProviders} from 'context/providers';
-import {useWalletProps} from 'containers/walletMenu';
-import {isETH, fetchBalance, getTokenInfo} from 'utils/tokens';
-import {TokenBalance, HookData} from 'utils/types';
+import { erc20TokenABI } from 'abis/erc20TokenABI';
+import { useWallet } from 'hooks/useWallet';
+import { useProviders } from 'context/providers';
+import { useWalletProps } from 'containers/walletMenu';
+import { isETH, fetchBalance, getTokenInfo } from 'utils/tokens';
+import { TokenBalance, HookData } from 'utils/types';
 
 // TODO The two hooks in this file are very similar and should probably be
 // merged into one. The reason I'm not doing it now is that I'm not sure if
@@ -20,8 +20,8 @@ import {TokenBalance, HookData} from 'utils/types';
  * has balance.
  */
 export function useUserTokenAddresses(): HookData<string[]> {
-  const {account} = useWallet();
-  const {web3} = useProviders();
+  const { account } = useWallet();
+  const { web3 } = useProviders();
 
   const [tokenList, setTokenList] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -70,7 +70,7 @@ export function useUserTokenAddresses(): HookData<string[]> {
     fetchTokenList();
   }, [account, web3]);
 
-  return {data: tokenList, isLoading, error};
+  return { data: tokenList, isLoading, error };
 }
 
 /**
@@ -80,8 +80,8 @@ export function useUserTokenAddresses(): HookData<string[]> {
  * contract address it also returns the user's balance for each of the tokens.
  */
 export function useWalletTokens(): HookData<TokenBalance[]> {
-  const {account, balance}: useWalletProps = useWallet();
-  const {infura: provider} = useProviders();
+  const { account, balance } = useWallet();
+  const { infura: provider } = useProviders();
   const {
     data: tokenList,
     isLoading: tokenListLoading,
@@ -116,7 +116,7 @@ export function useWalletTokens(): HookData<TokenBalance[]> {
         tokenList.map(address => {
           if (isETH(address)) {
             return [
-              balance,
+              balance ? balance.toString() : '',
               {
                 name: 'Ethereum (Canonical)',
                 symbol: 'ETH',
@@ -155,5 +155,5 @@ export function useWalletTokens(): HookData<TokenBalance[]> {
     fetchWalletTokens();
   }, [account, balance, tokenList, provider, tokenListLoading, tokenListError]);
 
-  return {data: walletTokens, isLoading: tokenListLoading || isLoading, error};
+  return { data: walletTokens, isLoading: tokenListLoading || isLoading, error };
 }

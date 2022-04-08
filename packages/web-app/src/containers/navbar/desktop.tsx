@@ -14,8 +14,7 @@ import useBreadcrumbs from 'use-react-router-breadcrumbs';
 import {useTranslation} from 'react-i18next';
 import React, {useMemo, useState} from 'react';
 
-import {useWallet} from 'context/augmentedWallet';
-import {useWalletProps} from 'containers/walletMenu';
+import {useWallet} from 'hooks/useWallet';
 import NetworkIndicator from './networkIndicator';
 import {BreadcrumbDropdown} from './breadcrumbDropdown';
 import {useGlobalModalContext} from 'context/globalModals';
@@ -23,8 +22,6 @@ import {NetworkIndicatorStatus} from 'utils/types';
 import {Community, Dashboard, Finance, Governance, NotFound} from 'utils/paths';
 import {selectedDAO} from 'context/apolloClient';
 import {useReactiveVar} from '@apollo/client';
-import { useSigner } from 'use-signer';
-import { useEnsAvatar, useEnsName } from 'hooks/useEnsData';
 
 const MIN_ROUTE_DEPTH_FOR_BREADCRUMBS = 2;
 
@@ -48,9 +45,7 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
   const navigate = useNavigate();
   const selectedDao = useReactiveVar(selectedDAO);
   const [showCrumbMenu, setShowCrumbMenu] = useState(false);
-  const { status, address } = useSigner();
-  const { data: ensName } = useEnsName(address || '');
-  const { data: ensAvatarUrl } = useEnsAvatar(address || '');
+  const { status, address, ensName, ensAvatarUrl } = useWallet();
   const isConnected = status === 'connected';
 
   const isProcess = useMemo(

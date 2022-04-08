@@ -18,7 +18,7 @@ import {Controller, useFormContext} from 'react-hook-form';
 
 const DefineProposal: React.FC = () => {
   const {t} = useTranslation();
-  const {account, ensAvatarUrl}: useWalletProps = useWallet();
+  const {account, ensAvatarUrl} = useWallet();
   const {control} = useFormContext();
 
   return (
