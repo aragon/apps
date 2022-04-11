@@ -3,7 +3,7 @@ import {useEffect, useState} from 'react';
 
 import {fetchTokenData} from 'services/prices';
 import {useApolloClient} from 'context/apolloClient';
-import {ASSET_PLATFORMS} from 'utils/constants';
+import {ASSET_PLATFORMS, TransferTypes} from 'utils/constants';
 import {DaoTransfer, Transfer} from 'utils/types';
 import {formatUnits} from 'utils/library';
 import {formatDate} from 'utils/date';
@@ -48,7 +48,7 @@ export const usePollTransfersPrices = (transfers: DaoTransfer[]) => {
             isPending: false,
             transaction: transfer.transaction,
             reference: transfer.reference,
-            ...(transfer.__typename === 'VaultDeposit'
+            ...(transfer.__typename === TransferTypes.Deposit
               ? {
                   sender: transfer.sender,
                   transferType: transfer.__typename,

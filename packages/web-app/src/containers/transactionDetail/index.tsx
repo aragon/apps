@@ -14,6 +14,7 @@ import {useTranslation} from 'react-i18next';
 import {chains} from 'use-wallet';
 import {Transfer} from 'utils/types';
 import {useWallet} from 'context/augmentedWallet';
+import {TransferTypes} from 'utils/constants';
 import {ChainInformation} from 'use-wallet/dist/cjs/types';
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 
@@ -52,7 +53,7 @@ const TransactionDetail: React.FC<TransactionDetailProps> = ({
 
       <Content>
         <CardTransfer
-          {...(transfer.transferType === 'VaultDeposit'
+          {...(transfer.transferType === TransferTypes.Deposit
             ? {to: 'Dao Name', from: transfer.sender}
             : {to: transfer.to, from: 'DaoName'})}
           toLabel={t('labels.to')}
@@ -62,7 +63,7 @@ const TransactionDetail: React.FC<TransactionDetailProps> = ({
           type="transfer"
           tokenName={transfer.tokenName}
           tokenCount={`${
-            transfer.transferType === 'VaultDeposit' ? '+' : '-'
+            transfer.transferType === TransferTypes.Deposit ? '+' : '-'
           } ${transfer.tokenAmount}`}
           tokenSymbol={transfer.tokenSymbol}
           tokenImageUrl={transfer.tokenImgUrl}

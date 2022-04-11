@@ -1,5 +1,5 @@
 import {Address} from '@aragon/ui-components/dist/utils/addresses';
-import {TimeFilter} from './constants';
+import {TimeFilter, TransferTypes} from './constants';
 
 /*************************************************
  *                   Finance types               *
@@ -61,12 +61,12 @@ export type PollTokenOptions = {interval?: number; filter: TimeFilter};
 
 // Transfers
 type Deposit = {
-  __typename: 'VaultDeposit';
+  __typename: TransferTypes.Deposit;
   sender: Address;
 };
 
 type Withdraw = {
-  __typename: 'VaultWithdraw';
+  __typename: TransferTypes.Withdraw;
 
   to: Address;
   proposal: {
@@ -102,8 +102,8 @@ export type Transfer = {
   reference?: string;
   transaction: string;
 } & (
-  | {transferType: 'VaultDeposit'; sender: Address}
-  | {transferType: 'VaultWithdraw'; to: Address; proposalId: string}
+  | {transferType: TransferTypes.Deposit; sender: Address}
+  | {transferType: TransferTypes.Withdraw; to: Address; proposalId: string}
 );
 
 /*************************************************
