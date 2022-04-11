@@ -10,7 +10,7 @@ import useCategorizedTransfers from 'hooks/useCategorizedTransfers';
 import {TransferSectionWrapper} from 'components/wrappers';
 import {useGlobalModalContext} from 'context/globalModals';
 import {Transfer} from 'utils/types';
-import {TEST_DAO} from 'utils/constants';
+import {TEST_DAO, TransferTypes} from 'utils/constants';
 import TransactionDetail from 'containers/transactionDetail';
 
 const Transfers: React.FC = () => {
@@ -97,8 +97,8 @@ const Transfers: React.FC = () => {
                 onChange={handleButtonGroupChange}
               >
                 <Option value="all" label="All" />
-                <Option value="VaultDeposit" label="Deposit" />
-                <Option value="VaultWithdraw" label="Withdraw" />
+                <Option value={TransferTypes.Deposit} label="Deposit" />
+                <Option value={TransferTypes.Withdraw} label="Withdraw" />
                 <Option value="externalContract" label="External Contract" />
               </ButtonGroup>
             </div>

@@ -65,8 +65,8 @@ export const NAV_LINKS = [
 ];
 
 export const enum TransferTypes {
-  Deposit = 'Deposit',
-  Withdraw = 'Withdraw',
+  Deposit = 'VaultDeposit',
+  Withdraw = 'VaultWithdraw',
 }
 
 export const URL_PATTERN =
