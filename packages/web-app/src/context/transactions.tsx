@@ -14,14 +14,12 @@ import TransactionModal, {TransactionState} from 'containers/transactionModal';
 const TransactionsContext = createContext<TransactionsContextType | null>(null);
 
 type TransactionsContextType = {
-  transactions: TransactionItem[];
-  activeIndex: number;
+  transactions: TransactionItem;
   setTransactionState: (value: TransactionState) => void;
-  setActiveIndex: (value: number) => void;
   gotoNextAction: () => void;
   isModalOpen: boolean;
   setIsModalOpen: (value: boolean) => void;
-  setTransactions: (value: TransactionItem[]) => void;
+  setTransactions: (value: TransactionItem) => void;
 };
 
 type Props = Record<'children', ReactNode>;
@@ -32,8 +30,7 @@ type Props = Record<'children', ReactNode>;
 
 const TransactionsProvider: React.FC<Props> = ({children}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [transactions, setTransactions] = useState<TransactionItem[]>([]);
-  const [activeIndex, setActiveIndex] = useState<number>(0);
+  const [transactions, setTransactions] = useState<TransactionItem>();
   const [transactionState, setTransactionState] = useState<TransactionState>(
     TransactionState.WAITING
   );
@@ -47,14 +44,12 @@ const TransactionsProvider: React.FC<Props> = ({children}) => {
     (): TransactionsContextType => ({
       transactions,
       setTransactionState,
-      setActiveIndex,
-      activeIndex,
       isModalOpen,
       setIsModalOpen,
       setTransactions,
       gotoNextAction,
     }),
-    [activeIndex, gotoNextAction, isModalOpen, transactions]
+    [gotoNextAction, isModalOpen, transactions]
   );
 
   // const renderModal = useMemo(() => {
