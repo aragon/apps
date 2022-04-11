@@ -49,6 +49,7 @@ const WalletRow: React.FC<WalletRowProps> = ({index, onDelete}) => {
   };
 
   const addressValidator = (address: string, index: number) => {
+    if (address === 'My Wallet') return true;
     let validationResult = validateAddress(address);
     setIsDuplicate(false);
     if (walletFieldArray) {
