@@ -1,20 +1,22 @@
 import styled from 'styled-components';
+import * as Locales from 'date-fns/locale';
+import {format, Locale} from 'date-fns';
 import {useTranslation} from 'react-i18next';
-import React, {useCallback, useMemo, useState} from 'react';
 import {withTransaction} from '@elastic/apm-rum-react';
 import {Option, ButtonGroup, SearchInput} from '@aragon/ui-components';
+import React, {useCallback, useMemo, useState} from 'react';
 
+import {Transfer} from 'utils/types';
 import TransferList from 'components/transferList';
 import {PageWrapper} from 'components/wrappers';
-import useCategorizedTransfers from 'hooks/useCategorizedTransfers';
-import {TransferSectionWrapper} from 'components/wrappers';
-import {useGlobalModalContext} from 'context/globalModals';
-import {Transfer} from 'utils/types';
-import {TEST_DAO, TransferTypes} from 'utils/constants';
 import TransactionDetail from 'containers/transactionDetail';
+import useCategorizedTransfers from 'hooks/useCategorizedTransfers';
+import {useGlobalModalContext} from 'context/globalModals';
+import {TransferSectionWrapper} from 'components/wrappers';
+import {TEST_DAO, TransferTypes} from 'utils/constants';
 
 const Transfers: React.FC = () => {
-  const {t} = useTranslation();
+  const {t, i18n} = useTranslation();
   const {open} = useGlobalModalContext();
   const [filterValue, setFilterValue] = useState('');
   const [searchValue, setSearchValue] = useState('');
@@ -69,10 +71,22 @@ const Transfers: React.FC = () => {
       filterValidator,
     ]
   );
+
+  const noTransfers = useMemo(
+    () =>
+      categorizedTransfers.week.length === 0 &&
+      categorizedTransfers.month.length === 0 &&
+      categorizedTransfers.year.length === 0,
+    [
+      categorizedTransfers.month.length,
+      categorizedTransfers.week.length,
+      categorizedTransfers.year.length,
+    ]
+  );
+
   /**
    * Note: We can add a nested iterator for both sections and transfer cards
    */
-
   return (
     <>
       <PageWrapper
@@ -96,46 +110,73 @@ const Transfers: React.FC = () => {
                 defaultValue="all"
                 onChange={handleButtonGroupChange}
               >
-                <Option value="all" label="All" />
-                <Option value={TransferTypes.Deposit} label="Deposit" />
-                <Option value={TransferTypes.Withdraw} label="Withdraw" />
-                <Option value="externalContract" label="External Contract" />
+                <Option value="all" label={t('labels.all')} />
+                <Option
+                  value={TransferTypes.Deposit}
+                  label={t('labels.deposit')}
+                />
+                <Option
+                  value={TransferTypes.Withdraw}
+                  label={t('labels.withdraw')}
+                />
+                <Option
+                  value="externalContract"
+                  label={t('labels.externalContract')}
+                />
               </ButtonGroup>
             </div>
           </div>
-          <SectionContainer>
-            <TransferSectionWrapper title={t('allTransfer.thisWeek') as string}>
-              <div className="my-2 space-y-1.5 border-solid">
-                <TransferList
-                  transfers={displayedTransfers.week}
-                  onTransferClick={handleTransferClicked}
-                />
-              </div>
-            </TransferSectionWrapper>
-          </SectionContainer>
-          {displayedTransfers.month.length !== 0 && (
+          {noTransfers ? (
             <SectionContainer>
-              <TransferSectionWrapper title={'December'}>
-                <div className="my-2 space-y-1.5 border-solid">
-                  <TransferList
-                    transfers={displayedTransfers.month}
-                    onTransferClick={handleTransferClicked}
-                  />
-                </div>
-              </TransferSectionWrapper>
+              <p>{t('allTransfer.noTransfers')}</p>
             </SectionContainer>
-          )}
-          {displayedTransfers.year.length !== 0 && (
-            <SectionContainer>
-              <TransferSectionWrapper title={'2021'}>
-                <div className="my-2 space-y-1.5 border-solid">
-                  <TransferList
-                    transfers={displayedTransfers.year}
-                    onTransferClick={handleTransferClicked}
-                  />
-                </div>
-              </TransferSectionWrapper>
-            </SectionContainer>
+          ) : (
+            <>
+              {displayedTransfers.week.length > 0 && (
+                <SectionContainer>
+                  <TransferSectionWrapper
+                    title={t('allTransfer.thisWeek') as string}
+                  >
+                    <div className="my-2 space-y-1.5 border-solid">
+                      <TransferList
+                        transfers={displayedTransfers.week}
+                        onTransferClick={handleTransferClicked}
+                      />
+                    </div>
+                  </TransferSectionWrapper>
+                </SectionContainer>
+              )}
+              {displayedTransfers.month.length !== 0 && (
+                <SectionContainer>
+                  <TransferSectionWrapper
+                    title={format(new Date(), 'MMMM', {
+                      locale: (Locales as {[key: string]: Locale})[
+                        i18n.language
+                      ],
+                    })}
+                  >
+                    <div className="my-2 space-y-1.5 border-solid">
+                      <TransferList
+                        transfers={displayedTransfers.month}
+                        onTransferClick={handleTransferClicked}
+                      />
+                    </div>
+                  </TransferSectionWrapper>
+                </SectionContainer>
+              )}
+              {displayedTransfers.year.length !== 0 && (
+                <SectionContainer>
+                  <TransferSectionWrapper title={format(new Date(), 'yyyy')}>
+                    <div className="my-2 space-y-1.5 border-solid">
+                      <TransferList
+                        transfers={displayedTransfers.year}
+                        onTransferClick={handleTransferClicked}
+                      />
+                    </div>
+                  </TransferSectionWrapper>
+                </SectionContainer>
+              )}
+            </>
           )}
         </div>
       </PageWrapper>

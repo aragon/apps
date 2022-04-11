@@ -82,6 +82,10 @@
     "duplicateAction": "Duplicate Action",
     "resetAction": "Reset Action",
     "removeEntireAction": "Remove Entire Action",
+    "deposit": "Deposit",
+    "withdraw": "Withdraw",
+    "externalContract": "External Contract",
+    "all": "All",
     "walletList": {
       "address": "Address",
       "addresses": "{{count}} Addresses"
@@ -215,7 +219,7 @@
     "tokens": "Tokens",
     "newTransfer": "New Transfer",
     "allTransfers": "All Transfers",
-    "noTransfers": "No transfer information available",
+    "noTransfers": "No transfer information available.",
     "totalVolume": "Total Volume"
   },
   "allTokens": {
