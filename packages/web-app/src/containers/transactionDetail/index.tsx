@@ -72,7 +72,7 @@ const TransactionDetail: React.FC<TransactionDetailProps> = ({
         {transfer.reference && (
           <CardText
             type="label"
-            title="Reference"
+            title={t('labels.reference')}
             content={transfer.reference}
           />
         )}
