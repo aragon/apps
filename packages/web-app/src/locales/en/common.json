@@ -248,10 +248,12 @@
   "TransactionModal": {
     "depositTitle": "Sign Deposit",
     "estimatedFees": "Estimated Gas Fees",
-    "synced": "Synced {{time}} sec ag",
+    "synced": "Synced {{time}} sec ago",
     "totalCost": "Total Cost",
     "approveToken": "Approve token",
     "signDeposit": "Sign Deposit",
+    "publishDao": "Publish Dao",
+    "publishDaoButtonLabel": "Publish DAO Now",
     "approveSubtitle": "To sign your first transaction, you must approve Aragon Zaragoza to make a transaction with your token.",
     "dismiss": "Dismiss",
     "tryAgain": "Try Again",

@@ -4,22 +4,21 @@ import React, {
   useState,
   useMemo,
   ReactNode,
-  useCallback,
 } from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {TransactionItem} from 'utils/types';
-import TransactionModal, {TransactionState} from 'containers/transactionModal';
+import {TransactionState, TransferTypes} from 'utils/constants';
+import PublishDaoModal from 'containers/transactionModals/publishDao';
 
 const TransactionsContext = createContext<TransactionsContextType | null>(null);
 
 type TransactionsContextType = {
-  transactions: TransactionItem;
+  transaction?: TransactionItem;
   setTransactionState: (value: TransactionState) => void;
-  gotoNextAction: () => void;
   isModalOpen: boolean;
   setIsModalOpen: (value: boolean) => void;
-  setTransactions: (value: TransactionItem) => void;
+  setTransaction: (value: TransactionItem) => void;
 };
 
 type Props = Record<'children', ReactNode>;
@@ -30,62 +29,55 @@ type Props = Record<'children', ReactNode>;
 
 const TransactionsProvider: React.FC<Props> = ({children}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [transactions, setTransactions] = useState<TransactionItem>();
+  const [transaction, setTransaction] = useState<TransactionItem>();
   const [transactionState, setTransactionState] = useState<TransactionState>(
     TransactionState.WAITING
   );
   const {t} = useTranslation();
 
-  const gotoNextAction = useCallback(() => {
-    setActiveIndex((oldActions: number) => oldActions + 1);
-  }, []);
-
   const value = useMemo(
     (): TransactionsContextType => ({
-      transactions,
+      transaction,
       setTransactionState,
       isModalOpen,
       setIsModalOpen,
-      setTransactions,
-      gotoNextAction,
+      setTransaction,
     }),
-    [gotoNextAction, isModalOpen, transactions]
+    [isModalOpen, transaction]
   );
 
-  // const renderModal = useMemo(() => {
-  //   let modal;
-  //   switch (transactions[activeIndex]?.type) {
-  //     case TransferTypes.Deposit:
-  //       modal = (
-  //         <TransactionModal
-  //           title={t('TransactionModal.depositTitle')}
-  //           footerButtonLabel="Sign Deposit"
-  //           state={transactionState}
-  //           callback={console.log}
-  //           approveStepNeeded
-  //         />
-  //       );
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  //   return (
-  //     <>
-  //       {children}
-  //       {modal}
-  //     </>
-  //   );
-  // }, [activeIndex, children, t, transactionState, transactions]);
+  const renderModal = useMemo(() => {
+    let modal;
+    switch (transaction?.type) {
+      case TransferTypes.Deposit:
+        modal = (
+          <PublishDaoModal
+            title={t('TransactionModal.publishDao')}
+            footerButtonLabel="Sign Deposit"
+            state={transactionState}
+            callback={console.log}
+            approveStepNeeded
+          />
+        );
+        break;
+      default:
+        break;
+    }
+    return (
+      <>
+        {children}
+        {modal}
+      </>
+    );
+  }, [children, t, transactionState, transaction]);
 
   return (
     <TransactionsContext.Provider value={value}>
       {children}
-      <TransactionModal
-        title={t('TransactionModal.depositTitle')}
-        footerButtonLabel="Sign Deposit"
+      <PublishDaoModal
+        title={t('TransactionModal.publishDao')}
         state={transactionState}
         callback={console.log}
-        approveStepNeeded
       />
     </TransactionsContext.Provider>
   );
