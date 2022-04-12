@@ -90,8 +90,8 @@ const Transfers: React.FC = () => {
   return (
     <>
       <PageWrapper
-        title={t('TransferModal.allTransfers') as string}
-        buttonLabel={t('TransferModal.newTransfer') as string}
+        title={t('TransferModal.allTransfers')}
+        buttonLabel={t('TransferModal.newTransfer')}
         subtitle={`${totalTransfers} Total Volume`}
         onClick={open}
       >
@@ -134,9 +134,7 @@ const Transfers: React.FC = () => {
             <>
               {displayedTransfers.week.length > 0 && (
                 <SectionContainer>
-                  <TransferSectionWrapper
-                    title={t('allTransfer.thisWeek') as string}
-                  >
+                  <TransferSectionWrapper title={t('allTransfer.thisWeek')}>
                     <div className="my-2 space-y-1.5 border-solid">
                       <TransferList
                         transfers={displayedTransfers.week}
