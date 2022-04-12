@@ -5,6 +5,7 @@ import {useTranslation} from 'react-i18next';
 
 import {useProviders} from 'context/providers';
 import {fetchTokenPrice} from 'services/prices';
+import {NETWORK} from 'utils/constants';
 
 const ReviewDeposit: React.FC = () => {
   const {t} = useTranslation();
@@ -16,7 +17,7 @@ const ReviewDeposit: React.FC = () => {
 
   useEffect(() => {
     async function getPrice() {
-      const tokenPrice = await fetchTokenPrice(values.tokenAddress);
+      const tokenPrice = await fetchTokenPrice(values.tokenAddress, NETWORK);
       if (tokenPrice) {
         setPrice(
           new Intl.NumberFormat('en-US', {

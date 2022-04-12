@@ -10,7 +10,7 @@ import {fetchTokenPrice} from 'services/prices';
 import {formatUnits} from 'utils/library';
 import {useFormContext} from 'react-hook-form';
 import {useDaoBalances} from 'hooks/useDaoBalances';
-import {TEST_DAO} from 'utils/constants';
+import {NETWORK, TEST_DAO} from 'utils/constants';
 
 /**
  * This Component is responsible for generating all actions that append to pipeline context (actions)
@@ -73,7 +73,7 @@ const ActionBuilder: React.FC = () => {
       trigger(`actions.${index}.amount`);
     }
 
-    fetchTokenPrice(token.address).then(price => {
+    fetchTokenPrice(token.address, NETWORK).then(price => {
       setValue(`actions.${index}.tokenPrice`, price);
     });
   };

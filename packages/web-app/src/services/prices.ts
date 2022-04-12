@@ -3,7 +3,13 @@ import {constants} from 'ethers';
 
 import {TOKEN_DATA_QUERY} from 'queries/tokenData';
 import {ApolloClient, ApolloClientOptions} from '@apollo/client';
-import {BASE_URL, DEFAULT_CURRENCY, TimeFilter} from 'utils/constants';
+import {
+  ASSET_PLATFORMS,
+  BASE_URL,
+  DEFAULT_CURRENCY,
+  TimeFilter,
+} from 'utils/constants';
+import {isETH} from 'utils/tokens';
 
 export type TokenPrices = {
   [key: string]: {
@@ -111,14 +117,20 @@ async function fetchTokenData(
 /**
  * Get simple token price
  * @param address Token contract address
+ * @param network network name
  * @returns a USD price as a number
  */
-async function fetchTokenPrice(address: Address) {
-  const isEth = address === constants.AddressZero;
-  const endPoint =
-    '/simple/token_price/ethereum?vs_currencies=usd&contract_addresses=';
+async function fetchTokenPrice(
+  address: Address,
+  network: string
+): Promise<number | undefined> {
+  // network unsupported, or testnet
+  const platformId = ASSET_PLATFORMS[network];
+  if (!platformId) return;
 
-  const url = isEth
+  // build url based on whether token is ethereum
+  const endPoint = `/simple/token_price/${platformId}?vs_currencies=usd&contract_addresses=`;
+  const url = isETH(address)
     ? `${BASE_URL}/simple/price?ids=ethereum&vs_currencies=usd`
     : `${BASE_URL}${endPoint}${address}`;
 
