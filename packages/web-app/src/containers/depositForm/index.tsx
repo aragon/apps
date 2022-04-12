@@ -14,7 +14,7 @@ import {
 } from 'react-hook-form';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
-import {constants, utils} from 'ethers';
+import {BigNumber, constants, utils} from 'ethers';
 import React, {useCallback, useEffect} from 'react';
 
 import {useWallet} from 'hooks/useWallet';
@@ -25,11 +25,13 @@ import {handleClipboardActions} from 'utils/library';
 import {fetchBalance, getTokenInfo, isETH} from 'utils/tokens';
 import {validateTokenAddress, validateTokenAmount} from 'utils/validators';
 import {useApolloClient} from 'context/apolloClient';
+import {useNetwork} from 'context/network';
 
 const DepositForm: React.FC = () => {
-  const client = useApolloClient();
   const {t} = useTranslation();
+  const client = useApolloClient();
   const {open} = useGlobalModalContext();
+  const {network} = useNetwork();
   const {address, balance: walletBalance} = useWallet();
   const {infura: provider} = useProviders();
   const {control, resetField, setValue, setFocus, trigger, getValues} =
@@ -59,9 +61,9 @@ const DepositForm: React.FC = () => {
         // fetch token balance and token metadata
         const allTokenInfoPromise = Promise.all([
           isETH(tokenAddress)
-            ? utils.formatEther(walletBalance || 0)
+            ? utils.formatEther(walletBalance as BigNumber)
             : fetchBalance(tokenAddress, address, provider),
-          fetchTokenData(tokenAddress, client),
+          fetchTokenData(tokenAddress, client, network),
         ]);
 
         // use blockchain if api data unavailable
@@ -100,6 +102,7 @@ const DepositForm: React.FC = () => {
     trigger,
     walletBalance,
     client,
+    network,
   ]);
 
   /*************************************************

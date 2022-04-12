@@ -80,20 +80,27 @@ type TokenData = {
 /**
  * Get token data from external api. Ideally, this data should be cached so that
  * the id property can be used when querying for prices.
- * @param tokenAddress Token contract address
+ * @param address Token contract address
  * @param client Apollo Client instance
- * @param platform Api network platform
+ * @param network network name
  * @returns Basic information about the token or undefined if data could not be fetched
  */
 async function fetchTokenData(
-  tokenAddress: Address,
+  address: Address,
   client: ApolloClient<ApolloClientOptions<string | undefined>>,
-  platform = 'ethereum'
+  network: string
 ): Promise<TokenData | undefined> {
-  let url: string;
+  // network unsupported, or testnet
+  const platformId = ASSET_PLATFORMS[network];
+  if (!platformId) return;
 
-  if (tokenAddress === constants.AddressZero) url = '/coins/ethereum';
-  else url = `/coins/${platform}/contract/${tokenAddress}`;
+  // check if token address is address zero, ie, native token of platform
+  const isNativeToken = address === constants.AddressZero;
+
+  // build url based on whether token is native token
+  const url = isNativeToken
+    ? '/coins/ethereum'
+    : `/coins/${platformId}/contract/${address}`;
 
   const {data, error} = await client.query({
     query: TOKEN_DATA_QUERY,
@@ -106,7 +113,7 @@ async function fetchTokenData(
       name: data.tokenData.name,
       symbol: data.tokenData.symbol.toUpperCase(),
       imgUrl: data.tokenData.image.large,
-      address: tokenAddress,
+      address: address,
       price: data.tokenData.market_data.current_price.usd,
     };
   }
