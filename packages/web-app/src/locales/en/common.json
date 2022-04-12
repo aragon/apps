@@ -258,7 +258,7 @@
     "dismiss": "Dismiss",
     "tryAgain": "Try Again",
     "errorLabel": "Error while confirmation",
-    "successLabel": "Transaction successful"
+    "successLabel": "Transaction successful signed"
   },
   "AddActionModal": {
     "title": "Add Action",

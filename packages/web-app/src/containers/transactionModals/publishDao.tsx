@@ -13,6 +13,8 @@ import {TransactionState} from 'utils/constants';
 type PublishDaoModalProps = {
   state: TransactionState;
   callback: () => void;
+  isOpen: boolean;
+  onClose: () => void;
 };
 
 const icons = {
@@ -25,6 +27,8 @@ const icons = {
 const PublishDaoModal: React.FC<PublishDaoModalProps> = ({
   state = TransactionState.LOADING,
   callback,
+  isOpen,
+  onClose,
 }) => {
   const {t} = useTranslation();
 
@@ -35,9 +39,13 @@ const PublishDaoModal: React.FC<PublishDaoModalProps> = ({
     [TransactionState.ERROR]: t('TransactionModal.tryAgain'),
   };
 
+  /**
+   * All data's can fetch and shown here
+   */
+
   return (
     <ModalBottomSheetSwitcher
-      isOpen={true}
+      {...{isOpen, onClose}}
       onClose={() => null}
       title={t('TransactionModal.publishDao') as string}
     >
@@ -71,15 +79,20 @@ const PublishDaoModal: React.FC<PublishDaoModalProps> = ({
           isActive={state === TransactionState.LOADING}
           onClick={callback}
         />
-
-        {state === TransactionState.ERROR && (
-          <AlertInlineContainer>
-            <AlertInline label={'Error while confirmation'} mode="critical" />
-          </AlertInlineContainer>
-        )}
         {state === TransactionState.SUCCESS && (
           <AlertInlineContainer>
-            <AlertInline label={'Transaction successful'} mode="success" />
+            <AlertInline
+              label={t('TransactionModal.successLabel')}
+              mode="success"
+            />
+          </AlertInlineContainer>
+        )}
+        {state === TransactionState.ERROR && (
+          <AlertInlineContainer>
+            <AlertInline
+              label={t('TransactionModal.errorLabel')}
+              mode="critical"
+            />
           </AlertInlineContainer>
         )}
       </ButtonContainer>

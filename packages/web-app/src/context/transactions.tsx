@@ -5,7 +5,6 @@ import React, {
   useMemo,
   ReactNode,
 } from 'react';
-import {useTranslation} from 'react-i18next';
 
 import {TransactionItem} from 'utils/types';
 import {TransactionState, TransferTypes} from 'utils/constants';
@@ -16,8 +15,6 @@ const TransactionsContext = createContext<TransactionsContextType | null>(null);
 type TransactionsContextType = {
   transaction?: TransactionItem;
   setTransactionState: (value: TransactionState) => void;
-  isModalOpen: boolean;
-  setIsModalOpen: (value: boolean) => void;
   setTransaction: (value: TransactionItem) => void;
 };
 
@@ -33,28 +30,39 @@ const TransactionsProvider: React.FC<Props> = ({children}) => {
   const [transactionState, setTransactionState] = useState<TransactionState>(
     TransactionState.ERROR
   );
-  const {t} = useTranslation();
 
   const value = useMemo(
     (): TransactionsContextType => ({
       transaction,
       setTransactionState,
-      isModalOpen,
-      setIsModalOpen,
       setTransaction,
     }),
-    [isModalOpen, transaction]
+    [transaction]
   );
 
   const renderModal = useMemo(() => {
     let modal;
+    // This switch case will halp us to pass different modals for different types of transactions
     switch (transaction?.type) {
       case TransferTypes.Deposit:
         modal = (
-          <PublishDaoModal state={transactionState} callback={console.log} />
+          <PublishDaoModal
+            state={transactionState}
+            callback={console.log}
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+          />
         );
         break;
       default:
+        modal = (
+          <PublishDaoModal
+            state={transactionState}
+            callback={console.log}
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+          />
+        );
         break;
     }
     return (
@@ -63,12 +71,11 @@ const TransactionsProvider: React.FC<Props> = ({children}) => {
         {modal}
       </>
     );
-  }, [children, t, transactionState, transaction]);
+  }, [children, transactionState, transaction, isModalOpen]);
 
   return (
     <TransactionsContext.Provider value={value}>
-      {children}
-      <PublishDaoModal state={transactionState} callback={console.log} />
+      {renderModal}
     </TransactionsContext.Provider>
   );
 };
