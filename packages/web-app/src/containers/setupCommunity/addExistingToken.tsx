@@ -22,13 +22,7 @@ import {CHAIN_METADATA} from 'utils/constants';
 
 const DEFAULT_BLOCK_EXPLORER = 'https://etherscan.io/';
 
-type AddExistingTokenType = {
-  resetTokenFields: () => void;
-};
-
-const AddExistingToken: React.FC<AddExistingTokenType> = ({
-  resetTokenFields,
-}) => {
+const AddExistingToken: React.FC = () => {
   const {t} = useTranslation();
   const {isConnected} = useWallet();
   const {network} = useNetwork();
@@ -61,6 +55,20 @@ const AddExistingToken: React.FC<AddExistingTokenType> = ({
     return DEFAULT_BLOCK_EXPLORER;
   }, [blockchain.id]);
 
+  useEffect(() => {
+    // No wallet
+    if (!isConnected) {
+      alert('Connect Wallet');
+    }
+
+    // Wrong network
+    if (blockchain.id !== chainId) {
+      alert(
+        `Chain mismatch: Selected - ${blockchain?.label} but connected to ${network}`
+      );
+    }
+  }, [blockchain.id, blockchain?.label, chainId, isConnected, network]);
+
   // Trigger address validation on network change
   useEffect(() => {
     if (blockchain.id === chainId && tokenAddress !== '' && !tokenSymbol) {
@@ -73,20 +81,6 @@ const AddExistingToken: React.FC<AddExistingTokenType> = ({
    *************************************************/
   const addressValidator = useCallback(
     async contractAddress => {
-      // No wallet
-      if (!isConnected) {
-        alert('Connect Wallet');
-        return 'Connect Wallet'; // Temporary
-      }
-
-      // Wrong network
-      if (blockchain.id !== chainId) {
-        alert(
-          `Chain mismatch: Selected - ${blockchain?.label} but connected to ${network}`
-        );
-        return 'Switch Chain'; // Temporary
-      }
-
       const isValid = await validateTokenAddress(contractAddress, provider);
 
       if (isValid) {
@@ -101,22 +95,12 @@ const AddExistingToken: React.FC<AddExistingTokenType> = ({
           );
         } catch (error) {
           console.error('Error fetching token information', error);
-          resetTokenFields();
         }
       }
 
       return isValid;
     },
-    [
-      blockchain.id,
-      blockchain?.label,
-      chainId,
-      isConnected,
-      network,
-      provider,
-      resetTokenFields,
-      setValue,
-    ]
+    [provider, setValue]
   );
 
   return (

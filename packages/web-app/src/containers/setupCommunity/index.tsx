@@ -72,48 +72,51 @@ const SetupCommunityForm: React.FC = () => {
         or manually call setValue() onChange and get rid of the controller so that required validation can be done
       */}
 
-      {/* Membership type */}
-      {/* for some reason the default value of the use form is not setting up correctly
-      and is initialized to null or '' so the condition cannot be membership === 'token'  */}
-      {membership !== 'wallet' && (
-        <FormItem>
-          <Label label={t('labels.communityToken')} />
-          <Controller
-            name="isCustomToken"
-            defaultValue={null}
-            control={control}
-            render={({field: {onChange, value}}) => (
-              <CheckboxListItem
-                label={t('createDAO.step3.newToken')}
-                helptext={t('createDAO.step3.newTokenSubtitle')}
-                multiSelect={false}
-                onClick={() => {
-                  resetTokenFields();
-                  onChange(true);
-                }}
-                state={value ? 'active' : 'default'}
-              />
-            )}
-          />
-          <Controller
-            control={control}
-            name="isCustomToken"
-            defaultValue={null}
-            render={({field: {onChange, value}}) => (
-              <CheckboxListItem
-                label={t('createDAO.step3.existingToken')}
-                helptext={t('createDAO.step3.existingTokenSubtitle')}
-                state={value === false ? 'active' : 'default'}
-                multiSelect={false}
-                onClick={() => {
-                  onChange(false);
-                  resetTokenFields();
-                }}
-              />
-            )}
-          />
-        </FormItem>
+      {/* Membership type - NOTE: refactor to switch when more packages available*/}
+      {membership === 'token' && (
+        <>
+          <FormItem>
+            <Label label={t('labels.communityToken')} />
+            <Controller
+              name="isCustomToken"
+              defaultValue={null}
+              control={control}
+              render={({field: {onChange, value}}) => (
+                <CheckboxListItem
+                  label={t('createDAO.step3.newToken')}
+                  helptext={t('createDAO.step3.newTokenSubtitle')}
+                  multiSelect={false}
+                  onClick={() => {
+                    resetTokenFields();
+                    onChange(true);
+                  }}
+                  state={value ? 'active' : 'default'}
+                />
+              )}
+            />
+            <Controller
+              control={control}
+              name="isCustomToken"
+              defaultValue={null}
+              render={({field: {onChange, value}}) => (
+                <CheckboxListItem
+                  label={t('createDAO.step3.existingToken')}
+                  helptext={t('createDAO.step3.existingTokenSubtitle')}
+                  state={value === false ? 'active' : 'default'}
+                  multiSelect={false}
+                  onClick={() => {
+                    onChange(false);
+                    resetTokenFields();
+                  }}
+                />
+              )}
+            />
+          </FormItem>
+          {isNewToken ? <CreateNewToken /> : <ExistingTokenPartialForm />}
+        </>
       )}
+
+      {/* Whitelist voting */}
       {membership === 'wallet' && (
         <FormItem>
           <Label
@@ -128,14 +131,6 @@ const SetupCommunityForm: React.FC = () => {
           />
           <WhitelistWallets />
         </FormItem>
-      )}
-
-      {/* Add existing token */}
-
-      {isNewToken === true && membership === 'token' && <CreateNewToken />}
-
-      {isNewToken === false && membership === 'token' && (
-        <ExistingTokenPartialForm {...{resetTokenFields}} />
       )}
     </>
   );
