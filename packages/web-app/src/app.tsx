@@ -1,3 +1,4 @@
+import styled from 'styled-components';
 import React, {useEffect, lazy, Suspense} from 'react';
 
 // FIXME: Change route to ApmRoute once package has been updated to be
@@ -6,8 +7,8 @@ import {Navigate, Routes, Route, useLocation} from 'react-router-dom';
 
 import Navbar from 'containers/navbar';
 import WalletMenu from 'containers/walletMenu';
-import TransferMenu from 'containers/transferMenu';
 import {trackPage} from 'services/analytics';
+import TransferMenu from 'containers/transferMenu';
 import '../i18n.config';
 
 // HACK: All pages MUST be exported with the withTransaction function
@@ -16,7 +17,7 @@ import '../i18n.config';
 import HomePage from 'pages/home';
 import * as paths from 'utils/paths';
 import DaoSelectMenu from 'containers/navbar/daoSelectMenu';
-import styled from 'styled-components';
+import PrivacyPolicy from 'containers/privacyPolicy';
 
 const TokensPage = lazy(() => import('pages/tokens'));
 const FinancePage = lazy(() => import('pages/finance'));
@@ -61,6 +62,7 @@ function App() {
           </Routes>
         </Suspense>
       </Layout>
+      <PrivacyPolicy />
       <WalletMenu />
       <TransferMenu />
       <DaoSelectMenu />

@@ -3,7 +3,7 @@ import {useEffect, useState} from 'react';
 
 import {fetchTokenData} from 'services/prices';
 import {useApolloClient} from 'context/apolloClient';
-import {ASSET_PLATFORMS} from 'utils/constants';
+import {ASSET_PLATFORMS, TransferTypes} from 'utils/constants';
 import {DaoTransfer, Transfer} from 'utils/types';
 import {formatUnits} from 'utils/library';
 import {formatDate} from 'utils/date';
@@ -36,14 +36,28 @@ export const usePollTransfersPrices = (transfers: DaoTransfer[]) => {
             : 0;
           totalTransfers = totalTransfers + calculatedPrice;
           return {
+            id: transfer.id,
             title: transfer.reference ? transfer.reference : 'deposit',
+            tokenName: transfer.token.name,
             tokenAmount: formatUnits(transfer.amount, transfer.token.decimals),
+            tokenImgUrl: metadata[index]?.imgUrl || '',
             tokenSymbol: transfer.token.symbol,
             transferDate: `${formatDate(transfer.createdAt, 'relative')}`,
             transferTimestamp: transfer.createdAt,
-            transferType: transfer.__typename,
             usdValue: `$${calculatedPrice.toFixed(2)}`,
             isPending: false,
+            transaction: transfer.transaction,
+            reference: transfer.reference,
+            ...(transfer.__typename === TransferTypes.Deposit
+              ? {
+                  sender: transfer.sender,
+                  transferType: transfer.__typename,
+                }
+              : {
+                  to: transfer.to,
+                  proposalId: transfer.proposal.id,
+                  transferType: transfer.__typename,
+                }),
           };
         }
       );

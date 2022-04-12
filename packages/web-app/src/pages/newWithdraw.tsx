@@ -2,20 +2,29 @@ import React from 'react';
 import {Address} from '@aragon/ui-components/dist/utils/addresses';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
-import {useForm, FormProvider} from 'react-hook-form';
+import {useForm, FormProvider, useWatch, useFormState} from 'react-hook-form';
 
 import TokenMenu from 'containers/tokenMenu';
 import {Finance} from 'utils/paths';
 import {TEST_DAO} from 'utils/constants';
 import {formatUnits} from 'utils/library';
-import DefineProposal from 'containers/defineProposal';
 import ReviewProposal from 'containers/reviewProposal';
-import SetupVotingForm from 'containers/setupVotingForm';
 import {BaseTokenInfo} from 'utils/types';
 import {useDaoBalances} from 'hooks/useDaoBalances';
-import ConfigureWithdrawForm from 'containers/configureWithdraw';
-import {FullScreenStepper, Step} from 'components/fullScreenStepper';
 import {fetchTokenPrice} from 'services/prices';
+import {FullScreenStepper, Step} from 'components/fullScreenStepper';
+
+import ConfigureWithdrawForm, {
+  isValid as configureWithdrawScreenIsValid,
+} from 'containers/configureWithdraw';
+
+import DefineProposal, {
+  isValid as defineProposalIsValid,
+} from 'containers/defineProposal';
+
+import SetupVotingForm, {
+  isValid as setupVotingIsValid,
+} from 'containers/setupVotingForm';
 
 export type TokenFormData = {
   tokenName: string;
@@ -27,7 +36,7 @@ export type TokenFormData = {
   isCustomToken: boolean;
 };
 
-type WithdrawAction = TokenFormData & {
+export type WithdrawAction = TokenFormData & {
   to: Address;
   from: Address;
   amount: string;
@@ -45,6 +54,7 @@ type WithdrawFormData = {
   duration: number;
   startUtc: string;
   endUtc: string;
+  durationSwitch: string;
 };
 
 export const defaultValues = {
@@ -60,18 +70,6 @@ export const defaultValues = {
       tokenImgUrl: '',
     },
   ],
-
-  // Proposal data
-  startDate: '',
-  startTime: '',
-  endDate: '',
-  endTime: '',
-  duration: 5,
-  startUtc: '',
-  endUtc: '',
-
-  // Form metadata
-  isCustomToken: false,
 };
 
 const NewWithdraw: React.FC = () => {
@@ -79,6 +77,13 @@ const NewWithdraw: React.FC = () => {
   const formMethods = useForm<WithdrawFormData>({
     defaultValues,
     mode: 'onChange',
+  });
+
+  const {errors, dirtyFields} = useFormState({control: formMethods.control});
+
+  const [durationSwitch, tokenAddress] = useWatch({
+    name: ['durationSwitch', 'actions.0.tokenAddress'],
+    control: formMethods.control,
   });
 
   const {data: balances} = useDaoBalances(TEST_DAO);
@@ -117,7 +122,7 @@ const NewWithdraw: React.FC = () => {
       formMethods.setValue('actions.0.tokenPrice', price);
     });
 
-    if (formMethods.formState.dirtyFields.actions?.[0].amount) {
+    if (dirtyFields.actions?.[0].amount) {
       formMethods.trigger('actions.0.amount');
     }
   };
@@ -133,29 +138,30 @@ const NewWithdraw: React.FC = () => {
           navLabel={t('allTransfer.newTransfer')}
           returnPath={Finance}
         >
-          {/* FIXME: Each step needs to be able to disable the back
-        button. Otherwise, if the user leaves step x in an invalid state and
-        goes back to a step < x, they won't be able to move forward. */}
-
-          {/* TODO: Removing isNextButtonDisabled is disabled till the above is fixed */}
           <Step
             wizardTitle={t('newWithdraw.configureWithdraw.title')}
             wizardDescription={t('newWithdraw.configureWithdraw.subtitle')}
-            // isNextButtonDisabled={!formMethods.formState.isValid}
+            isNextButtonDisabled={
+              !configureWithdrawScreenIsValid(
+                dirtyFields.actions?.[0],
+                errors.actions?.[0],
+                tokenAddress
+              )
+            }
           >
             <ConfigureWithdrawForm />
           </Step>
           <Step
             wizardTitle={t('newWithdraw.setupVoting.title')}
             wizardDescription={t('newWithdraw.setupVoting.description')}
-            // isNextButtonDisabled={!formMethods.formState.isValid}
+            isNextButtonDisabled={!setupVotingIsValid(errors, durationSwitch)}
           >
             <SetupVotingForm />
           </Step>
           <Step
             wizardTitle={t('newWithdraw.defineProposal.heading')}
             wizardDescription={t('newWithdraw.defineProposal.description')}
-            // isNextButtonDisabled={!formMethods.formState.isValid}
+            isNextButtonDisabled={!defineProposalIsValid(dirtyFields, errors)}
           >
             <DefineProposal />
           </Step>

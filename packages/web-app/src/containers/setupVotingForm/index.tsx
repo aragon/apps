@@ -30,6 +30,7 @@ import {
 } from 'utils/date';
 import {DateTimeErrors} from './dateTimeErrors';
 import {useGlobalModalContext} from 'context/globalModals';
+import {StringIndexed} from 'utils/types';
 
 type UtcInstance = 'first' | 'second';
 
@@ -418,6 +419,21 @@ const SetupVotingForm: React.FC = () => {
 };
 
 export default SetupVotingForm;
+
+/**
+ * Check if the screen is valid
+ * @param errors List of fields that have errors
+ * @param durationSwitch Duration switch value
+ * @returns Whether the screen is valid
+ */
+export function isValid(errors: StringIndexed, durationSwitch: string) {
+  if (durationSwitch === 'date') {
+    return errors.startDate || errors.startTime || errors.endDate
+      ? false
+      : true;
+  }
+  return errors.startDate || errors.startTime || errors.duration ? false : true;
+}
 
 const FormSection = styled.div.attrs({
   className: 'space-y-1.5',

@@ -14,10 +14,8 @@ type SubgraphNetworkUrl = {
 
 export const SUBGRAPH_API_URL: SubgraphNetworkUrl = {
   main: undefined,
-  // rinkeby:
-  //   'https://api.thegraph.com/subgraphs/name/aragon/aragon-zaragoza-rinkeby',
   rinkeby:
-    'https://api.thegraph.com/subgraphs/name/rekard0/rekard0-zaragoza-rinkeby',
+    'https://api.thegraph.com/subgraphs/name/aragon/aragon-zaragoza-rinkeby',
   polygon: undefined,
   mumbai:
     'https://api.thegraph.com/subgraphs/name/aragon/aragon-zaragoza-mumbai',
@@ -67,8 +65,8 @@ export const NAV_LINKS = [
 ];
 
 export const enum TransferTypes {
-  Deposit = 'Deposit',
-  Withdraw = 'Withdraw',
+  Deposit = 'VaultDeposit',
+  Withdraw = 'VaultWithdraw',
 }
 
 export enum TransactionState {
@@ -131,4 +129,4 @@ export const CHAIN_METADATA = {
 };
 
 // to be removed
-export const TEST_DAO = '0x51c3ddb42529bfc24d4c13192e2e31421de459bc';
+export const TEST_DAO = '0x4d68eaa86557f666decf789a8ab3d59fe390ff42';
