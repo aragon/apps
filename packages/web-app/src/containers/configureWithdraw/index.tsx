@@ -30,6 +30,7 @@ import {useGlobalModalContext} from 'context/globalModals';
 import {handleClipboardActions} from 'utils/library';
 import {fetchBalance, getTokenInfo, isETH} from 'utils/tokens';
 import {WithdrawAction} from 'pages/newWithdraw';
+import {isAddress} from 'ethers/lib/utils';
 
 type ConfigureWithdrawFormProps = {
   index?: number;
@@ -203,6 +204,26 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
     [errors.tokenAddress, getValues, index, provider, t]
   );
 
+  const recipientValidator = useCallback(
+    async (recipient: string) => {
+      let ensAddress = null;
+
+      try {
+        ensAddress = await provider?.resolveName(recipient);
+      } catch (err) {
+        console.error('Error, fetching ens name', err);
+
+        if (isAddress(recipient)) return validateAddress(recipient);
+        return t('errors.ensUnsupported');
+      }
+
+      // if no associating ensAddress, assume normal address and not ens name
+      if (ensAddress) return true;
+      return validateAddress(recipient);
+    },
+    [provider, t]
+  );
+
   /*************************************************
    *                    Render                     *
    *************************************************/
@@ -220,7 +241,7 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
           defaultValue=""
           rules={{
             required: t('errors.required.recipient'),
-            validate: validateAddress,
+            validate: recipientValidator,
           }}
           render={({
             field: {name, onBlur, onChange, value},
