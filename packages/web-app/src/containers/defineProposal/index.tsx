@@ -11,9 +11,8 @@ import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 
 import AddLinks from 'components/addLinks';
-import {useWallet} from 'context/augmentedWallet';
+import {useWallet} from 'hooks/useWallet';
 import {StringIndexed} from 'utils/types';
-import {useWalletProps} from 'containers/walletMenu';
 import {Controller, useFormContext} from 'react-hook-form';
 
 const DefineProposal: React.FC = () => {

@@ -13,7 +13,7 @@ import {useTranslation} from 'react-i18next';
 
 import {chains} from 'use-wallet';
 import {Transfer} from 'utils/types';
-import {useWallet} from 'context/augmentedWallet';
+import {useWallet} from 'hooks/useWallet';
 import {TransferTypes} from 'utils/constants';
 import {ChainInformation} from 'use-wallet/dist/cjs/types';
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';

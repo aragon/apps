@@ -1,5 +1,4 @@
 import {useSigner, SignerValue} from 'use-signer';
-import {JsonRpcSigner, Web3Provider} from '@ethersproject/providers';
 import {useEffect, useState} from 'react';
 import {BigNumber} from 'ethers';
 import {Network} from '@ethersproject/networks';

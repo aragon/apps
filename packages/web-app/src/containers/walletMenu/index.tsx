@@ -5,12 +5,6 @@ import {ActionListItem, CardWallet, IconTurnOff} from '@aragon/ui-components';
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 import {useWallet} from 'hooks/useWallet';
 import {useWalletMenuContext} from 'context/walletMenu';
-import {WalletAugmented} from 'context/augmentedWallet';
-
-export type useWalletProps = {
-  ensName?: string | null;
-  ensAvatarUrl?: string | null;
-} & WalletAugmented;
 
 const WalletMenu: React.FC = () => {
   const {isOpen, close} = useWalletMenuContext();
