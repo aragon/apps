@@ -453,4 +453,9 @@
       "title": "Transaction Detail",
       "viewTransaction": "View on Block Explorer"
     }
+  },
+  "transactionDetail": {
+    "title": "Transaction Detail",
+    "viewTransaction": "View on Block Explorer"
   }
+}
