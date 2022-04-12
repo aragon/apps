@@ -6,7 +6,7 @@ import {useForm, FormProvider, useWatch, useFormState} from 'react-hook-form';
 
 import TokenMenu from 'containers/tokenMenu';
 import {Finance} from 'utils/paths';
-import {TEST_DAO} from 'utils/constants';
+import {NETWORK, TEST_DAO} from 'utils/constants';
 import {formatUnits} from 'utils/library';
 import ReviewProposal from 'containers/reviewProposal';
 import {BaseTokenInfo} from 'utils/types';
@@ -118,7 +118,7 @@ const NewWithdraw: React.FC = () => {
       formatUnits(token.count, token.decimals)
     );
 
-    fetchTokenPrice(token.address).then(price => {
+    fetchTokenPrice(token.address, NETWORK).then(price => {
       formMethods.setValue('actions.0.tokenPrice', price);
     });
 
