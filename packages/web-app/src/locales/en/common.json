@@ -82,6 +82,10 @@
     "duplicateAction": "Duplicate Action",
     "resetAction": "Reset Action",
     "removeEntireAction": "Remove Entire Action",
+    "deposit": "Deposit",
+    "withdraw": "Withdraw",
+    "externalContract": "External Contract",
+    "all": "All",
     "walletList": {
       "address": "Address",
       "addresses": "{{count}} Addresses"
@@ -197,7 +201,8 @@
       "title": "Title is required",
       "summary": "Summary is required"
     },
-    "startPast": "Process must not start in the past"
+    "startPast": "Process must not start in the past",
+    "ensUnsupported": "Network does not support ens name"
   },
   "alert": {
     "durationAlert": "We recommend a minimum duration of 1 day if it does not have to be a quick financial decision.",
@@ -215,7 +220,7 @@
     "tokens": "Tokens",
     "newTransfer": "New Transfer",
     "allTransfers": "All Transfers",
-    "noTransfers": "No transfer information available",
+    "noTransfers": "No transfer information available.",
     "totalVolume": "Total Volume"
   },
   "allTokens": {
@@ -433,5 +438,25 @@
     "cancel": "Cancel",
     "remainingTime": "Remaining time",
     "voteNow": "Vote now"
+  },
+  "privacyPolicy": {
+    "title": "Privacy policy",
+    "analytics": "Analytics cookies",
+    "analyticsHelpText": "It will allow to collect information of how you use our app.",
+    "functional": "Functional cookies",
+    "functionalHelpText": "Used to store your preferences in the application.",
+    "cookieSettings": "Cookie settings",
+    "acceptAllCookies": "Accept all",
+    "rejectAllCookies": "Reject all",
+    "acceptSelectedCookies": "Accept",
+    "content": "We use cookies and similar technologies to improve your browsing experience in our application, enabling certain features, and analyzing our application usage. You may choose below to opt-out for some specific behaviors. Know more by reading our",
+    "transactionDetail": {
+      "title": "Transaction Detail",
+      "viewTransaction": "View on Block Explorer"
+    }
+  },
+  "transactionDetail": {
+    "title": "Transaction Detail",
+    "viewTransaction": "View on Block Explorer"
   }
 }

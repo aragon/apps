@@ -4,7 +4,7 @@ import {
   IconMenuVertical,
   Label,
   ListItemAction,
-  Popover,
+  Dropdown,
   TextInput,
   NumberInput,
   ValueInput,
@@ -49,6 +49,7 @@ const WalletRow: React.FC<WalletRowProps> = ({index, onDelete}) => {
   };
 
   const addressValidator = (address: string, index: number) => {
+    if (address === 'My Wallet') return true;
     let validationResult = validateAddress(address);
     setIsDuplicate(false);
     if (walletFieldArray) {
@@ -123,39 +124,40 @@ const WalletRow: React.FC<WalletRowProps> = ({index, onDelete}) => {
       </LabelContainer>
 
       <WalletMenuContainer>
-        <Popover
-          side="bottom"
-          align="end"
-          width={240}
-          content={
-            <div className="p-1.5">
-              <ListItemAction
-                title={t('labels.removeWallet')}
-                {...(typeof onDelete === 'function'
-                  ? {
-                      onClick: () => {
-                        const [totalSupply, amount] = getValues([
-                          'tokenTotalSupply',
-                          `wallets.${index}.amount`,
-                        ]);
-                        setValue('tokenTotalSupply', totalSupply - amount);
-                        onDelete(index);
-                      },
-                    }
-                  : {mode: 'disabled'})}
-                bgWhite
-              />
-            </div>
+        <Dropdown
+          align="start"
+          trigger={
+            <ButtonIcon
+              mode="ghost"
+              size="large"
+              bgWhite
+              icon={<IconMenuVertical />}
+              data-testid="trigger"
+            />
           }
-        >
-          <ButtonIcon
-            mode="ghost"
-            size="large"
-            bgWhite
-            icon={<IconMenuVertical />}
-            data-testid="trigger"
-          />
-        </Popover>
+          sideOffset={8}
+          listItems={[
+            {
+              component: (
+                <ListItemAction
+                  title={t('labels.removeWallet')}
+                  {...(typeof onDelete !== 'function' && {mode: 'disabled'})}
+                  bgWhite
+                />
+              ),
+              callback: () => {
+                if (typeof onDelete === 'function') {
+                  const [totalSupply, amount] = getValues([
+                    'tokenTotalSupply',
+                    `wallets.${index}.amount`,
+                  ]);
+                  setValue('tokenTotalSupply', totalSupply - amount);
+                  onDelete(index);
+                }
+              },
+            },
+          ]}
+        />
       </WalletMenuContainer>
 
       <Break />

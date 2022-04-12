@@ -1,6 +1,3 @@
-import React from 'react';
-import {useTranslation} from 'react-i18next';
-import styled from 'styled-components';
 import {
   AlertInline,
   ButtonWallet,
@@ -9,9 +6,14 @@ import {
   TextareaWYSIWYG,
   TextInput,
 } from '@aragon/ui-components';
-import {useWallet} from 'context/augmentedWallet';
-import {useWalletProps} from 'containers/walletMenu';
+import React from 'react';
+import styled from 'styled-components';
+import {useTranslation} from 'react-i18next';
+
 import AddLinks from 'components/addLinks';
+import {useWallet} from 'context/augmentedWallet';
+import {StringIndexed} from 'utils/types';
+import {useWalletProps} from 'containers/walletMenu';
 import {Controller, useFormContext} from 'react-hook-form';
 
 const DefineProposal: React.FC = () => {
@@ -128,6 +130,24 @@ const DefineProposal: React.FC = () => {
 };
 
 export default DefineProposal;
+
+/**
+ * Check if the screen is valid
+ * @param dirtyFields - The fields that have been changed
+ * @param errors List of fields with errors
+ * @returns Whether the screen is valid
+ */
+export function isValid(dirtyFields: StringIndexed, errors: StringIndexed) {
+  // required fields not dirty
+  if (
+    !dirtyFields.proposalTitle ||
+    !dirtyFields.proposalSummary ||
+    errors.proposalTitle ||
+    errors.proposalSummary
+  )
+    return false;
+  return true;
+}
 
 const FormItem = styled.div.attrs({
   className: 'space-y-1.5',

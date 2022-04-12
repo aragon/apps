@@ -7,6 +7,7 @@ import {
 
 import {
   Controller,
+  FormState,
   useFormContext,
   useFormState,
   useWatch,
@@ -28,6 +29,8 @@ import {useApolloClient} from 'context/apolloClient';
 import {useGlobalModalContext} from 'context/globalModals';
 import {handleClipboardActions} from 'utils/library';
 import {fetchBalance, getTokenInfo, isETH} from 'utils/tokens';
+import {WithdrawAction} from 'pages/newWithdraw';
+import {isAddress} from 'ethers/lib/utils';
 
 type ConfigureWithdrawFormProps = {
   index?: number;
@@ -57,6 +60,7 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
       `actions.${index}.tokenSymbol`,
     ],
   });
+
   /*************************************************
    *                    Hooks                      *
    *************************************************/
@@ -200,6 +204,26 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
     [errors.tokenAddress, getValues, index, provider, t]
   );
 
+  const recipientValidator = useCallback(
+    async (recipient: string) => {
+      let ensAddress = null;
+
+      try {
+        ensAddress = await provider?.resolveName(recipient);
+      } catch (err) {
+        console.error('Error, fetching ens name', err);
+
+        if (isAddress(recipient)) return validateAddress(recipient);
+        return t('errors.ensUnsupported');
+      }
+
+      // if no associating ensAddress, assume normal address and not ens name
+      if (ensAddress) return true;
+      return validateAddress(recipient);
+    },
+    [provider, t]
+  );
+
   /*************************************************
    *                    Render                     *
    *************************************************/
@@ -217,7 +241,7 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
           defaultValue=""
           rules={{
             required: t('errors.required.recipient'),
-            validate: validateAddress,
+            validate: recipientValidator,
           }}
           render={({
             field: {name, onBlur, onChange, value},
@@ -365,6 +389,31 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
 };
 
 export default ConfigureWithdrawForm;
+
+/**
+ * Check if the screen is valid
+ * @param dirtyFields List of fields that have been changed
+ * @param errors List of fields that have errors
+ * @param tokenAddress Token address
+ * @returns Whether the screen is valid
+ */
+export function isValid(
+  dirtyFields?: FormState<WithdrawAction>['dirtyFields'],
+  errors?: FormState<WithdrawAction>['errors'],
+  tokenAddress?: string
+) {
+  // check if fields are dirty
+  if (!dirtyFields?.to || !dirtyFields?.amount || !tokenAddress) return false;
+
+  // check if fields have errors
+  if (errors?.to || errors?.amount || errors?.tokenAddress) return false;
+
+  return true;
+}
+
+/*************************************************
+ *               Styled Components               *
+ *************************************************/
 
 const FormItem = styled.div.attrs({
   className: 'space-y-1.5',

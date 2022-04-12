@@ -1,18 +1,16 @@
-type SubgraphNetworkUrl = {
-  [key: string]: string | undefined;
-};
+import {SupportedChainID, SupportedNetworks} from './chains';
+
+type SubgraphNetworkUrl = Record<SupportedNetworks, string | undefined>;
 
 export const SUBGRAPH_API_URL: SubgraphNetworkUrl = {
-  main: undefined,
-  // rinkeby:
-  //   'https://api.thegraph.com/subgraphs/name/aragon/aragon-zaragoza-rinkeby',
+  ethereum: undefined,
   rinkeby:
-    'https://api.thegraph.com/subgraphs/name/rekard0/rekard0-zaragoza-rinkeby',
+    'https://api.thegraph.com/subgraphs/name/aragon/aragon-zaragoza-rinkeby',
   polygon: undefined,
   mumbai:
     'https://api.thegraph.com/subgraphs/name/aragon/aragon-zaragoza-mumbai',
   arbitrum: undefined,
-  arbitrumTest:
+  'arbitrum-test':
     'https://api.thegraph.com/subgraphs/name/aragon/aragon-zaragoza-arbitrum-rinkeby',
 };
 
@@ -22,11 +20,15 @@ export const INFURA_PROJECT_ID = '7a03fcb37be7479da06f92c5117afd47';
 export const INFURA_PROJECT_ID_ARB = '92aa62d2bb5449cfafe04b83ca8636f1';
 
 // Coingecko Api specific asset platform keys
-export const ASSET_PLATFORMS: {[key: number]: string} = {
+export const ASSET_PLATFORMS: Record<SupportedChainID, string> = {
+  // TODO add asset platoform keys for other chains
   1: 'ethereum',
-  127: 'polygon-pos',
+  4: '',
+  137: 'polygon-pos',
   42161: 'arbitrum-one',
+  80001: '',
+  421611: '',
 };
 
 // to be removed
-export const TEST_DAO = '0x51c3ddb42529bfc24d4c13192e2e31421de459bc';
+export const TEST_DAO = '0x4d68eaa86557f666decf789a8ab3d59fe390ff42';

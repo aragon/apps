@@ -1,5 +1,5 @@
 import {Address} from '@aragon/ui-components/dist/utils/addresses';
-import {TimeFilter} from './constants/misc';
+import {TimeFilter, TransferTypes} from './constants';
 
 /*************************************************
  *                   Finance types               *
@@ -42,21 +42,6 @@ export type TokenWithMetadata = {
   };
 };
 
-/** The Dao transfer */
-export type DaoTransfer = {
-  __typename: 'VaultDeposit' | 'VaultWithdraw';
-  amount: number;
-  createdAt: number;
-  dao: {
-    id: string;
-  };
-  token: TokenBalance['token'];
-  id: string;
-  reference: string;
-  sender: Address;
-  transaction: string;
-};
-
 /** Token populated with the current price, and price change percentage for given filter */
 export type TokenWithMarketData = TokenWithMetadata & {
   marketData?: {
@@ -74,17 +59,52 @@ export type VaultToken = TokenWithMarketData & {
 
 export type PollTokenOptions = {interval?: number; filter: TimeFilter};
 
+// Transfers
+type Deposit = {
+  __typename: TransferTypes.Deposit;
+  sender: Address;
+};
+
+type Withdraw = {
+  __typename: TransferTypes.Withdraw;
+
+  to: Address;
+  proposal: {
+    id: string;
+  };
+};
+
+/** The Dao transfer */
+export type DaoTransfer = {
+  amount: number;
+  createdAt: number;
+  dao: {
+    id: string;
+  };
+  token: TokenBalance['token'];
+  id: string;
+  reference: string;
+  transaction: string;
+} & (Withdraw | Deposit);
+
 /** A transfer transaction */
 export type Transfer = {
+  id: string;
   title: string;
   tokenAmount: string;
   tokenSymbol: string;
   transferDate: string;
-  transferType: 'VaultDeposit' | 'VaultWithdraw';
   transferTimestamp?: string | number;
   usdValue: string;
   isPending?: boolean;
-};
+  tokenImgUrl: string;
+  tokenName: string;
+  reference?: string;
+  transaction: string;
+} & (
+  | {transferType: TransferTypes.Deposit; sender: Address}
+  | {transferType: TransferTypes.Withdraw; to: Address; proposalId: string}
+);
 
 /*************************************************
  *                  Proposal types               *
@@ -173,3 +193,8 @@ export type ActionItem = {
 };
 
 export type NetworkIndicatorStatus = 'default' | 'testnet' | 'unsupported';
+
+export type StringIndexed = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
+};

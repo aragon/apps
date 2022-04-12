@@ -1,14 +1,14 @@
-import {useWallet} from 'use-wallet';
 import {useEffect, useState} from 'react';
 
 import {fetchTokenData} from 'services/prices';
 import {useApolloClient} from 'context/apolloClient';
-import {ASSET_PLATFORMS} from 'utils/constants';
+import {ASSET_PLATFORMS, CHAIN_METADATA} from 'utils/constants';
 import {TokenBalance, TokenWithMetadata} from 'utils/types';
+import {useNetwork} from 'context/network';
 
 export const useTokenMetadata = (balances: TokenBalance[]) => {
   const client = useApolloClient();
-  const {chainId} = useWallet();
+  const {network} = useNetwork();
   const [data, setData] = useState<TokenWithMetadata[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -18,9 +18,14 @@ export const useTokenMetadata = (balances: TokenBalance[]) => {
 
       // fetch token metadata from external api
       const metadata = await Promise.all(
-        balances?.map(balance =>
-          fetchTokenData(balance.token.id, client, ASSET_PLATFORMS[chainId!])
-        )
+        balances?.map(balance => {
+          const chainId = CHAIN_METADATA[network].id;
+          return fetchTokenData(
+            balance.token.id,
+            client,
+            ASSET_PLATFORMS[chainId]
+          );
+        })
       );
 
       // map metadata to token balances
@@ -38,7 +43,7 @@ export const useTokenMetadata = (balances: TokenBalance[]) => {
     };
 
     if (balances) fetchMetadata();
-  }, [balances, chainId, client]);
+  }, [balances, network, client]);
 
   return {data, loading};
 };

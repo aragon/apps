@@ -32,9 +32,7 @@ const ApolloClientProvider: React.FC<unknown> = ({children}) => {
   const graphLink = useMemo(() => {
     if (network) {
       return new HttpLink({
-        uri:
-          'https://api.thegraph.com/subgraphs/name/rekard0/rekard0-zaragoza-rinkeby' ||
-          SUBGRAPH_API_URL[network],
+        uri: SUBGRAPH_API_URL[network],
       });
     }
   }, [network]);

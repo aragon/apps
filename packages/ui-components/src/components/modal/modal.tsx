@@ -85,7 +85,7 @@ const ModalContainer = styled(Content).attrs(({style}: StyledContentProps) => {
       '0px 24px 32px rgba(31, 41, 51, 0.04), 0px 16px 24px rgba(31, 41, 51, 0.04), 0px 4px 8px rgba(31, 41, 51, 0.04), 0px 0px 1px rgba(31, 41, 51, 0.04)',
     borderRadius: 12,
     width: '90vw',
-    maxWidth: '437px',
+    maxWidth: '448px',
     maxHeight: '85vh',
     outline: 'none',
     overflow: 'auto',
