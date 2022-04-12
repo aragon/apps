@@ -18,7 +18,7 @@ const providerOptions: IProviderOptions = {
   walletconnect: {
     package: WalletConnectProvider,
     options: {
-      infuraId: import.meta.env.VITE_REACT_APP_INFURA_ID,
+      infuraId: import.meta.env.VITE_REACT_APP_RPC,
     },
   },
 };
