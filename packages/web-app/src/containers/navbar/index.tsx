@@ -63,7 +63,7 @@ const Navbar: React.FC = () => {
   }, [pathname]);
 
   const status = useMemo(() => {
-    return isConnected ? getNetworkStatus(chainId!) : 'default';
+    return isConnected ? getNetworkStatus(chainId) : 'default';
   }, [chainId, isConnected]);
 
   const handleWalletButtonClick = () => {
@@ -72,7 +72,7 @@ const Navbar: React.FC = () => {
       return;
     }
     methods.selectWallet().catch((err: Error) => {
-      // TODO: maybe add an error message when
+      // To be implemented: maybe add an error message when
       // the error is different from closing the window
       console.error(err);
     });

@@ -3,7 +3,7 @@ import {useEffect, useState} from 'react';
 import {BigNumber} from 'ethers';
 import {Network} from '@ethersproject/networks';
 
-export interface IUseWalletProps extends SignerValue {
+export interface IUseWallet extends SignerValue {
   balance: BigNumber | null;
   ensAvatarUrl: string;
   ensName: string;
@@ -13,7 +13,7 @@ export interface IUseWalletProps extends SignerValue {
   account: string | null;
 }
 
-export const useWallet = (): IUseWalletProps => {
+export const useWallet = (): IUseWallet => {
   const {chainId, methods, signer, provider, address, status} = useSigner();
   const [balance, setBalance] = useState<BigNumber | null>(null);
   const [ensName, setEnsName] = useState<string>('');
@@ -24,8 +24,8 @@ export const useWallet = (): IUseWalletProps => {
   // Update balance
   useEffect(() => {
     if (address && provider) {
-      provider?.getBalance(address).then((balance: BigNumber) => {
-        setBalance(balance);
+      provider?.getBalance(address).then((newBalance: BigNumber) => {
+        setBalance(newBalance);
       });
     }
   }, [provider, address]);

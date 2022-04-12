@@ -23,7 +23,7 @@ export const usePollTransfersPrices = (transfers: DaoTransfer[]) => {
       // fetch token metadata from external api
       const metadata = await Promise.all(
         transfers?.map(transfer =>
-          fetchTokenData(transfer.token.id, client, ASSET_PLATFORMS[chainId!])
+          fetchTokenData(transfer.token.id, client, ASSET_PLATFORMS[chainId])
         )
       );
 

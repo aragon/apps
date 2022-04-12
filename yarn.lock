@@ -21777,10 +21777,10 @@ use-sidecar@^1.0.1, use-sidecar@^1.0.5:
     detect-node-es "^1.1.0"
     tslib "^1.9.3"
 
-use-signer@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/use-signer/-/use-signer-0.1.0.tgz#d274b4e149398c13b8ed1073be66cdcbf73caf8b"
-  integrity sha512-1vXj9wGQpD4FW8kxGZk5TLGInmQwYASPLTOLwoBh/53KQsllZ9sY3/t1vmk6PUAMufDK/bFA9Kda1xIHPi77LQ==
+use-signer@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/use-signer/-/use-signer-0.2.0.tgz#62a3cda5815a40d28115c819cd7963aad1cec0d4"
+  integrity sha512-g1fsdOtsG6MKfQJfOwJAyQTRgheIPFAZXs84sMasB0lyB79io29vBtUgVe0XMQcSdXAJUSW4gVMCeKq/4GBO8Q==
   dependencies:
     "@ethersproject/providers" "^5.5.3"
     "@walletconnect/web3-provider" "^1.7.4"

@@ -19,7 +19,7 @@ export const useTokenMetadata = (balances: TokenBalance[]) => {
       // fetch token metadata from external api
       const metadata = await Promise.all(
         balances?.map(balance =>
-          fetchTokenData(balance.token.id, client, ASSET_PLATFORMS[chainId!])
+          fetchTokenData(balance.token.id, client, ASSET_PLATFORMS[chainId])
         )
       );
 
