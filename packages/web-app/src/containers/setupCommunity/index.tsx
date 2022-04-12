@@ -101,9 +101,7 @@ const SetupCommunityForm: React.FC = () => {
 
       {isNewToken === true && <CreateNewToken />}
 
-      {isNewToken === false && (
-        <ExistingTokenPartialForm {...{resetTokenFields}} />
-      )}
+      {isNewToken === false && <ExistingTokenPartialForm />}
     </>
   );
 };
