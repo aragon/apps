@@ -8,7 +8,7 @@ import React, {
 
 import {TransactionItem} from 'utils/types';
 import {TransactionState, TransferTypes} from 'utils/constants';
-import PublishDaoModal from 'containers/transactionModals/publishDao';
+import PublishDaoModal from 'containers/transactionModals/publishDaoModal';
 
 const TransactionsContext = createContext<TransactionsContextType | null>(null);
 
@@ -53,6 +53,8 @@ const TransactionsProvider: React.FC<Props> = ({children}) => {
             onClose={() => setIsModalOpen(false)}
           />
         );
+        break;
+      case TransferTypes.Withdraw:
         break;
       default:
         modal = (
