@@ -1,15 +1,10 @@
-import {useSigner} from 'use-signer';
+import {useSigner, SignerValue} from 'use-signer';
 import {JsonRpcSigner, Web3Provider} from '@ethersproject/providers';
 import {useEffect, useState} from 'react';
 import {BigNumber} from 'ethers';
 import {Network} from '@ethersproject/networks';
 
-export interface IUseWalletProps {
-  provider: Web3Provider | null;
-  signer: JsonRpcSigner | null;
-  status: 'disconnected' | 'connecting' | 'connected';
-  address: string | null;
-  chainId: number;
+export interface IUseWalletProps extends SignerValue {
   balance: BigNumber | null;
   ensAvatarUrl: string;
   ensName: string;
@@ -17,11 +12,6 @@ export interface IUseWalletProps {
   networkName: string;
   // equal value to address
   account: string | null;
-  methods: {
-    selectWallet: () => Promise<void>;
-    refreshChainId: () => Promise<void>;
-    disconnect: () => Promise<void>;
-  };
 }
 
 export const useWallet = (): IUseWalletProps => {
