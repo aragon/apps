@@ -422,16 +422,11 @@ export default SetupVotingForm;
 
 /**
  * Check if the screen is valid
- * @param dirtyFields List of fields that have been changed
  * @param errors List of fields that have errors
  * @param durationSwitch Duration switch value
  * @returns Whether the screen is valid
  */
-export function isValid(
-  dirtyFields: StringIndexed,
-  errors: StringIndexed,
-  durationSwitch: string
-) {
+export function isValid(errors: StringIndexed, durationSwitch: string) {
   if (durationSwitch === 'date') {
     return errors.startDate || errors.startTime || errors.endDate
       ? false

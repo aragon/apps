@@ -63,9 +63,7 @@ const NewProposal: React.FC = () => {
           <Step
             wizardTitle={t('newWithdraw.setupVoting.title')}
             wizardDescription={t('newWithdraw.setupVoting.description')}
-            isNextButtonDisabled={
-              !setupVotingIsValid(dirtyFields, errors, durationSwitch)
-            }
+            isNextButtonDisabled={!setupVotingIsValid(errors, durationSwitch)}
           >
             <SetupVotingForm />
           </Step>
