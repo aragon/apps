@@ -22,7 +22,10 @@ const icons = {
   [TransactionState.ERROR]: <IconReload />,
 };
 
-const PublishDaoModal: React.FC<PublishDaoModalProps> = ({state, callback}) => {
+const PublishDaoModal: React.FC<PublishDaoModalProps> = ({
+  state = TransactionState.LOADING,
+  callback,
+}) => {
   const {t} = useTranslation();
 
   const label = {
@@ -36,7 +39,7 @@ const PublishDaoModal: React.FC<PublishDaoModalProps> = ({state, callback}) => {
     <ModalBottomSheetSwitcher
       isOpen={true}
       onClose={() => null}
-      title={t('TransactionModal.publishDao')}
+      title={t('TransactionModal.publishDao') as string}
     >
       <GasCostTableContainer>
         <GasCostEthContainer>
@@ -65,6 +68,7 @@ const PublishDaoModal: React.FC<PublishDaoModalProps> = ({state, callback}) => {
           className="mt-3 w-full"
           label={label[state]}
           iconLeft={icons[state]}
+          isActive={state === TransactionState.LOADING}
           onClick={callback}
         />
 

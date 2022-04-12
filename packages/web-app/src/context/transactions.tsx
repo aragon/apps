@@ -31,7 +31,7 @@ const TransactionsProvider: React.FC<Props> = ({children}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [transaction, setTransaction] = useState<TransactionItem>();
   const [transactionState, setTransactionState] = useState<TransactionState>(
-    TransactionState.WAITING
+    TransactionState.ERROR
   );
   const {t} = useTranslation();
 
@@ -51,13 +51,7 @@ const TransactionsProvider: React.FC<Props> = ({children}) => {
     switch (transaction?.type) {
       case TransferTypes.Deposit:
         modal = (
-          <PublishDaoModal
-            title={t('TransactionModal.publishDao')}
-            footerButtonLabel="Sign Deposit"
-            state={transactionState}
-            callback={console.log}
-            approveStepNeeded
-          />
+          <PublishDaoModal state={transactionState} callback={console.log} />
         );
         break;
       default:
@@ -74,11 +68,7 @@ const TransactionsProvider: React.FC<Props> = ({children}) => {
   return (
     <TransactionsContext.Provider value={value}>
       {children}
-      <PublishDaoModal
-        title={t('TransactionModal.publishDao')}
-        state={transactionState}
-        callback={console.log}
-      />
+      <PublishDaoModal state={transactionState} callback={console.log} />
     </TransactionsContext.Provider>
   );
 };
