@@ -96,14 +96,16 @@ export const usePollTokenPrices = (
       const tokenIds = tokenList.map(token => token.metadata.apiId).join(',');
       const tokenMarketData = await fetchTokenMarketData(tokenIds);
 
+      // transform tokens with price if any
       if (tokenMarketData) transformData(tokenMarketData);
+      else setData({...data, tokens: [...tokenList]});
     } catch (error) {
       setError(error as Error);
       console.error(error);
     } finally {
       setIsLoading(false);
     }
-  }, [tokenList, transformData]);
+  }, [data, tokenList, transformData]);
 
   useInterval(() => calculatePricing(), options.interval, tokenList.length > 0);
 
