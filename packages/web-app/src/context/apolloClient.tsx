@@ -51,6 +51,7 @@ const ApolloClientProvider: React.FC<unknown> = ({children}) => {
   // add the REST API's typename you want to persist here
   const entitiesToPersist = ['tokenData'];
 
+  // disable persistor for now
   const persistor = new CachePersistor({
     cache,
     // TODO: Check and update the size needed for the cache
