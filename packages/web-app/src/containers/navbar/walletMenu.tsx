@@ -10,18 +10,17 @@ import {
 } from '@aragon/ui-components';
 import {useGlobalModalContext} from 'context/globalModals';
 import styled from 'styled-components';
-import {useSigner} from 'use-signer';
-import {useEnsAvatar, useEnsName} from 'hooks/useEnsData';
+import {useWallet} from 'hooks/useWallet';
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 import {shortenAddress} from '@aragon/ui-components/src/utils/addresses';
 import {handleClipboardActions} from 'utils/library';
 import useScreen from 'hooks/useScreen';
+
 export const WalletMenu = () => {
   const {close, isWalletOpen} = useGlobalModalContext();
-  const {address, methods} = useSigner();
-  const {data: ensName} = useEnsName(address || '');
-  const {data: ensAvatarUrl} = useEnsAvatar(address || '');
+  const {address, ensName, ensAvatarUrl, methods} = useWallet();
   const {isDesktop} = useScreen();
+
   const handleDisconnect = () => {
     methods
       .disconnect()
@@ -32,6 +31,7 @@ export const WalletMenu = () => {
         console.error(e);
       });
   };
+
   return (
     <ModalBottomSheetSwitcher
       onClose={() => close('wallet')}

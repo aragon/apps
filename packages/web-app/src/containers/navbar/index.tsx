@@ -52,7 +52,7 @@ const getNetworkStatus = (id: number) => {
 };
 
 const Navbar: React.FC = () => {
-  const {open, isWalletOpen} = useGlobalModalContext();
+  const {open} = useGlobalModalContext();
   const {pathname} = useLocation();
   const {isDesktop} = useScreen();
   const {chainId, methods, isConnected} = useWallet();
@@ -68,7 +68,6 @@ const Navbar: React.FC = () => {
 
   const handleWalletButtonClick = () => {
     if (isConnected) {
-      console.log(isWalletOpen);
       open('wallet');
       return;
     }
