@@ -21,7 +21,7 @@ import {
   validateTokenAddress,
   validateTokenAmount,
 } from 'utils/validators';
-import {TEST_DAO} from 'utils/constants';
+import {NETWORK, TEST_DAO} from 'utils/constants';
 import {useWallet} from 'context/augmentedWallet';
 import {useProviders} from 'context/providers';
 import {fetchTokenData} from 'services/prices';
@@ -90,7 +90,7 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
           isETH(tokenAddress)
             ? provider.getBalance(TEST_DAO)
             : fetchBalance(tokenAddress, TEST_DAO, provider),
-          fetchTokenData(tokenAddress, client),
+          fetchTokenData(tokenAddress, client, NETWORK),
         ]);
 
         // use blockchain if api data unavailable

@@ -3,7 +3,7 @@ import {useEffect, useState} from 'react';
 
 import {fetchTokenData} from 'services/prices';
 import {useApolloClient} from 'context/apolloClient';
-import {ASSET_PLATFORMS} from 'utils/constants';
+import {NETWORK} from 'utils/constants';
 import {TokenBalance, TokenWithMetadata} from 'utils/types';
 
 export const useTokenMetadata = (balances: TokenBalance[]) => {
@@ -19,7 +19,7 @@ export const useTokenMetadata = (balances: TokenBalance[]) => {
       // fetch token metadata from external api
       const metadata = await Promise.all(
         balances?.map(balance =>
-          fetchTokenData(balance.token.id, client, ASSET_PLATFORMS[chainId!])
+          fetchTokenData(balance.token.id, client, NETWORK)
         )
       );
 
