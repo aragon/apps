@@ -5,9 +5,10 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import {useMatch} from 'react-router-dom';
-import {isSupportedNetwork, SupportedNetworks} from 'utils/constants';
+import {useMatch, useNavigate} from 'react-router-dom';
 
+import {isSupportedNetwork, SupportedNetworks} from 'utils/constants';
+import {NotFound} from 'utils/paths';
 import {Nullable} from 'utils/types';
 
 /* CONTEXT PROVIDER ========================================================= */
@@ -37,24 +38,37 @@ type NetworkProviderProps = {
  *
  */
 export function NetworkProvider({children}: NetworkProviderProps) {
-  const urlMatch = useMatch(':network/*');
+  const urlNetworkMatch = useMatch(':network/*');
+  const urlNotFoundMatch = useMatch('not-found');
+  const urlCreateMatch = useMatch('create');
+  const navigate = useNavigate();
 
-  const [networkState, setNetworkState] = useState<SupportedNetworks>(() => {
-    const networkParam = urlMatch?.params?.network;
-    if (!networkParam || !isSupportedNetwork(networkParam)) return 'ethereum';
-    else return networkParam;
-  });
+  const [isNetworkFlexible, setIsNetworkFlexible] = useState<boolean>(false);
+  const [networkState, setNetworkState] =
+    useState<SupportedNetworks>('ethereum');
 
-  const changeNetwork = useCallback(newNetwork => {
-    setNetworkState(newNetwork);
-  }, []);
+  const changeNetwork = useCallback(
+    newNetwork => {
+      if (isNetworkFlexible) setNetworkState(newNetwork);
+      else console.error('Network may not be changed on this page');
+    },
+    [isNetworkFlexible]
+  );
 
   useEffect(() => {
-    const networkParam = urlMatch?.params?.network;
-    if (!networkParam || !isSupportedNetwork(networkParam))
-      setNetworkState('ethereum');
-    else setNetworkState(networkParam);
-  }, [urlMatch]);
+    const networkParam = urlNetworkMatch?.params?.network;
+    const isNotFound = urlNotFoundMatch !== null;
+    const isCreate = urlCreateMatch !== null;
+
+    if (isNotFound || isCreate || !networkParam) {
+      setIsNetworkFlexible(true);
+    } else if (!isSupportedNetwork(networkParam)) {
+      console.warn('network not found');
+      navigate(NotFound, {replace: true});
+    } else {
+      setNetworkState(networkParam);
+    }
+  }, [urlNetworkMatch, urlNotFoundMatch, navigate]);
 
   return (
     <NetworkContext.Provider
