@@ -1,25 +1,25 @@
 import {SupportedNetworks} from './constants';
 
 /* TOP LEVEL PAGES ========================================================== */
+export const Landing = '/';
+export const CreateDAO = '/create';
+export const NotFound = '/not-found';
 
-export const Dashboard = '/';
-export const Community = 'community';
-export const CreateDAO = '/create-dao';
-export const NotFound = '/notfound';
+/* DAO-SPECIFIC PAGES ======================================================= */
 
 export const Finance = '/:network/finance';
 export const Governance = '/:network/governance';
+export const Dashboard = '/:network/dashboard';
 
-/* FINANCE PAGES ============================================================ */
 export const AllTokens = '/:network/finance/tokens';
 export const AllTransfers = '/:network/finance/transfers';
 export const NewDeposit = '/:network/finance/new-deposit';
 export const NewWithDraw = '/:network/finance/new-withdraw';
 
-/* GOVERNANCE PAGES ========================================================= */
 export const Proposal = '/:network/governance/proposals/:id';
 export const NewProposal = '/:network/governance/new-proposal';
 
+export const Community = '/:network/community';
 /**
  * Replaces the network parameter in certain URLs. If the path passed to this
  * function has no parameter, the function will return that path unchanged.

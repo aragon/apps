@@ -50,7 +50,7 @@ function App() {
             <Route path={paths.NewDeposit} element={<NewDepositPage />} />
             <Route path={paths.NewWithDraw} element={<NewWithdrawPage />} />
             <Route path={paths.CreateDAO} element={<CreateDAOPage />} />
-            <Route path={paths.Dashboard} element={<HomePage />} />
+            <Route path={paths.Landing} element={<HomePage />} />
             <Route path={paths.Community} element={<CommunityPage />} />
             <Route path={paths.Finance} element={<FinancePage />} />
             <Route path={paths.Governance} element={<GovernancePage />} />
