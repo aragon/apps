@@ -53,6 +53,7 @@ jobs:
           VITE_REACT_APP_DEPLOY_ENVIRONMENT: ${{ needs.set-environment.outputs.environment }}
           VITE_REACT_APP_ANALYTICS_KEY: ${{ secrets.VITE_REACT_APP_ANALYTICS_KEY }}
           VITE_REACT_APP_RPC: "mainnet.eth.aragon.network"
+          NODE_OPTIONS: '--max-old-space-size=6656'
       - uses: actions/setup-python@v2
         with:
           python-version: '3.x'
