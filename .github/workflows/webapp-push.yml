@@ -1,5 +1,6 @@
 name: WebApp Push
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'packages/web-app/**'
