@@ -3229,15 +3229,6 @@
     "@rollup/pluginutils" "^3.1.0"
     mini-svg-data-uri "^1.2.3"
 
-"@rollup/plugin-inject@^4.0.0":
-  version "4.0.4"
-  resolved "https://registry.yarnpkg.com/@rollup/plugin-inject/-/plugin-inject-4.0.4.tgz#fbeee66e9a700782c4f65c8b0edbafe58678fbc2"
-  integrity sha512-4pbcU4J/nS+zuHk+c+OL3WtmEQhqxlZ9uqfjQMQDOHOPld7PsCd8k5LWs8h5wjwJN7MgnAn768F2sDxEP4eNFQ==
-  dependencies:
-    "@rollup/pluginutils" "^3.1.0"
-    estree-walker "^2.0.1"
-    magic-string "^0.25.7"
-
 "@rollup/plugin-json@^4.0.0":
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/@rollup/plugin-json/-/plugin-json-4.1.0.tgz#54e09867ae6963c593844d8bd7a9c718294496f3"
@@ -19328,13 +19319,6 @@ rollup-plugin-image-files@^1.4.2:
   dependencies:
     rollup "0.64.1"
     rollup-pluginutils "2.4.1"
-
-rollup-plugin-polyfill-node@^0.9.0:
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/rollup-plugin-polyfill-node/-/rollup-plugin-polyfill-node-0.9.0.tgz#09cf1a74244a74a5c5007f5fd386d320610ec1d8"
-  integrity sha512-cVqm7LjgBqtZ77M9hLYayXrLz18nLIVPp3MPqNi2suStrFDg1LsA2cSdMIighr2yeuAQrphu8ymXTAsJNVABow==
-  dependencies:
-    "@rollup/plugin-inject" "^4.0.0"
 
 rollup-plugin-postcss@^4.0.0:
   version "4.0.2"
