@@ -12,7 +12,7 @@ import styled from 'styled-components';
 import {chains} from 'use-wallet';
 import {ChainInformation} from 'use-wallet/dist/cjs/types';
 
-import {useWallet} from 'context/augmentedWallet';
+import {useWallet} from 'hooks/useWallet';
 import {useProviders} from 'context/providers';
 import {useNetwork} from 'context/network';
 import {formatUnits} from 'utils/library';
@@ -50,6 +50,8 @@ const AddExistingToken: React.FC<AddExistingTokenType> = ({
 
   const explorer = useMemo(() => {
     if (blockchain.id) {
+      // TODO move necessary information from useWallet's ChainInfromation into
+      // CHAIN_METADATA
       const {explorerUrl} = chains.getChainInformation(
         blockchain.id
       ) as ChainInformation;
@@ -72,7 +74,7 @@ const AddExistingToken: React.FC<AddExistingTokenType> = ({
   const addressValidator = useCallback(
     async contractAddress => {
       // No wallet
-      if (!isConnected()) {
+      if (!isConnected) {
         alert('Connect Wallet');
         return 'Connect Wallet'; // Temporary
       }

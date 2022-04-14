@@ -5,8 +5,7 @@ import {useNavigate} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
 import React, {useMemo, useState} from 'react';
 
-import {useWallet} from 'context/augmentedWallet';
-import {useWalletProps} from 'containers/walletMenu';
+import {useWallet} from 'hooks/useWallet';
 import NetworkIndicator from './networkIndicator';
 import {BreadcrumbDropdown} from './breadcrumbDropdown';
 import {useGlobalModalContext} from 'context/globalModals';
@@ -32,9 +31,8 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
   const navigate = useNavigate();
   const {network} = useNetwork();
   const selectedDao = useReactiveVar(selectedDAO);
-  const {isConnected, account, ensName, ensAvatarUrl}: useWalletProps =
-    useWallet();
   const {breadcrumbs, icon} = useMappedBreadcrumbs();
+  const {address, ensName, ensAvatarUrl, isConnected} = useWallet();
 
   const [showCrumbMenu, setShowCrumbMenu] = useState(false);
 
@@ -58,11 +56,11 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
           />
 
           <ButtonWallet
-            src={ensAvatarUrl || account}
+            src={ensAvatarUrl || address}
             onClick={props.onWalletClick}
-            isConnected={isConnected()}
+            isConnected={isConnected}
             label={
-              isConnected() ? ensName || account : t('navButtons.connectWallet')
+              isConnected ? ensName || address : t('navButtons.connectWallet')
             }
           />
         </Menu>
@@ -105,11 +103,11 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
         </Content>
 
         <ButtonWallet
-          src={ensAvatarUrl || account}
+          src={ensAvatarUrl || address}
           onClick={props.onWalletClick}
-          isConnected={isConnected()}
+          isConnected={isConnected}
           label={
-            isConnected() ? ensName || account : t('navButtons.connectWallet')
+            isConnected ? ensName || address : t('navButtons.connectWallet')
           }
         />
       </Menu>

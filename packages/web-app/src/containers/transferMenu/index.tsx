@@ -4,8 +4,8 @@ import {useNavigate} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
 import {ActionListItem, IconChevronRight} from '@aragon/ui-components';
 
-import {useWallet} from 'context/augmentedWallet';
 import {NewDeposit, NewWithDraw, replaceNetworkParam} from 'utils/paths';
+import {useWallet} from 'hooks/useWallet';
 import {useGlobalModalContext} from 'context/globalModals';
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 import {useNetwork} from 'context/network';
@@ -22,7 +22,8 @@ const TransferMenu: React.FC = () => {
   const handleClick = (action: Action) => {
     // TODO: change alert to proper error reporting mechanism,
     // Move to proper placing
-    if (isConnected()) {
+    // TODO reorder if statements
+    if (isConnected) {
       if (action === 'deposit')
         navigate(replaceNetworkParam(NewDeposit, network));
       else navigate(replaceNetworkParam(NewWithDraw, network));

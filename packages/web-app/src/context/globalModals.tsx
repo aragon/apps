@@ -16,6 +16,7 @@ type GlobalModalsContextType = {
   isSelectDaoOpen: boolean;
   isAddActionOpen: boolean;
   isAddressesOpen: boolean;
+  isWalletOpen: boolean;
   open: (arg?: MenuTypes) => void;
   close: (arg?: MenuTypes) => void;
 };
@@ -27,7 +28,8 @@ type MenuTypes =
   | 'addAction'
   | 'selectDao'
   | 'default'
-  | 'addresses';
+  | 'addresses'
+  | 'wallet';
 
 type Props = Record<'children', ReactNode>;
 
@@ -50,6 +52,8 @@ const GlobalModalsProvider: React.FC<Props> = ({children}) => {
     useState<GlobalModalsContextType['isSelectDaoOpen']>(false);
   const [isAddressesOpen, setAddressesOpen] =
     useState<GlobalModalsContextType['isAddressesOpen']>(false);
+  const [isWalletOpen, setWalletOpen] =
+    useState<GlobalModalsContextType['isWalletOpen']>(false);
 
   const open = (type?: MenuTypes) => {
     switch (type) {
@@ -70,6 +74,9 @@ const GlobalModalsProvider: React.FC<Props> = ({children}) => {
         break;
       case 'addresses':
         setAddressesOpen(true);
+        break;
+      case 'wallet':
+        setWalletOpen(true);
         break;
       default:
         setIsTransferOpen(true);
@@ -97,6 +104,9 @@ const GlobalModalsProvider: React.FC<Props> = ({children}) => {
       case 'addresses':
         setAddressesOpen(false);
         break;
+      case 'wallet':
+        setWalletOpen(false);
+        break;
       default:
         setIsTransferOpen(false);
         break;
@@ -121,6 +131,7 @@ const GlobalModalsProvider: React.FC<Props> = ({children}) => {
       isAddActionOpen,
       isSelectDaoOpen,
       isAddressesOpen,
+      isWalletOpen,
       open,
       close,
     }),
@@ -132,6 +143,7 @@ const GlobalModalsProvider: React.FC<Props> = ({children}) => {
       isAddActionOpen,
       isSelectDaoOpen,
       isAddressesOpen,
+      isWalletOpen,
     ]
   );
 

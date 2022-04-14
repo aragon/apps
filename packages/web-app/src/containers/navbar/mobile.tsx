@@ -11,8 +11,7 @@ import React, {useState} from 'react';
 
 import useScreen from 'hooks/useScreen';
 import MobileMenu from './mobileMenu';
-import {useWallet} from 'context/augmentedWallet';
-import {useWalletProps} from 'containers/walletMenu';
+import {useWallet} from 'hooks/useWallet';
 import NetworkIndicator from './networkIndicator';
 import {useGlobalModalContext} from 'context/globalModals';
 import {NetworkIndicatorStatus} from 'utils/types';
@@ -28,8 +27,7 @@ const MobileNav: React.FC<MobileNavProps> = props => {
   const {open} = useGlobalModalContext();
   const {isMobile} = useScreen();
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const {isConnected, account, ensName, ensAvatarUrl}: useWalletProps =
-    useWallet();
+  const {isConnected, account, ensName, ensAvatarUrl} = useWallet();
 
   if (props.isProcess)
     return (
@@ -70,11 +68,9 @@ const MobileNav: React.FC<MobileNavProps> = props => {
             <ButtonWallet
               src={ensAvatarUrl || account}
               onClick={props.onWalletClick}
-              isConnected={isConnected()}
+              isConnected={isConnected}
               label={
-                isConnected()
-                  ? ensName || account
-                  : t('navButtons.connectWallet')
+                isConnected ? ensName || account : t('navButtons.connectWallet')
               }
             />
           </FlexOne>
@@ -97,7 +93,7 @@ const Container = styled.div.attrs({
 })``;
 
 const Menu = styled.nav.attrs({
-  className: `flex justify-between items-center px-2 tablet:px-3 py-1 
+  className: `flex justify-between items-center px-2 tablet:px-3 py-1
      tablet:py-1.5`,
 })`
   background: linear-gradient(
