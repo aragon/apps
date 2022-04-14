@@ -28,7 +28,11 @@ const CookieSettingsMenu: React.FC<CookieSettingsMenuProps> = props => {
   const [functionalSelected, setFunctionalSelected] = useState<boolean>(true);
 
   return (
-    <ModalBottomSheetSwitcher isOpen={props.show} onClose={props.onClose}>
+    <ModalBottomSheetSwitcher
+      isOpen={props.show}
+      onClose={props.onClose}
+      onOpenAutoFocus={e => e.preventDefault()}
+    >
       <div>
         <ModalHeader>
           <ButtonIcon
@@ -60,12 +64,6 @@ const CookieSettingsMenu: React.FC<CookieSettingsMenuProps> = props => {
           </div>
           <div className="flex space-x-2">
             <ButtonText
-              label={t('privacyPolicy.rejectAllCookies')}
-              size="large"
-              mode="secondary"
-              onClick={props.onRejectAllClick}
-            />
-            <ButtonText
               className="flex-1"
               label={t('privacyPolicy.acceptSelectedCookies')}
               size="large"
@@ -75,6 +73,13 @@ const CookieSettingsMenu: React.FC<CookieSettingsMenuProps> = props => {
                   functional: functionalSelected,
                 })
               }
+            />
+            <ButtonText
+              className="flex-1"
+              label={t('privacyPolicy.rejectAllCookies')}
+              size="large"
+              mode="secondary"
+              onClick={props.onRejectAllClick}
             />
           </div>
         </BottomSheetContentContainer>
@@ -94,7 +99,6 @@ const ModalHeader = styled.div.attrs({
 })`
   box-shadow: 0px 4px 8px rgba(31, 41, 51, 0.04),
     0px 0px 2px rgba(31, 41, 51, 0.06), 0px 0px 1px rgba(31, 41, 51, 0.04);
-  border-radius: 12px;
 `;
 
 const BottomSheetContentContainer = styled.div.attrs({

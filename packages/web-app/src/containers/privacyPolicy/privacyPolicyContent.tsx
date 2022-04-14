@@ -34,20 +34,20 @@ const PrivacyPolicyContent: React.FC<PrivacyPolicyContentProps> = ({
           onClick={props.onShowCookieSettings}
         />
         <ButtonText
-          label={t('privacyPolicy.acceptAllCookies')}
-          mode="secondary"
-          {...(isDesktop
-            ? {size: 'small', bgWhite: true}
-            : {size: 'large', className: 'w-full'})}
-          onClick={props.onAcceptAll}
-        />
-        <ButtonText
           label={t('privacyPolicy.rejectAllCookies')}
           mode="secondary"
           {...(isDesktop
             ? {size: 'small', bgWhite: true}
             : {size: 'large', className: 'w-full'})}
           onClick={props.onRejectAll}
+        />
+        <ButtonText
+          label={t('privacyPolicy.acceptAllCookies')}
+          mode="secondary"
+          {...(isDesktop
+            ? {size: 'small', bgWhite: true}
+            : {size: 'large', className: 'w-full'})}
+          onClick={props.onAcceptAll}
         />
       </ButtonGroup>
     </>
@@ -62,5 +62,5 @@ const Text = styled.div.attrs({
 
 const ButtonGroup = styled.div.attrs({
   className:
-    'space-y-1.5 desktop:space-y-0 desktop:flex desktop:justify-end desktop:items-center desktop:space-x-1.5 desktop:w-1/3',
+    'space-y-1.5 desktop:space-y-0 desktop:flex desktop:justify-end desktop:items-center desktop:space-x-1.5',
 })``;

@@ -10,6 +10,7 @@ const ModalBottomSheetSwitcher: React.FC<ModalProps & BottomSheetProps> = ({
   onClose,
   children,
   closeOnDrag,
+  onOpenAutoFocus,
 }) => {
   const {isDesktop} = useScreen();
 
@@ -21,6 +22,7 @@ const ModalBottomSheetSwitcher: React.FC<ModalProps & BottomSheetProps> = ({
           onClose={() => onClose && onClose()}
           title={title}
           subtitle={subtitle}
+          onOpenAutoFocus={onOpenAutoFocus}
         >
           {children}
         </Modal>

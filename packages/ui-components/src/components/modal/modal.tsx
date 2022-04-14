@@ -29,6 +29,8 @@ export interface ModalProps {
    * The `onClose` prop allows passing a function that will be called once the modal has been dismissed.
    */
   onClose?: () => void;
+
+  onOpenAutoFocus?: (e: Event) => void;
 }
 
 /**
@@ -40,6 +42,7 @@ export const Modal: React.FC<ModalProps> = ({
   children,
   isOpen = true,
   onClose,
+  onOpenAutoFocus,
   ...props
 }) => {
   return (
@@ -51,6 +54,7 @@ export const Modal: React.FC<ModalProps> = ({
             data-testid="modal-content"
             onInteractOutside={onClose}
             onEscapeKeyDown={onClose}
+            onOpenAutoFocus={onOpenAutoFocus}
             {...props}
           >
             {title && (
