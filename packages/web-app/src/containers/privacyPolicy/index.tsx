@@ -4,18 +4,28 @@ import React, {useState} from 'react';
 
 import useScreen from 'hooks/useScreen';
 import BottomSheet from 'components/bottomSheet';
-import {useCookies} from 'hooks/useCookies';
 import CookieSettingsMenu from './cookieSettingsMenu';
 import PrivacyPolicyContent from './privacyPolicyContent';
-import CookiePreferenceMenu from './cookiePreferenceMenu';
+import {PrivacyPreferences} from 'context/privacyContext';
 
-const PrivacyPolicy: React.FC = () => {
+type PrivacyPolicyProps = {
+  showPolicy: boolean;
+  onAcceptAll: () => void;
+  onRejectAll: () => void;
+  onAcceptPolicy: (preferences: PrivacyPreferences) => void;
+};
+
+const PrivacyPolicy: React.FC<PrivacyPolicyProps> = ({
+  showPolicy,
+  onAcceptAll,
+  onRejectAll,
+  onAcceptPolicy,
+}) => {
   const {t} = useTranslation();
   const {isDesktop} = useScreen();
   const [showCookieSettings, setShowCookieSettings] = useState<boolean>(false);
-  const {policyAccepted, setPrivacyPolicy, acceptAll, rejectAll} = useCookies();
 
-  if (policyAccepted) return null;
+  if (!showPolicy) return null;
 
   return (
     <>
@@ -24,8 +34,8 @@ const PrivacyPolicy: React.FC = () => {
           <Container>
             <PrivacyPolicyContent
               isDesktop={true}
-              onAcceptAll={acceptAll}
-              onRejectAll={rejectAll}
+              onAcceptAll={onAcceptAll}
+              onRejectAll={onRejectAll}
               onShowCookieSettings={() => setShowCookieSettings(true)}
             />
           </Container>
@@ -34,15 +44,15 @@ const PrivacyPolicy: React.FC = () => {
         // TODO: make sure bottom sheet cannot close until user accepts one of the options
         <BottomSheet
           title={t('privacyPolicy.title')}
-          isOpen={!policyAccepted}
+          isOpen={showPolicy}
           onClose={() => null}
           closeOnDrag={false}
         >
           <BottomSheetContentContainer>
             <PrivacyPolicyContent
               isDesktop={false}
-              onAcceptAll={acceptAll}
-              onRejectAll={rejectAll}
+              onAcceptAll={onAcceptAll}
+              onRejectAll={onRejectAll}
               onShowCookieSettings={() => setShowCookieSettings(true)}
             />
           </BottomSheetContentContainer>
@@ -51,10 +61,9 @@ const PrivacyPolicy: React.FC = () => {
       <CookieSettingsMenu
         show={showCookieSettings}
         onClose={() => setShowCookieSettings(false)}
-        onAcceptClick={setPrivacyPolicy}
-        onRejectAllClick={rejectAll}
+        onAcceptClick={onAcceptPolicy}
+        onRejectAllClick={onRejectAll}
       />
-      <CookiePreferenceMenu />
     </>
   );
 };

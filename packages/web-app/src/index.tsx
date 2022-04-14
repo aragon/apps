@@ -13,6 +13,7 @@ import {UseSignerProvider} from 'use-signer';
 import {IProviderOptions} from 'web3modal';
 import WalletConnectProvider from '@walletconnect/web3-provider/dist/umd/index.min.js';
 import 'tailwindcss/tailwind.css';
+import {PrivacyContextProvider} from 'context/privacyContext';
 
 const providerOptions: IProviderOptions = {
   walletconnect: {
@@ -25,23 +26,25 @@ const providerOptions: IProviderOptions = {
 
 ReactDOM.render(
   <React.StrictMode>
-    <APMProvider>
-      <WalletProvider>
-        <UseSignerProvider providerOptions={providerOptions}>
-          <ProvidersProvider>
-            <WalletMenuProvider>
-              <GlobalModalsProvider>
-                <Router>
-                  <ApolloClientProvider>
-                    <App />
-                  </ApolloClientProvider>
-                </Router>
-              </GlobalModalsProvider>
-            </WalletMenuProvider>
-          </ProvidersProvider>
-        </UseSignerProvider>
-      </WalletProvider>
-    </APMProvider>
+    <PrivacyContextProvider>
+      <APMProvider>
+        <WalletProvider>
+          <UseSignerProvider providerOptions={providerOptions}>
+            <ProvidersProvider>
+              <WalletMenuProvider>
+                <GlobalModalsProvider>
+                  <Router>
+                    <ApolloClientProvider>
+                      <App />
+                    </ApolloClientProvider>
+                  </Router>
+                </GlobalModalsProvider>
+              </WalletMenuProvider>
+            </ProvidersProvider>
+          </UseSignerProvider>
+        </WalletProvider>
+      </APMProvider>
+    </PrivacyContextProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
