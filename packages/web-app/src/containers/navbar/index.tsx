@@ -16,8 +16,9 @@ import MobileNav from './mobile';
 import useScreen from 'hooks/useScreen';
 import DesktopNav from './desktop';
 import {useWallet} from 'hooks/useWallet';
-import {CHAIN_METADATA as chains} from 'utils/constants';
+import {usePrivacyContext} from 'context/privacyContext';
 import {useGlobalModalContext} from 'context/globalModals';
+import {CHAIN_METADATA as chains} from 'utils/constants';
 
 type NumberIndexed = {[key: number]: {}};
 type StringIndexed = {[key: string]: {processLabel: string; returnURL: string}};
@@ -56,6 +57,7 @@ const Navbar: React.FC = () => {
   const {pathname} = useLocation();
   const {isDesktop} = useScreen();
   const {chainId, methods, isConnected} = useWallet();
+  const {handleWithFunctionalPreferenceMenu} = usePrivacyContext();
 
   const processName = useMemo(() => {
     const results = matchRoutes(processPaths, pathname);
@@ -65,6 +67,13 @@ const Navbar: React.FC = () => {
   const status = useMemo(() => {
     return isConnected ? getNetworkStatus(chainId) : 'default';
   }, [chainId, isConnected]);
+
+  /*************************************************
+   *                   Handlers                    *
+   *************************************************/
+  const handleOnDaoSelect = () => {
+    handleWithFunctionalPreferenceMenu(() => open('selectDao'));
+  };
 
   const handleWalletButtonClick = () => {
     if (isConnected) {
@@ -82,12 +91,14 @@ const Navbar: React.FC = () => {
     <DesktopNav
       status={status}
       {...(processName ? {...processes[processName]} : {})}
+      onDaoSelect={handleOnDaoSelect}
       onWalletClick={handleWalletButtonClick}
     />
   ) : (
     <MobileNav
       status={status}
       isProcess={processName !== undefined}
+      onDaoSelect={handleOnDaoSelect}
       onWalletClick={handleWalletButtonClick}
     />
   );

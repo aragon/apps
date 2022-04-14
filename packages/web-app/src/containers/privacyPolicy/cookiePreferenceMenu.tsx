@@ -3,19 +3,21 @@ import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import {ButtonIcon, ButtonText, IconClose} from '@aragon/ui-components';
 
-import {useCookies} from 'hooks/useCookies';
-import {useGlobalModalContext} from 'context/globalModals';
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 
-const CookiePreferenceMenu: React.FC = () => {
+type Props = {
+  show: boolean;
+  onClose: () => void;
+  onAccept: () => void;
+};
+
+const CookiePreferenceMenu: React.FC<Props> = ({show, onClose, onAccept}) => {
   const {t} = useTranslation();
-  const {setFunctionalCookies} = useCookies();
-  const {close, isCookiePreferenceOpen} = useGlobalModalContext();
 
   return (
     <ModalBottomSheetSwitcher
-      isOpen={isCookiePreferenceOpen}
-      onClose={() => close('cookiePreference')}
+      isOpen={show}
+      onClose={onClose}
       onOpenAutoFocus={e => e.preventDefault()}
     >
       <ModalHeader>
@@ -24,7 +26,7 @@ const CookiePreferenceMenu: React.FC = () => {
           mode="secondary"
           size="small"
           icon={<IconClose />}
-          onClick={() => close('cookiePreference')}
+          onClick={onClose}
           bgWhite
         />
       </ModalHeader>
@@ -35,13 +37,14 @@ const CookiePreferenceMenu: React.FC = () => {
             className="flex-1"
             label={t('cookiePreferences.accept')}
             size="large"
-            onClick={setFunctionalCookies}
+            onClick={onAccept}
           />
           <ButtonText
             className="flex-1"
             label={t('cookiePreferences.cancel')}
             size="large"
             mode="secondary"
+            onClick={onClose}
           />
         </div>
       </BottomSheetContentContainer>
@@ -63,7 +66,7 @@ const ModalHeader = styled.div.attrs({
 `;
 
 const BottomSheetContentContainer = styled.div.attrs({
-  className: 'py-3 px-2 space-y-3',
+  className: 'py-3 px-2 space-y-3 tablet:w-56',
 })``;
 
 const Text = styled.div.attrs({

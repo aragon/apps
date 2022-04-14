@@ -15,13 +15,12 @@ import {useTranslation} from 'react-i18next';
 import React, {useMemo, useState} from 'react';
 
 import {useWallet} from 'hooks/useWallet';
+import {selectedDAO} from 'context/apolloClient';
 import NetworkIndicator from './networkIndicator';
+import {useReactiveVar} from '@apollo/client';
 import {BreadcrumbDropdown} from './breadcrumbDropdown';
-import {useGlobalModalContext} from 'context/globalModals';
 import {NetworkIndicatorStatus} from 'utils/types';
 import {Community, Dashboard, Finance, Governance, NotFound} from 'utils/paths';
-import {selectedDAO} from 'context/apolloClient';
-import {useReactiveVar} from '@apollo/client';
 
 const MIN_ROUTE_DEPTH_FOR_BREADCRUMBS = 2;
 
@@ -36,15 +35,16 @@ type DesktopNavProp = {
   status?: NetworkIndicatorStatus;
   returnURL?: string;
   processLabel?: string;
+  onDaoSelect: () => void;
   onWalletClick: () => void;
 };
 
 const DesktopNav: React.FC<DesktopNavProp> = props => {
   const {t} = useTranslation();
-  const {open} = useGlobalModalContext();
   const navigate = useNavigate();
   const selectedDao = useReactiveVar(selectedDAO);
   const [showCrumbMenu, setShowCrumbMenu] = useState(false);
+
   const {address, ensName, ensAvatarUrl, isConnected} = useWallet();
 
   const isProcess = useMemo(
@@ -90,7 +90,7 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
           <CardDao
             daoName={selectedDao.daoName}
             daoAddress={selectedDao.daoAddress}
-            onClick={() => open('selectDao')}
+            onClick={props.onDaoSelect}
           />
 
           <LinksWrapper>

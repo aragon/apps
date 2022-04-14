@@ -1,4 +1,3 @@
-import PrivacyPolicy from 'containers/privacyPolicy';
 import React, {
   createContext,
   useCallback,
@@ -7,7 +6,10 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+
 import {Nullable} from 'utils/types';
+import PrivacyPolicy from 'containers/privacyPolicy';
+import CookiePreferenceMenu from 'containers/privacyPolicy/cookiePreferenceMenu';
 
 export type PrivacyPreferences = {
   analytics: boolean;
@@ -22,6 +24,10 @@ type PrivacyContextType = {
   setPrivacyPolicy: (preferences: PrivacyPreferences) => void;
   setAnalyticsCookies: () => void;
   setFunctionalCookies: () => void;
+  handleWithFunctionalPreferenceMenu: (
+    onAccept: () => void,
+    onReject?: () => void
+  ) => void;
 };
 
 const PrivacyContext = createContext<PrivacyContextType | null>(null);
@@ -29,11 +35,19 @@ const PrivacyContext = createContext<PrivacyContextType | null>(null);
 const PRIVACY_KEY = 'privacy-policy-preferences';
 
 const PrivacyContextProvider: React.FC = ({children}) => {
+  // 'cache' for the privacy preferences to reduce storage usage and increase speed
   const [preferences, setPreferences] = useState<PrivacyPreferences>();
   const [policyAccepted, setPolicyAccepted] = useState<boolean>(false);
 
+  // cookie preference menu state
+  const [showPreferenceMenu, setShowPreferenceMenu] = useState<boolean>(false);
+  const [preferenceMenuCallbacks, setPreferenceMenuCallbacks] = useState({
+    onAccept: () => setShowPreferenceMenu(true),
+    onReject: () => setShowPreferenceMenu(false),
+  });
+
   useEffect(() => {
-    // get preferences from storage
+    // get preferences from storage on first load
     const value = localStorage.getItem(PRIVACY_KEY);
 
     // set state
@@ -46,12 +60,14 @@ const PrivacyContextProvider: React.FC = ({children}) => {
   /*************************************************
    *              Methods and handlers             *
    *************************************************/
+  // Set the privacy preferences in local storage and update context state
   const setPrivacyPolicy = useCallback((preference: PrivacyPreferences) => {
     if (preference.analytics || preference.functional) {
       localStorage.setItem(
         PRIVACY_KEY,
         JSON.stringify({optIn: true, ...preference})
       );
+      setPreferences({...preference});
     } else {
       localStorage.setItem(PRIVACY_KEY, JSON.stringify({optIn: false}));
     }
@@ -85,6 +101,34 @@ const PrivacyContextProvider: React.FC = ({children}) => {
     });
   }, [preferences?.functional, setPrivacyPolicy]);
 
+  /**
+   * Handle the cookie preference menu
+   *
+   * @param onAccept callback to be called when the user accepts the cookies
+   * @param onReject callback to be called when the user rejects the cookies or closes the menu
+   */
+  const handleWithFunctionalPreferenceMenu = useCallback(
+    (onAccept: () => void, onReject?: () => void) => {
+      if (preferences?.functional) {
+        onAccept();
+        return;
+      }
+
+      setShowPreferenceMenu(true);
+      setPreferenceMenuCallbacks({
+        onAccept: () => {
+          setFunctionalCookies();
+          setShowPreferenceMenu(false);
+          onAccept();
+        },
+        onReject: () => {
+          setShowPreferenceMenu(false), onReject?.();
+        },
+      });
+    },
+    [preferences?.functional, setFunctionalCookies]
+  );
+
   const value = useMemo(
     () => ({
       preferences,
@@ -94,9 +138,11 @@ const PrivacyContextProvider: React.FC = ({children}) => {
       setPrivacyPolicy,
       setAnalyticsCookies,
       setFunctionalCookies,
+      handleWithFunctionalPreferenceMenu,
     }),
     [
       acceptAll,
+      handleWithFunctionalPreferenceMenu,
       policyAccepted,
       preferences,
       rejectAll,
@@ -114,6 +160,11 @@ const PrivacyContextProvider: React.FC = ({children}) => {
         onAcceptAll={acceptAll}
         onRejectAll={rejectAll}
         onAcceptPolicy={setPrivacyPolicy}
+      />
+      <CookiePreferenceMenu
+        show={showPreferenceMenu}
+        onClose={preferenceMenuCallbacks.onReject}
+        onAccept={preferenceMenuCallbacks.onAccept}
       />
     </PrivacyContext.Provider>
   );

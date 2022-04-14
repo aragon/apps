@@ -13,18 +13,17 @@ import useScreen from 'hooks/useScreen';
 import MobileMenu from './mobileMenu';
 import {useWallet} from 'hooks/useWallet';
 import NetworkIndicator from './networkIndicator';
-import {useGlobalModalContext} from 'context/globalModals';
 import {NetworkIndicatorStatus} from 'utils/types';
 
 type MobileNavProps = {
   status?: NetworkIndicatorStatus;
   isProcess?: boolean;
+  onDaoSelect: () => void;
   onWalletClick: () => void;
 };
 
 const MobileNav: React.FC<MobileNavProps> = props => {
   const {t} = useTranslation();
-  const {open} = useGlobalModalContext();
   const {isMobile} = useScreen();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const {isConnected, account, ensName, ensAvatarUrl} = useWallet();
@@ -60,7 +59,7 @@ const MobileNav: React.FC<MobileNavProps> = props => {
           </FlexOne>
           <FlexOne className="justify-center">
             <DaoContainer>
-              <AvatarDao daoName="DAO Name" onClick={() => open('selectDao')} />
+              <AvatarDao daoName="DAO Name" onClick={props.onDaoSelect} />
               <DaoName>DAO Name</DaoName>
             </DaoContainer>
           </FlexOne>

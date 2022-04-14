@@ -5,9 +5,9 @@ import {
   IconLinkExternal,
   ListItemDao,
 } from '@aragon/ui-components';
+import React from 'react';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
-import React from 'react';
 
 import {useReactiveVar} from '@apollo/client';
 import {useGlobalModalContext} from 'context/globalModals';
@@ -30,6 +30,7 @@ const DaoSelectMenu: React.FC = () => {
     <ModalBottomSheetSwitcher
       isOpen={isSelectDaoOpen}
       onClose={() => close('selectDao')}
+      onOpenAutoFocus={e => e.preventDefault()}
     >
       <ModalHeader>
         <ButtonIcon
