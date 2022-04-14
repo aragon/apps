@@ -20,15 +20,16 @@ const TransferMenu: React.FC = () => {
   const {isConnected} = useWallet();
 
   const handleClick = (action: Action) => {
-    // TODO: change alert to proper error reporting mechanism,
-    // Move to proper placing
-    // TODO reorder if statements
-    if (isConnected) {
-      if (action === 'deposit')
-        navigate(replaceNetworkParam(NewDeposit, network));
-      else navigate(replaceNetworkParam(NewWithDraw, network));
-      close('default');
-    } else alert('Please connect your wallet');
+    if (!isConnected) {
+      // TODO: change alert to proper error reporting mechanism,
+      // Move to proper placing
+      alert('Please connect your wallet');
+    } else if (action === 'deposit') {
+      navigate(replaceNetworkParam(NewDeposit, network));
+    } else {
+      navigate(replaceNetworkParam(NewWithDraw, network));
+    }
+    close('default');
   };
 
   return (

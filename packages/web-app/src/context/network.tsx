@@ -68,7 +68,7 @@ export function NetworkProvider({children}: NetworkProviderProps) {
     } else {
       setNetworkState(networkParam);
     }
-  }, [urlNetworkMatch, urlNotFoundMatch, navigate]);
+  }, [urlNetworkMatch, urlNotFoundMatch, navigate, urlCreateMatch]);
 
   return (
     <NetworkContext.Provider

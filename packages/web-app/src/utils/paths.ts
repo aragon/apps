@@ -20,6 +20,7 @@ export const Proposal = '/:network/governance/proposals/:id';
 export const NewProposal = '/:network/governance/new-proposal';
 
 export const Community = '/:network/community';
+
 /**
  * Replaces the network parameter in certain URLs. If the path passed to this
  * function has no parameter, the function will return that path unchanged.
