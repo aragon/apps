@@ -1,5 +1,7 @@
-import React, {useState, useMemo, useContext} from 'react';
 import {init as initApm, ApmBase} from '@elastic/apm-rum';
+import React, {useState, useMemo, useContext} from 'react';
+
+import {useCookies} from 'hooks/useCookies';
 
 interface IAPMContext {
   apm: ApmBase | null;
@@ -11,29 +13,10 @@ const UseAPMContext = React.createContext<IAPMContext>({
 });
 
 const APMProvider: React.FC = ({children}) => {
-  const [apm, setApm] = useState<ApmBase | null>(() => {
-    // opt out of analytics based on user preferences
-    const preferences = localStorage.getItem('privacy-policy-preferences');
-    if (preferences && JSON.parse(preferences)?.analytics !== true) return null;
-
-    if (
-      import.meta.env.VITE_REACT_APP_DEPLOY_VERSION &&
-      import.meta.env.VITE_REACT_APP_DEPLOY_ENVIRONMENT
-    ) {
-      return initApm({
-        serviceName: 'zaragoza',
-        serverUrl: 'https://apm-monitoring.aragon.org',
-        serviceVersion: import.meta.env.VITE_REACT_APP_DEPLOY_VERSION as string,
-        environment: import.meta.env
-          .VITE_REACT_APP_DEPLOY_ENVIRONMENT as string,
-      });
-    } else {
-      console.warn(
-        'REACT_APP_DEPLOY_VERSION or REACT_APP_DEPLOY_ENVIRONMENT is not provided.'
-      );
-      return null;
-    }
-  });
+  const {preferences} = useCookies();
+  const [apm, setApm] = useState<ApmBase | null>(() =>
+    initializeAPM(preferences?.analytics)
+  );
 
   const contextValue = useMemo(() => {
     return {apm, setApm};
@@ -57,5 +40,28 @@ const updateAPMContext = (apm: ApmBase | null, networkType: string | null) => {
     apm.setCustomContext(context);
   }
 };
+
+function initializeAPM(setAnalytics: boolean | undefined) {
+  // opt out of analytics based on user preferences
+  if (!setAnalytics) return null;
+
+  // check for proper environment variables
+  if (
+    import.meta.env.VITE_REACT_APP_DEPLOY_VERSION &&
+    import.meta.env.VITE_REACT_APP_DEPLOY_ENVIRONMENT
+  ) {
+    return initApm({
+      serviceName: 'zaragoza',
+      serverUrl: 'https://apm-monitoring.aragon.org',
+      serviceVersion: import.meta.env.VITE_REACT_APP_DEPLOY_VERSION as string,
+      environment: import.meta.env.VITE_REACT_APP_DEPLOY_ENVIRONMENT as string,
+    });
+  } else {
+    console.warn(
+      'REACT_APP_DEPLOY_VERSION or REACT_APP_DEPLOY_ENVIRONMENT is not provided.'
+    );
+    return null;
+  }
+}
 
 export {APMProvider, useAPM, updateAPMContext};

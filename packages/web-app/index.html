@@ -32,10 +32,6 @@
     <script type="module" src="/src/index.tsx"></script>
     <script>
       !(function () {
-        // opt out of analytics based on user preferences
-        const preferences = localStorage.getItem('privacy-policy-preferences');
-        if (preferences && JSON.parse(preferences)?.analytics !== true) return;
-
         const analyticsKey = '%VITE_REACT_APP_ANALYTICS_KEY%';
         if (!analyticsKey.includes('undefined')) {
           rudderAnalytics = window.rudderanalytics = [];
@@ -70,9 +66,6 @@
         }
       })();
     </script>
-    <script
-      async
-      src="https://cdn.rudderlabs.com/v1/rudder-analytics.min.js"
-    ></script>
+    <script src="https://cdn.rudderlabs.com/v1.1/rudder-analytics.min.js"></script>
   </body>
 </html>
