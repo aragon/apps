@@ -5,6 +5,7 @@ import {useNavigate} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
 import {useGlobalModalContext} from 'context/globalModals';
+import {CreateDAO} from 'utils/paths';
 
 const Home: React.FC = () => {
   const {t} = useTranslation();
@@ -23,7 +24,7 @@ const Home: React.FC = () => {
         label="Create DAO"
         className="mx-auto"
         size="large"
-        onClick={() => navigate('/create-dao')}
+        onClick={() => navigate(CreateDAO)}
       />
       <ButtonText
         label="Open Transaction Modal"
