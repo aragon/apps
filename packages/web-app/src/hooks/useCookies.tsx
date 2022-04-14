@@ -48,5 +48,29 @@ export const useCookies = () => {
     setPrivacyPolicy({analytics: false, functional: false});
   };
 
-  return {policyAccepted, preferences, acceptAll, rejectAll, setPrivacyPolicy};
+  // set only functional cookies
+  const setFunctionalCookies = () => {
+    setPrivacyPolicy({
+      analytics: preferences?.analytics || false,
+      functional: true,
+    });
+  };
+
+  // set only analytics cookies
+  const setAnalyticsCookies = () => {
+    setPrivacyPolicy({
+      analytics: true,
+      functional: preferences?.functional || false,
+    });
+  };
+
+  return {
+    policyAccepted,
+    preferences,
+    acceptAll,
+    rejectAll,
+    setPrivacyPolicy,
+    setAnalyticsCookies,
+    setFunctionalCookies,
+  };
 };

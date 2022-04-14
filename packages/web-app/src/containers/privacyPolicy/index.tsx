@@ -7,6 +7,7 @@ import BottomSheet from 'components/bottomSheet';
 import {useCookies} from 'hooks/useCookies';
 import CookieSettingsMenu from './cookieSettingsMenu';
 import PrivacyPolicyContent from './privacyPolicyContent';
+import CookiePreferenceMenu from './cookiePreferenceMenu';
 
 const PrivacyPolicy: React.FC = () => {
   const {t} = useTranslation();
@@ -53,6 +54,7 @@ const PrivacyPolicy: React.FC = () => {
         onAcceptClick={setPrivacyPolicy}
         onRejectAllClick={rejectAll}
       />
+      <CookiePreferenceMenu />
     </>
   );
 };

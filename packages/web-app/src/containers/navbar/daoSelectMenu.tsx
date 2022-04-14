@@ -9,10 +9,10 @@ import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import React from 'react';
 
+import {useReactiveVar} from '@apollo/client';
 import {useGlobalModalContext} from 'context/globalModals';
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 import {favoriteDAOs, selectedDAO} from 'context/apolloClient';
-import {useReactiveVar} from '@apollo/client';
 
 // NOTE: the state setting is temporary until backend integration
 const DaoSelectMenu: React.FC = () => {
