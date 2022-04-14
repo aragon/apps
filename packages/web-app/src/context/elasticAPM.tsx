@@ -1,7 +1,7 @@
 import {init as initApm, ApmBase} from '@elastic/apm-rum';
 import React, {useState, useMemo, useContext} from 'react';
 
-import {useCookies} from 'hooks/useCookies';
+import {usePrivacyContext} from './privacyContext';
 
 interface IAPMContext {
   apm: ApmBase | null;
@@ -13,7 +13,7 @@ const UseAPMContext = React.createContext<IAPMContext>({
 });
 
 const APMProvider: React.FC = ({children}) => {
-  const {preferences} = useCookies();
+  const {preferences} = usePrivacyContext();
   const [apm, setApm] = useState<ApmBase | null>(() =>
     initializeAPM(preferences?.analytics)
   );
