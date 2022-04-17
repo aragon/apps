@@ -46,7 +46,6 @@ const PublishDaoModal: React.FC<PublishDaoModalProps> = ({
   return (
     <ModalBottomSheetSwitcher
       {...{isOpen, onClose}}
-      onClose={() => null}
       title={t('TransactionModal.publishDao')}
     >
       <GasCostTableContainer>
