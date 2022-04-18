@@ -17,7 +17,9 @@ const AddWalletsFooter: React.FC<WalletsFooterProps> = ({totalAddresses}) => {
     <Container>
       <FooterItem1>
         <Label
-          label={t('labels.walletList.addresses', {count: totalAddresses - 1})}
+          label={t('labels.whitelistWallets.addresses', {
+            count: totalAddresses - 1,
+          })}
         />
       </FooterItem1>
       <FooterItem1>
