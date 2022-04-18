@@ -6,7 +6,7 @@ import {useForm, FormProvider} from 'react-hook-form';
 
 import {Finance} from 'utils/paths';
 import TokenMenu from 'containers/tokenMenu';
-import {useWallet} from 'context/augmentedWallet';
+import {useWallet} from 'hooks/useWallet';
 import DepositForm from 'containers/depositForm';
 import {formatUnits} from 'utils/library';
 import ReviewDeposit from 'containers/reviewDeposit';

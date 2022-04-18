@@ -22,7 +22,7 @@ import {
   validateTokenAmount,
 } from 'utils/validators';
 import {TEST_DAO} from 'utils/constants';
-import {useWallet} from 'context/augmentedWallet';
+import {useWallet} from 'hooks/useWallet';
 import {useProviders} from 'context/providers';
 import {fetchTokenData} from 'services/prices';
 import {useApolloClient} from 'context/apolloClient';

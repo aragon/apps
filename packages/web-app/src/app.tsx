@@ -6,7 +6,7 @@ import React, {useEffect, lazy, Suspense} from 'react';
 import {Navigate, Routes, Route, useLocation} from 'react-router-dom';
 
 import Navbar from 'containers/navbar';
-import WalletMenu from 'containers/walletMenu';
+import {WalletMenu} from 'containers/navbar/walletMenu';
 import {trackPage} from 'services/analytics';
 import TransferMenu from 'containers/transferMenu';
 import '../i18n.config';
@@ -63,9 +63,9 @@ function App() {
         </Suspense>
       </Layout>
       <PrivacyPolicy />
-      <WalletMenu />
       <TransferMenu />
       <DaoSelectMenu />
+      <WalletMenu />
     </div>
   );
 }

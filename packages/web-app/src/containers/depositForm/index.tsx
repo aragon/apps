@@ -17,7 +17,7 @@ import {useTranslation} from 'react-i18next';
 import {constants, utils} from 'ethers';
 import React, {useCallback, useEffect} from 'react';
 
-import {useWallet} from 'context/augmentedWallet';
+import {useWallet} from 'hooks/useWallet';
 import {useGlobalModalContext} from 'context/globalModals';
 import {useProviders} from 'context/providers';
 import {fetchTokenData} from 'services/prices';
@@ -59,7 +59,7 @@ const DepositForm: React.FC = () => {
         // fetch token balance and token metadata
         const allTokenInfoPromise = Promise.all([
           isETH(tokenAddress)
-            ? utils.formatEther(walletBalance)
+            ? utils.formatEther(walletBalance || 0)
             : fetchBalance(tokenAddress, account, provider),
           fetchTokenData(tokenAddress, client),
         ]);

@@ -4,9 +4,8 @@ import {Log} from '@ethersproject/providers';
 import {useState, useEffect} from 'react';
 
 import {erc20TokenABI} from 'abis/erc20TokenABI';
-import {useWallet} from 'context/augmentedWallet';
+import {useWallet} from 'hooks/useWallet';
 import {useProviders} from 'context/providers';
-import {useWalletProps} from 'containers/walletMenu';
 import {isETH, fetchBalance, getTokenInfo} from 'utils/tokens';
 import {TokenBalance, HookData} from 'utils/types';
 
@@ -80,7 +79,7 @@ export function useUserTokenAddresses(): HookData<string[]> {
  * contract address it also returns the user's balance for each of the tokens.
  */
 export function useWalletTokens(): HookData<TokenBalance[]> {
-  const {account, balance}: useWalletProps = useWallet();
+  const {account, balance} = useWallet();
   const {infura: provider} = useProviders();
   const {
     data: tokenList,
@@ -116,7 +115,7 @@ export function useWalletTokens(): HookData<TokenBalance[]> {
         tokenList.map(address => {
           if (isETH(address)) {
             return [
-              balance,
+              balance ? balance.toString() : '',
               {
                 name: 'Ethereum (Canonical)',
                 symbol: 'ETH',

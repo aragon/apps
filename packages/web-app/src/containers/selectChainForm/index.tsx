@@ -14,7 +14,7 @@ import React, {useCallback, useState} from 'react';
 
 import {i18n} from '../../../i18n.config';
 import useScreen from 'hooks/useScreen';
-import {useWallet} from 'context/augmentedWallet';
+import {useWallet} from 'hooks/useWallet';
 import {CHAIN_METADATA} from 'utils/constants';
 
 type NetworkType = 'main' | 'test';

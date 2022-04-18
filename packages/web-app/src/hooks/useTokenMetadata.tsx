@@ -1,4 +1,4 @@
-import {useWallet} from 'use-wallet';
+import {useWallet} from 'hooks/useWallet';
 import {useEffect, useState} from 'react';
 
 import {fetchTokenData} from 'services/prices';
@@ -19,7 +19,7 @@ export const useTokenMetadata = (balances: TokenBalance[]) => {
       // fetch token metadata from external api
       const metadata = await Promise.all(
         balances?.map(balance =>
-          fetchTokenData(balance.token.id, client, ASSET_PLATFORMS[chainId!])
+          fetchTokenData(balance.token.id, client, ASSET_PLATFORMS[chainId])
         )
       );
 

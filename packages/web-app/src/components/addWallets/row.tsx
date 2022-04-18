@@ -15,7 +15,7 @@ import {useTranslation} from 'react-i18next';
 import {Controller, useFormContext} from 'react-hook-form';
 
 import {handleClipboardActions} from 'utils/library';
-import {useWallet} from 'context/augmentedWallet';
+import {useWallet} from 'hooks/useWallet';
 import {validateAddress} from 'utils/validators';
 
 type WalletRowProps = {

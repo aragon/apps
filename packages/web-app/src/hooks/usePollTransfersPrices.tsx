@@ -1,4 +1,4 @@
-import {useWallet} from 'use-wallet';
+import {useWallet} from 'hooks/useWallet';
 import {useEffect, useState} from 'react';
 
 import {fetchTokenData} from 'services/prices';
@@ -23,7 +23,7 @@ export const usePollTransfersPrices = (transfers: DaoTransfer[]) => {
       // fetch token metadata from external api
       const metadata = await Promise.all(
         transfers?.map(transfer =>
-          fetchTokenData(transfer.token.id, client, ASSET_PLATFORMS[chainId!])
+          fetchTokenData(transfer.token.id, client, ASSET_PLATFORMS[chainId])
         )
       );
 

@@ -1,5 +1,6 @@
 name: Storybook Deploy
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'packages/ui-components/**'
