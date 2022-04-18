@@ -35,10 +35,7 @@ const Community: React.FC = () => {
     tokenTotalSupply,
     whitelistWallets,
   } = getValues();
-  const handleSeeAllWallets = () => {
-    alert('not implemented');
-    // TODO open the all wallets modal with whitelistWallets as a parameter
-  };
+
   return (
     <Card>
       <Header>
@@ -65,7 +62,7 @@ const Community: React.FC = () => {
                 label={t('labels.review.distributionLink', {
                   walletCount: whitelistWallets.length,
                 })}
-                onClick={handleSeeAllWallets}
+                onClick={() => open('addresses')}
               />
             </BadgeWrapper>
           </Row>
@@ -94,20 +91,20 @@ const Community: React.FC = () => {
                 <Badge label="Fixed" colorScheme="neutral" />
               </BadgeWrapper>
             </Row>
+            {isCustomToken && (
+              <Row>
+                <LabelWrapper>
+                  <Label>{t('labels.review.distribution')}</Label>
+                </LabelWrapper>
+                <Link
+                  label={t('createDAO.review.distributionLink', {
+                    count: wallets?.length,
+                  })}
+                  onClick={() => open('addresses')}
+                />
+              </Row>
+            )}
           </>
-        )}
-        {isCustomToken && (
-          <Row>
-            <LabelWrapper>
-              <Label>{t('labels.review.distribution')}</Label>
-            </LabelWrapper>
-            <Link
-              label={t('createDAO.review.distributionLink', {
-                count: wallets?.length,
-              })}
-              onClick={() => open('addresses')}
-            />
-          </Row>
         )}
       </Body>
       <Footer>
@@ -131,7 +128,7 @@ const Community: React.FC = () => {
           )}
         />
       </Footer>
-      <CommunityAddressesModal />
+      <CommunityAddressesModal tokenMembership={membership === 'token'} />
     </Card>
   );
 };

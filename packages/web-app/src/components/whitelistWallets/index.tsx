@@ -49,7 +49,6 @@ export const WhitelistWallets = () => {
 
   return (
     <Container>
-      {JSON.stringify(whitelistWallets)}
       <TableContainer>
         <Header>{t('labels.whitelistWallets.address')}</Header>
         {whitelistWallets &&

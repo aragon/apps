@@ -7,35 +7,45 @@ import {useTranslation} from 'react-i18next';
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 import {useGlobalModalContext} from 'context/globalModals';
 
-const CommunityAddressesModal: React.FC = () => {
+type CommunityAddressesModalProps = {
+  tokenMembership: boolean;
+};
+
+const CommunityAddressesModal: React.FC<CommunityAddressesModalProps> = ({
+  tokenMembership,
+}) => {
   const [searchValue, setSearchValue] = useState('');
   const [page, setPage] = useState<number>(1);
   const {getValues} = useFormContext();
   const {isAddressesOpen, close} = useGlobalModalContext();
-  const {wallets, tokenSymbol} = getValues();
+  const {wallets, tokenSymbol, whitelistWallets} = getValues();
   const {t} = useTranslation();
 
   const filterValidator = useCallback(
-    wallets => {
+    wallet => {
       if (searchValue !== '') {
         const re = new RegExp(searchValue, 'i');
-        return wallets?.address?.match(re);
+        return wallet?.address?.match(re);
       }
       return true;
     },
     [searchValue]
   );
 
-  const filteredAddressList = useMemo(
-    () =>
-      wallets
-        .filter(filterValidator)
-        .map(({address, amount}: {address: string; amount: string}) => ({
-          wallet: address,
-          tokenAmount: `${amount} ${tokenSymbol}`,
-        })),
-    [wallets, filterValidator, tokenSymbol]
-  );
+  const filteredAddressList = useMemo(() => {
+    return (tokenMembership ? wallets : whitelistWallets)
+      .filter(filterValidator)
+      .map(({address, amount}: {address: string; amount: string}) => ({
+        wallet: address,
+        tokenAmount: `${amount} ${tokenSymbol}`,
+      }));
+  }, [
+    tokenMembership,
+    wallets,
+    whitelistWallets,
+    filterValidator,
+    tokenSymbol,
+  ]);
 
   /*************************************************
    *                    Render                     *
@@ -49,6 +59,7 @@ const CommunityAddressesModal: React.FC = () => {
       <ModalHeader>
         <SearchInput
           value={searchValue}
+          placeholder={t('placeHolders.searchTokens')}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setSearchValue(e.target.value)
           }
@@ -58,7 +69,7 @@ const CommunityAddressesModal: React.FC = () => {
         {filteredAddressList.length !== 0 ? (
           <VotersTable
             voters={filteredAddressList.slice(0, page * 5)}
-            showAmount
+            {...(tokenMembership && {showAmount: true})}
             {...(page * 5 < filteredAddressList.length && {
               onLoadMore: () => setPage(prePage => prePage + 1),
             })}
