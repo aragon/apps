@@ -33,8 +33,12 @@ const Community: React.FC = () => {
     isCustomToken,
     tokenSymbol,
     tokenTotalSupply,
+    whitelistWallets,
   } = getValues();
-
+  const handleSeeAllWallets = () => {
+    alert('not implemented');
+    // TODO open the all wallets modal with whitelistWallets as a parameter
+  };
   return (
     <Card>
       <Header>
@@ -46,31 +50,52 @@ const Community: React.FC = () => {
             <Label>{t('labels.review.eligibleMembers')}</Label>
           </LabelWrapper>
           <TextContent>
-            {membership === 'token' ? t('createDAO.step3.tokenMembership') : ''}
+            {membership === 'token'
+              ? t('createDAO.step3.tokenMembership')
+              : 'Wallets'}
           </TextContent>
         </Row>
-        <Row>
-          <LabelWrapper>
-            <Label>{t('votingTerminal.token')}</Label>
-          </LabelWrapper>
-          <BadgeWrapper>
-            <TextContent>
-              {tokenName}&nbsp;&nbsp;{tokenSymbol}
-            </TextContent>
-            {isCustomToken && <Badge label="New" colorScheme="info" />}
-          </BadgeWrapper>
-        </Row>
-        <Row>
-          <LabelWrapper>
-            <Label>{t('labels.supply')}</Label>
-          </LabelWrapper>
-          <BadgeWrapper>
-            <TextContent>
-              {tokenTotalSupply} {tokenSymbol}
-            </TextContent>
-            <Badge label="Fixed" colorScheme="neutral" />
-          </BadgeWrapper>
-        </Row>
+        {membership === 'wallet' && (
+          <Row>
+            <LabelWrapper>
+              <Label>{t('labels.review.distribution')}</Label>
+            </LabelWrapper>
+            <BadgeWrapper>
+              <Link
+                label={t('labels.review.distributionLink', {
+                  walletCount: whitelistWallets.length,
+                })}
+                onClick={handleSeeAllWallets}
+              />
+            </BadgeWrapper>
+          </Row>
+        )}
+        {membership === 'token' && (
+          <>
+            <Row>
+              <LabelWrapper>
+                <Label>{t('votingTerminal.token')}</Label>
+              </LabelWrapper>
+              <BadgeWrapper>
+                <TextContent>
+                  {tokenName}&nbsp;&nbsp;{tokenSymbol}
+                </TextContent>
+                {isCustomToken && <Badge label="New" colorScheme="info" />}
+              </BadgeWrapper>
+            </Row>
+            <Row>
+              <LabelWrapper>
+                <Label>{t('labels.supply')}</Label>
+              </LabelWrapper>
+              <BadgeWrapper>
+                <TextContent>
+                  {tokenTotalSupply} {tokenSymbol}
+                </TextContent>
+                <Badge label="Fixed" colorScheme="neutral" />
+              </BadgeWrapper>
+            </Row>
+          </>
+        )}
         {isCustomToken && (
           <Row>
             <LabelWrapper>

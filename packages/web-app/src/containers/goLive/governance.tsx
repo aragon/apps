@@ -24,12 +24,15 @@ const Governance: React.FC = () => {
   const {t} = useTranslation();
   const {
     minimumApproval,
+    minimumParticipation,
     tokenTotalSupply,
     tokenSymbol,
     support,
     durationMinutes,
     durationHours,
     durationDays,
+    membership,
+    whitelistWallets,
   } = getValues();
 
   return (
@@ -38,16 +41,32 @@ const Governance: React.FC = () => {
         <Title>{t('labels.review.governance')}</Title>
       </Header>
       <Body>
-        <Row>
-          <LabelWrapper>
-            <Label>{t('labels.minimumApproval')}</Label>
-          </LabelWrapper>
-          <TextContent>
-            {minimumApproval}% (
-            {Math.floor(tokenTotalSupply * (minimumApproval / 100))}{' '}
-            {tokenSymbol})
-          </TextContent>
-        </Row>
+        {membership === 'token' && (
+          <Row>
+            <LabelWrapper>
+              <Label>{t('labels.minimumApproval')}</Label>
+            </LabelWrapper>
+            <TextContent>
+              {minimumApproval}% (
+              {Math.floor(tokenTotalSupply * (minimumApproval / 100))}{' '}
+              {tokenSymbol})
+            </TextContent>
+          </Row>
+        )}
+        {membership === 'wallet' && (
+          <Row>
+            <LabelWrapper>
+              <Label>{t('labels.minimumParticipation')}</Label>
+            </LabelWrapper>
+            <TextContent>
+              {t('labels.review.minimumParticipation', {
+                walletCount: Math.ceil(
+                  (minimumParticipation * whitelistWallets.length) / 100
+                ),
+              })}
+            </TextContent>
+          </Row>
+        )}
         <Row>
           <LabelWrapper>
             <Label>{t('labels.minimumSupport')}</Label>

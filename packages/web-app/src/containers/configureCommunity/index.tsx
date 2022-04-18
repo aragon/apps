@@ -1,5 +1,5 @@
 import {AlertInline, Label, NumberInput} from '@aragon/ui-components';
-import React from 'react';
+import React, {useMemo} from 'react';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import {Controller, useFormContext, useWatch} from 'react-hook-form';
@@ -7,61 +7,135 @@ import {Controller, useFormContext, useWatch} from 'react-hook-form';
 const ConfigureCommunity: React.FC = () => {
   const {t} = useTranslation();
   const {control} = useFormContext();
-  const [tokenTotalSupply, tokenSymbol] = useWatch({
-    name: ['tokenTotalSupply', 'tokenSymbol'],
+  const [
+    tokenTotalSupply,
+    tokenSymbol,
+    membership,
+    whitelistWallets,
+    minimumParticipation,
+  ] = useWatch({
+    name: [
+      'tokenTotalSupply',
+      'tokenSymbol',
+      'membership',
+      'whitelistWallets',
+      'minimumParticipation',
+    ],
   });
 
   const percentageInputValidator = (value: string | number) => {
     return value <= 100 && value >= 0 ? true : t('errors.percentage');
   };
 
+  const minimumParticipationPercent = useMemo(
+    () =>
+      Math.round(
+        ((100 *
+          Math.ceil((minimumParticipation * whitelistWallets.length) / 100)) /
+          whitelistWallets.length) *
+          100
+      ) / 100,
+    [minimumParticipation, whitelistWallets.length]
+  );
+
   return (
     <>
       {/* Minimum approval */}
-      <FormItem>
-        <Label
-          label={t('labels.minimumApproval')}
-          helpText={t('createDAO.step4.minimumApprovalSubtitle')}
-        />
-
-        <Controller
-          name="minimumApproval"
-          control={control}
-          defaultValue="15"
-          rules={{
-            validate: value => percentageInputValidator(value),
-          }}
-          render={({
-            field: {onBlur, onChange, value, name},
-            fieldState: {error},
-          }) => (
-            <>
-              <ApprovalWrapper>
-                <FormWrapper>
-                  <NumberInput
-                    name={name}
-                    value={value}
-                    onBlur={onBlur}
-                    onChange={onChange}
-                    placeholder={t('placeHolders.daoName')}
-                    percentage={true}
+      {membership === 'token' && (
+        <FormItem>
+          <Label
+            label={t('labels.minimumApproval')}
+            helpText={t('createDAO.step4.minimumApprovalSubtitle')}
+          />
+          <Controller
+            name="minimumApproval"
+            control={control}
+            defaultValue="15"
+            rules={{
+              validate: value => percentageInputValidator(value),
+            }}
+            render={({
+              field: {onBlur, onChange, value, name},
+              fieldState: {error},
+            }) => (
+              <>
+                <ApprovalWrapper>
+                  <FormWrapper>
+                    <NumberInput
+                      name={name}
+                      value={value}
+                      onBlur={onBlur}
+                      onChange={onChange}
+                      placeholder={t('placeHolders.daoName')}
+                      percentage={true}
+                    />
+                  </FormWrapper>
+                  <AlertInline
+                    label={t('createDAO.step4.alerts.minimumApprovalAlert', {
+                      amount: Math.round(tokenTotalSupply * (value / 100)),
+                      symbol: tokenSymbol?.toUpperCase(),
+                    })}
+                    mode="neutral"
                   />
-                </FormWrapper>
-                <AlertInline
-                  label={t('createDAO.step4.alerts.minimumApprovalAlert', {
-                    amount: Math.round(tokenTotalSupply * (value / 100)),
-                    symbol: tokenSymbol?.toUpperCase(),
-                  })}
-                  mode="neutral"
-                />
-              </ApprovalWrapper>
-              {error?.message && (
-                <AlertInline label={error.message} mode="critical" />
-              )}
-            </>
-          )}
-        />
-      </FormItem>
+                </ApprovalWrapper>
+                {error?.message && (
+                  <AlertInline label={error.message} mode="critical" />
+                )}
+              </>
+            )}
+          />
+        </FormItem>
+      )}
+      {membership === 'wallet' && (
+        <FormItem>
+          <Label
+            label={t('labels.minimumParticipation')}
+            helpText={t('createDAO.step4.minimumParticipationSubtitle')}
+          />
+          <Controller
+            name="minimumParticipation"
+            control={control}
+            defaultValue="51"
+            rules={{
+              validate: value => percentageInputValidator(value),
+            }}
+            render={({
+              field: {onBlur, onChange, value, name},
+              fieldState: {error},
+            }) => (
+              <>
+                <ApprovalWrapper>
+                  <FormWrapper>
+                    <NumberInput
+                      name={name}
+                      value={value}
+                      onBlur={onBlur}
+                      onChange={onChange}
+                      placeholder={t('placeHolders.daoName')}
+                      percentage={true}
+                    />
+                  </FormWrapper>
+                  <AlertInline
+                    label={t(
+                      'createDAO.step4.alerts.minimumParticipationAlert',
+                      {
+                        percentage: minimumParticipationPercent,
+                        walletCount: Math.ceil(
+                          (value * whitelistWallets.length) / 100
+                        ),
+                      }
+                    )}
+                    mode="neutral"
+                  />
+                </ApprovalWrapper>
+                {error?.message && (
+                  <AlertInline label={error.message} mode="critical" />
+                )}
+              </>
+            )}
+          />
+        </FormItem>
+      )}
 
       {/* Support */}
       <FormItem>

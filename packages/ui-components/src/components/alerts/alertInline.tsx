@@ -39,7 +39,7 @@ export const AlertInline: React.FC<AlertInlineProps> = ({
 }) => {
   return (
     <Container data-testid="alertInline" mode={mode}>
-      {styles[mode].icon} <p>{label}</p>
+      <div>{styles[mode].icon}</div> <p>{label}</p>
     </Container>
   );
 };
