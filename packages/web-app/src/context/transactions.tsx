@@ -16,6 +16,7 @@ type TransactionsContextType = {
   transaction?: TransactionItem;
   setTransactionState: (value: TransactionState) => void;
   setTransaction: (value: TransactionItem) => void;
+  setIsModalOpen: (value: boolean) => void;
 };
 
 type Props = Record<'children', ReactNode>;
@@ -28,7 +29,7 @@ const TransactionsProvider: React.FC<Props> = ({children}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [transaction, setTransaction] = useState<TransactionItem>();
   const [transactionState, setTransactionState] = useState<TransactionState>(
-    TransactionState.ERROR
+    TransactionState.WAITING
   );
 
   const value = useMemo(
@@ -36,6 +37,7 @@ const TransactionsProvider: React.FC<Props> = ({children}) => {
       transaction,
       setTransactionState,
       setTransaction,
+      setIsModalOpen,
     }),
     [transaction]
   );
