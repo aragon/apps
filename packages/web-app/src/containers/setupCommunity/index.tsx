@@ -27,6 +27,7 @@ const SetupCommunityForm: React.FC = () => {
       {address: 'DAO Treasury', amount: '0'},
       {address: 'My Wallet', amount: '0'},
     ]);
+    setValue('whitelistWallets', [{address: 'My Wallet'}]);
   };
 
   return (
@@ -44,14 +45,20 @@ const SetupCommunityForm: React.FC = () => {
                 label={t('createDAO.step3.tokenMembership')}
                 helptext={t('createDAO.step3.tokenMembershipSubtitle')}
                 multiSelect={false}
-                onClick={() => onChange('token')}
+                onClick={() => {
+                  resetTokenFields();
+                  onChange('token');
+                }}
                 {...(value === 'token' ? {state: 'active'} : {})}
               />
 
               <CheckboxListItem
                 label={t('createDAO.step3.walletMemberShip')}
                 helptext={t('createDAO.step3.walletMemberShipSubtitle')}
-                onClick={() => onChange('wallet')}
+                onClick={() => {
+                  resetTokenFields();
+                  onChange('wallet');
+                }}
                 multiSelect={false}
                 {...(value === 'wallet' ? {state: 'active'} : {})}
               />
