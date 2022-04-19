@@ -23,6 +23,12 @@ type DesktopNavProp = {
   onWalletClick: () => void;
 };
 
+// temporary
+const FALLBACK_DAO = {
+  daoAddress: '0x0ee165029b09d91a54687041adbc705f6376c67f',
+  daoName: 'Lorax DAO',
+};
+
 const DesktopNav: React.FC<DesktopNavProp> = props => {
   const {t} = useTranslation();
   const navigate = useNavigate();
@@ -71,8 +77,8 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
       <Menu>
         <Content>
           <CardDao
-            daoName={selectedDao.daoName}
-            daoAddress={selectedDao.daoAddress}
+            daoName={selectedDao.daoName || FALLBACK_DAO.daoName}
+            daoAddress={selectedDao.daoAddress || FALLBACK_DAO.daoAddress}
             onClick={props.onDaoSelect}
           />
 
