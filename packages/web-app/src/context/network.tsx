@@ -9,7 +9,6 @@ import {useMatch, useNavigate} from 'react-router-dom';
 
 import {isSupportedNetwork, SupportedNetworks} from 'utils/constants';
 import {NotFound} from 'utils/paths';
-import {Nullable} from 'utils/types';
 
 /* CONTEXT PROVIDER ========================================================= */
 
