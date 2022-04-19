@@ -7,7 +7,7 @@ import {
 import {Dropdown} from '@aragon/ui-components/src';
 import {t} from 'i18next';
 import {WhitelistWallet} from 'pages/createDAO';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {useFieldArray, useFormContext} from 'react-hook-form';
 import styled from 'styled-components';
 import {useWallet} from 'hooks/useWallet';
@@ -15,8 +15,7 @@ import {Row} from './row';
 
 export const WhitelistWallets = () => {
   const {account} = useWallet();
-  const {control, watch} = useFormContext();
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const {control, watch, trigger} = useFormContext();
   const {update, replace, append} = useFieldArray({
     control,
     name: 'whitelistWallets',
@@ -26,23 +25,21 @@ export const WhitelistWallets = () => {
   // add empty wallet
   const handleAddWallet = () => {
     append({address: ''});
+    setTimeout(() => {
+      trigger(`whitelistWallets.${whitelistWallets.length}.address`);
+    }, 50);
   };
-
-  useEffect(() => {
-    if (account) {
-      update(0, {address: account});
-    }
-  });
 
   // reset all
   const handleDeleteWallets = () => {
-    replace([{address: account}, {address: ''}]);
+    replace([{address: account}]);
   };
   const handleResetWallets = () => {
     whitelistWallets.forEach((_, index) => {
       // skip the first one because is the own address
       if (index > 0) {
         update(index, {address: ''});
+        trigger(`whitelistWallets.${index}.address`);
       }
     });
   };
@@ -84,8 +81,6 @@ export const WhitelistWallets = () => {
           side="bottom"
           align="start"
           sideOffset={4}
-          open={dropdownOpen}
-          onOpenChange={(open: boolean) => setDropdownOpen(open)}
           trigger={
             <ButtonIcon
               size="large"
