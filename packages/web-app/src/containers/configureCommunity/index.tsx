@@ -7,6 +7,7 @@ import {Controller, useFormContext, useWatch} from 'react-hook-form';
 const ConfigureCommunity: React.FC = () => {
   const {t} = useTranslation();
   const {control} = useFormContext();
+  const defaultMinimumParticipation = 51;
   const [
     tokenTotalSupply,
     tokenSymbol,
@@ -27,16 +28,20 @@ const ConfigureCommunity: React.FC = () => {
     return value <= 100 && value >= 0 ? true : t('errors.percentage');
   };
 
-  const minimumParticipationPercent = useMemo(
-    () =>
+  const minimumParticipationPercent = useMemo(() => {
+    return (
       Math.round(
         ((100 *
-          Math.ceil((minimumParticipation * whitelistWallets.length) / 100)) /
+          Math.ceil(
+            ((minimumParticipation || defaultMinimumParticipation) *
+              whitelistWallets.length) /
+              100
+          )) /
           whitelistWallets.length) *
           100
-      ) / 100,
-    [minimumParticipation, whitelistWallets.length]
-  );
+      ) / 100
+    );
+  }, [minimumParticipation, whitelistWallets.length]);
 
   return (
     <>
@@ -95,7 +100,7 @@ const ConfigureCommunity: React.FC = () => {
           <Controller
             name="minimumParticipation"
             control={control}
-            defaultValue="51"
+            defaultValue={defaultMinimumParticipation}
             rules={{
               validate: value => percentageInputValidator(value),
             }}
