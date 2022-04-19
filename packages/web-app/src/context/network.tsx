@@ -18,7 +18,10 @@ type NetworkContext = {
   setNetwork: (network: SupportedNetworks) => void;
 };
 
-const NetworkContext = createContext<Nullable<NetworkContext>>(null);
+const NetworkContext = createContext<NetworkContext>({
+  network: 'ethereum',
+  setNetwork: () => {},
+});
 
 type NetworkProviderProps = {
   children: React.ReactNode;
