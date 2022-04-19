@@ -9,7 +9,6 @@ import Navbar from 'containers/navbar';
 import {WalletMenu} from 'containers/navbar/walletMenu';
 import {trackPage} from 'services/analytics';
 import TransferMenu from 'containers/transferMenu';
-import TransactionModal, {TransactionState} from 'containers/transactionModal';
 import '../i18n.config';
 
 // HACK: All pages MUST be exported with the withTransaction function
@@ -70,14 +69,6 @@ function App() {
       <TransferMenu />
       <DaoSelectMenu />
       <WalletMenu />
-      <TransactionModal
-        title="Sign Deposit"
-        subtitle="To register your deposit, you need to submit a transaction which costs you following."
-        footerButtonLabel="Sign Deposit"
-        state={TransactionState.SUCCESS}
-        callback={console.log}
-        approveStepNeeded
-      />
     </div>
   );
 }

@@ -10,6 +10,7 @@ import {GlobalModalsProvider} from 'context/globalModals';
 import {ApolloClientProvider} from 'context/apolloClient';
 import {ProvidersProvider} from 'context/providers';
 import {NetworkProvider} from 'context/network';
+import {TransactionsProvider} from 'context/transactions';
 import {UseSignerProvider} from 'use-signer';
 import {IProviderOptions} from 'web3modal';
 import WalletConnectProvider from '@walletconnect/web3-provider/dist/umd/index.min.js';
@@ -34,9 +35,11 @@ ReactDOM.render(
               <ProvidersProvider>
                 <WalletMenuProvider>
                   <GlobalModalsProvider>
-                    <ApolloClientProvider>
-                      <App />
-                    </ApolloClientProvider>
+                    <TransactionsProvider>
+                      <ApolloClientProvider>
+                        <App />
+                      </ApolloClientProvider>
+                    </TransactionsProvider>
                   </GlobalModalsProvider>
                 </WalletMenuProvider>
               </ProvidersProvider>

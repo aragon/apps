@@ -90,7 +90,7 @@ const WalletRow: React.FC<WalletRowProps> = ({index, onDelete}) => {
           }) => (
             <>
               <LabelWrapper>
-                <Label label={t('labels.walletList.address')} />
+                <Label label={t('labels.whitelistWallets.address')} />
               </LabelWrapper>
               <ValueInput
                 mode={error ? 'critical' : 'default'}

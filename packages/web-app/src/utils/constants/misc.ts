@@ -17,6 +17,13 @@ export const enum TimeFilter {
   // max = 'max',
 }
 
+export const enum TransactionState {
+  WAITING = 'WAITING',
+  LOADING = 'LOADING',
+  SUCCESS = 'SUCCESS',
+  ERROR = 'ERROR',
+}
+
 export const NAV_LINKS = [
   {
     label: i18n.t('navLinks.dashboard'),

@@ -13,6 +13,11 @@ import GoLive, {GoLiveHeader, GoLiveFooter} from 'containers/goLive';
 import {WalletField} from '../components/addWallets/row';
 import {Dashboard} from 'utils/paths';
 
+export type WhitelistWallet = {
+  id: string;
+  address: string;
+};
+
 type FormData = {
   daoLogo: string;
   daoName: string;
@@ -28,7 +33,10 @@ type FormData = {
   durationHours: string;
   durationDays: string;
   minimumApproval: string;
+  minimumParticipation: string;
   support: string;
+  membership: string;
+  whitelistWallets: WhitelistWallet[];
 };
 
 const defaultValues = {
@@ -41,15 +49,18 @@ const defaultValues = {
     {address: 'DAO Treasury', amount: '0'},
     {address: 'My Wallet', amount: '0'},
   ],
+  membership: 'token',
+  whitelistWallets: [{address: 'My Wallet'}, {address: ''}],
 };
 
 const CreateDAO: React.FC = () => {
   const {t} = useTranslation();
   const formMethods = useForm<FormData>({mode: 'onChange', defaultValues});
   const {errors, dirtyFields} = useFormState({control: formMethods.control});
-  const [isCustomToken, tokenTotalSupply] = formMethods.getValues([
+  const [isCustomToken, tokenTotalSupply, membership] = formMethods.getValues([
     'isCustomToken',
     'tokenTotalSupply',
+    'membership',
   ]);
 
   /*************************************************
@@ -71,33 +82,45 @@ const CreateDAO: React.FC = () => {
 
   const daoSetupCommunityIsValid = useMemo(() => {
     // required fields not dirty
-    if (isCustomToken === true) {
-      if (
-        !dirtyFields.tokenName ||
-        !dirtyFields.wallets ||
-        !dirtyFields.tokenSymbol ||
-        errors.wallets ||
-        tokenTotalSupply === 0
-      )
+    // if wallet based dao
+    if (membership === 'wallet') {
+      if (errors.whitelistWallets || !dirtyFields.whitelistWallets) {
         return false;
-      return errors.tokenName || errors.tokenSymbol || errors.wallets
-        ? false
-        : true;
-    } else {
-      if (!dirtyFields.tokenAddress || errors.tokenAddress) return false;
+      }
       return true;
+      // if token based dao
+    } else {
+      if (isCustomToken === true) {
+        if (
+          !dirtyFields.tokenName ||
+          !dirtyFields.wallets ||
+          !dirtyFields.tokenSymbol ||
+          errors.wallets ||
+          tokenTotalSupply === 0
+        )
+          return false;
+        return errors.tokenName || errors.tokenSymbol || errors.wallets
+          ? false
+          : true;
+      } else {
+        if (!dirtyFields.tokenAddress || errors.tokenAddress) return false;
+        return true;
+      }
     }
   }, [
     dirtyFields.tokenAddress,
     dirtyFields.tokenName,
     dirtyFields.tokenSymbol,
     dirtyFields.wallets,
+    dirtyFields.whitelistWallets,
     errors.tokenAddress,
     errors.tokenName,
     errors.tokenSymbol,
     errors.wallets,
+    errors.whitelistWallets,
     isCustomToken,
     tokenTotalSupply,
+    membership,
   ]);
 
   const daoConfigureCommunity = useMemo(() => {

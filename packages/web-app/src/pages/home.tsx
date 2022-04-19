@@ -4,12 +4,11 @@ import {ButtonText} from '@aragon/ui-components';
 import {useNavigate} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
-import {useGlobalModalContext} from 'context/globalModals';
+
 import {CreateDAO} from 'utils/paths';
 
 const Home: React.FC = () => {
   const {t} = useTranslation();
-  const {open} = useGlobalModalContext();
   const navigate = useNavigate();
 
   return (
@@ -25,12 +24,6 @@ const Home: React.FC = () => {
         className="mx-auto"
         size="large"
         onClick={() => navigate(CreateDAO)}
-      />
-      <ButtonText
-        label="Open Transaction Modal"
-        className="mx-auto mt-3"
-        size="large"
-        onClick={() => open('transaction')}
       />
     </div>
   );
