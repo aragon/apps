@@ -1,50 +1,60 @@
-import { Web3Provider } from "@ethersproject/providers"
-import { ethers } from "ethers"
-import React, { createContext, ReactNode, useContext, useEffect, useState } from "react"
-import { useSigner } from "use-signer"
-import { useCache } from "./useCache"
-import { ClientDao, Context as SdkContext } from '@aragon/sdk-client'
-
-
-interface Client {
-  chainId: number
-  chainName: string
-  environment: string
-}
+import React, {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+import {
+  ClientDaoERC20Voting,
+  ClientDaoWhitelistVoting,
+  Context as SdkContext,
+} from '@aragon/sdk-client';
+import {useWallet} from './useWallet';
 
 interface ClientContext {
-  client: ClientDao
+  erc20?: ClientDaoERC20Voting;
+  whitelist?: ClientDaoWhitelistVoting;
 }
-
-const UseClientContext = createContext<ClientContext>({} as ClientContext)
+const UseClientContext = createContext<ClientContext>({} as ClientContext);
 
 export const useClient = () => {
-  const ctx = useContext(UseClientContext)
+  const ctx = useContext(UseClientContext);
   if (ctx === null) {
-    throw new Error('useClient() can only be used on the descendants of <UseClientProvider />')
+    throw new Error(
+      'useClient() can only be used on the descendants of <UseClientProvider />'
+    );
   }
-  return ctx
-}
-export const UseClientProvider = ({ children }: { children: ReactNode }) => {
-  const { provider, address, chainId } = useSigner()
-  const [context, setContext] = useState(new SdkContext({
-    network: 'mainnet',
-    dao: "dao",
-    daoFactoryAddress: "",
-    signer: provider?.getSigner()
-  }))
-  const [client, setClient] = useState(new ClientDao(context))
-    // useEffect(() => {
-    //   provider?.getNetwork().then((network) => {
-    //     setClient({ ...client, chainId, chainName: network.name })
-    //   })
-    // }, [chainId])
-  const value = {
-    client
-  }
+  return ctx;
+};
+export const UseClientProvider = ({children}: {children: ReactNode}) => {
+  const {chainId, signer} = useWallet();
+  const [erc20Client, setErc20Client] = useState<ClientDaoERC20Voting>();
+  const [whitelistClient, setWhitelistClient] =
+    useState<ClientDaoWhitelistVoting>();
+
+  useEffect(() => {
+    if (signer) {
+      const context = new SdkContext({
+        network: chainId,
+        web3Providers: [
+          'https://eth-rinkeby.alchemyapi.io/v2/bgIqe2NxazpzsjfmVmhj3aS3j_HZ9mpr',
+        ],
+        daoFactoryAddress: '0xa0b2B729DE73cd22406d3D5A31816985c04A7cdD',
+        signer: signer,
+      });
+      setErc20Client(new ClientDaoERC20Voting(context));
+      setWhitelistClient(new ClientDaoWhitelistVoting(context));
+    }
+  }, [signer, chainId]);
+
+  const value: ClientContext = {
+    erc20: erc20Client,
+    whitelist: whitelistClient,
+  };
   return (
     <UseClientContext.Provider value={value}>
       {children}
     </UseClientContext.Provider>
-  )
-}
+  );
+};

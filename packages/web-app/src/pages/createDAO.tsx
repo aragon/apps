@@ -12,6 +12,7 @@ import SetupCommunity from 'containers/setupCommunity';
 import GoLive, {GoLiveHeader, GoLiveFooter} from 'containers/goLive';
 import {WalletField} from '../components/addWallets/row';
 import {Dashboard} from 'utils/paths';
+import {TransactionsProvider} from 'context/transactions';
 
 export type WhitelistWallet = {
   id: string;
@@ -145,56 +146,58 @@ const CreateDAO: React.FC = () => {
    *************************************************/
   return (
     <FormProvider {...formMethods}>
-      <FullScreenStepper
-        wizardProcessName={t('createDAO.title')}
-        navLabel={t('createDAO.title')}
-        returnPath={Dashboard}
-      >
-        <Step
-          fullWidth
-          includeStepper={false}
-          wizardTitle={t('createDAO.overview.title')}
-          wizardDescription={t('createDAO.overview.description')}
-          customFooter={<OverviewDAOFooter />}
+      <TransactionsProvider>
+        <FullScreenStepper
+          wizardProcessName={t('createDAO.title')}
+          navLabel={t('createDAO.title')}
+          returnPath={Dashboard}
         >
-          <OverviewDAOStep />
-        </Step>
-        <Step
-          wizardTitle={t('createDAO.step1.title')}
-          wizardDescription={t('createDAO.step1.description')}
-        >
-          <SelectChain />
-        </Step>
-        <Step
-          wizardTitle={t('createDAO.step2.title')}
-          wizardDescription={t('createDAO.step2.description')}
-          isNextButtonDisabled={!daoMetadataIsValid}
-        >
-          <DefineMetadata />
-        </Step>
-        <Step
-          wizardTitle={t('createDAO.step3.title')}
-          wizardDescription={t('createDAO.step3.description')}
-          isNextButtonDisabled={!daoSetupCommunityIsValid}
-        >
-          <SetupCommunity />
-        </Step>
-        <Step
-          wizardTitle={t('createDAO.step4.title')}
-          wizardDescription={t('createDAO.step4.description')}
-          isNextButtonDisabled={!daoConfigureCommunity}
-        >
-          <ConfigureCommunity />
-        </Step>
-        <Step
-          hideWizard
-          fullWidth
-          customHeader={<GoLiveHeader />}
-          customFooter={<GoLiveFooter />}
-        >
-          <GoLive />
-        </Step>
-      </FullScreenStepper>
+          <Step
+            fullWidth
+            includeStepper={false}
+            wizardTitle={t('createDAO.overview.title')}
+            wizardDescription={t('createDAO.overview.description')}
+            customFooter={<OverviewDAOFooter />}
+          >
+            <OverviewDAOStep />
+          </Step>
+          <Step
+            wizardTitle={t('createDAO.step1.title')}
+            wizardDescription={t('createDAO.step1.description')}
+          >
+            <SelectChain />
+          </Step>
+          <Step
+            wizardTitle={t('createDAO.step2.title')}
+            wizardDescription={t('createDAO.step2.description')}
+            isNextButtonDisabled={!daoMetadataIsValid}
+          >
+            <DefineMetadata />
+          </Step>
+          <Step
+            wizardTitle={t('createDAO.step3.title')}
+            wizardDescription={t('createDAO.step3.description')}
+            isNextButtonDisabled={!daoSetupCommunityIsValid}
+          >
+            <SetupCommunity />
+          </Step>
+          <Step
+            wizardTitle={t('createDAO.step4.title')}
+            wizardDescription={t('createDAO.step4.description')}
+            isNextButtonDisabled={!daoConfigureCommunity}
+          >
+            <ConfigureCommunity />
+          </Step>
+          <Step
+            hideWizard
+            fullWidth
+            customHeader={<GoLiveHeader />}
+            customFooter={<GoLiveFooter />}
+          >
+            <GoLive />
+          </Step>
+        </FullScreenStepper>
+      </TransactionsProvider>
     </FormProvider>
   );
 };

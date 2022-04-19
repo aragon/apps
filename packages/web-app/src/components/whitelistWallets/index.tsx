@@ -31,11 +31,12 @@ export const WhitelistWallets = () => {
     }, 50);
   };
 
-  // useEffect(() => {
-  //   if (address) {
-  //     update(0, {address: address});
-  //   }
-  // });
+  useEffect(() => {
+    if (account) {
+      update(0, {address: account});
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // reset all
   const handleDeleteWallets = () => {

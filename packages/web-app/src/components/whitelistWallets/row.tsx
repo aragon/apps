@@ -27,6 +27,7 @@ export const Row = ({index}: WhitelistWalletsRowProps) => {
     name: 'whitelistWallets',
   });
   const whitelistWallets: WhitelistWallet[] = watch('whitelistWallets');
+
   const addressValidator = (address: string, index: number) => {
     let validationResult =
       address === 'My Wallet' ? true : validateAddress(address);
@@ -41,7 +42,6 @@ export const Row = ({index}: WhitelistWalletsRowProps) => {
     }
     return validationResult;
   };
-
   return (
     <Controller
       name={`whitelistWallets.${index}.address`}
@@ -65,11 +65,7 @@ export const Row = ({index}: WhitelistWalletsRowProps) => {
               placeholder="0x..."
               adornmentText={value ? 'Copy' : 'Paste'}
               disabled={index === 0}
-              onAdornmentClick={() =>
-                handleClipboardActions(value, pasteValue =>
-                  onChange(pasteValue === address ? 'My Wallet' : value)
-                )
-              }
+              onAdornmentClick={() => handleClipboardActions(value, onChange)}
             />
             {error?.message && (
               <AlertInline label={error.message} mode="critical" />
