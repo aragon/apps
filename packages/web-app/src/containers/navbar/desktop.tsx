@@ -16,8 +16,7 @@ import {useReactiveVar} from '@apollo/client';
 import {useMappedBreadcrumbs} from 'hooks/useMappedBreadcrumbs';
 import {useNetwork} from 'context/network';
 
-// level 2 + network
-const MIN_ROUTE_DEPTH_FOR_BREADCRUMBS = 3;
+const MIN_ROUTE_DEPTH_FOR_BREADCRUMBS = 2;
 
 type DesktopNavProp = {
   status?: NetworkIndicatorStatus;

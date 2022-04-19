@@ -11,7 +11,7 @@ const NavLink = ({to, matchEnd = true, ...props}: NavLinkProps) => {
 
   const matches = matchEnd
     ? matchRoutes([{path: to}], pathname) !== null
-    : matchRoutes([{path: to}], '/' + pathname.split('/')[1]) !== null;
+    : matchRoutes([{path: to}], '/network/' + pathname.split('/')[2]) !== null;
 
   return props.render(matches);
 };

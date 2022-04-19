@@ -26,12 +26,7 @@ function basePathIcons(path: string) {
 
 export function useMappedBreadcrumbs(): MappedBreadcrumbs {
   const breadcrumbs = useBreadcrumbs(undefined, {
-    excludePaths: [
-      Dashboard,
-      NotFound,
-      ':ethereum/governance/proposals',
-      ':ethereum/',
-    ],
+    excludePaths: ['/', NotFound, ':network/governance/proposals', ':network/'],
   }).map((item: BreadcrumbData<string>) => ({
     path: item.match.pathname,
     label: item.breadcrumb as string,
