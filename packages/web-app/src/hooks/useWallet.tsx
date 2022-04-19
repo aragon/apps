@@ -1,15 +1,24 @@
 import {useSigner, SignerValue} from 'use-signer';
 import {useEffect, useState} from 'react';
 import {BigNumber} from 'ethers';
+import {useNetwork} from 'context/network';
+import {CHAIN_METADATA} from 'utils/constants';
 
 export interface IUseWallet extends SignerValue {
   balance: BigNumber | null;
   ensAvatarUrl: string;
   ensName: string;
   isConnected: boolean;
+  /**
+   * Returns true iff the wallet is connected and it is on the wrong network
+   * (i.e., the chainId returned by the useSigner context does not agree with
+   * the network name returned by the useNetwork context).
+   */
+  isOnWrongNetwork: boolean;
 }
 
 export const useWallet = (): IUseWallet => {
+  const {network} = useNetwork();
   const {chainId, methods, signer, provider, address, status} = useSigner();
   const [balance, setBalance] = useState<BigNumber | null>(null);
   const [ensName, setEnsName] = useState<string>('');
@@ -42,6 +51,9 @@ export const useWallet = (): IUseWallet => {
     setIsConnected(status === 'connected');
   }, [status]);
 
+  const isOnWrongNetwork =
+    isConnected && CHAIN_METADATA[network].id !== chainId;
+
   return {
     provider,
     signer,
@@ -52,6 +64,7 @@ export const useWallet = (): IUseWallet => {
     ensAvatarUrl,
     ensName,
     isConnected,
+    isOnWrongNetwork,
     methods,
   };
 };

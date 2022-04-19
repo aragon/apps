@@ -15,11 +15,11 @@ import {i18n} from '../../../i18n.config';
 import MobileNav from './mobile';
 import useScreen from 'hooks/useScreen';
 import DesktopNav from './desktop';
-import {CHAIN_METADATA} from 'utils/constants';
-import {useNetwork} from 'context/network';
 import {useWallet} from 'hooks/useWallet';
 import {useGlobalModalContext} from 'context/globalModals';
 
+// TODO is this stuff really only used in the Desktop version of the Navbar? If
+// so, it should be moved there.
 type StringIndexed = {[key: string]: {processLabel: string; returnURL: string}};
 
 const processPaths = [
@@ -49,26 +49,12 @@ const Navbar: React.FC = () => {
   const {open} = useGlobalModalContext();
   const {pathname} = useLocation();
   const {isDesktop} = useScreen();
-  const {network} = useNetwork();
   const {methods, isConnected} = useWallet();
 
   const processName = useMemo(() => {
     const results = matchRoutes(processPaths, pathname);
     if (results) return results[0].route.path;
   }, [pathname]);
-
-  // NOTE: Since the wallet is no longer the determining factor for the app's
-  // network, this logic needs to be reconsidered. Currently, the app can no
-  // longer be on an "unsupported network" (the user would be redirected to a
-  // "not found" page instead). So the status currently really just shows
-  // whether the app operates on a testnet or on a mainnet ("default").
-  const status = useMemo(() => {
-    if (CHAIN_METADATA[network].testnet) {
-      return 'testnet';
-    } else {
-      return 'default';
-    }
-  }, [network]);
 
   const handleWalletButtonClick = () => {
     if (isConnected) {
@@ -82,15 +68,16 @@ const Navbar: React.FC = () => {
     });
   };
 
-  return isDesktop ? (
-    <DesktopNav
-      status={status}
-      {...(processName ? {...processes[processName]} : {})}
-      onWalletClick={handleWalletButtonClick}
-    />
-  ) : (
+  if (isDesktop) {
+    return (
+      <DesktopNav
+        {...(processName ? {...processes[processName]} : {})}
+        onWalletClick={handleWalletButtonClick}
+      />
+    );
+  }
+  return (
     <MobileNav
-      status={status}
       isProcess={processName !== undefined}
       onWalletClick={handleWalletButtonClick}
     />

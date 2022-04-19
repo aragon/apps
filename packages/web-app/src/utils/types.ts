@@ -201,8 +201,6 @@ export type TransactionItem = {
   };
 };
 
-export type NetworkIndicatorStatus = 'default' | 'testnet' | 'unsupported';
-
 export type StringIndexed = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;

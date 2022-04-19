@@ -1,24 +1,17 @@
 import React from 'react';
 import {AlertBanner} from '@aragon/ui-components';
 import {useTranslation} from 'react-i18next';
+import {useWallet} from 'hooks/useWallet';
 
-import {NetworkIndicatorStatus} from 'utils/types';
-
-type IndicatorProps = {
-  status?: NetworkIndicatorStatus;
-};
-
-const NetworkIndicator: React.FC<IndicatorProps> = ({status = 'default'}) => {
+const NetworkIndicator: React.FC = () => {
+  const {isOnWrongNetwork} = useWallet();
   const {t} = useTranslation();
 
-  switch (status) {
-    case 'testnet':
-      return <AlertBanner label={t('alert.testNet')} />;
-    case 'unsupported':
-      return <AlertBanner label={t('alert.unsupportedNet')} mode="critical" />;
-    default:
-      return null;
-  }
+  if (isOnWrongNetwork)
+    return (
+      <AlertBanner label={t('alert.wrongWalletNetwork')} mode={'warning'} />
+    );
+  return null;
 };
 
 export default NetworkIndicator;

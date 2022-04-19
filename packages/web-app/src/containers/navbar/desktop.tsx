@@ -9,7 +9,6 @@ import {useWallet} from 'hooks/useWallet';
 import NetworkIndicator from './networkIndicator';
 import {BreadcrumbDropdown} from './breadcrumbDropdown';
 import {useGlobalModalContext} from 'context/globalModals';
-import {NetworkIndicatorStatus} from 'utils/types';
 import {replaceNetworkParam} from 'utils/paths';
 import {selectedDAO} from 'context/apolloClient';
 import {useReactiveVar} from '@apollo/client';
@@ -19,7 +18,6 @@ import {useNetwork} from 'context/network';
 const MIN_ROUTE_DEPTH_FOR_BREADCRUMBS = 2;
 
 type DesktopNavProp = {
-  status?: NetworkIndicatorStatus;
   returnURL?: string;
   processLabel?: string;
   onWalletClick: () => void;
@@ -48,7 +46,7 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
   if (isProcess) {
     return (
       <Container data-testid="navbar">
-        <NetworkIndicator status={props.status} />
+        <NetworkIndicator />
         <Menu>
           <Breadcrumb
             crumbs={{label: props.processLabel!, path: props.returnURL!}}
@@ -70,7 +68,7 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
 
   return (
     <Container data-testid="navbar">
-      <NetworkIndicator status={props.status} />
+      <NetworkIndicator />
       <Menu>
         <Content>
           <CardDao
