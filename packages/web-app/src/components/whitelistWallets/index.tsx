@@ -7,9 +7,10 @@ import {
 import {Dropdown} from '@aragon/ui-components/src';
 import {t} from 'i18next';
 import {WhitelistWallet} from 'pages/createDAO';
-import React, {useEffect} from 'react';
+import React from 'react';
 import {useFieldArray, useFormContext} from 'react-hook-form';
 import styled from 'styled-components';
+
 import {useWallet} from 'hooks/useWallet';
 import {Row} from './row';
 
