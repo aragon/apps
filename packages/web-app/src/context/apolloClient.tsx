@@ -14,6 +14,7 @@ import {RestLink} from 'apollo-link-rest';
 import {CachePersistor, LocalStorageWrapper} from 'apollo3-cache-persist';
 import {BASE_URL, SUBGRAPH_API_URL} from 'utils/constants';
 import {useWallet} from 'hooks/useWallet';
+import {usePrivacyContext} from './privacyContext';
 
 /**
  * IApolloClientContext
@@ -28,6 +29,7 @@ const UseApolloClientContext = React.createContext<IApolloClientContext | any>(
 
 const ApolloClientProvider: React.FC<unknown> = ({children}) => {
   const {networkName} = useWallet();
+  const {preferences} = usePrivacyContext();
 
   const graphLink = useMemo(() => {
     if (networkName) {
@@ -48,7 +50,7 @@ const ApolloClientProvider: React.FC<unknown> = ({children}) => {
   }, []);
 
   // add the REST API's typename you want to persist here
-  const entitiesToPersist = ['tokenData'];
+  const entitiesToPersist = preferences?.functional ? ['tokenData'] : [];
 
   const persistor = new CachePersistor({
     cache,
@@ -102,7 +104,8 @@ const ApolloClientProvider: React.FC<unknown> = ({children}) => {
     selectedDAO(favoriteDAOs()[0]);
   };
 
-  restoreApolloCache();
+  // conditionally restore cache (shouldn't have cache in the first place)
+  if (preferences?.functional) restoreApolloCache();
 
   const client = useMemo(() => {
     return new ApolloClient({

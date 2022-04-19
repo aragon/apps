@@ -10,6 +10,7 @@ import React, {
 import {Nullable} from 'utils/types';
 import PrivacyPolicy from 'containers/privacyPolicy';
 import CookiePreferenceMenu from 'containers/privacyPolicy/cookiePreferenceMenu';
+import {disableAnalytics, enableAnalytics} from 'services/analytics';
 
 export type PrivacyPreferences = {
   analytics: boolean;
@@ -47,33 +48,48 @@ const PrivacyContextProvider: React.FC = ({children}) => {
   });
 
   useEffect(() => {
-    // get preferences from storage on first load
+    // get preferences from storage
     const value = localStorage.getItem(PRIVACY_KEY);
+    if (!value) return;
 
     // set state
-    if (value) {
-      setPolicyAccepted(true);
-      setPreferences(JSON.parse(value));
-    }
+    const storedPreferences = JSON.parse(value);
+    setPolicyAccepted(true);
+    setPreferences(storedPreferences);
+
+    // enable analytics
+    if (storedPreferences.analytics) enableAnalytics();
   }, []);
 
   /*************************************************
    *              Methods and handlers             *
    *************************************************/
   // Set the privacy preferences in local storage and update context state
-  const setPrivacyPolicy = useCallback((preference: PrivacyPreferences) => {
-    if (preference.analytics || preference.functional) {
-      localStorage.setItem(
-        PRIVACY_KEY,
-        JSON.stringify({optIn: true, ...preference})
-      );
-      setPreferences({...preference});
-    } else {
-      localStorage.setItem(PRIVACY_KEY, JSON.stringify({optIn: false}));
-    }
+  const setPrivacyPolicy = useCallback(
+    (userPreference: PrivacyPreferences) => {
+      if (userPreference.analytics || userPreference.functional) {
+        localStorage.setItem(
+          PRIVACY_KEY,
+          JSON.stringify({optIn: true, ...userPreference})
+        );
 
-    setPolicyAccepted(true);
-  }, []);
+        // enable analytics if was previously off
+        if (!preferences?.analytics && userPreference.analytics)
+          enableAnalytics();
+
+        // turn off analytics if was previously on
+        if (preferences?.analytics && !userPreference.analytics)
+          disableAnalytics();
+
+        setPreferences({...userPreference});
+      } else {
+        localStorage.setItem(PRIVACY_KEY, JSON.stringify({optIn: false}));
+      }
+
+      setPolicyAccepted(true);
+    },
+    [preferences?.analytics]
+  );
 
   // accept all cookies
   const acceptAll = useCallback(() => {
@@ -83,6 +99,7 @@ const PrivacyContextProvider: React.FC = ({children}) => {
   // reject all cookies
   const rejectAll = useCallback(() => {
     setPrivacyPolicy({analytics: false, functional: false});
+    disableAnalytics();
   }, [setPrivacyPolicy]);
 
   // set only functional cookies
