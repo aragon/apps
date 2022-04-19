@@ -60,7 +60,7 @@ const LinkRow: React.FC<LinkRowProps> = ({index, onDelete}) => {
     (label: string, index: number) => {
       if (linkedFieldsAreValid(label, `links.${index}.href`)) return;
 
-      return label === '' ? t('errors.required.label') : true;
+      return label.trim() === '' ? t('errors.required.label') : true;
     },
     [linkedFieldsAreValid, t]
   );

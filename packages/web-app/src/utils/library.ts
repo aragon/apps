@@ -28,3 +28,12 @@ export async function handleClipboardActions(
     onChange(textFromClipboard);
   }
 }
+
+/**
+ * Check if the given value is an empty string
+ * @param value parameter
+ * @returns whether the parameter is an empty string
+ */
+export const isEmptyString = (value: string) => {
+  return value.trim() === '';
+};

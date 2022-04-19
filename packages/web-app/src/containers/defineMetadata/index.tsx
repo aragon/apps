@@ -11,6 +11,7 @@ import React, {useCallback} from 'react';
 import {Controller, FieldError, useFormContext} from 'react-hook-form';
 
 import AddLinks from 'components/addLinks';
+import {isEmptyString} from 'utils/library';
 
 const DAO_LOGO = {
   maxDimension: 2400,
@@ -63,7 +64,11 @@ const DefineMetadata: React.FC = () => {
           name="daoName"
           control={control}
           defaultValue=""
-          rules={{required: t('errors.required.name')}}
+          rules={{
+            required: t('errors.required.name'),
+            validate: value =>
+              isEmptyString(value) ? t('errors.required.name') : true,
+          }}
           render={({
             field: {onBlur, onChange, value, name},
             fieldState: {error},
@@ -122,7 +127,11 @@ const DefineMetadata: React.FC = () => {
         />
         <Controller
           name="daoSummary"
-          rules={{required: t('errors.required.summary')}}
+          rules={{
+            required: t('errors.required.summary'),
+            validate: value =>
+              isEmptyString(value) ? t('errors.required.summary') : true,
+          }}
           control={control}
           render={({field, fieldState: {error}}) => (
             <>
