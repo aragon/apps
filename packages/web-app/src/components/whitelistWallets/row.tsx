@@ -118,7 +118,6 @@ export const Row = ({index}: WhitelistWalletsRowProps) => {
                 ),
                 callback: () => {
                   remove(index);
-                  trigger('whitelistWallets');
                 },
               },
             ]}

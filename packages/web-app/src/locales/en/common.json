@@ -189,8 +189,11 @@
     "noTokenSelected": "A token must be selected",
     "duplicateAddress": "Address must not be reused",
     "distributionMinutes": "Minutes should be between 0 and 59",
+    "emptyDistributionMinutes": "Minutes can't be empty",
     "distributionHours": "Hours should be between 0 and 23",
+    "emptyDistributionHours": "Hours can't be empty",
     "distributionDays": "Days Can't be negative",
+    "emptyDistributionDays": "Days Can't be empty",
     "percentage": "Percentage amount should be between 0 and 100",
     "totalSupplyZero": "Total token supply can not be 0",
     "required": {
