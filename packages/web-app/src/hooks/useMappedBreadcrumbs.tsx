@@ -7,7 +7,7 @@ import {
 import React from 'react';
 import useBreadcrumbs, {BreadcrumbData} from 'use-react-router-breadcrumbs';
 
-import {Dashboard, NotFound} from 'utils/paths';
+import {NotFound} from 'utils/paths';
 
 type MappedBreadcrumbs = {
   breadcrumbs: {
