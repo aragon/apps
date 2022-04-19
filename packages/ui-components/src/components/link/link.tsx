@@ -36,18 +36,18 @@ export const Link: React.FC<LinkProps> = ({
       {...props}
       data-testid="link"
     >
-      <div className="inline-flex justify-start items-center space-x-1.5">
+      <Content>
         {iconLeft && iconLeft}
         <Label>{label || href}</Label>
         {!iconLeft && iconRight && iconRight}
-      </div>
+      </Content>
     </StyledLink>
   );
 };
 
 type StyledLinkProps = {disabled: boolean; active: boolean};
 const StyledLink = styled.a.attrs(({active, disabled}: StyledLinkProps) => {
-  let className = `overflow-hidden hover:text-primary-700 rounded 
+  let className = `inline-flex overflow-hidden hover:text-primary-700 rounded 
      focus:ring-2 focus:ring-primary-500 focus:outline-none cursor-pointer`;
 
   className += ` ${
@@ -56,6 +56,10 @@ const StyledLink = styled.a.attrs(({active, disabled}: StyledLinkProps) => {
 
   return {className};
 })<StyledLinkProps>``;
+
+const Content = styled.span.attrs({
+  className: 'flex items-center space-x-1.5',
+})``;
 
 const Label = styled.span.attrs({
   className: 'font-bold',
