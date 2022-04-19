@@ -27,7 +27,7 @@ const MobileNav: React.FC<MobileNavProps> = props => {
   const {open} = useGlobalModalContext();
   const {isMobile} = useScreen();
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const {isConnected, account, ensName, ensAvatarUrl} = useWallet();
+  const {isConnected, address, ensName, ensAvatarUrl} = useWallet();
 
   if (props.isProcess)
     return (
@@ -66,11 +66,11 @@ const MobileNav: React.FC<MobileNavProps> = props => {
           </FlexOne>
           <FlexOne className="justify-end">
             <ButtonWallet
-              src={ensAvatarUrl || account}
+              src={ensAvatarUrl || address}
               onClick={props.onWalletClick}
               isConnected={isConnected}
               label={
-                isConnected ? ensName || account : t('navButtons.connectWallet')
+                isConnected ? ensName || address : t('navButtons.connectWallet')
               }
             />
           </FlexOne>

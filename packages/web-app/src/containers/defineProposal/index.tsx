@@ -17,7 +17,7 @@ import {Controller, useFormContext} from 'react-hook-form';
 
 const DefineProposal: React.FC = () => {
   const {t} = useTranslation();
-  const {account, ensAvatarUrl} = useWallet();
+  const {address, ensAvatarUrl} = useWallet();
   const {control} = useFormContext();
 
   return (
@@ -27,7 +27,7 @@ const DefineProposal: React.FC = () => {
 
         <ButtonWallet
           label="You"
-          src={ensAvatarUrl || account}
+          src={ensAvatarUrl || address}
           isConnected
           disabled
         />

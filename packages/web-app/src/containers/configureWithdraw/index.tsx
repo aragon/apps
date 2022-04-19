@@ -44,7 +44,7 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
   const {t} = useTranslation();
   const client = useApolloClient();
   const {open} = useGlobalModalContext();
-  const {account} = useWallet();
+  const {address} = useWallet();
   const {infura: provider} = useProviders();
 
   const {control, getValues, trigger, resetField, setFocus, setValue} =
@@ -70,11 +70,11 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
     if (from === '') {
       setValue(`actions.${index}.from`, TEST_DAO);
     }
-  }, [account, from, index, isCustomToken, setFocus, setValue]);
+  }, [address, from, index, isCustomToken, setFocus, setValue]);
 
   // Fetch custom token information
   useEffect(() => {
-    if (!account || !isCustomToken || !tokenAddress) return;
+    if (!address || !isCustomToken || !tokenAddress) return;
 
     const fetchTokenInfo = async () => {
       if (errors.tokenAddress !== undefined) {
@@ -121,7 +121,7 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
 
     fetchTokenInfo();
   }, [
-    account,
+    address,
     dirtyFields.amount,
     errors.tokenAddress,
     index,

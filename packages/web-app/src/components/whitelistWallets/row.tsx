@@ -21,7 +21,7 @@ type WhitelistWalletsRowProps = {
 
 export const Row = ({index}: WhitelistWalletsRowProps) => {
   const {control, watch, trigger} = useFormContext();
-  const {account} = useWallet();
+  const {address} = useWallet();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const {remove, update, append} = useFieldArray({
     control,
@@ -55,16 +55,16 @@ export const Row = ({index}: WhitelistWalletsRowProps) => {
         <Container>
           <InputContainer>
             <ValueInput
-              value={value === account ? 'My Wallet' : value}
+              value={value === address ? 'My Wallet' : value}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 onChange(
-                  e.target.value === account ? 'My Wallet' : e.target.value
+                  e.target.value === address ? 'My Wallet' : e.target.value
                 );
               }}
               mode="default"
               placeholder="0x..."
               adornmentText={value ? 'Copy' : 'Paste'}
-              disabled={value === account}
+              disabled={value === address}
               onAdornmentClick={() => handleClipboardActions(value, onChange)}
             />
             {error?.message && (

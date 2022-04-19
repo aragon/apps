@@ -37,7 +37,7 @@ const defaultValues = {
 
 const NewDeposit: React.FC = () => {
   const {t} = useTranslation();
-  const {account} = useWallet();
+  const {address} = useWallet();
   const formMethods = useForm<DepositFormData>({
     defaultValues,
     mode: 'onChange',
@@ -50,10 +50,10 @@ const NewDeposit: React.FC = () => {
 
   useEffect(() => {
     // add form metadata
-    if (account) {
-      formMethods.setValue('from', account);
+    if (address) {
+      formMethods.setValue('from', address);
     }
-  }, [account, formMethods]);
+  }, [address, formMethods]);
 
   /*************************************************
    *             Callbacks and Handlers            *

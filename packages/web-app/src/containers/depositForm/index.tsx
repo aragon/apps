@@ -30,7 +30,7 @@ const DepositForm: React.FC = () => {
   const client = useApolloClient();
   const {t} = useTranslation();
   const {open} = useGlobalModalContext();
-  const {account, balance: walletBalance} = useWallet();
+  const {address, balance: walletBalance} = useWallet();
   const {infura: provider} = useProviders();
   const {control, resetField, setValue, setFocus, trigger, getValues} =
     useFormContext();
@@ -47,7 +47,7 @@ const DepositForm: React.FC = () => {
   }, [isCustomToken, setFocus]);
 
   useEffect(() => {
-    if (!account || !isCustomToken || !tokenAddress) return;
+    if (!address || !isCustomToken || !tokenAddress) return;
 
     const fetchTokenInfo = async () => {
       if (errors.tokenAddress !== undefined) {
@@ -60,7 +60,7 @@ const DepositForm: React.FC = () => {
         const allTokenInfoPromise = Promise.all([
           isETH(tokenAddress)
             ? utils.formatEther(walletBalance || 0)
-            : fetchBalance(tokenAddress, account, provider),
+            : fetchBalance(tokenAddress, address, provider),
           fetchTokenData(tokenAddress, client),
         ]);
 
@@ -90,7 +90,7 @@ const DepositForm: React.FC = () => {
 
     fetchTokenInfo();
   }, [
-    account,
+    address,
     dirtyFields.amount,
     errors.tokenAddress,
     isCustomToken,

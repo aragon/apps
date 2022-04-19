@@ -1,16 +1,12 @@
 import {useSigner, SignerValue} from 'use-signer';
 import {useEffect, useState} from 'react';
 import {BigNumber} from 'ethers';
-import {Network} from '@ethersproject/networks';
 
 export interface IUseWallet extends SignerValue {
   balance: BigNumber | null;
   ensAvatarUrl: string;
   ensName: string;
   isConnected: boolean;
-  networkName: string;
-  // equal value to address
-  account: string | null;
 }
 
 export const useWallet = (): IUseWallet => {
@@ -18,7 +14,6 @@ export const useWallet = (): IUseWallet => {
   const [balance, setBalance] = useState<BigNumber | null>(null);
   const [ensName, setEnsName] = useState<string>('');
   const [ensAvatarUrl, setEnsAvatarUrl] = useState<string>('');
-  const [networkName, setNetworkName] = useState<string>('');
   const [isConnected, setIsConnected] = useState<boolean>(false);
 
   // Update balance
@@ -47,27 +42,16 @@ export const useWallet = (): IUseWallet => {
     setIsConnected(status === 'connected');
   }, [status]);
 
-  // update networkName
-  useEffect(() => {
-    if (provider) {
-      provider?.getNetwork().then((network: Network) => {
-        setNetworkName(network.name);
-      });
-    }
-  }, [provider, chainId]);
-
   return {
     provider,
     signer,
     status,
     address,
-    account: address,
     chainId,
     balance,
     ensAvatarUrl,
     ensName,
     isConnected,
-    networkName,
     methods,
   };
 };

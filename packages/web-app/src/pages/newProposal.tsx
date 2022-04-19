@@ -29,17 +29,17 @@ const NewProposal: React.FC = () => {
   const {errors, dirtyFields} = useFormState({
     control: formMethods.control,
   });
-  const {account} = useWallet();
+  const {address} = useWallet();
   const [durationSwitch] = formMethods.getValues(['durationSwitch']);
 
   // TODO: Sepehr, is this still necessary?
   useEffect(() => {
-    if (account) {
+    if (address) {
       // TODO: Change from to proper address
       formMethods.setValue('from', constants.AddressZero);
       formMethods.setValue('type', TransferTypes.Withdraw);
     }
-  }, [account, formMethods]);
+  }, [address, formMethods]);
 
   /*************************************************
    *                    Render                     *

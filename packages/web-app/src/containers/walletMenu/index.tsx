@@ -8,7 +8,7 @@ import {useWalletMenuContext} from 'context/walletMenu';
 
 const WalletMenu: React.FC = () => {
   const {isOpen, close} = useWalletMenuContext();
-  const {methods, account, ensName, ensAvatarUrl} = useWallet();
+  const {methods, address, ensName, ensAvatarUrl} = useWallet();
 
   return (
     <ModalBottomSheetSwitcher
@@ -19,9 +19,9 @@ const WalletMenu: React.FC = () => {
       <Container>
         <CardWallet
           wide
-          src={ensAvatarUrl || account}
+          src={ensAvatarUrl || address}
           name={ensName}
-          address={account}
+          address={address}
         />
         <ActionContainer>
           <ActionListItem
