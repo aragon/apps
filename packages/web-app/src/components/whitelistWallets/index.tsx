@@ -33,7 +33,7 @@ export const WhitelistWallets = () => {
 
   // reset all
   const handleDeleteWallets = () => {
-    replace([{address: account}]);
+    replace([{address: account}, {address: ''}]);
   };
   const handleResetWallets = () => {
     whitelistWallets.forEach((_, index) => {
