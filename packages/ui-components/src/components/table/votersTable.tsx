@@ -39,7 +39,7 @@ export const VotersTable: React.FC<VotersTableProps> = ({
           <TableCell type="head" text="Wallet" />
           {showOption && <TableCell type="head" text="Option" />}
           {showVotingPower && <TableCell type="head" text="Voting Power" />}
-          {showAmount && <TableCell type="head" text="Token Amount" />}
+          <TableCell type="head" text={showAmount ? 'Token Amount' : ''} />
         </tr>
       </thead>
       <tbody>
@@ -59,9 +59,11 @@ export const VotersTable: React.FC<VotersTableProps> = ({
             {showVotingPower && (
               <TableCell type="text" text={voter.votingPower} rightAligned />
             )}
-            {showAmount && (
-              <TableCell type="text" text={voter.tokenAmount} rightAligned />
-            )}
+            <TableCell
+              type="text"
+              text={showAmount ? voter.tokenAmount : ''}
+              rightAligned
+            />
           </tr>
         ))}
       </tbody>
@@ -77,7 +79,7 @@ export const VotersTable: React.FC<VotersTableProps> = ({
             </TableCell>
             {showOption && <TableCell type="text" text="" />}
             {showVotingPower && <TableCell type="text" text="" />}
-            {showAmount && <TableCell type="text" text="" />}
+            <TableCell type="text" text="" />
           </tr>
         )}
       </tfoot>
