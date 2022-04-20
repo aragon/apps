@@ -1,126 +1,87 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// Workarounds are used that necessitate the any escape hatch
-
-import React, {useContext, useMemo} from 'react';
-import {
-  ApolloClient,
-  ApolloProvider,
-  HttpLink,
-  InMemoryCache,
-  ApolloClientOptions,
-  makeVar,
-} from '@apollo/client';
+import {ApolloClient, HttpLink, InMemoryCache, makeVar} from '@apollo/client';
 import {RestLink} from 'apollo-link-rest';
 import {CachePersistor, LocalStorageWrapper} from 'apollo3-cache-persist';
-
 import {BASE_URL, SUBGRAPH_API_URL} from 'utils/constants';
-import {useNetwork} from './network';
 
-/**
- * IApolloClientContext
- */
-interface IApolloClientContext {
-  client: ApolloClient<ApolloClientOptions<string | undefined>>;
-}
+const restLink = new RestLink({
+  uri: BASE_URL,
+});
 
-const UseApolloClientContext = React.createContext<IApolloClientContext | any>(
-  {}
-);
+const cache = new InMemoryCache();
 
-const ApolloClientProvider: React.FC<unknown> = ({children}) => {
-  const {network} = useNetwork();
+// add the REST API's typename you want to persist here
+const entitiesToPersist = ['tokenData'];
 
-  const graphLink = useMemo(() => {
-    if (network) {
-      return new HttpLink({
-        uri: SUBGRAPH_API_URL[network],
-      });
-    }
-  }, [network]);
+const persistor = new CachePersistor({
+  cache,
+  // TODO: Check and update the size needed for the cache
+  maxSize: 5242880, // 5 MiB
+  storage: new LocalStorageWrapper(window.localStorage),
+  debug: process.env.NODE_ENV === 'development',
+  persistenceMapper: async (data: string) => {
+    const parsed = JSON.parse(data);
 
-  const restLink = useMemo(() => {
-    return new RestLink({
-      uri: BASE_URL,
-    });
-  }, []);
+    const mapped: Record<string, unknown> = {};
+    const persistEntities: string[] = [];
+    const rootQuery = parsed['ROOT_QUERY'];
 
-  const cache = useMemo(() => {
-    return new InMemoryCache();
-  }, []);
+    mapped['ROOT_QUERY'] = Object.keys(rootQuery).reduce(
+      (obj: Record<string, unknown>, key: string) => {
+        if (key === '__typename') return obj;
 
-  // add the REST API's typename you want to persist here
-  const entitiesToPersist = ['tokenData'];
+        const keyWithoutArgs = key.substring(0, key.indexOf('('));
+        if (entitiesToPersist.includes(keyWithoutArgs)) {
+          obj[key] = rootQuery[key];
 
-  const persistor = new CachePersistor({
-    cache,
-    // TODO: Check and update the size needed for the cache
-    maxSize: 5242880, // 5 MiB
-    storage: new LocalStorageWrapper(window.localStorage),
-    debug: process.env.NODE_ENV === 'development',
-    persistenceMapper: async (data: string) => {
-      const parsed = JSON.parse(data);
-
-      const mapped: Record<string, unknown> = {};
-      const persistEntities: string[] = [];
-      const rootQuery = parsed['ROOT_QUERY'];
-
-      mapped['ROOT_QUERY'] = Object.keys(rootQuery).reduce(
-        (obj: Record<string, unknown>, key: string) => {
-          if (key === '__typename') return obj;
-
-          const keyWithoutArgs = key.substring(0, key.indexOf('('));
-          if (entitiesToPersist.includes(keyWithoutArgs)) {
-            obj[key] = rootQuery[key];
-
-            if (Array.isArray(rootQuery[key])) {
-              const entities = rootQuery[key].map(
-                (item: Record<string, unknown>) => item.__ref
-              );
-              persistEntities.push(...entities);
-            } else {
-              const entity = rootQuery[key].__ref;
-              persistEntities.push(entity);
-            }
+          if (Array.isArray(rootQuery[key])) {
+            const entities = rootQuery[key].map(
+              (item: Record<string, unknown>) => item.__ref
+            );
+            persistEntities.push(...entities);
+          } else {
+            const entity = rootQuery[key].__ref;
+            persistEntities.push(entity);
           }
+        }
 
-          return obj;
-        },
-        {__typename: 'Query'}
-      );
-
-      persistEntities.reduce((obj, key) => {
-        obj[key] = parsed[key];
         return obj;
-      }, mapped);
+      },
+      {__typename: 'Query'}
+    );
 
-      return JSON.stringify(mapped);
-    },
-  });
+    persistEntities.reduce((obj, key) => {
+      obj[key] = parsed[key];
+      return obj;
+    }, mapped);
 
-  const restoreApolloCache = async () => {
-    await persistor.restore();
-    // favoriteDAOs(JSON.parse(localStorage.getItem('favoriteDAOs') as string));
-    selectedDAO(favoriteDAOs()[0]);
-  };
+    return JSON.stringify(mapped);
+  },
+});
 
-  restoreApolloCache();
+await persistor.restore();
 
-  const client = useMemo(() => {
-    return new ApolloClient({
-      cache,
-      link: graphLink ? restLink.concat(graphLink) : restLink,
-    });
-  }, [graphLink, cache, restLink]);
+const rinkebyClient = new ApolloClient({
+  cache,
+  link: restLink.concat(new HttpLink({uri: SUBGRAPH_API_URL['rinkeby']})),
+});
 
-  return (
-    <UseApolloClientContext.Provider value={client}>
-      <ApolloProvider client={client}>{children}</ApolloProvider>
-    </UseApolloClientContext.Provider>
-  );
-};
+const mumbaiClient = new ApolloClient({
+  cache,
+  link: restLink.concat(new HttpLink({uri: SUBGRAPH_API_URL['mumbai']})),
+});
 
-const useApolloClient = () => {
-  return useContext(UseApolloClientContext);
+const arbitrumTestClient = new ApolloClient({
+  cache,
+  link: restLink.concat(new HttpLink({uri: SUBGRAPH_API_URL['arbitrum-test']})),
+});
+
+const client = {
+  main: undefined,
+  rinkeby: rinkebyClient,
+  polygon: undefined,
+  mumbai: mumbaiClient,
+  arbitrum: undefined,
+  arbitrumTest: arbitrumTestClient,
 };
 
 type favoriteDAO = {
@@ -138,4 +99,6 @@ const favoriteDAOs = makeVar<Array<favoriteDAO>>([
   {daoAddress: 'dao-name.dao.eth', daoName: 'DAO name'},
 ]);
 
-export {ApolloClientProvider, useApolloClient, favoriteDAOs, selectedDAO};
+selectedDAO(favoriteDAOs()[0]);
+
+export {client, favoriteDAOs, selectedDAO};

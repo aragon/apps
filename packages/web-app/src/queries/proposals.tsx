@@ -36,7 +36,7 @@ export const WHITELIST_PROPOSAL_LIST = gql`
       }
       voteId
       creator
-      description
+      metadata
       startDate
       endDate
       supportRequiredPct
@@ -61,7 +61,7 @@ export const WHITELIST_PROPOSAL_LIST = gql`
  * or can be used to get array length
  */
 export const WHITELIST_PROPOSAL_DETAILS = gql`
-  query whitelistProposals($id: ID) {
+  query whitelistProposal($id: ID) {
     whitelistProposals(where: {id: $id}) {
       id
       dao {
@@ -86,7 +86,7 @@ export const WHITELIST_PROPOSAL_DETAILS = gql`
       }
       voteId
       creator
-      description
+      metadata
       startDate
       endDate
       supportRequiredPct
@@ -142,7 +142,7 @@ export const ERC20VOTING_PROPOSAL_LIST = gql`
       }
       voteId
       creator
-      description
+      metadata
       startDate
       endDate
       snapshotBlock
@@ -154,6 +154,7 @@ export const ERC20VOTING_PROPOSAL_LIST = gql`
       votingPower
       voters {
         id
+        vote
       }
       executed
       createdAt
@@ -191,7 +192,7 @@ export const ERC20VOTING_PROPOSAL_DETAILS = gql`
       }
       voteId
       creator
-      description
+      metadata
       startDate
       endDate
       snapshotBlock
@@ -204,7 +205,6 @@ export const ERC20VOTING_PROPOSAL_DETAILS = gql`
       voters {
         id
         vote
-        stake
       }
       executed
       createdAt

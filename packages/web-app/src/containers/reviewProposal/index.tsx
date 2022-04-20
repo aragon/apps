@@ -166,7 +166,7 @@ const ContentContainer = styled.div.attrs(
   })
 )<ContentContainerProps>``;
 
-const StyledEditorContent = styled(EditorContent)`
+export const StyledEditorContent = styled(EditorContent)`
   flex: 1;
 
   .ProseMirror {

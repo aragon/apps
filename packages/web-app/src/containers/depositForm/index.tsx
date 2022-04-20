@@ -16,6 +16,7 @@ import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import {constants, utils} from 'ethers';
 import React, {useCallback, useEffect} from 'react';
+import {useApolloClient} from '@apollo/client';
 
 import {useWallet} from 'hooks/useWallet';
 import {useGlobalModalContext} from 'context/globalModals';
@@ -24,7 +25,6 @@ import {fetchTokenData} from 'services/prices';
 import {handleClipboardActions} from 'utils/library';
 import {fetchBalance, getTokenInfo, isETH} from 'utils/tokens';
 import {validateTokenAddress, validateTokenAmount} from 'utils/validators';
-import {useApolloClient} from 'context/apolloClient';
 
 const DepositForm: React.FC = () => {
   const client = useApolloClient();

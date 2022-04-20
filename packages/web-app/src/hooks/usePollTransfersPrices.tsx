@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react';
+import {useApolloClient} from '@apollo/client';
 
 import {fetchTokenData} from 'services/prices';
-import {useApolloClient} from 'context/apolloClient';
 import {ASSET_PLATFORMS, CHAIN_METADATA, TransferTypes} from 'utils/constants';
 import {DaoTransfer, Transfer} from 'utils/types';
 import {formatUnits} from 'utils/library';
