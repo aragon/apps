@@ -191,7 +191,7 @@ const ConfigureCommunity: React.FC = () => {
             control={control}
             defaultValue="1"
             rules={{
-              required: t('errors.emptyDistributionDays') as string,
+              required: t('errors.emptyDistributionDays'),
               validate: value =>
                 value >= 0 ? true : t('errors.distributionDays'),
             }}
@@ -221,7 +221,7 @@ const ConfigureCommunity: React.FC = () => {
             control={control}
             defaultValue="0"
             rules={{
-              required: t('errors.emptyDistributionHours') as string,
+              required: t('errors.emptyDistributionHours'),
               validate: value =>
                 value <= 23 && value >= 0
                   ? true
@@ -254,7 +254,7 @@ const ConfigureCommunity: React.FC = () => {
             control={control}
             defaultValue="0"
             rules={{
-              required: t('errors.emptyDistributionMinutes') as string,
+              required: t('errors.emptyDistributionMinutes'),
               validate: value =>
                 value <= 59 && value >= 0
                   ? true
