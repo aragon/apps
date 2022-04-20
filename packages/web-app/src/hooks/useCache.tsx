@@ -4,12 +4,12 @@ import React, {createContext, ReactNode, useContext, useState} from 'react';
 // this cache is not the final implementation, and when
 // the final implementation is done the any should be updated with generics
 /* eslint-disable @typescript-eslint/no-explicit-any */
-interface CacheContext {
+interface ICacheContext {
   set: (key: string, value: any) => void;
   get: (key: string) => any;
 }
 
-const UseCacheContext = createContext<CacheContext>({} as CacheContext);
+const UseCacheContext = createContext<ICacheContext>({} as ICacheContext);
 
 export const useCache = () => {
   const ctx = useContext(UseCacheContext);

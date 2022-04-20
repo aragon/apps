@@ -7,16 +7,16 @@ import {
 } from '@aragon/sdk-client';
 import {Dao} from 'utils/types';
 
-interface useDaoResponse {
+interface IUseDaoResponse {
   update: (dao: Dao) => Dao;
   createErc20: (dao: ICreateDaoERC20Voting) => Promise<string>;
   createWhitelist: (dao: ICreateDaoWhitelistVoting) => Promise<string>;
   get: (address: string) => Dao;
 }
 
-export const useDao = (): useDaoResponse => {
+export const useDao = (): IUseDaoResponse => {
   const {get: getCache, set: setCache} = useCache();
-  const {erc20, whitelist} = useClient();
+  const {erc20: erc20Client, whitelist: whitelistClient} = useClient();
   const get = (address: string): Dao => {
     if (!isAddress(address)) {
       throw Error('invalid address when trying to get dao');
@@ -35,54 +35,44 @@ export const useDao = (): useDaoResponse => {
     return value;
   };
   const createErc20 = (dao: ICreateDaoERC20Voting): Promise<string> => {
-    return new Promise((resolve, reject): void => {
-      if (erc20) {
-        erc20.dao
-          .create(dao)
-          .then((address: string) => {
-            // if creation went correctly should return the dao address
-            // this will be used to identify the dao in the cache
-            const cacheKey = `dao-${address}`;
-            const cacheDao: Dao = {
-              address,
-            };
-            setCache(cacheKey, cacheDao);
-            resolve(address);
-          })
-          .catch((e: Error) => {
-            console.log(e);
-            // thow error if it fails
-            reject(e);
-          });
-      } else {
-        reject('ERC20 SDK client is not initialized correctly');
-      }
-    });
+    if (!erc20Client) {
+      return Promise.reject(
+        new Error('ERC20 SDK client is not initialized correctly')
+      );
+    }
+    return erc20Client.dao
+      .create(dao)
+      .then((address: string) => {
+        const cacheKey = `dao-${address}`;
+        const cacheDao: Dao = {
+          address,
+        };
+        setCache(cacheKey, cacheDao);
+        return Promise.resolve(address);
+      })
+      .catch((e: Error) => {
+        return Promise.reject(e);
+      });
   };
   const createWhitelist = (dao: ICreateDaoWhitelistVoting): Promise<string> => {
-    return new Promise((resolve, reject): void => {
-      console.log(whitelist);
-      if (whitelist) {
-        whitelist.dao
-          .create(dao)
-          .then((address: string) => {
-            // if creation went correctly should return the dao address
-            // this will be used to identify the dao in the cache
-            const cacheKey = `dao-${address}`;
-            const cachedDao: Dao = {
-              address,
-            };
-            setCache(cacheKey, cachedDao);
-            resolve(address);
-          })
-          .catch((e: Error) => {
-            // thow error if it fails
-            reject(e);
-          });
-      } else {
-        reject('Whitelist SDK client is not initialized correctly');
-      }
-    });
+    if (!whitelistClient) {
+      return Promise.reject(
+        new Error('Whitelist SDK client is not initialized correctly')
+      );
+    }
+    return whitelistClient.dao
+      .create(dao)
+      .then((address: string) => {
+        const cacheKey = `dao-${address}`;
+        const cacheDao: Dao = {
+          address,
+        };
+        setCache(cacheKey, cacheDao);
+        return Promise.resolve(address);
+      })
+      .catch((e: Error) => {
+        return Promise.reject(e);
+      });
   };
   const update = (dao: Dao): Dao => {
     // client.updateDao(dao).then((value) => {

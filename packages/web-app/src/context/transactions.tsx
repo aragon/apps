@@ -41,7 +41,8 @@ const TransactionsProvider: React.FC<Props> = ({children}) => {
   const [transactionState, setTransactionState] = useState<TransactionState>(
     TransactionState.WAITING
   );
-  const {createErc20, createWhitelist} = useDao();
+  const {createErc20: createErc20Dao, createWhitelist: createWhitelistDao} =
+    useDao();
   const {getValues} = useFormContext();
 
   const value = useMemo(
@@ -62,6 +63,11 @@ const TransactionsProvider: React.FC<Props> = ({children}) => {
     return minutes * 60 + hours * 3600 + days * 86400;
   };
   const handlePublishDao = () => {
+    if (transactionState === TransactionState.SUCCESS) {
+      setIsModalOpen(false);
+      setTransactionState(TransactionState.WAITING);
+      return;
+    }
     // set state to loading
     setTransactionState(TransactionState.LOADING);
     // get common data
@@ -84,10 +90,7 @@ const TransactionsProvider: React.FC<Props> = ({children}) => {
         getValues();
       const mintConfig = wallets
         .filter((wallet: WalletField) => {
-          if (isAddress(wallet.address)) {
-            return true;
-          }
-          return false;
+          return isAddress(wallet.address);
         })
         .map((wallet: WalletField) => {
           return {address: wallet.address, balance: BigInt(wallet.amount)};
@@ -115,14 +118,17 @@ const TransactionsProvider: React.FC<Props> = ({children}) => {
         },
         gsnForwarder: constants.AddressZero,
       };
-      createErc20(createDaoForm)
+      createErc20Dao(createDaoForm)
         .then((address: string) => {
           // if success set state to success
           setTransactionState(TransactionState.SUCCESS);
+          // TODO this console should be deleted when it stops being useful
+          // the form should reset too and redirect to a correct page
           console.log(address);
         })
         .catch(e => {
           // if error set state to error to allow retry
+          // TODO this console should be deleted when it stops being useful
           console.error(e);
           setTransactionState(TransactionState.ERROR);
         });
@@ -152,14 +158,17 @@ const TransactionsProvider: React.FC<Props> = ({children}) => {
         gsnForwarder: constants.AddressZero,
       };
       // call create whitelist function
-      createWhitelist(createDaoForm)
+      createWhitelistDao(createDaoForm)
         .then((address: string) => {
           // if success set state to success
           setTransactionState(TransactionState.SUCCESS);
+          // TODO this console should be deleted when it stops being useful
+          // the form should reset too and redirect to a correct page
           console.log(address);
         })
         .catch(e => {
           // if error set state to error to allow retry
+          // TODO this console should be deleted when it stops being useful
           console.error(e);
           setTransactionState(TransactionState.ERROR);
         });

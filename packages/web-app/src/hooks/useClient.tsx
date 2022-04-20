@@ -35,12 +35,18 @@ export const UseClientProvider = ({children}: {children: ReactNode}) => {
 
   useEffect(() => {
     if (signer) {
+      const web3Providers = import.meta.env
+        .VITE_REACT_APP_SDK_WEB3_PROVIDERS as string;
       const context = new SdkContext({
         network: chainId,
-        web3Providers: [
-          'https://eth-rinkeby.alchemyapi.io/v2/bgIqe2NxazpzsjfmVmhj3aS3j_HZ9mpr',
-        ],
-        daoFactoryAddress: '0xa0b2B729DE73cd22406d3D5A31816985c04A7cdD',
+        web3Providers: web3Providers
+          ? web3Providers.split(',')
+          : [
+              'https://eth-rinkeby.alchemyapi.io/v2/bgIqe2NxazpzsjfmVmhj3aS3j_HZ9mpr',
+            ],
+        daoFactoryAddress:
+          (import.meta.env.VITE_REACT_APP_SDK_DAO_FACTORY_ADDRESS as string) ||
+          '0xa0b2B729DE73cd22406d3D5A31816985c04A7cdD',
         signer: signer,
       });
       setErc20Client(new ClientDaoERC20Voting(context));
