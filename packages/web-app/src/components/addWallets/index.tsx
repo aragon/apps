@@ -56,7 +56,6 @@ const AddWallets: React.FC = () => {
 
   return (
     <Container data-testid="add-wallets">
-      {JSON.stringify(fields)}
       <ListGroup>
         <Header />
         {controlledFields.map((field, index) => {
