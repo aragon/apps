@@ -58,7 +58,11 @@ const persistor = new CachePersistor({
   },
 });
 
-await persistor.restore();
+const restoreApolloCache = async () => {
+  await persistor.restore();
+};
+
+restoreApolloCache();
 
 const rinkebyClient = new ApolloClient({
   cache,

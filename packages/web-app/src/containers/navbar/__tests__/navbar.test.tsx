@@ -1,6 +1,7 @@
 import React from 'react';
 import {render, screen} from 'test-utils';
 import {GlobalModalsProvider} from 'context/globalModals';
+import 'whatwg-fetch';
 
 import Navbar from '..';
 
