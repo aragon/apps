@@ -34,6 +34,6 @@ export async function handleClipboardActions(
  * @param value parameter
  * @returns whether the parameter is an empty string
  */
-export const isEmptyString = (value: string) => {
+export const isOnlyWhitespace = (value: string) => {
   return value.trim() === '';
 };
