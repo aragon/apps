@@ -15,7 +15,7 @@ import {useWallet} from 'hooks/useWallet';
 import {Row} from './row';
 
 export const WhitelistWallets = () => {
-  const {account} = useWallet();
+  const {address} = useWallet();
   const {control, watch, trigger} = useFormContext();
   const {update, replace, append} = useFieldArray({
     control,
@@ -31,9 +31,15 @@ export const WhitelistWallets = () => {
     }, 50);
   };
 
+  // useEffect(() => {
+  //   if (address) {
+  //     update(0, {address: address});
+  //   }
+  // });
+
   // reset all
   const handleDeleteWallets = () => {
-    replace([{address: account}, {address: ''}]);
+    replace([{address: address}]);
   };
   const handleResetWallets = () => {
     whitelistWallets.forEach((_, index) => {

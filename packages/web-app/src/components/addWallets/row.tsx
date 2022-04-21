@@ -32,7 +32,7 @@ export type WalletField = {
 const WalletRow: React.FC<WalletRowProps> = ({index, onDelete}) => {
   const {t} = useTranslation();
   const [isDuplicate, setIsDuplicate] = useState<boolean>(false);
-  const {account} = useWallet();
+  const {address} = useWallet();
   const {control, getValues, setValue, trigger} = useFormContext();
   const walletFieldArray = getValues('wallets');
 
@@ -95,20 +95,20 @@ const WalletRow: React.FC<WalletRowProps> = ({index, onDelete}) => {
               <ValueInput
                 mode={error ? 'critical' : 'default'}
                 name={name}
-                value={value === account ? 'My Wallet' : value}
+                value={value === address ? 'My Wallet' : value}
                 onBlur={onBlur}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   onChange(
-                    e.target.value === account ? 'My Wallet' : e.target.value
+                    e.target.value === address ? 'My Wallet' : e.target.value
                   );
                 }}
                 disabled={index === 0}
                 adornmentText={value ? t('labels.copy') : t('labels.paste')}
                 onAdornmentClick={() => {
                   handleClipboardActions(
-                    value === 'My Wallet' ? account : value,
+                    value === 'My Wallet' ? address : value,
                     (newValue: string) => {
-                      onChange(newValue === account ? 'My Wallet' : newValue);
+                      onChange(newValue === address ? 'My Wallet' : newValue);
                     }
                   );
                 }}

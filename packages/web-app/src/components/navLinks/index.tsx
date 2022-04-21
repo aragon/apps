@@ -4,20 +4,23 @@ import {useNavigate} from 'react-router-dom';
 import {ListItemAction} from '@aragon/ui-components';
 
 import NavLink from 'components/navLink';
+import {useNetwork} from 'context/network';
 import useScreen from 'hooks/useScreen';
 import {NAV_LINKS} from 'utils/constants';
+import {replaceNetworkParam} from 'utils/paths';
 
 type NavLinksProps = {
   onItemClick?: () => void;
 };
 
 const NavLinks: React.FC<NavLinksProps> = ({onItemClick}) => {
+  const {network} = useNetwork();
   const navigate = useNavigate();
   const {isDesktop} = useScreen();
 
   const handleOnClick = (to: string) => {
     onItemClick?.();
-    navigate(to);
+    navigate(replaceNetworkParam(to, network));
   };
 
   return (

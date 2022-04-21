@@ -16,10 +16,10 @@ import MobileNav from './mobile';
 import useScreen from 'hooks/useScreen';
 import DesktopNav from './desktop';
 import {useWallet} from 'hooks/useWallet';
-import {CHAIN_METADATA as chains} from 'utils/constants';
 import {useGlobalModalContext} from 'context/globalModals';
 
-type NumberIndexed = {[key: number]: {}};
+// TODO is this stuff really only used in the Desktop version of the Navbar? If
+// so, it should be moved there.
 type StringIndexed = {[key: string]: {processLabel: string; returnURL: string}};
 
 const processPaths = [
@@ -45,26 +45,16 @@ const processes: StringIndexed = {
   },
 };
 
-const getNetworkStatus = (id: number) => {
-  if ((chains.test as NumberIndexed)[id]) return 'testnet';
-  if (!(chains.main as NumberIndexed)[id]) return 'unsupported';
-  return 'default';
-};
-
 const Navbar: React.FC = () => {
   const {open} = useGlobalModalContext();
   const {pathname} = useLocation();
   const {isDesktop} = useScreen();
-  const {chainId, methods, isConnected} = useWallet();
+  const {methods, isConnected} = useWallet();
 
   const processName = useMemo(() => {
     const results = matchRoutes(processPaths, pathname);
     if (results) return results[0].route.path;
   }, [pathname]);
-
-  const status = useMemo(() => {
-    return isConnected ? getNetworkStatus(chainId) : 'default';
-  }, [chainId, isConnected]);
 
   const handleWalletButtonClick = () => {
     if (isConnected) {
@@ -78,15 +68,16 @@ const Navbar: React.FC = () => {
     });
   };
 
-  return isDesktop ? (
-    <DesktopNav
-      status={status}
-      {...(processName ? {...processes[processName]} : {})}
-      onWalletClick={handleWalletButtonClick}
-    />
-  ) : (
+  if (isDesktop) {
+    return (
+      <DesktopNav
+        {...(processName ? {...processes[processName]} : {})}
+        onWalletClick={handleWalletButtonClick}
+      />
+    );
+  }
+  return (
     <MobileNav
-      status={status}
       isProcess={processName !== undefined}
       onWalletClick={handleWalletButtonClick}
     />

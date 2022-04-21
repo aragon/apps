@@ -14,10 +14,8 @@ import MobileMenu from './mobileMenu';
 import {useWallet} from 'hooks/useWallet';
 import NetworkIndicator from './networkIndicator';
 import {useGlobalModalContext} from 'context/globalModals';
-import {NetworkIndicatorStatus} from 'utils/types';
 
 type MobileNavProps = {
-  status?: NetworkIndicatorStatus;
   isProcess?: boolean;
   onWalletClick: () => void;
 };
@@ -27,12 +25,12 @@ const MobileNav: React.FC<MobileNavProps> = props => {
   const {open} = useGlobalModalContext();
   const {isMobile} = useScreen();
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const {isConnected, account, ensName, ensAvatarUrl} = useWallet();
+  const {isConnected, address, ensName, ensAvatarUrl} = useWallet();
 
   if (props.isProcess)
     return (
       <Container>
-        <NetworkIndicator status={props.status} />
+        <NetworkIndicator />
       </Container>
     );
 
@@ -66,16 +64,16 @@ const MobileNav: React.FC<MobileNavProps> = props => {
           </FlexOne>
           <FlexOne className="justify-end">
             <ButtonWallet
-              src={ensAvatarUrl || account}
+              src={ensAvatarUrl || address}
               onClick={props.onWalletClick}
               isConnected={isConnected}
               label={
-                isConnected ? ensName || account : t('navButtons.connectWallet')
+                isConnected ? ensName || address : t('navButtons.connectWallet')
               }
             />
           </FlexOne>
         </Menu>
-        <NetworkIndicator status={props.status} />
+        <NetworkIndicator />
       </Container>
       <MobileMenu isOpen={isOpen} onClose={() => setIsOpen(false)} />
     </>

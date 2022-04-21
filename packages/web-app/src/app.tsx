@@ -9,7 +9,6 @@ import Navbar from 'containers/navbar';
 import {WalletMenu} from 'containers/navbar/walletMenu';
 import {trackPage} from 'services/analytics';
 import TransferMenu from 'containers/transferMenu';
-import TransactionModal, {TransactionState} from 'containers/transactionModal';
 import '../i18n.config';
 
 // HACK: All pages MUST be exported with the withTransaction function
@@ -50,7 +49,7 @@ function App() {
             <Route path={paths.NewDeposit} element={<NewDepositPage />} />
             <Route path={paths.NewWithDraw} element={<NewWithdrawPage />} />
             <Route path={paths.CreateDAO} element={<CreateDAOPage />} />
-            <Route path={paths.Dashboard} element={<HomePage />} />
+            <Route path={paths.Landing} element={<HomePage />} />
             <Route path={paths.Community} element={<CommunityPage />} />
             <Route path={paths.Finance} element={<FinancePage />} />
             <Route path={paths.Governance} element={<GovernancePage />} />
@@ -59,7 +58,10 @@ function App() {
             <Route path={paths.AllTokens} element={<TokensPage />} />
             <Route path={paths.AllTransfers} element={<TransfersPage />} />
             <Route path={paths.NotFound} element={<NotFoundPage />} />
-            <Route path="*" element={<Navigate to={paths.NotFound} />} />
+            <Route
+              path="*"
+              element={<Navigate to={paths.NotFound} replace />}
+            />
           </Routes>
         </Suspense>
       </Layout>
@@ -67,14 +69,6 @@ function App() {
       <TransferMenu />
       <DaoSelectMenu />
       <WalletMenu />
-      <TransactionModal
-        title="Sign Deposit"
-        subtitle="To register your deposit, you need to submit a transaction which costs you following."
-        footerButtonLabel="Sign Deposit"
-        state={TransactionState.SUCCESS}
-        callback={console.log}
-        approveStepNeeded
-      />
     </div>
   );
 }

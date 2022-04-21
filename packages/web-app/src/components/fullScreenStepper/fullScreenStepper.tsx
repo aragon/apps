@@ -5,13 +5,15 @@ import {
   IconChevronRight,
   Breadcrumb,
 } from '@aragon/ui-components';
-import styled from 'styled-components';
-import {useTranslation} from 'react-i18next';
 import React, {createContext, useContext, useMemo} from 'react';
-
-import {useStepper} from 'hooks/useStepper';
-import {StepProps} from './step';
+import {useTranslation} from 'react-i18next';
 import {useNavigate} from 'react-router-dom';
+import styled from 'styled-components';
+
+import {StepProps} from './step';
+import {useNetwork} from 'context/network';
+import {useStepper} from 'hooks/useStepper';
+import {replaceNetworkParam} from 'utils/paths';
 
 export type FullScreenStepperProps = {
   navLabel: string;
@@ -41,6 +43,7 @@ export const FullScreenStepper: React.FC<FullScreenStepperProps> = ({
   returnPath,
 }) => {
   const {t} = useTranslation();
+  const {network} = useNetwork();
   const navigate = useNavigate();
 
   const {currentStep, prev, next, setStep} = useStepper(children.length);
@@ -101,7 +104,10 @@ export const FullScreenStepper: React.FC<FullScreenStepperProps> = ({
               currentStep={currentFormStep}
               nav={
                 <Breadcrumb
-                  crumbs={{label: navLabel, path: returnPath}}
+                  crumbs={{
+                    label: navLabel,
+                    path: replaceNetworkParam(returnPath, network),
+                  }}
                   onClick={(path: string) => navigate(path)}
                 />
               }

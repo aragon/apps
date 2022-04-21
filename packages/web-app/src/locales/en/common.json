@@ -220,8 +220,7 @@
   },
   "alert": {
     "durationAlert": "We recommend a minimum duration of 1 day if it does not have to be a quick financial decision.",
-    "testNet": "Testnet Active",
-    "unsupportedNet": "Network Not Supported"
+    "wrongWalletNetwork": "Wrong Wallet Network"
   },
   "warnings": {
     "amountGtDaoToken": "Withdraw amount is greater than the current token balance"
@@ -265,16 +264,19 @@
     "noAddresses": "No address Found"
   },
   "TransactionModal": {
-    "estimatedFees": "Estimated Gas Fees",
-    "synced": "Synced {{time}} sec ag",
-    "totalCost": "Total Cost",
-    "approveToken": "Approve token",
-    "signDeposit": "Sign Deposit",
     "approveSubtitle": "To sign your first transaction, you must approve Aragon Zaragoza to make a transaction with your token.",
+    "approveToken": "Approve token",
+    "depositTitle": "Sign Deposit",
     "dismiss": "Dismiss",
-    "tryAgain": "Try Again",
     "errorLabel": "Error while confirmation",
-    "successLabel": "Transaction successful"
+    "estimatedFees": "Estimated Gas Fees",
+    "publishDao": "Publish Dao",
+    "publishDaoButtonLabel": "Publish DAO Now",
+    "signDeposit": "Sign Deposit",
+    "successLabel": "Transaction successful signed",
+    "synced": "Synced {{time}} sec ago",
+    "totalCost": "Total Cost",
+    "tryAgain": "Try Again"
   },
   "AddActionModal": {
     "title": "Add Action",

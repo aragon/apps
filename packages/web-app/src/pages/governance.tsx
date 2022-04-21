@@ -6,26 +6,31 @@ import {
   Pagination,
   ButtonText,
   IconAdd,
+  Link,
 } from '@aragon/ui-components';
+import {useTranslation} from 'react-i18next';
 import {useNavigate} from 'react-router-dom';
 import styled from 'styled-components';
 
 import {PageWrapper} from 'components/wrappers';
 import ProposalList from 'components/proposalList';
 import NoProposals from 'public/noProposals.svg';
-import {useDaoProposals} from '../hooks/useDaoProposals';
+import {useDaoProposals} from 'hooks/useDaoProposals';
 import {ProposalData} from 'utils/types';
-import {useTranslation} from 'react-i18next';
-import {Link} from '@aragon/ui-components/src';
+import {useNetwork} from 'context/network';
+import {NewProposal, replaceNetworkParam} from 'utils/paths';
 
 const Governance: React.FC = () => {
+  const {t} = useTranslation();
+  const {network} = useNetwork();
+  const navigate = useNavigate();
+  const {data: daoProposals} = useDaoProposals('0x0000000000');
+
   // TODO: toggle empty state based on graph query
   const [showEmptyState, setShowEmptyState] = useState(true);
   const [filterValue, setFilterValue] = useState<string>('all');
   const [page, setPage] = useState(1);
-  const {data: daoProposals} = useDaoProposals('0x0000000000');
-  const {t} = useTranslation();
-  const navigate = useNavigate();
+
   // The number of proposals displayed on each page
   const ProposalsPerPage = 6;
 
@@ -70,7 +75,7 @@ const Governance: React.FC = () => {
             label="New Proposal"
             iconLeft={<IconAdd />}
             className="mt-4"
-            onClick={() => navigate('/new-proposal')}
+            onClick={() => navigate(replaceNetworkParam(NewProposal, network))}
           />
         </EmptyStateContainer>
 
@@ -90,7 +95,7 @@ const Governance: React.FC = () => {
       title={'Proposals'}
       buttonLabel={'New Proposal'}
       subtitle={'1 active Proposal'}
-      onClick={() => navigate('/new-proposal')}
+      onClick={() => navigate(replaceNetworkParam(NewProposal, network))}
     >
       <div className="flex mt-3 desktop:mt-8">
         <ButtonGroup

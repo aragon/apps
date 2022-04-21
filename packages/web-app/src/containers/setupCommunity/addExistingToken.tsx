@@ -7,15 +7,18 @@ import {
 } from '@aragon/ui-components';
 import React, {useCallback, useEffect, useMemo} from 'react';
 import {Controller, useFormContext, useWatch} from 'react-hook-form';
+import {useTranslation} from 'react-i18next';
 import styled from 'styled-components';
 import {chains} from 'use-wallet';
-import {useTranslation} from 'react-i18next';
+import {ChainInformation} from 'use-wallet/dist/cjs/types';
+
 import {useWallet} from 'hooks/useWallet';
 import {useProviders} from 'context/providers';
-import {ChainInformation} from 'use-wallet/dist/cjs/types';
+import {useNetwork} from 'context/network';
 import {formatUnits} from 'utils/library';
 import {getTokenInfo} from 'utils/tokens';
 import {validateTokenAddress} from 'utils/validators';
+import {CHAIN_METADATA} from 'utils/constants';
 
 const DEFAULT_BLOCK_EXPLORER = 'https://etherscan.io/';
 
@@ -27,7 +30,8 @@ const AddExistingToken: React.FC<AddExistingTokenType> = ({
   resetTokenFields,
 }) => {
   const {t} = useTranslation();
-  const {isConnected, chainId, networkName} = useWallet();
+  const {isConnected} = useWallet();
+  const {network} = useNetwork();
   const {infura: provider} = useProviders();
   const {control, setValue, trigger} = useFormContext();
 
@@ -42,8 +46,12 @@ const AddExistingToken: React.FC<AddExistingTokenType> = ({
       ],
     });
 
+  const chainId = CHAIN_METADATA[network].id;
+
   const explorer = useMemo(() => {
     if (blockchain.id) {
+      // TODO move necessary information from useWallet's ChainInfromation into
+      // CHAIN_METADATA
       const {explorerUrl} = chains.getChainInformation(
         blockchain.id
       ) as ChainInformation;
@@ -74,7 +82,7 @@ const AddExistingToken: React.FC<AddExistingTokenType> = ({
       // Wrong network
       if (blockchain.id !== chainId) {
         alert(
-          `Chain mismatch: Selected - ${blockchain?.label} but connected to ${networkName}`
+          `Chain mismatch: Selected - ${blockchain?.label} but connected to ${network}`
         );
         return 'Switch Chain'; // Temporary
       }
@@ -104,7 +112,7 @@ const AddExistingToken: React.FC<AddExistingTokenType> = ({
       blockchain?.label,
       chainId,
       isConnected,
-      networkName,
+      network,
       provider,
       resetTokenFields,
       setValue,

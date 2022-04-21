@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
-import {CheckboxListItem, Label, AlertCard} from '@aragon/ui-components';
+import {AlertCard, CheckboxListItem, Label} from '@aragon/ui-components/src';
 import {Controller, useFormContext, useWatch} from 'react-hook-form';
 import ExistingTokenPartialForm from './addExistingToken';
 import CreateNewToken from './createNewToken';

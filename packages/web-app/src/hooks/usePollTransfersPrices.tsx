@@ -1,16 +1,16 @@
-import {useWallet} from 'hooks/useWallet';
 import {useEffect, useState} from 'react';
 
 import {fetchTokenData} from 'services/prices';
 import {useApolloClient} from 'context/apolloClient';
-import {ASSET_PLATFORMS, TransferTypes} from 'utils/constants';
+import {ASSET_PLATFORMS, CHAIN_METADATA, TransferTypes} from 'utils/constants';
 import {DaoTransfer, Transfer} from 'utils/types';
 import {formatUnits} from 'utils/library';
 import {formatDate} from 'utils/date';
+import {useNetwork} from 'context/network';
 
 export const usePollTransfersPrices = (transfers: DaoTransfer[]) => {
   const client = useApolloClient();
-  const {chainId} = useWallet();
+  const {network} = useNetwork();
   const [data, setData] = useState<Transfer[]>([]);
   const [total, setTotal] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -22,9 +22,14 @@ export const usePollTransfersPrices = (transfers: DaoTransfer[]) => {
 
       // fetch token metadata from external api
       const metadata = await Promise.all(
-        transfers?.map(transfer =>
-          fetchTokenData(transfer.token.id, client, ASSET_PLATFORMS[chainId])
-        )
+        transfers?.map(transfer => {
+          const chainId = CHAIN_METADATA[network].id;
+          return fetchTokenData(
+            transfer.token.id,
+            client,
+            ASSET_PLATFORMS[chainId]
+          );
+        })
       );
 
       // map metadata to token balances
@@ -68,7 +73,7 @@ export const usePollTransfersPrices = (transfers: DaoTransfer[]) => {
     };
 
     if (transfers) fetchMetadata();
-  }, [chainId, client, transfers]);
+  }, [network, client, transfers]);
 
   return {data, total, loading};
 };

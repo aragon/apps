@@ -1,24 +1,28 @@
 import {useSigner, SignerValue} from 'use-signer';
 import {useEffect, useState} from 'react';
 import {BigNumber} from 'ethers';
-import {Network} from '@ethersproject/networks';
+import {useNetwork} from 'context/network';
+import {CHAIN_METADATA} from 'utils/constants';
 
 export interface IUseWallet extends SignerValue {
   balance: BigNumber | null;
   ensAvatarUrl: string;
   ensName: string;
   isConnected: boolean;
-  networkName: string;
-  // equal value to address
-  account: string | null;
+  /**
+   * Returns true iff the wallet is connected and it is on the wrong network
+   * (i.e., the chainId returned by the useSigner context does not agree with
+   * the network name returned by the useNetwork context).
+   */
+  isOnWrongNetwork: boolean;
 }
 
 export const useWallet = (): IUseWallet => {
+  const {network} = useNetwork();
   const {chainId, methods, signer, provider, address, status} = useSigner();
   const [balance, setBalance] = useState<BigNumber | null>(null);
   const [ensName, setEnsName] = useState<string>('');
   const [ensAvatarUrl, setEnsAvatarUrl] = useState<string>('');
-  const [networkName, setNetworkName] = useState<string>('');
   const [isConnected, setIsConnected] = useState<boolean>(false);
 
   // Update balance
@@ -47,27 +51,20 @@ export const useWallet = (): IUseWallet => {
     setIsConnected(status === 'connected');
   }, [status]);
 
-  // update networkName
-  useEffect(() => {
-    if (provider) {
-      provider?.getNetwork().then((network: Network) => {
-        setNetworkName(network.name);
-      });
-    }
-  }, [provider, chainId]);
+  const isOnWrongNetwork =
+    isConnected && CHAIN_METADATA[network].id !== chainId;
 
   return {
     provider,
     signer,
     status,
     address,
-    account: address,
     chainId,
     balance,
     ensAvatarUrl,
     ensName,
     isConnected,
-    networkName,
+    isOnWrongNetwork,
     methods,
   };
 };

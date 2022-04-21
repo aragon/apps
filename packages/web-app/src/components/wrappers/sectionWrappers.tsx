@@ -4,13 +4,23 @@ import {Link} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
 import {ButtonText, IconChevronRight} from '@aragon/ui-components';
 
-import {AllTokens, AllTransfers} from 'utils/paths';
+import {useNetwork} from 'context/network';
+import {AllTokens, AllTransfers, replaceNetworkParam} from 'utils/paths';
 
-export type SectionWrapperProps = {
+type SectionHeader = {
   title: string;
+};
+
+export type SectionWrapperProps = SectionHeader & {
   children: React.ReactNode;
   showButton?: boolean;
 };
+
+const SectionHeader = ({title}: SectionHeader) => (
+  <HeaderContainer>
+    <Title>{title}</Title>
+  </HeaderContainer>
+);
 
 /**
  * Section wrapper for tokens overview. Consists of a header with a title and a
@@ -22,14 +32,13 @@ export type SectionWrapperProps = {
  */
 export const TokenSectionWrapper = ({title, children}: SectionWrapperProps) => {
   const {t} = useTranslation();
+  const {network} = useNetwork();
 
   return (
     <>
-      <HeaderContainer>
-        <Title>{title}</Title>
-      </HeaderContainer>
+      <SectionHeader title={title} />
       {children}
-      <Link to={AllTokens}>
+      <Link to={replaceNetworkParam(AllTokens, network)}>
         <ButtonText
           mode="secondary"
           label={t('labels.seeAllTokens')}
@@ -53,33 +62,25 @@ export const TransferSectionWrapper = ({
   children,
   showButton = false,
 }: SectionWrapperProps) => {
+  const {t} = useTranslation();
+  const {network} = useNetwork();
+
   return (
     <>
-      <HeaderContainer>
-        <Title>{title}</Title>
-      </HeaderContainer>
+      <SectionHeader title={title} />
       {children}
-      {showButton && <SeeAllButton path={AllTransfers} />}
+      {showButton && (
+        <div>
+          <Link to={replaceNetworkParam(AllTransfers, network)}>
+            <ButtonText
+              mode="secondary"
+              label={t('labels.seeAllTransfers')}
+              iconRight={<IconChevronRight />}
+            />
+          </Link>
+        </div>
+      )}
     </>
-  );
-};
-
-type SeeAllButtonProps = {
-  path: string;
-};
-
-const SeeAllButton = ({path}: SeeAllButtonProps) => {
-  const {t} = useTranslation();
-  return (
-    <div>
-      <Link to={path}>
-        <ButtonText
-          mode="secondary"
-          label={t('labels.seeAllTransfers')}
-          iconRight={<IconChevronRight />}
-        />
-      </Link>
-    </div>
   );
 };
 

@@ -12,8 +12,9 @@ import {
 } from '@apollo/client';
 import {RestLink} from 'apollo-link-rest';
 import {CachePersistor, LocalStorageWrapper} from 'apollo3-cache-persist';
+
 import {BASE_URL, SUBGRAPH_API_URL} from 'utils/constants';
-import {useWallet} from 'hooks/useWallet';
+import {useNetwork} from './network';
 
 /**
  * IApolloClientContext
@@ -27,15 +28,15 @@ const UseApolloClientContext = React.createContext<IApolloClientContext | any>(
 );
 
 const ApolloClientProvider: React.FC<unknown> = ({children}) => {
-  const {networkName} = useWallet();
+  const {network} = useNetwork();
 
   const graphLink = useMemo(() => {
-    if (networkName) {
+    if (network) {
       return new HttpLink({
-        uri: SUBGRAPH_API_URL[networkName],
+        uri: SUBGRAPH_API_URL[network],
       });
     }
-  }, [networkName]);
+  }, [network]);
 
   const restLink = useMemo(() => {
     return new RestLink({

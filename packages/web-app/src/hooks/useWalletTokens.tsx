@@ -19,7 +19,7 @@ import {TokenBalance, HookData} from 'utils/types';
  * has balance.
  */
 export function useUserTokenAddresses(): HookData<string[]> {
-  const {account} = useWallet();
+  const {address} = useWallet();
   const {web3} = useProviders();
 
   const [tokenList, setTokenList] = useState<string[]>([]);
@@ -30,7 +30,7 @@ export function useUserTokenAddresses(): HookData<string[]> {
     async function fetchTokenList() {
       setIsLoading(true);
 
-      if (web3 && account) {
+      if (web3 && address) {
         try {
           const erc20Interface = new Interface(erc20TokenABI);
           const latestBlockNumber = await web3.getBlockNumber();
@@ -42,7 +42,7 @@ export function useUserTokenAddresses(): HookData<string[]> {
             topics: [
               erc20Interface.getEventTopic('Transfer'),
               null,
-              hexZeroPad(account as string, 32),
+              hexZeroPad(address as string, 32),
             ],
           });
           // Filter unique token contract addresses and convert all events to Contract instances
@@ -67,7 +67,7 @@ export function useUserTokenAddresses(): HookData<string[]> {
     }
 
     fetchTokenList();
-  }, [account, web3]);
+  }, [address, web3]);
 
   return {data: tokenList, isLoading, error};
 }
@@ -79,7 +79,7 @@ export function useUserTokenAddresses(): HookData<string[]> {
  * contract address it also returns the user's balance for each of the tokens.
  */
 export function useWalletTokens(): HookData<TokenBalance[]> {
-  const {account, balance} = useWallet();
+  const {address, balance} = useWallet();
   const {infura: provider} = useProviders();
   const {
     data: tokenList,
@@ -95,7 +95,7 @@ export function useWalletTokens(): HookData<TokenBalance[]> {
   useEffect(() => {
     async function fetchWalletTokens() {
       setIsLoading(true);
-      if (account === null || provider === null) {
+      if (address === null || provider === null) {
         setWalletTokens([]);
         return;
       }
@@ -125,7 +125,7 @@ export function useWalletTokens(): HookData<TokenBalance[]> {
           }
 
           return Promise.all([
-            fetchBalance(address, account, provider, false),
+            fetchBalance(address, address, provider, false),
             getTokenInfo(address, provider),
           ]);
         })
@@ -152,7 +152,7 @@ export function useWalletTokens(): HookData<TokenBalance[]> {
       return;
     }
     fetchWalletTokens();
-  }, [account, balance, tokenList, provider, tokenListLoading, tokenListError]);
+  }, [address, balance, tokenList, provider, tokenListLoading, tokenListError]);
 
   return {data: walletTokens, isLoading: tokenListLoading || isLoading, error};
 }
