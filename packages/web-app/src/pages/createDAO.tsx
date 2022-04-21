@@ -84,7 +84,7 @@ const CreateDAO: React.FC = () => {
     // required fields not dirty
     // if wallet based dao
     if (membership === 'wallet') {
-      if (errors.whitelistWallets || !dirtyFields.whitelistWallets) {
+      if (errors.whitelistWallets) {
         return false;
       }
       return true;
@@ -112,7 +112,6 @@ const CreateDAO: React.FC = () => {
     dirtyFields.tokenName,
     dirtyFields.tokenSymbol,
     dirtyFields.wallets,
-    dirtyFields.whitelistWallets,
     errors.tokenAddress,
     errors.tokenName,
     errors.tokenSymbol,
