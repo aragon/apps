@@ -5,6 +5,7 @@ import {
   ListItemAction,
   AlertInline,
   ValueInput,
+  Dropdown,
 } from '@aragon/ui-components';
 import {t} from 'i18next';
 import {Controller, useFieldArray, useFormContext} from 'react-hook-form';
@@ -12,7 +13,6 @@ import styled from 'styled-components';
 import {useWallet} from 'hooks/useWallet';
 import {handleClipboardActions} from 'utils/library';
 import {validateAddress} from 'utils/validators';
-import {Dropdown} from '@aragon/ui-components/src';
 import {WhitelistWallet} from 'pages/createDAO';
 
 type WhitelistWalletsRowProps = {
@@ -75,6 +75,7 @@ export const Row = ({index}: WhitelistWalletsRowProps) => {
             side="bottom"
             align="start"
             sideOffset={4}
+            disabled={index === 0}
             trigger={
               <ButtonIcon
                 size="large"

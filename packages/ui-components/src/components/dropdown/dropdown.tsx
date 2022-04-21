@@ -46,6 +46,7 @@ export type DropdownProps = CustomDropdownContentProps & {
    * The items inside the open dropdown menu.
    */
   listItems: ListItemProps[];
+  disabled?: boolean;
 };
 
 export const Dropdown: React.FC<DropdownProps> = ({
@@ -53,11 +54,16 @@ export const Dropdown: React.FC<DropdownProps> = ({
   onOpenChange,
   trigger,
   listItems,
+  disabled = false,
   ...rest
 }: DropdownProps) => {
   return (
     <DropdownMenu.Root open={open} onOpenChange={onOpenChange}>
-      <DropdownMenu.Trigger data-testid="dropdown-trigger" asChild>
+      <DropdownMenu.Trigger
+        data-testid="dropdown-trigger"
+        asChild
+        disabled={disabled}
+      >
         {trigger}
       </DropdownMenu.Trigger>
 
