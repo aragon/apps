@@ -41,6 +41,7 @@ export const WhitelistWallets = () => {
   const handleDeleteWallets = () => {
     replace([{address: address}]);
   };
+
   const handleResetWallets = () => {
     whitelistWallets.forEach((_, index) => {
       // skip the first one because is the own address

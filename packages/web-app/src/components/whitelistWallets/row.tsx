@@ -55,7 +55,7 @@ export const Row = ({index}: WhitelistWalletsRowProps) => {
         <Container>
           <InputContainer>
             <ValueInput
-              value={value === address ? 'My Wallet' : value}
+              value={value}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 onChange(
                   e.target.value === address ? 'My Wallet' : e.target.value
@@ -65,7 +65,11 @@ export const Row = ({index}: WhitelistWalletsRowProps) => {
               placeholder="0x..."
               adornmentText={value ? 'Copy' : 'Paste'}
               disabled={index === 0}
-              onAdornmentClick={() => handleClipboardActions(value, onChange)}
+              onAdornmentClick={() =>
+                handleClipboardActions(value, pasteValue =>
+                  onChange(pasteValue === address ? 'My Wallet' : value)
+                )
+              }
             />
             {error?.message && (
               <AlertInline label={error.message} mode="critical" />

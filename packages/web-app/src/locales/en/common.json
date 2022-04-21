@@ -378,7 +378,7 @@
       "tokenMembership": "Token Holders",
       "tokenMembershipSubtitle": "All those who have a token are entitled to participate. 1 token equals 1 vote.",
       "walletMemberShip": "Authorized Wallets",
-      "walletMemberShipSubtitle": "Only authorised wallets are entitled to particpiate. 1 Wallet equals 1 vote (coming soon).",
+      "walletMemberShipSubtitle": "Only authorised wallets are entitled to particpiate. 1 Wallet equals 1 vote.",
       "nameSubtitle": "The full name of the token eg. Aragon",
       "symbolSubtitle": "The symbol of your token e.g. ANT (good practice is to use 3-4 letters)",
       "addExistingTokenHelptext": "Hinterlege einen bestehenden Token, welcher deine Community für die Governance verwendet. To learn more about what it’s important if you use an existing Token, read first the ",
