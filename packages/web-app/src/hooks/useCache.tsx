@@ -12,13 +12,13 @@ interface ICacheContext {
 const UseCacheContext = createContext<ICacheContext>({} as ICacheContext);
 
 export const useCache = () => {
-  const ctx = useContext(UseCacheContext);
-  if (ctx === null) {
+  const cache = useContext(UseCacheContext);
+  if (cache === null) {
     throw new Error(
       'useCache() can only be used on the descendants of <UseCacheProvider />'
     );
   }
-  return ctx;
+  return cache;
 };
 
 export const UseCacheProvider = ({children}: {children: ReactNode}) => {

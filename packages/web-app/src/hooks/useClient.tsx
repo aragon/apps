@@ -19,13 +19,13 @@ interface ClientContext {
 const UseClientContext = createContext<ClientContext>({} as ClientContext);
 
 export const useClient = () => {
-  const ctx = useContext(UseClientContext);
-  if (ctx === null) {
+  const client = useContext(UseClientContext);
+  if (client === null) {
     throw new Error(
       'useClient() can only be used on the descendants of <UseClientProvider />'
     );
   }
-  return ctx;
+  return client;
 };
 export const UseClientProvider = ({children}: {children: ReactNode}) => {
   const {chainId, signer} = useWallet();
