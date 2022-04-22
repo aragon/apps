@@ -29,8 +29,7 @@ export const Row = ({index}: WhitelistWalletsRowProps) => {
   const whitelistWallets: WhitelistWallet[] = watch('whitelistWallets');
 
   const addressValidator = (address: string, index: number) => {
-    let validationResult =
-      address === 'My Wallet' ? true : validateAddress(address);
+    let validationResult = validateAddress(address);
     if (whitelistWallets) {
       whitelistWallets.forEach(
         (wallet: WhitelistWallet, walletIndex: number) => {
@@ -55,15 +54,13 @@ export const Row = ({index}: WhitelistWalletsRowProps) => {
         <Container>
           <InputContainer>
             <ValueInput
-              value={value}
+              value={value === account ? t('labels.myWallet') : value}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                onChange(
-                  e.target.value === address ? 'My Wallet' : e.target.value
-                );
+                onChange(e.target.value);
               }}
               mode="default"
               placeholder="0x..."
-              adornmentText={value ? 'Copy' : 'Paste'}
+              adornmentText={value ? t('labels.copy') : t('labels.paste')}
               disabled={index === 0}
               onAdornmentClick={() => handleClipboardActions(value, onChange)}
             />

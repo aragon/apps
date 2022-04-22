@@ -19,6 +19,7 @@ import {constants, ethers} from 'ethers';
 import {WalletField} from 'components/addWallets/row';
 import {WhitelistWallet} from 'pages/createDAO';
 import {isAddress} from 'ethers/lib/utils';
+import {getSecondsFromDHM} from 'utils/date';
 
 const TransactionsContext = createContext<TransactionsContextType | null>(null);
 
@@ -55,13 +56,6 @@ const TransactionsProvider: React.FC<Props> = ({children}) => {
     [transaction]
   );
 
-  const getMinDuration = (
-    days: number,
-    hours: number,
-    minutes: number
-  ): number => {
-    return minutes * 60 + hours * 3600 + days * 86400;
-  };
   const handlePublishDao = () => {
     if (transactionState === TransactionState.SUCCESS) {
       setIsModalOpen(false);
@@ -110,7 +104,7 @@ const TransactionsProvider: React.FC<Props> = ({children}) => {
         votingConfig: {
           minParticipation: parseInt(minimumParticipation || 0),
           minSupport: parseInt(minimumApproval || 0),
-          minDuration: getMinDuration(
+          minDuration: getSecondsFromDHM(
             durationDays,
             durationHours,
             durationMinutes
@@ -149,7 +143,7 @@ const TransactionsProvider: React.FC<Props> = ({children}) => {
         votingConfig: {
           minParticipation: parseInt(minimumParticipation || 0),
           minSupport: parseInt(minimumApproval || 0),
-          minDuration: getMinDuration(
+          minDuration: getSecondsFromDHM(
             durationDays,
             durationHours,
             durationMinutes

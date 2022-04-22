@@ -40,6 +40,9 @@ type FormData = {
   whitelistWallets: WhitelistWallet[];
 };
 
+// both wallets and whitelistWallets values are updated
+// afterwars to have the acual wallet address instead of
+// the My Wallet string
 const defaultValues = {
   tokenName: '',
   tokenAddress: '',
