@@ -49,6 +49,7 @@ const AddWallets: React.FC = () => {
 
   useEffect(() => {
     if (account) {
+      update(0, {address: t('labels.daoTreasury'), amount: '0'})
       update(1, {address: account, amount: '0'});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -104,7 +105,7 @@ const AddWallets: React.FC = () => {
               ),
               callback: () => {
                 remove();
-                append([{address: 'DAO Treasury', amount: '0'}]);
+                append([{address: t('labels.daoTreasury'), amount: '0'}]);
                 resetField('tokenTotalSupply');
               },
             },
