@@ -54,7 +54,7 @@ const defaultValues = {
     {address: 'My Wallet', amount: '0'},
   ],
   membership: 'token',
-  whitelistWallets: [{address: 'My Wallet'}],
+  whitelistWallets: [],
 };
 
 const CreateDAO: React.FC = () => {
