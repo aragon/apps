@@ -18,13 +18,12 @@ import {useNetwork} from 'context/network';
 import {formatUnits} from 'utils/library';
 import {getTokenInfo} from 'utils/tokens';
 import {validateTokenAddress} from 'utils/validators';
-import {CHAIN_METADATA} from 'utils/constants';
 
 const DEFAULT_BLOCK_EXPLORER = 'https://etherscan.io/';
 
 const AddExistingToken: React.FC = () => {
   const {t} = useTranslation();
-  const {isConnected} = useWallet();
+  const {isConnected, chainId} = useWallet();
   const {network} = useNetwork();
   const {infura: provider} = useProviders();
   const {control, setValue, trigger} = useFormContext();
@@ -39,8 +38,6 @@ const AddExistingToken: React.FC = () => {
         'tokenTotalSupply',
       ],
     });
-
-  const chainId = CHAIN_METADATA[network].id;
 
   const explorer = useMemo(() => {
     if (blockchain.id) {
