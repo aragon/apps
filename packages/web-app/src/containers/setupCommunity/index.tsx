@@ -29,7 +29,7 @@ const SetupCommunityForm: React.FC = () => {
       {address: t('labels.daoTreasury'), amount: '0'},
       {address: address, amount: '0'},
     ]);
-    setValue('whitelistWallets', [{address: 'My Wallet'}]);
+    setValue('whitelistWallets', [{address: address}]);
   };
 
   return (

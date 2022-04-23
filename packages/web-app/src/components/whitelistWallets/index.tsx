@@ -7,7 +7,7 @@ import {
 import {Dropdown} from '@aragon/ui-components/src';
 import {t} from 'i18next';
 import {WhitelistWallet} from 'pages/createDAO';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useFieldArray, useFormContext} from 'react-hook-form';
 import styled from 'styled-components';
 
@@ -32,8 +32,8 @@ export const WhitelistWallets = () => {
   };
 
   useEffect(() => {
-    if (account) {
-      update(0, {address: account});
+    if (address) {
+      update(0, {address: address});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

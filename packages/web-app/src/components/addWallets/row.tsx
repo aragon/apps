@@ -94,7 +94,7 @@ const WalletRow: React.FC<WalletRowProps> = ({index, onDelete}) => {
               <ValueInput
                 mode={error ? 'critical' : 'default'}
                 name={name}
-                value={value === account ? t('labels.myWallet') : value}
+                value={value === address ? t('labels.myWallet') : value}
                 onBlur={onBlur}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   onChange(e.target.value);

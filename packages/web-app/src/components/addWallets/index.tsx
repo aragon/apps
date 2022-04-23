@@ -23,7 +23,7 @@ const AddWallets: React.FC = () => {
     name: 'wallets',
     control,
   });
-  const {account} = useWallet();
+  const {address} = useWallet();
 
   const controlledFields = fields.map((field, index) => {
     return {
@@ -48,9 +48,9 @@ const AddWallets: React.FC = () => {
   };
 
   useEffect(() => {
-    if (account) {
-      update(0, {address: t('labels.daoTreasury'), amount: '0'})
-      update(1, {address: account, amount: '0'});
+    if (address) {
+      update(0, {address: t('labels.daoTreasury'), amount: '0'});
+      update(1, {address: address, amount: '0'});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

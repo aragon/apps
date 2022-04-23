@@ -54,14 +54,14 @@ export const Row = ({index}: WhitelistWalletsRowProps) => {
         <Container>
           <InputContainer>
             <ValueInput
-              value={value === account ? t('labels.myWallet') : value}
+              value={value === address ? t('labels.myWallet') : value}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 onChange(e.target.value);
               }}
               mode="default"
               placeholder="0x..."
               adornmentText={value ? t('labels.copy') : t('labels.paste')}
-              disabled={index === 0}
+              // disabled={index === 0}
               onAdornmentClick={() => handleClipboardActions(value, onChange)}
             />
             {error?.message && (
@@ -72,7 +72,6 @@ export const Row = ({index}: WhitelistWalletsRowProps) => {
             side="bottom"
             align="start"
             sideOffset={4}
-            disabled={index === 0}
             trigger={
               <ButtonIcon
                 size="large"
