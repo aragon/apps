@@ -31,6 +31,7 @@ import {handleClipboardActions} from 'utils/library';
 import {fetchBalance, getTokenInfo, isETH} from 'utils/tokens';
 import {WithdrawAction} from 'pages/newWithdraw';
 import {isAddress} from 'ethers/lib/utils';
+import {useNetwork} from 'context/network';
 
 type ConfigureWithdrawFormProps = {
   index?: number;
@@ -44,6 +45,7 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
   const {t} = useTranslation();
   const client = useApolloClient();
   const {open} = useGlobalModalContext();
+  const {network} = useNetwork();
   const {address} = useWallet();
   const {infura: provider} = useProviders();
 
@@ -90,7 +92,7 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
           isETH(tokenAddress)
             ? provider.getBalance(TEST_DAO)
             : fetchBalance(tokenAddress, TEST_DAO, provider),
-          fetchTokenData(tokenAddress, client),
+          fetchTokenData(tokenAddress, client, network),
         ]);
 
         // use blockchain if api data unavailable
@@ -131,6 +133,7 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
     tokenAddress,
     trigger,
     client,
+    network,
   ]);
 
   /*************************************************
