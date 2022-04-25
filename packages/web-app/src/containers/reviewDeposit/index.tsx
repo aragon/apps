@@ -3,13 +3,14 @@ import React, {useEffect, useState} from 'react';
 import {useFormContext} from 'react-hook-form';
 import {useTranslation} from 'react-i18next';
 
+import {useNetwork} from 'context/network';
 import {useProviders} from 'context/providers';
 import {fetchTokenPrice} from 'services/prices';
-import {NETWORK} from 'utils/constants';
 
 const ReviewDeposit: React.FC = () => {
   const {t} = useTranslation();
   const {infura: provider} = useProviders();
+  const {network} = useNetwork();
 
   const [price, setPrice] = useState<string>();
   const {getValues, setValue} = useFormContext();
@@ -17,7 +18,7 @@ const ReviewDeposit: React.FC = () => {
 
   useEffect(() => {
     async function getPrice() {
-      const tokenPrice = await fetchTokenPrice(values.tokenAddress, NETWORK);
+      const tokenPrice = await fetchTokenPrice(values.tokenAddress, network);
       if (tokenPrice) {
         setPrice(
           new Intl.NumberFormat('en-US', {
@@ -30,6 +31,7 @@ const ReviewDeposit: React.FC = () => {
 
     getPrice();
   }, [
+    network,
     provider,
     setValue,
     values.amount,

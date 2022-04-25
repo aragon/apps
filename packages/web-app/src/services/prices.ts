@@ -90,12 +90,12 @@ async function fetchTokenData(
   client: ApolloClient<ApolloClientOptions<string | undefined>>,
   network: string
 ): Promise<TokenData | undefined> {
-  // network unsupported, or testnet
-  const platformId = ASSET_PLATFORMS[network];
-  if (!platformId) return;
-
   // check if token address is address zero, ie, native token of platform
   const isNativeToken = address === constants.AddressZero;
+
+  // network unsupported, or testnet
+  const platformId = ASSET_PLATFORMS[network];
+  if (!platformId && !isNativeToken) return;
 
   // build url based on whether token is native token
   const url = isNativeToken
@@ -133,11 +133,13 @@ async function fetchTokenPrice(
 ): Promise<number | undefined> {
   // network unsupported, or testnet
   const platformId = ASSET_PLATFORMS[network];
-  if (!platformId) return;
+  const isEther = isETH(address);
+
+  if (!platformId && !isEther) return;
 
   // build url based on whether token is ethereum
   const endPoint = `/simple/token_price/${platformId}?vs_currencies=usd&contract_addresses=`;
-  const url = isETH(address)
+  const url = isEther
     ? `${BASE_URL}/simple/price?ids=ethereum&vs_currencies=usd`
     : `${BASE_URL}${endPoint}${address}`;
 
