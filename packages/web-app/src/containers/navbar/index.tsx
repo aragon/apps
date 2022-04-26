@@ -18,7 +18,6 @@ import DesktopNav from './desktop';
 import {useWallet} from 'hooks/useWallet';
 import {usePrivacyContext} from 'context/privacyContext';
 import {useGlobalModalContext} from 'context/globalModals';
-import {CHAIN_METADATA as chains} from 'utils/constants';
 
 // TODO is this stuff really only used in the Desktop version of the Navbar? If
 // so, it should be moved there.
