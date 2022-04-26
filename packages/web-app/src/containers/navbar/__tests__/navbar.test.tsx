@@ -4,13 +4,16 @@ import {GlobalModalsProvider} from 'context/globalModals';
 import 'whatwg-fetch';
 
 import Navbar from '..';
+import {PrivacyContextProvider} from 'context/privacyContext';
 
 describe('Navbar', () => {
   test('should render', () => {
     render(
-      <GlobalModalsProvider>
-        <Navbar />
-      </GlobalModalsProvider>
+      <PrivacyContextProvider>
+        <GlobalModalsProvider>
+          <Navbar />
+        </GlobalModalsProvider>
+      </PrivacyContextProvider>
     );
 
     const element = screen.getByTestId('navbar');
