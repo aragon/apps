@@ -38,7 +38,7 @@ export function trackPage(pathName: string) {
 }
 
 /**
- * Sends analytics informations about the connected wallets.
+ * Sends analytics information about the connected wallets.
  *
  * @param {String} account Wallet address
  * @param {String} networkType The network the wallet is connected to
@@ -60,4 +60,20 @@ export function identifyUser(
     network: networkType,
   };
   trackerMethod(walletData);
+}
+
+export function disableAnalytics() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (window as any).rudderanalytics = null;
+}
+
+export function enableAnalytics() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const analytics = (window as any).rudderanalytics;
+  const analyticsKey = import.meta.env.VITE_REACT_APP_ANALYTICS_KEY;
+
+  if (analyticsKey) {
+    analytics.load(analyticsKey, 'https://rudderstack.aragon.org');
+    analytics.page();
+  }
 }

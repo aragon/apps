@@ -1,12 +1,12 @@
 import {useEffect, useState} from 'react';
+import {useApolloClient} from '@apollo/client';
 
 import {fetchTokenData} from 'services/prices';
-import {useApolloClient} from 'context/apolloClient';
 import {TransferTypes} from 'utils/constants';
 import {DaoTransfer, Transfer} from 'utils/types';
+import {useNetwork} from 'context/network';
 import {formatUnits} from 'utils/library';
 import {formatDate} from 'utils/date';
-import {useNetwork} from 'context/network';
 
 export const usePollTransfersPrices = (transfers: DaoTransfer[]) => {
   const client = useApolloClient();

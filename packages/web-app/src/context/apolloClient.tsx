@@ -1,56 +1,21 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// Workarounds are used that necessitate the any escape hatch
-
-import React, {useContext, useMemo} from 'react';
-import {
-  ApolloClient,
-  ApolloProvider,
-  HttpLink,
-  InMemoryCache,
-  ApolloClientOptions,
-  makeVar,
-} from '@apollo/client';
+import {ApolloClient, HttpLink, InMemoryCache, makeVar} from '@apollo/client';
 import {RestLink} from 'apollo-link-rest';
 import {CachePersistor, LocalStorageWrapper} from 'apollo3-cache-persist';
-
 import {BASE_URL, SUBGRAPH_API_URL} from 'utils/constants';
-import {useNetwork} from './network';
+import {PRIVACY_KEY} from './privacyContext';
 
-/**
- * IApolloClientContext
- */
-interface IApolloClientContext {
-  client: ApolloClient<ApolloClientOptions<string | undefined>>;
-}
+const restLink = new RestLink({
+  uri: BASE_URL,
+});
 
-const UseApolloClientContext = React.createContext<IApolloClientContext | any>(
-  {}
-);
+const cache = new InMemoryCache();
 
-const ApolloClientProvider: React.FC<unknown> = ({children}) => {
-  const {network} = useNetwork();
+// add the REST API's typename you want to persist here
+const entitiesToPersist = ['tokenData'];
 
-  const graphLink = useMemo(() => {
-    if (network) {
-      return new HttpLink({
-        uri: SUBGRAPH_API_URL[network],
-      });
-    }
-  }, [network]);
-
-  const restLink = useMemo(() => {
-    return new RestLink({
-      uri: BASE_URL,
-    });
-  }, []);
-
-  const cache = useMemo(() => {
-    return new InMemoryCache();
-  }, []);
-
-  // add the REST API's typename you want to persist here
-  const entitiesToPersist = ['tokenData'];
-
+// check if cache should be persisted or restored based on user preferences
+const value = localStorage.getItem(PRIVACY_KEY);
+if (value && JSON.parse(value).functional) {
   const persistor = new CachePersistor({
     cache,
     // TODO: Check and update the size needed for the cache
@@ -99,28 +64,33 @@ const ApolloClientProvider: React.FC<unknown> = ({children}) => {
 
   const restoreApolloCache = async () => {
     await persistor.restore();
-    // favoriteDAOs(JSON.parse(localStorage.getItem('favoriteDAOs') as string));
-    selectedDAO(favoriteDAOs()[0]);
   };
 
   restoreApolloCache();
+}
 
-  const client = useMemo(() => {
-    return new ApolloClient({
-      cache,
-      link: graphLink ? restLink.concat(graphLink) : restLink,
-    });
-  }, [graphLink, cache, restLink]);
+const rinkebyClient = new ApolloClient({
+  cache,
+  link: restLink.concat(new HttpLink({uri: SUBGRAPH_API_URL['rinkeby']})),
+});
 
-  return (
-    <UseApolloClientContext.Provider value={client}>
-      <ApolloProvider client={client}>{children}</ApolloProvider>
-    </UseApolloClientContext.Provider>
-  );
-};
+const mumbaiClient = new ApolloClient({
+  cache,
+  link: restLink.concat(new HttpLink({uri: SUBGRAPH_API_URL['mumbai']})),
+});
 
-const useApolloClient = () => {
-  return useContext(UseApolloClientContext);
+const arbitrumTestClient = new ApolloClient({
+  cache,
+  link: restLink.concat(new HttpLink({uri: SUBGRAPH_API_URL['arbitrum-test']})),
+});
+
+const client = {
+  main: undefined,
+  rinkeby: rinkebyClient,
+  polygon: undefined,
+  mumbai: mumbaiClient,
+  arbitrum: undefined,
+  arbitrumTest: arbitrumTestClient,
 };
 
 type favoriteDAO = {
@@ -138,4 +108,6 @@ const favoriteDAOs = makeVar<Array<favoriteDAO>>([
   {daoAddress: 'dao-name.dao.eth', daoName: 'DAO name'},
 ]);
 
-export {ApolloClientProvider, useApolloClient, favoriteDAOs, selectedDAO};
+selectedDAO(favoriteDAOs()[0]);
+
+export {client, favoriteDAOs, selectedDAO};

@@ -1,8 +1,8 @@
 import {useEffect, useState} from 'react';
+import {useApolloClient} from '@apollo/client';
 
 import {useNetwork} from 'context/network';
 import {fetchTokenData} from 'services/prices';
-import {useApolloClient} from 'context/apolloClient';
 import {TokenBalance, TokenWithMetadata} from 'utils/types';
 
 export const useTokenMetadata = (balances: TokenBalance[]) => {

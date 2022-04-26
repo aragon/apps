@@ -1,6 +1,6 @@
 import {Address} from '@aragon/ui-components/dist/utils/addresses';
 import {constants} from 'ethers';
-import {ApolloClient, ApolloClientOptions} from '@apollo/client';
+import {ApolloClient} from '@apollo/client';
 
 import {
   ASSET_PLATFORMS,
@@ -10,7 +10,7 @@ import {
   TimeFilter,
 } from 'utils/constants';
 import {isETH} from 'utils/tokens';
-import {TOKEN_DATA_QUERY} from 'queries/tokenData';
+import {TOKEN_DATA_QUERY} from 'queries/coingecko/tokenData';
 
 export type TokenPrices = {
   [key: string]: {
@@ -88,7 +88,7 @@ type TokenData = {
  */
 async function fetchTokenData(
   address: Address,
-  client: ApolloClient<ApolloClientOptions<string | undefined>>,
+  client: ApolloClient<object>,
   network: SupportedNetworks
 ): Promise<TokenData | undefined> {
   // check if token address is address zero, ie, native token of platform

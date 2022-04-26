@@ -479,5 +479,11 @@
   "transactionDetail": {
     "title": "Transaction Detail",
     "viewTransaction": "View on Block Explorer"
+  },
+  "cookiePreferences": {
+    "title": "Cookie Preferences",
+    "content": "In order to use this feature you need to allow the usage of functional cookies so we can store your preferences within our app.",
+    "accept": "Accept",
+    "cancel": "Cancel"
   }
 }
