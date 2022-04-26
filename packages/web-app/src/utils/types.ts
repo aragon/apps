@@ -121,12 +121,12 @@ export type UncategorizedProposalData = {
   metadata: ProposalMetadata;
   vote: VotingData;
   execution: ExecutionData;
+  creator: string;
 };
 
 type ProposalMetadata = {
   title: string;
   description: string;
-  publisher: Address;
   resources?: ProposalResource[];
   published?: BlockChainInteraction;
   executed?: BlockChainInteraction;

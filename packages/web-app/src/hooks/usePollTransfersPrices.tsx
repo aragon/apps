@@ -1,12 +1,12 @@
 import {useEffect, useState} from 'react';
+import {useApolloClient} from '@apollo/client';
 
 import {fetchTokenData} from 'services/prices';
-import {useApolloClient} from 'context/apolloClient';
-import {ASSET_PLATFORMS, CHAIN_METADATA, TransferTypes} from 'utils/constants';
+import {TransferTypes} from 'utils/constants';
 import {DaoTransfer, Transfer} from 'utils/types';
+import {useNetwork} from 'context/network';
 import {formatUnits} from 'utils/library';
 import {formatDate} from 'utils/date';
-import {useNetwork} from 'context/network';
 
 export const usePollTransfersPrices = (transfers: DaoTransfer[]) => {
   const client = useApolloClient();
@@ -23,12 +23,7 @@ export const usePollTransfersPrices = (transfers: DaoTransfer[]) => {
       // fetch token metadata from external api
       const metadata = await Promise.all(
         transfers?.map(transfer => {
-          const chainId = CHAIN_METADATA[network].id;
-          return fetchTokenData(
-            transfer.token.id,
-            client,
-            ASSET_PLATFORMS[chainId]
-          );
+          return fetchTokenData(transfer.token.id, client, network);
         })
       );
 
