@@ -81,8 +81,7 @@ const Proposal: React.FC = () => {
 
   useEffect(() => {
     if (!loading && data) {
-      const metadata = JSON.parse(data.erc20VotingProposals[0].metadata);
-      setMetadata(metadata);
+      setMetadata(JSON.parse(data.erc20VotingProposals[0].metadata));
       editor?.commands.setContent(metadata?.proposal);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

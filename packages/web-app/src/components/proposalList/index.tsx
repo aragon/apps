@@ -5,10 +5,10 @@ import {useNavigate} from 'react-router-dom';
 
 import {translateProposalDate} from 'utils/date';
 import {useWallet} from 'hooks/useWallet';
-import {categorizedProposal} from 'pages/governance';
+import {CategorizedProposal} from 'pages/governance';
 
 type ProposalListProps = {
-  proposals: Array<categorizedProposal>;
+  proposals: Array<CategorizedProposal>;
 };
 
 const ProposalList: React.FC<ProposalListProps> = ({proposals}) => {

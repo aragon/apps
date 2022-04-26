@@ -58,7 +58,7 @@ const Governance: React.FC = () => {
     proposal => categorizeProposal(proposal)
   );
 
-  let displayedProposals: categorizedProposal[] = [];
+  let displayedProposals: CategorizedProposal[] = [];
   if (daoProposals && daoProposals.length > 0 && filterValue) {
     displayedProposals = daoProposals.filter(
       t => t.type === filterValue || filterValue === 'all'
@@ -73,7 +73,7 @@ const Governance: React.FC = () => {
     return <p>Error. Check console</p>;
   }
 
-  if (!daoProposals) {
+  if (!daoProposals || daoProposals.length === 0) {
     return (
       <Container>
         <EmptyStateContainer>
@@ -177,7 +177,7 @@ const EmptyStateHeading = styled.h1.attrs({
   className: 'mt-4 text-2xl font-bold text-ui-800 text-center',
 })``;
 
-export interface categorizedProposal
+export interface CategorizedProposal
   extends erc20VotingProposals_erc20VotingProposals {
   type: 'draft' | 'pending' | 'active' | 'succeeded' | 'executed' | 'defeated';
 }
@@ -189,7 +189,7 @@ export interface categorizedProposal
  */
 function categorizeProposal(
   uncategorizedProposal: erc20VotingProposals_erc20VotingProposals
-): categorizedProposal {
+): CategorizedProposal {
   const now = Date.now();
 
   if (getRemainingTime(uncategorizedProposal.startDate) >= now) {
