@@ -42,7 +42,7 @@ export const Modal: React.FC<ModalProps> = ({
   children,
   isOpen = true,
   onClose,
-  onOpenAutoFocus,
+  onOpenAutoFocus = e => e.preventDefault(),
   ...props
 }) => {
   return (

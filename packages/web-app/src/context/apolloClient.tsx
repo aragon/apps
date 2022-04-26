@@ -51,62 +51,65 @@ const ApolloClientProvider: React.FC<unknown> = ({children}) => {
   }, []);
 
   // add the REST API's typename you want to persist here
-  const entitiesToPersist = preferences?.functional ? ['tokenData'] : [];
+  const entitiesToPersist = ['tokenData'];
 
-  const persistor = new CachePersistor({
-    cache,
-    // TODO: Check and update the size needed for the cache
-    maxSize: 5242880, // 5 MiB
-    storage: new LocalStorageWrapper(window.localStorage),
-    debug: process.env.NODE_ENV === 'development',
-    persistenceMapper: async (data: string) => {
-      const parsed = JSON.parse(data);
+  // conditionally instantiate persistor and restore cache
+  if (preferences?.functional) {
+    const persistor = new CachePersistor({
+      cache,
+      // TODO: Check and update the size needed for the cache
+      maxSize: 5242880, // 5 MiB
+      storage: new LocalStorageWrapper(window.localStorage),
+      debug: process.env.NODE_ENV === 'development',
+      persistenceMapper: async (data: string) => {
+        const parsed = JSON.parse(data);
 
-      const mapped: Record<string, unknown> = {};
-      const persistEntities: string[] = [];
-      const rootQuery = parsed['ROOT_QUERY'];
+        const mapped: Record<string, unknown> = {};
+        const persistEntities: string[] = [];
+        const rootQuery = parsed['ROOT_QUERY'];
 
-      mapped['ROOT_QUERY'] = Object.keys(rootQuery).reduce(
-        (obj: Record<string, unknown>, key: string) => {
-          if (key === '__typename') return obj;
+        mapped['ROOT_QUERY'] = Object.keys(rootQuery).reduce(
+          (obj: Record<string, unknown>, key: string) => {
+            if (key === '__typename') return obj;
 
-          const keyWithoutArgs = key.substring(0, key.indexOf('('));
-          if (entitiesToPersist.includes(keyWithoutArgs)) {
-            obj[key] = rootQuery[key];
+            const keyWithoutArgs = key.substring(0, key.indexOf('('));
+            if (entitiesToPersist.includes(keyWithoutArgs)) {
+              obj[key] = rootQuery[key];
 
-            if (Array.isArray(rootQuery[key])) {
-              const entities = rootQuery[key].map(
-                (item: Record<string, unknown>) => item.__ref
-              );
-              persistEntities.push(...entities);
-            } else {
-              const entity = rootQuery[key].__ref;
-              persistEntities.push(entity);
+              if (Array.isArray(rootQuery[key])) {
+                const entities = rootQuery[key].map(
+                  (item: Record<string, unknown>) => item.__ref
+                );
+                persistEntities.push(...entities);
+              } else {
+                const entity = rootQuery[key].__ref;
+                persistEntities.push(entity);
+              }
             }
-          }
 
+            return obj;
+          },
+          {__typename: 'Query'}
+        );
+
+        persistEntities.reduce((obj, key) => {
+          obj[key] = parsed[key];
           return obj;
-        },
-        {__typename: 'Query'}
-      );
+        }, mapped);
 
-      persistEntities.reduce((obj, key) => {
-        obj[key] = parsed[key];
-        return obj;
-      }, mapped);
+        return JSON.stringify(mapped);
+      },
+    });
 
-      return JSON.stringify(mapped);
-    },
-  });
+    const restoreApolloCache = async () => {
+      await persistor.restore();
+      // favoriteDAOs(JSON.parse(localStorage.getItem('favoriteDAOs') as string));
+      selectedDAO(favoriteDAOs()[0]);
+    };
 
-  const restoreApolloCache = async () => {
-    await persistor.restore();
-    // favoriteDAOs(JSON.parse(localStorage.getItem('favoriteDAOs') as string));
-    selectedDAO(favoriteDAOs()[0]);
-  };
-
-  // conditionally restore cache (shouldn't have cache in the first place)
-  if (preferences?.functional) restoreApolloCache();
+    // conditionally restore cache (shouldn't have cache in the first place)
+    restoreApolloCache();
+  }
 
   const client = useMemo(() => {
     return new ApolloClient({
