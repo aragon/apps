@@ -25,7 +25,7 @@ const Home: React.FC = () => {
       <CTA>
         {CTACards.map(card => (
           <CTACard
-            key={card.actionLabel}
+            key={card.title}
             {...card}
             className="flex-1"
             onClick={navigate}
