@@ -1,8 +1,8 @@
 import {Address} from '@aragon/ui-components/dist/utils/addresses';
 import {constants} from 'ethers';
+import {ApolloClient} from '@apollo/client';
 
-import {TOKEN_DATA_QUERY} from 'queries/tokenData';
-import {ApolloClient, ApolloClientOptions} from '@apollo/client';
+import {TOKEN_DATA_QUERY} from 'queries/coingecko/tokenData';
 import {BASE_URL, DEFAULT_CURRENCY, TimeFilter} from 'utils/constants';
 
 export type TokenPrices = {
@@ -81,7 +81,7 @@ type TokenData = {
  */
 async function fetchTokenData(
   tokenAddress: Address,
-  client: ApolloClient<ApolloClientOptions<string | undefined>>,
+  client: ApolloClient<object>,
   platform = 'ethereum'
 ): Promise<TokenData | undefined> {
   let url: string;

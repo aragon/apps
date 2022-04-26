@@ -15,6 +15,7 @@ import {
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import React, {useCallback, useEffect} from 'react';
+import {useApolloClient} from '@apollo/client';
 
 import {
   validateAddress,
@@ -25,7 +26,6 @@ import {TEST_DAO} from 'utils/constants';
 import {useWallet} from 'hooks/useWallet';
 import {useProviders} from 'context/providers';
 import {fetchTokenData} from 'services/prices';
-import {useApolloClient} from 'context/apolloClient';
 import {useGlobalModalContext} from 'context/globalModals';
 import {handleClipboardActions} from 'utils/library';
 import {fetchBalance, getTokenInfo, isETH} from 'utils/tokens';
