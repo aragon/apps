@@ -18,7 +18,6 @@ import 'tailwindcss/tailwind.css';
 import {UseCacheProvider} from 'hooks/useCache';
 import {UseClientProvider} from 'hooks/useClient';
 import {PrivacyContextProvider} from 'context/privacyContext';
-import {TransactionsProvider} from 'context/transactions';
 
 const providerOptions: IProviderOptions = {
   walletconnect: {
