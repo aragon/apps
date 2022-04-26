@@ -46,6 +46,6 @@ const CTACardWrapper = styled.div.attrs({
 
 const Content = styled.div.attrs({className: 'space-y-2'})``;
 
-const Title = styled.p.attrs({className: 'text-3xl font-bold text-ui-800'})``;
+const Title = styled.p.attrs({className: 'text-2xl font-bold text-ui-800'})``;
 
 const Subtitle = styled.p.attrs({className: 'text-ui-600'})``;

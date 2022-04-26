@@ -8,40 +8,7 @@ import {withTransaction} from '@elastic/apm-rum-react';
 import {CreateDAO} from 'utils/paths';
 
 import CTACard from 'components/ctaCard';
-import learnImg from '../public/learn.svg';
-import buildFaster from '../public/buildFaster.svg';
-import createDaoImg from '../public/createDao.svg';
-
-// temporary for review
-const CTACards = [
-  {
-    actionAvailable: true,
-    actionLabel: 'Create a DAO',
-    path: CreateDAO,
-    imgSrc: createDaoImg,
-    subtitle:
-      'Create your Decentralized Autonomous Organization on open-source infrastructure with governance plugins.',
-    title: 'Create a DAO',
-  },
-  {
-    actionAvailable: false,
-    actionLabel: 'Coming soon',
-    path: '',
-    imgSrc: learnImg,
-    subtitle:
-      'Explore and learn through our “How-to Guides”, DAO Education, Educational Articles and more!',
-    title: 'Learn about DAO',
-  },
-  {
-    actionAvailable: false,
-    actionLabel: 'Coming soon',
-    path: '',
-    imgSrc: buildFaster,
-    subtitle:
-      'Build something something on open-source infrastructure with governance plugins.',
-    title: 'Build faster',
-  },
-];
+import {CTACards} from 'components/ctaCard/data';
 
 const Home: React.FC = () => {
   const {t} = useTranslation();
@@ -89,7 +56,7 @@ const Subtitle = styled.p.attrs({
 })``;
 
 const CTA = styled.div.attrs({className: 'flex mb-4 mx-auto space-x-3'})`
-  width: 1140px;
+  width: 1130px;
 `;
 
 export default withTransaction('Dashboard', 'component')(Home);
