@@ -19,7 +19,7 @@ export type WhitelistWallet = {
   address: string;
 };
 
-type FormData = {
+export type CreateDaoFormData = {
   daoLogo: string;
   daoName: string;
   daoSummary: string;
@@ -59,7 +59,10 @@ const defaultValues = {
 
 const CreateDAO: React.FC = () => {
   const {t} = useTranslation();
-  const formMethods = useForm<FormData>({mode: 'onChange', defaultValues});
+  const formMethods = useForm<CreateDaoFormData>({
+    mode: 'onChange',
+    defaultValues,
+  });
   const {errors, dirtyFields} = useFormState({control: formMethods.control});
   const [isCustomToken, tokenTotalSupply, membership] = formMethods.getValues([
     'isCustomToken',

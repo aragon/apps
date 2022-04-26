@@ -64,7 +64,7 @@ export const GoLiveFooter: React.FC = () => {
   const {watch} = useFormContext();
   const {reviewCheck} = watch();
   const {t} = useTranslation();
-  const {setIsModalOpen} = useTransactionContext();
+  const {scheduleTransaction} = useTransactionContext();
 
   const IsButtonDisabled = () =>
     !Object.values(reviewCheck).every(v => v === true);
@@ -75,7 +75,7 @@ export const GoLiveFooter: React.FC = () => {
         size="large"
         iconRight={<IconChevronRight />}
         label={t('createDAO.review.button')}
-        onClick={() => setIsModalOpen(true)}
+        onClick={scheduleTransaction}
         disabled={IsButtonDisabled()}
       />
     </div>

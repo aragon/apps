@@ -1,33 +1,35 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useMemo,
-  ReactNode,
-} from 'react';
-
-import {TransactionItem} from 'utils/types';
-import {TransactionState, TransferTypes} from 'utils/constants';
-import PublishDaoModal from 'containers/transactionModals/publishDaoModal';
-import {useFormContext} from 'react-hook-form';
-import {useDao} from 'hooks/useCachedDao';
 import {
   ICreateDaoERC20Voting,
   ICreateDaoWhitelistVoting,
 } from '@aragon/sdk-client';
-import {constants, ethers} from 'ethers';
-import {WalletField} from 'components/addWallets/row';
-import {WhitelistWallet} from 'pages/createDAO';
+
+import {
+  DaoConfig,
+  VotingConfig,
+} from '@aragon/sdk-client/dist/internal/interfaces/dao';
+
+import {constants} from 'ethers';
 import {isAddress} from 'ethers/lib/utils';
+import {useFormContext} from 'react-hook-form';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from 'react';
+
+import {useDao} from 'hooks/useCachedDao';
+import PublishDaoModal from 'containers/transactionModals/publishDaoModal';
+import {TransactionState} from 'utils/constants';
 import {getSecondsFromDHM} from 'utils/date';
+import {CreateDaoFormData} from 'pages/createDAO';
 
 const TransactionsContext = createContext<TransactionsContextType | null>(null);
+type DAOtype = ICreateDaoERC20Voting | ICreateDaoWhitelistVoting;
 
 type TransactionsContextType = {
-  transaction?: TransactionItem;
-  setTransactionState: (value: TransactionState) => void;
-  setTransaction: (value: TransactionItem) => void;
-  setIsModalOpen: (value: boolean) => void;
+  scheduleTransaction: () => void;
 };
 
 type Props = Record<'children', ReactNode>;
@@ -37,184 +39,159 @@ type Props = Record<'children', ReactNode>;
  */
 
 const TransactionsProvider: React.FC<Props> = ({children}) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [transaction, setTransaction] = useState<TransactionItem>();
-  const [transactionState, setTransactionState] = useState<TransactionState>(
-    TransactionState.WAITING
-  );
-  const {createErc20: createErc20Dao, createWhitelist: createWhitelistDao} =
-    useDao();
-  const {getValues} = useFormContext();
+  const {getValues} = useFormContext<CreateDaoFormData>();
+  const [showModal, setShowModal] = useState(false);
+  const [transaction, setTransaction] = useState<DAOtype>();
+  const [transactionState, setTransactionState] = useState<TransactionState>();
 
-  const value = useMemo(
-    (): TransactionsContextType => ({
-      transaction,
-      setTransactionState,
-      setTransaction,
-      setIsModalOpen,
-    }),
-    [transaction]
-  );
+  const {createErc20, createWhitelist} = useDao();
 
-  const handlePublishDao = () => {
-    if (transactionState === TransactionState.SUCCESS) {
-      setIsModalOpen(false);
-      setTransactionState(TransactionState.WAITING);
-      return;
+  useEffect(() => {
+    // estimate gas fee for transaction
+    if (transactionState === TransactionState.WAITING) {
+      const setIntervalId = setInterval(
+        () => console.log('polling gas fee'),
+        5000
+      );
+      return () => clearInterval(setIntervalId);
     }
-    // set state to loading
-    setTransactionState(TransactionState.LOADING);
-    // get common data
-    const {
-      daoName,
-      // these 2 fields will be used for the metadata
-      // daoLogo,
-      // daoSummary,
-      membership,
-      durationMinutes,
-      durationHours,
-      durationDays,
-      minimumApproval,
-      minimumParticipation,
-    } = getValues();
+  }, [transactionState]);
 
-    if (membership === 'token') {
-      // if membership is token get token data from form
-      const {isCustomToken, tokenAddress, tokenName, tokenSymbol, wallets} =
-        getValues();
-      const mintConfig = wallets
-        .filter((wallet: WalletField) => {
-          return isAddress(wallet.address);
-        })
-        .map((wallet: WalletField) => {
-          return {address: wallet.address, balance: BigInt(wallet.amount)};
-        });
-      const createDaoForm: ICreateDaoERC20Voting = {
-        daoConfig: {
-          name: daoName,
-          // metadata TBD
-          metadata: constants.AddressZero,
-        },
-        tokenConfig: {
-          address: isCustomToken ? ethers.constants.AddressZero : tokenAddress,
-          name: tokenName,
-          symbol: tokenSymbol,
-        },
-        mintConfig,
-        votingConfig: {
-          minParticipation: parseInt(minimumParticipation || 0),
-          minSupport: parseInt(minimumApproval || 0),
-          minDuration: getSecondsFromDHM(
-            durationDays,
-            durationHours,
-            durationMinutes
-          ),
-        },
-        gsnForwarder: constants.AddressZero,
-      };
-      createErc20Dao(createDaoForm)
-        .then((address: string) => {
-          // if success set state to success
-          setTransactionState(TransactionState.SUCCESS);
-          // TODO this console should be deleted when it stops being useful
-          // the form should reset too and redirect to a correct page
-          console.log(address);
-        })
-        .catch(e => {
-          // if error set state to error to allow retry
-          // TODO this console should be deleted when it stops being useful
-          console.error(e);
-          setTransactionState(TransactionState.ERROR);
-        });
-      return;
-    } else if (membership === 'wallet') {
-      // if membership is wallet get wallets
-      const whitelistWallets = getValues(
-        'whitelistWallets'
-      ) as WhitelistWallet[];
-      // create whitelist dao object
-      const createDaoForm: ICreateDaoWhitelistVoting = {
-        daoConfig: {
-          name: daoName,
-          // metadata TBD
-          metadata: constants.AddressZero,
-        },
-        whitelistVoters: whitelistWallets.map(wallet => wallet.address),
-        votingConfig: {
-          minParticipation: parseInt(minimumParticipation || 0),
-          minSupport: parseInt(minimumApproval || 0),
-          minDuration: getSecondsFromDHM(
-            durationDays,
-            durationHours,
-            durationMinutes
-          ),
-        },
-        gsnForwarder: constants.AddressZero,
-      };
-      // call create whitelist function
-      createWhitelistDao(createDaoForm)
-        .then((address: string) => {
-          // if success set state to success
-          setTransactionState(TransactionState.SUCCESS);
-          // TODO this console should be deleted when it stops being useful
-          // the form should reset too and redirect to a correct page
-          console.log(address);
-        })
-        .catch(e => {
-          // if error set state to error to allow retry
-          // TODO this console should be deleted when it stops being useful
-          console.error(e);
-          setTransactionState(TransactionState.ERROR);
-        });
-      return;
-    }
-    // if membership is not allowed set state to error
-    setTransactionState(TransactionState.ERROR);
-    throw new Error('unsuported memebership type: ' + membership);
-  };
-  const renderModal = useMemo(() => {
-    let modal;
-    // This switch case will halp us to pass different modals for different types of transactions
-    switch (transaction?.type) {
-      case TransferTypes.Deposit:
-        modal = (
-          <PublishDaoModal
-            state={transactionState}
-            callback={handlePublishDao}
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-          />
-        );
+  // schedule transaction
+  const scheduleCreateDao = () => {
+    const {membership} = getValues();
+
+    switch (membership) {
+      case 'token':
+        setTransaction(getERC20VotingDaoSettings());
         break;
-      case TransferTypes.Withdraw:
+      case 'wallet':
+        setTransaction(getWhiteListVotingDaoSettings());
         break;
       default:
-        modal = (
-          <PublishDaoModal
-            state={transactionState}
-            callback={handlePublishDao}
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-          />
-        );
-        break;
+        throw new Error(`Unknown dao type: ${membership}`);
     }
-    return (
-      <>
-        {children}
-        {modal}
-      </>
-    );
-    // here i'm omitting the handle publish dao dependency
-    // because then I should use the useCallback hook to
-    // define the function and for some reason then the client
-    // is not updated
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [children, transactionState, transaction, isModalOpen]);
+    setTransactionState(TransactionState.WAITING);
+    setShowModal(true);
+  };
+
+  // get settings for erc20 voting daos
+  const getERC20VotingDaoSettings = (): ICreateDaoERC20Voting => {
+    const values = getValues();
+
+    return {
+      daoConfig: getDaoConfig(),
+      votingConfig: getVotingConfig(),
+      gsnForwarder: constants.AddressZero,
+
+      // token configuration
+      tokenConfig: {
+        address: values.isCustomToken
+          ? constants.AddressZero
+          : values.tokenAddress,
+        name: values.tokenName,
+        symbol: values.tokenSymbol,
+      },
+
+      // mint configuration
+      mintConfig: values.wallets
+        .filter(wallet => isAddress(wallet.address))
+        .map(wallet => ({
+          address: wallet.address,
+          balance: BigInt(wallet.amount),
+        })),
+    };
+  };
+
+  // get settings for whitelist voting daos
+  const getWhiteListVotingDaoSettings = (): ICreateDaoWhitelistVoting => {
+    const values = getValues();
+
+    return {
+      daoConfig: getDaoConfig(),
+      votingConfig: getVotingConfig(),
+      gsnForwarder: constants.AddressZero,
+
+      whitelistVoters: values.whitelistWallets.map(wallet => wallet.address),
+    };
+  };
+
+  const getDaoConfig = (): DaoConfig => {
+    const {daoName} = getValues();
+    return {
+      name: daoName,
+      metadata: constants.AddressZero,
+    };
+  };
+
+  const getVotingConfig = (): VotingConfig => {
+    const {
+      minimumApproval,
+      minimumParticipation,
+      durationDays,
+      durationHours,
+      durationMinutes,
+    } = getValues();
+
+    return {
+      minParticipation: parseInt(minimumParticipation) || 0,
+      minSupport: parseInt(minimumApproval) || 0,
+      minDuration: getSecondsFromDHM(
+        parseInt(durationDays),
+        parseInt(durationHours),
+        parseInt(durationMinutes)
+      ),
+    };
+  };
+
+  const handleExecuteTransaction = async () => {
+    const {membership} = getValues();
+
+    if (!transaction) {
+      console.log('No transaction to execute');
+      return;
+    }
+
+    if (transactionState === TransactionState.LOADING) {
+      console.log('Transaction running');
+      return;
+    }
+
+    await createDao(membership);
+  };
+
+  const createDao = async (membership: string) => {
+    setTransactionState(TransactionState.LOADING);
+
+    try {
+      const address =
+        membership === 'token'
+          ? await createErc20(transaction as ICreateDaoERC20Voting)
+          : await createWhitelist(transaction as ICreateDaoWhitelistVoting);
+
+      console.log(address);
+
+      setTransactionState(TransactionState.SUCCESS);
+      setTransaction(undefined);
+    } catch (error) {
+      console.log(error);
+      setTransactionState(TransactionState.ERROR);
+    }
+
+    console.log('show modal', showModal);
+  };
 
   return (
-    <TransactionsContext.Provider value={value}>
-      {renderModal}
+    <TransactionsContext.Provider
+      value={{scheduleTransaction: scheduleCreateDao}}
+    >
+      {children}
+      <PublishDaoModal
+        state={transactionState || TransactionState.WAITING}
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        callback={handleExecuteTransaction}
+      />
     </TransactionsContext.Provider>
   );
 };
