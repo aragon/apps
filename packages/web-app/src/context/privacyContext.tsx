@@ -139,7 +139,8 @@ const PrivacyContextProvider: React.FC = ({children}) => {
           onAccept();
         },
         onReject: () => {
-          setShowPreferenceMenu(false), onReject?.();
+          setShowPreferenceMenu(false);
+          onReject?.();
         },
       });
     },
