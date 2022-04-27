@@ -14,10 +14,11 @@ import '../i18n.config';
 // HACK: All pages MUST be exported with the withTransaction function
 // from the '@elastic/apm-rum-react' package in order for analytics to
 // work properly on the pages.
-import HomePage from 'pages/home';
+import ExplorePage from 'pages/explore';
 import * as paths from 'utils/paths';
 import DaoSelectMenu from 'containers/navbar/daoSelectMenu';
 import PrivacyPolicy from 'containers/privacyPolicy';
+import Footer from 'containers/exploreFooter';
 
 const TokensPage = lazy(() => import('pages/tokens'));
 const FinancePage = lazy(() => import('pages/finance'));
@@ -49,7 +50,7 @@ function App() {
             <Route path={paths.NewDeposit} element={<NewDepositPage />} />
             <Route path={paths.NewWithDraw} element={<NewWithdrawPage />} />
             <Route path={paths.CreateDAO} element={<CreateDAOPage />} />
-            <Route path={paths.Landing} element={<HomePage />} />
+            <Route path={paths.Landing} element={<ExplorePage />} />
             <Route path={paths.Community} element={<CommunityPage />} />
             <Route path={paths.Finance} element={<FinancePage />} />
             <Route path={paths.Governance} element={<GovernancePage />} />
@@ -65,6 +66,7 @@ function App() {
           </Routes>
         </Suspense>
       </Layout>
+      <Footer />
       <PrivacyPolicy />
       <TransferMenu />
       <DaoSelectMenu />
