@@ -7,9 +7,11 @@ export const NotFound = '/not-found';
 
 /* DAO-SPECIFIC PAGES ======================================================= */
 
-export const Finance = '/:network/finance';
-export const Governance = '/:network/governance';
 export const Dashboard = '/:network/dashboard';
+export const Governance = '/:network/governance';
+export const Finance = '/:network/finance';
+export const Community = '/:network/community';
+export const Settings = '/:network/settings';
 
 export const AllTokens = '/:network/finance/tokens';
 export const AllTransfers = '/:network/finance/transfers';
@@ -18,8 +20,6 @@ export const NewWithDraw = '/:network/finance/new-withdraw';
 
 export const Proposal = '/:network/governance/proposals/:id';
 export const NewProposal = '/:network/governance/new-proposal';
-
-export const Community = '/:network/community';
 
 /**
  * Replaces the network parameter in certain URLs. If the path passed to this

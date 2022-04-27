@@ -3,10 +3,11 @@ import {
   IconDashboard,
   IconFinance,
   IconGovernance,
+  IconSettings,
 } from '@aragon/ui-components';
 
 import {i18n} from '../../../i18n.config';
-import {Dashboard, Community, Finance, Governance} from '../paths';
+import {Dashboard, Community, Finance, Governance, Settings} from '../paths';
 
 /** Time period options for token price change */
 export const enum TimeFilter {
@@ -40,6 +41,11 @@ export const NAV_LINKS = [
     label: i18n.t('navLinks.community'),
     path: Community,
     icon: IconCommunity,
+  },
+  {
+    label: i18n.t('navLinks.settings'),
+    path: Settings,
+    icon: IconSettings,
   },
 ];
 

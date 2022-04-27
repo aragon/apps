@@ -29,6 +29,7 @@ const NewDepositPage = lazy(() => import('pages/newDeposit'));
 const NewWithdrawPage = lazy(() => import('pages/newWithdraw'));
 const CreateDAOPage = lazy(() => import('pages/createDAO'));
 const NewProposalPage = lazy(() => import('pages/newProposal'));
+const SettingsPage = lazy(() => import('pages/settings'));
 
 function App() {
   const {pathname} = useLocation();
@@ -67,6 +68,7 @@ function App() {
             <Route path={paths.Proposal} element={<ProposalPage />} />
             <Route path={paths.AllTokens} element={<TokensPage />} />
             <Route path={paths.AllTransfers} element={<TransfersPage />} />
+            <Route path={paths.Settings} element={<SettingsPage />} />
             <Route path={paths.NotFound} element={<NotFoundPage />} />
             <Route
               path="*"

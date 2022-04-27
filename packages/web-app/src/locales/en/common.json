@@ -16,7 +16,8 @@
     "build": "Build",
     "help": "Help",
     "terms": "Terms of Service",
-    "privacy": "Privacy"
+    "privacy": "Privacy",
+    "settings": "Settings"
   },
   "daoSwitcher": {
     "title": "Select your DAO",
@@ -118,6 +119,7 @@
       "distributionLink": "See all {{walletCount}} Addresses",
       "minimumParticipation": "{{walletCount}} Wallets"
     },
+    "newSettings":"Propose new settings",
     "author": "Author",
     "sec": "sec",
     "ago": "ago",

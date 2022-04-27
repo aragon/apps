@@ -4,8 +4,8 @@ import styled from 'styled-components';
 
 export type DescriptionListProps = {
   title: string;
-  onEditClick: () => void;
-  onChecked: () => void;
+  onEditClick?: () => void;
+  onChecked?: () => void;
 };
 
 export const DescriptionListContainer: React.FC<DescriptionListProps> = ({
@@ -17,16 +17,18 @@ export const DescriptionListContainer: React.FC<DescriptionListProps> = ({
   <Container>
     <TitleText>{title}</TitleText>
     <DlContainer>{children}</DlContainer>
-    <HStack>
-      <ButtonText label="Edit" mode="ghost" onClick={onEditClick} />
-      <div className="flex-shrink-0 tablet:w-3/4">
-        <CheckboxSimple
-          label="These values are correct"
-          multiSelect
-          onClick={onChecked}
-        />
-      </div>
-    </HStack>
+    {onEditClick && onChecked && (
+      <HStack>
+        <ButtonText label="Edit" mode="ghost" onClick={onEditClick} />
+        <div className="flex-shrink-0 tablet:w-3/4">
+          <CheckboxSimple
+            label="These values are correct"
+            multiSelect
+            onClick={onChecked}
+          />
+        </div>
+      </HStack>
+    )}
   </Container>
 );
 

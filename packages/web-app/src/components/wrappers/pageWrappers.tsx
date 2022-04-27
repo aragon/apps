@@ -10,8 +10,8 @@ import {useMappedBreadcrumbs} from 'hooks/useMappedBreadcrumbs';
 type ChangeSign = -1 | 0 | 1;
 
 export type PageWrapperProps = SectionWrapperProps & {
-  buttonLabel: string;
-  subtitle: string;
+  buttonLabel?: string;
+  subtitle?: string;
   timePeriod?: string;
   sign?: number;
   onClick?: () => void;
@@ -49,19 +49,23 @@ export const PageWrapper = ({
         <ContentWrapper>
           <TextWrapper>
             <PageTitle>{title}</PageTitle>
-            <PageSubtitleContainer>
-              {timePeriod && <Badge label={timePeriod} />}
-              <p className={textColors[sign as ChangeSign]}>{subtitle}</p>
-            </PageSubtitleContainer>
+            {subtitle && (
+              <PageSubtitleContainer>
+                {timePeriod && <Badge label={timePeriod} />}
+                <p className={textColors[sign as ChangeSign]}>{subtitle}</p>
+              </PageSubtitleContainer>
+            )}
           </TextWrapper>
 
-          <ButtonText
-            size="large"
-            label={buttonLabel}
-            iconLeft={<IconAdd />}
-            className="w-full tablet:w-auto"
-            onClick={onClick}
-          />
+          {buttonLabel && (
+            <ButtonText
+              size="large"
+              label={buttonLabel}
+              iconLeft={<IconAdd />}
+              className="w-full tablet:w-auto"
+              onClick={onClick}
+            />
+          )}
         </ContentWrapper>
       </HeaderContainer>
 
