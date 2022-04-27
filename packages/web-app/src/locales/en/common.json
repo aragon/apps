@@ -119,7 +119,7 @@
       "distributionLink": "See all {{walletCount}} Addresses",
       "minimumParticipation": "{{walletCount}} Wallets"
     },
-    "newSettings":"Propose new settings",
+    "newSettings": "Propose new settings",
     "author": "Author",
     "sec": "sec",
     "ago": "ago",

@@ -118,7 +118,6 @@ const Settings: React.FC = () => {
           className="mx-auto"
           size="large"
           iconLeft={<IconGovernance />}
-          // onClick={() => navigate(CreateDAO)}
         />
       </div>
     </PageWrapper>
