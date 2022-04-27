@@ -10,7 +10,13 @@
     "dashboard": "Dashboard",
     "governance": "Governance",
     "finance": "Finance",
-    "community": "Community"
+    "community": "Community",
+    "explore": "Explore",
+    "learn": "Learn",
+    "build": "Build",
+    "help": "Help",
+    "terms": "Terms of Service",
+    "privacy": "Privacy"
   },
   "daoSwitcher": {
     "title": "Select your DAO",

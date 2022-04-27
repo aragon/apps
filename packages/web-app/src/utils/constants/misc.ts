@@ -43,6 +43,36 @@ export const NAV_LINKS = [
   },
 ];
 
+export const EXPLORE_NAV_LINKS = [
+  {
+    label: i18n.t('navLinks.explore'),
+    path: Dashboard,
+  },
+  {
+    label: i18n.t('navLinks.learn'),
+    path: Dashboard,
+  },
+  {
+    label: i18n.t('navLinks.build'),
+    path: Dashboard,
+  },
+  {
+    label: i18n.t('navLinks.help'),
+    path: Dashboard,
+  },
+];
+
+export const PRIVACY_NAV_LINKS = [
+  {
+    label: i18n.t('navLinks.terms'),
+    path: Dashboard,
+  },
+  {
+    label: i18n.t('navLinks.privacy'),
+    path: Dashboard,
+  },
+];
+
 export const enum TransferTypes {
   Deposit = 'VaultDeposit',
   Withdraw = 'VaultWithdraw',

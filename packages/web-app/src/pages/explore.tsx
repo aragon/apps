@@ -1,8 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import Footer from 'containers/exploreFooter';
-
 const Explore: React.FC = () => {
   return (
     <>
