@@ -86,7 +86,7 @@ function App() {
   );
 }
 
-const Layout = styled.main.attrs({
+export const Layout = styled.main.attrs({
   className:
     'grid grid-cols-4 tablet:grid-cols-8 ' +
     'desktop:grid-cols-12 gap-x-2 desktop:gap-x-3 ' +
