@@ -25,11 +25,11 @@ const SetupCommunityForm: React.FC = () => {
     resetField('tokenSymbol');
     resetField('tokenAddress');
     resetField('tokenTotalSupply');
+    resetField('whitelistWallets');
     setValue('wallets', [
       {address: t('labels.daoTreasury'), amount: '0'},
       {address: address, amount: '0'},
     ]);
-    setValue('whitelistWallets', [{address: address}]);
   };
 
   return (

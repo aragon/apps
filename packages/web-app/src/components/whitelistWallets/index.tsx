@@ -1,74 +1,106 @@
 import {
   ButtonIcon,
   ButtonText,
+  Dropdown,
   IconMenuVertical,
   ListItemAction,
 } from '@aragon/ui-components';
-import {Dropdown} from '@aragon/ui-components/src';
-import {t} from 'i18next';
-import {WhitelistWallet} from 'pages/createDAO';
-import React, {useEffect} from 'react';
-import {useFieldArray, useFormContext} from 'react-hook-form';
 import styled from 'styled-components';
+import {useTranslation} from 'react-i18next';
+import React, {useEffect} from 'react';
+import {useFieldArray, useFormContext, useWatch} from 'react-hook-form';
 
-import {useWallet} from 'hooks/useWallet';
 import {Row} from './row';
+import {useWallet} from 'hooks/useWallet';
 
 export const WhitelistWallets = () => {
+  const {t} = useTranslation();
   const {address} = useWallet();
-  const {control, watch, trigger} = useFormContext();
-  const {update, replace, append} = useFieldArray({
+
+  const {control, trigger} = useFormContext();
+  const whitelistWallets = useWatch({name: 'whitelistWallets', control});
+  const {fields, update, replace, append, remove, prepend} = useFieldArray({
     control,
     name: 'whitelistWallets',
   });
-  const whitelistWallets: WhitelistWallet[] = watch('whitelistWallets');
+
+  const controlledWallets = fields.map((field, index) => {
+    return {
+      ...field,
+      ...(whitelistWallets && {...whitelistWallets[index]}),
+    };
+  });
+
+  useEffect(() => {
+    if (address) prepend({address});
+  }, [address, prepend]);
 
   // add empty wallet
-  const handleAddWallet = () => {
+  const handleAdd = () => {
     append({address: ''});
     setTimeout(() => {
-      trigger(`whitelistWallets.${whitelistWallets.length}.address`);
+      trigger(`whitelistWallets.${controlledWallets.length}.address`);
     }, 50);
   };
 
-  useEffect(() => {
-    if (address) {
-      update(0, {address: address});
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // remove wallet
+  const handleDeleteEntry = (index: number) => {
+    remove(index);
+    trigger('whitelistWallets');
+  };
 
-  // reset all
-  const handleDeleteWallets = () => {
+  // remove all wallets
+  const handleDeleteAll = () => {
     replace([{address: address}]);
   };
 
-  const handleResetWallets = () => {
-    whitelistWallets.forEach((_, index) => {
+  // reset wallet
+  const handleResetEntry = (index: number) => {
+    update(index, {address: ''});
+    trigger('whitelistWallets');
+  };
+
+  // reset all wallets
+  const handleResetAll = () => {
+    controlledWallets.forEach((_, index) => {
       // skip the first one because is the own address
       if (index > 0) {
         update(index, {address: ''});
-        trigger(`whitelistWallets.${index}.address`);
       }
     });
+    trigger('whitelistWallets');
   };
+
+  // duplicate wallet
+  const handleDuplicateEntry = (index: number) => {
+    append(controlledWallets[index]);
+    trigger('whitelistWallets');
+  };
+
+  console.log(controlledWallets.length);
 
   return (
     <Container>
       <TableContainer>
         <Header>{t('labels.whitelistWallets.address')}</Header>
-        {whitelistWallets &&
-          whitelistWallets.map((_, index) => (
-            <div key={index}>
-              <Divider />
-              <Row index={index} />
-            </div>
-          ))}
+        {controlledWallets.map((field, index) => (
+          <div key={field.id}>
+            <Divider />
+            <Row
+              index={index}
+              onResetEntry={handleResetEntry}
+              onDeleteEntry={handleDeleteEntry}
+              onDuplicateEntry={handleDuplicateEntry}
+            />
+          </div>
+        ))}
         <Divider />
         <Footer>
-          {t('labels.whitelistWallets.addresses', {
-            count: whitelistWallets?.length || 0,
-          })}
+          {controlledWallets.length !== 1
+            ? t('labels.whitelistWallets.addresses', {
+                count: controlledWallets.length,
+              })
+            : `1 ${t('labels.whitelistWallets.address')}`}
         </Footer>
       </TableContainer>
       <ActionsContainer>
@@ -77,7 +109,7 @@ export const WhitelistWallets = () => {
             label={t('labels.whitelistWallets.addAddress')}
             mode="secondary"
             size="large"
-            onClick={handleAddWallet}
+            onClick={handleAdd}
           />
           <ButtonText
             label={t('labels.whitelistWallets.uploadCSV')}
@@ -106,7 +138,7 @@ export const WhitelistWallets = () => {
                   bgWhite
                 />
               ),
-              callback: handleResetWallets,
+              callback: handleResetAll,
             },
             {
               component: (
@@ -115,7 +147,7 @@ export const WhitelistWallets = () => {
                   bgWhite
                 />
               ),
-              callback: handleDeleteWallets,
+              callback: handleDeleteAll,
             },
           ]}
         />

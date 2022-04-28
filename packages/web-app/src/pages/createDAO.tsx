@@ -64,11 +64,13 @@ const CreateDAO: React.FC = () => {
     defaultValues,
   });
   const {errors, dirtyFields} = useFormState({control: formMethods.control});
-  const [isCustomToken, tokenTotalSupply, membership] = formMethods.getValues([
-    'isCustomToken',
-    'tokenTotalSupply',
-    'membership',
-  ]);
+  const [whitelistWallets, isCustomToken, tokenTotalSupply, membership] =
+    formMethods.getValues([
+      'whitelistWallets',
+      'isCustomToken',
+      'tokenTotalSupply',
+      'membership',
+    ]);
 
   /*************************************************
    *             Step Validation States            *
@@ -91,7 +93,7 @@ const CreateDAO: React.FC = () => {
     // required fields not dirty
     // if wallet based dao
     if (membership === 'wallet') {
-      if (errors.whitelistWallets) {
+      if (errors.whitelistWallets || whitelistWallets.length === 0) {
         return false;
       }
       return true;
@@ -115,18 +117,19 @@ const CreateDAO: React.FC = () => {
       }
     }
   }, [
-    dirtyFields.tokenAddress,
-    dirtyFields.tokenName,
-    dirtyFields.tokenSymbol,
-    dirtyFields.wallets,
-    errors.tokenAddress,
+    membership,
+    errors.whitelistWallets,
+    errors.wallets,
     errors.tokenName,
     errors.tokenSymbol,
-    errors.wallets,
-    errors.whitelistWallets,
+    errors.tokenAddress,
+    whitelistWallets.length,
     isCustomToken,
+    dirtyFields.tokenName,
+    dirtyFields.wallets,
+    dirtyFields.tokenSymbol,
+    dirtyFields.tokenAddress,
     tokenTotalSupply,
-    membership,
   ]);
 
   const daoConfigureCommunity = useMemo(() => {
