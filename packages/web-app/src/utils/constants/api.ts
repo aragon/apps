@@ -5,13 +5,16 @@ type SubgraphNetworkUrl = Record<SupportedNetworks, string | undefined>;
 export const SUBGRAPH_API_URL: SubgraphNetworkUrl = {
   ethereum: undefined,
   rinkeby:
-    'https://api.thegraph.com/subgraphs/name/aragon/aragon-zaragoza-rinkeby',
+    // 'https://api.thegraph.com/subgraphs/name/aragon/aragon-zaragoza-rinkeby',
+    'https://api.thegraph.com/subgraphs/name/rekard0/rekard0-zaragoza-rinkeby',
   polygon: undefined,
   mumbai:
-    'https://api.thegraph.com/subgraphs/name/aragon/aragon-zaragoza-mumbai',
+    // 'https://api.thegraph.com/subgraphs/name/aragon/aragon-zaragoza-mumbai',
+    'https://api.thegraph.com/subgraphs/name/rekard0/rekard0-zaragoza-rinkeby',
   arbitrum: undefined,
   'arbitrum-test':
-    'https://api.thegraph.com/subgraphs/name/aragon/aragon-zaragoza-arbitrum-rinkeby',
+    // 'https://api.thegraph.com/subgraphs/name/aragon/aragon-zaragoza-arbitrum-rinkeby',
+    'https://api.thegraph.com/subgraphs/name/rekard0/rekard0-zaragoza-rinkeby',
 };
 
 export const BASE_URL = 'https://api.coingecko.com/api/v3';
