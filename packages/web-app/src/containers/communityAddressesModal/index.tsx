@@ -38,7 +38,8 @@ const CommunityAddressesModal: React.FC<CommunityAddressesModalProps> = ({
     return (tokenMembership ? wallets : whitelistWallets)
       .filter(filterValidator)
       .map(({address, amount}: {address: string; amount: string}) => ({
-        wallet: connectedWalletAddress ? t('labels.myWallet') : address,
+        wallet:
+          connectedWalletAddress === address ? t('labels.myWallet') : address,
         tokenAmount: `${amount} ${tokenSymbol}`,
       }));
   }, [

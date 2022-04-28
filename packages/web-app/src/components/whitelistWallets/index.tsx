@@ -32,8 +32,9 @@ export const WhitelistWallets = () => {
   });
 
   useEffect(() => {
-    if (address) prepend({address});
-  }, [address, prepend]);
+    if (address && address !== controlledWallets[0]?.address)
+      prepend({address});
+  }, [address, controlledWallets, prepend]);
 
   // add empty wallet
   const handleAdd = () => {
