@@ -111,12 +111,14 @@ export const WhitelistWallets = () => {
             size="large"
             onClick={handleAdd}
           />
+          {/*
+          To be enabled when csv functionality is there
           <ButtonText
             label={t('labels.whitelistWallets.uploadCSV')}
             mode="ghost"
             size="large"
             onClick={() => alert('upload CSV here')}
-          />
+          /> */}
         </TextButtonsContainer>
         <Dropdown
           side="bottom"

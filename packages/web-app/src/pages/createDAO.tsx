@@ -13,6 +13,7 @@ import GoLive, {GoLiveHeader, GoLiveFooter} from 'containers/goLive';
 import {WalletField} from '../components/addWallets/row';
 import {Dashboard} from 'utils/paths';
 import {CreateDaoProvider} from 'context/createDao';
+import {i18n} from '../../i18n.config';
 
 export type WhitelistWallet = {
   id: string;
@@ -50,8 +51,8 @@ const defaultValues = {
   tokenTotalSupply: 0,
   links: [{label: '', href: ''}],
   wallets: [
-    {address: 'DAO Treasury', amount: '0'},
-    {address: 'My Wallet', amount: '0'},
+    {address: i18n.t('labels.daoTreasury'), amount: '0'},
+    {address: i18n.t('labels.myWallet'), amount: '0'},
   ],
   membership: 'token',
   whitelistWallets: [],
