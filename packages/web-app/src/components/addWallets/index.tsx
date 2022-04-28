@@ -48,12 +48,15 @@ const AddWallets: React.FC = () => {
   };
 
   useEffect(() => {
-    if (address) {
+    if (
+      address &&
+      address !== controlledFields[1]?.address &&
+      controlledFields[0].address !== t('labels.daoTreasury')
+    ) {
       update(0, {address: t('labels.daoTreasury'), amount: '0'});
       update(1, {address: address, amount: '0'});
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [address, controlledFields, t, update]);
 
   return (
     <Container data-testid="add-wallets">
