@@ -12,7 +12,7 @@ import SetupCommunity from 'containers/setupCommunity';
 import GoLive, {GoLiveHeader, GoLiveFooter} from 'containers/goLive';
 import {WalletField} from '../components/addWallets/row';
 import {Dashboard} from 'utils/paths';
-import {TransactionsProvider} from 'context/transactions';
+import {CreateDaoProvider} from 'context/createDao';
 
 export type WhitelistWallet = {
   id: string;
@@ -152,7 +152,7 @@ const CreateDAO: React.FC = () => {
    *************************************************/
   return (
     <FormProvider {...formMethods}>
-      <TransactionsProvider>
+      <CreateDaoProvider>
         <FullScreenStepper
           wizardProcessName={t('createDAO.title')}
           navLabel={t('createDAO.title')}
@@ -203,7 +203,7 @@ const CreateDAO: React.FC = () => {
             <GoLive />
           </Step>
         </FullScreenStepper>
-      </TransactionsProvider>
+      </CreateDaoProvider>
     </FormProvider>
   );
 };

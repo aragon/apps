@@ -15,7 +15,7 @@ import Governance from './governance';
 import goLive from 'public/goLive.svg';
 import {Dashboard, replaceNetworkParam} from 'utils/paths';
 import {useNetwork} from 'context/network';
-import {useTransactionContext} from 'context/transactions';
+import {useCreateDaoContext} from 'context/createDao';
 
 export const GoLiveHeader: React.FC = () => {
   const {t} = useTranslation();
@@ -64,7 +64,7 @@ export const GoLiveFooter: React.FC = () => {
   const {watch} = useFormContext();
   const {reviewCheck} = watch();
   const {t} = useTranslation();
-  const {scheduleTransaction} = useTransactionContext();
+  const {handlePublishDao} = useCreateDaoContext();
 
   const IsButtonDisabled = () =>
     !Object.values(reviewCheck).every(v => v === true);
@@ -75,7 +75,7 @@ export const GoLiveFooter: React.FC = () => {
         size="large"
         iconRight={<IconChevronRight />}
         label={t('createDAO.review.button')}
-        onClick={scheduleTransaction}
+        onClick={handlePublishDao}
         disabled={IsButtonDisabled()}
       />
     </div>
