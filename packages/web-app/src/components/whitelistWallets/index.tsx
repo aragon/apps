@@ -77,8 +77,6 @@ export const WhitelistWallets = () => {
     trigger('whitelistWallets');
   };
 
-  console.log(controlledWallets.length);
-
   return (
     <Container>
       <TableContainer>

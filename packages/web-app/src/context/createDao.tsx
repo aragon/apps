@@ -77,7 +77,7 @@ const CreateDaoProvider: React.FC<Props> = ({children}) => {
 
     // if no transaction is set, or transaction already running, do nothing.
     if (!transaction || transactionState === TransactionState.LOADING) {
-      console.log('No transaction to execute');
+      console.log('Transaction is running');
       return;
     }
 
