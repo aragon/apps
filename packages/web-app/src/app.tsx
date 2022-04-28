@@ -18,7 +18,6 @@ import ExplorePage from 'pages/explore';
 import * as paths from 'utils/paths';
 import DaoSelectMenu from 'containers/navbar/daoSelectMenu';
 import PrivacyPolicy from 'containers/privacyPolicy';
-import Footer from 'containers/exploreFooter';
 
 const TokensPage = lazy(() => import('pages/tokens'));
 const FinancePage = lazy(() => import('pages/finance'));
