@@ -121,12 +121,12 @@ export type UncategorizedProposalData = {
   metadata: ProposalMetadata;
   vote: VotingData;
   execution: ExecutionData;
+  creator: string;
 };
 
 type ProposalMetadata = {
   title: string;
   description: string;
-  publisher: Address;
   resources?: ProposalResource[];
   published?: BlockChainInteraction;
   executed?: BlockChainInteraction;
@@ -204,4 +204,8 @@ export type TransactionItem = {
 export type StringIndexed = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
+};
+
+export type Dao = {
+  address: string;
 };

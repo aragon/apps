@@ -1,11 +1,24 @@
 import {i18n} from '../../i18n.config';
 import {format, formatRelative, formatDistance} from 'date-fns';
 
-import {ProposalData, VotingData} from './types';
-
 const KNOWN_FORMATS = {
   standard: 'MMM dd yyyy HH:mm', // This is our standard used for showing dates.
 };
+
+/**
+ * This function returns the number of seconds given the days hours and minutes
+ * @param days number of days
+ * @param hours number of hours
+ * @param minutes number of minutes
+ * @returns number of seconds
+ */
+export function getSecondsFromDHM(
+  days: number,
+  hours: number,
+  minutes: number
+): number {
+  return minutes * 60 + hours * 3600 + days * 86400;
+}
 
 /**
  * Note: This function will return a list of timestamp that we can use to categorize transfers
@@ -186,14 +199,15 @@ export function getRemainingTime(
  * @returns a message with i18 translation as proposal ends alert
  */
 export function translateProposalDate(
-  type: ProposalData['type'],
-  voteData: VotingData
+  type: string,
+  startDate: string,
+  endDate: string
 ): string | null {
   let leftTimestamp;
   if (type === 'pending') {
-    leftTimestamp = getRemainingTime(voteData.start);
+    leftTimestamp = getRemainingTime(startDate);
   } else if (type === 'active') {
-    leftTimestamp = getRemainingTime(voteData.end);
+    leftTimestamp = getRemainingTime(endDate);
   } else {
     return null;
   }

@@ -1,4 +1,4 @@
-import {SupportedChainID, SupportedNetworks} from './chains';
+import {SupportedNetworks} from './chains';
 
 type SubgraphNetworkUrl = Record<SupportedNetworks, string | undefined>;
 
@@ -20,14 +20,13 @@ export const INFURA_PROJECT_ID = '7a03fcb37be7479da06f92c5117afd47';
 export const INFURA_PROJECT_ID_ARB = '92aa62d2bb5449cfafe04b83ca8636f1';
 
 // Coingecko Api specific asset platform keys
-export const ASSET_PLATFORMS: Record<SupportedChainID, string> = {
-  // TODO add asset platoform keys for other chains
-  1: 'ethereum',
-  4: '',
-  137: 'polygon-pos',
-  42161: 'arbitrum-one',
-  80001: '',
-  421611: '',
+export const ASSET_PLATFORMS: Record<SupportedNetworks, string | null> = {
+  arbitrum: 'arbitrum-one',
+  'arbitrum-test': null,
+  ethereum: 'ethereum',
+  rinkeby: null,
+  polygon: 'polygon-pos',
+  mumbai: null,
 };
 
 // to be removed

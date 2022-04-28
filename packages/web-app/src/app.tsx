@@ -17,7 +17,6 @@ import '../i18n.config';
 import ExplorePage from 'pages/explore';
 import * as paths from 'utils/paths';
 import DaoSelectMenu from 'containers/navbar/daoSelectMenu';
-import PrivacyPolicy from 'containers/privacyPolicy';
 
 const TokensPage = lazy(() => import('pages/tokens'));
 const FinancePage = lazy(() => import('pages/finance'));
@@ -77,7 +76,6 @@ function App() {
           </Route>
         </Routes>
       </Suspense>
-      <PrivacyPolicy />
       <TransferMenu />
       <DaoSelectMenu />
       <WalletMenu />

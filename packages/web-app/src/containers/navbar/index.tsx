@@ -16,6 +16,7 @@ import MobileNav from './mobile';
 import useScreen from 'hooks/useScreen';
 import DesktopNav from './desktop';
 import {useWallet} from 'hooks/useWallet';
+import {usePrivacyContext} from 'context/privacyContext';
 import {useGlobalModalContext} from 'context/globalModals';
 
 // TODO is this stuff really only used in the Desktop version of the Navbar? If
@@ -50,11 +51,19 @@ const Navbar: React.FC = () => {
   const {pathname} = useLocation();
   const {isDesktop} = useScreen();
   const {methods, isConnected} = useWallet();
+  const {handleWithFunctionalPreferenceMenu} = usePrivacyContext();
 
   const processName = useMemo(() => {
     const results = matchRoutes(processPaths, pathname);
     if (results) return results[0].route.path;
   }, [pathname]);
+
+  /*************************************************
+   *                   Handlers                    *
+   *************************************************/
+  const handleOnDaoSelect = () => {
+    handleWithFunctionalPreferenceMenu(() => open('selectDao'));
+  };
 
   const handleWalletButtonClick = () => {
     if (isConnected) {
@@ -68,17 +77,16 @@ const Navbar: React.FC = () => {
     });
   };
 
-  if (isDesktop) {
-    return (
-      <DesktopNav
-        {...(processName ? {...processes[processName]} : {})}
-        onWalletClick={handleWalletButtonClick}
-      />
-    );
-  }
-  return (
+  return isDesktop ? (
+    <DesktopNav
+      {...(processName ? {...processes[processName]} : {})}
+      onDaoSelect={handleOnDaoSelect}
+      onWalletClick={handleWalletButtonClick}
+    />
+  ) : (
     <MobileNav
       isProcess={processName !== undefined}
+      onDaoSelect={handleOnDaoSelect}
       onWalletClick={handleWalletButtonClick}
     />
   );

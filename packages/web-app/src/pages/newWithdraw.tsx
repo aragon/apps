@@ -25,6 +25,7 @@ import DefineProposal, {
 import SetupVotingForm, {
   isValid as setupVotingIsValid,
 } from 'containers/setupVotingForm';
+import {useNetwork} from 'context/network';
 
 export type TokenFormData = {
   tokenName: string;
@@ -74,6 +75,7 @@ export const defaultValues = {
 
 const NewWithdraw: React.FC = () => {
   const {t} = useTranslation();
+  const {network} = useNetwork();
   const formMethods = useForm<WithdrawFormData>({
     defaultValues,
     mode: 'onChange',
@@ -118,7 +120,7 @@ const NewWithdraw: React.FC = () => {
       formatUnits(token.count, token.decimals)
     );
 
-    fetchTokenPrice(token.address).then(price => {
+    fetchTokenPrice(token.address, network).then(price => {
       formMethods.setValue('actions.0.tokenPrice', price);
     });
 

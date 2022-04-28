@@ -1,9 +1,16 @@
 import {Address} from '@aragon/ui-components/dist/utils/addresses';
 import {constants} from 'ethers';
+import {ApolloClient} from '@apollo/client';
 
-import {TOKEN_DATA_QUERY} from 'queries/tokenData';
-import {ApolloClient, ApolloClientOptions} from '@apollo/client';
-import {BASE_URL, DEFAULT_CURRENCY, TimeFilter} from 'utils/constants';
+import {
+  ASSET_PLATFORMS,
+  BASE_URL,
+  DEFAULT_CURRENCY,
+  SupportedNetworks,
+  TimeFilter,
+} from 'utils/constants';
+import {isETH} from 'utils/tokens';
+import {TOKEN_DATA_QUERY} from 'queries/coingecko/tokenData';
 
 export type TokenPrices = {
   [key: string]: {
@@ -74,20 +81,27 @@ type TokenData = {
 /**
  * Get token data from external api. Ideally, this data should be cached so that
  * the id property can be used when querying for prices.
- * @param tokenAddress Token contract address
+ * @param address Token contract address
  * @param client Apollo Client instance
- * @param platform Api network platform
+ * @param network network name
  * @returns Basic information about the token or undefined if data could not be fetched
  */
 async function fetchTokenData(
-  tokenAddress: Address,
-  client: ApolloClient<ApolloClientOptions<string | undefined>>,
-  platform = 'ethereum'
+  address: Address,
+  client: ApolloClient<object>,
+  network: SupportedNetworks
 ): Promise<TokenData | undefined> {
-  let url: string;
+  // check if token address is address zero, ie, native token of platform
+  const isNativeToken = address === constants.AddressZero;
 
-  if (tokenAddress === constants.AddressZero) url = '/coins/ethereum';
-  else url = `/coins/${platform}/contract/${tokenAddress}`;
+  // network unsupported, or testnet
+  const platformId = ASSET_PLATFORMS[network];
+  if (!platformId && !isNativeToken) return;
+
+  // build url based on whether token is native token
+  const url = isNativeToken
+    ? '/coins/ethereum'
+    : `/coins/${platformId}/contract/${address}`;
 
   const {data, error} = await client.query({
     query: TOKEN_DATA_QUERY,
@@ -100,7 +114,7 @@ async function fetchTokenData(
       name: data.tokenData.name,
       symbol: data.tokenData.symbol.toUpperCase(),
       imgUrl: data.tokenData.image.large,
-      address: tokenAddress,
+      address: address,
       price: data.tokenData.market_data.current_price.usd,
     };
   }
@@ -111,14 +125,22 @@ async function fetchTokenData(
 /**
  * Get simple token price
  * @param address Token contract address
+ * @param network network name
  * @returns a USD price as a number
  */
-async function fetchTokenPrice(address: Address) {
-  const isEth = address === constants.AddressZero;
-  const endPoint =
-    '/simple/token_price/ethereum?vs_currencies=usd&contract_addresses=';
+async function fetchTokenPrice(
+  address: Address,
+  network: SupportedNetworks
+): Promise<number | undefined> {
+  // network unsupported, or testnet
+  const platformId = ASSET_PLATFORMS[network];
+  const isEther = isETH(address);
 
-  const url = isEth
+  if (!platformId && !isEther) return;
+
+  // build url based on whether token is ethereum
+  const endPoint = `/simple/token_price/${platformId}?vs_currencies=usd&contract_addresses=`;
+  const url = isEther
     ? `${BASE_URL}/simple/price?ids=ethereum&vs_currencies=usd`
     : `${BASE_URL}${endPoint}${address}`;
 

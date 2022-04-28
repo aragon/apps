@@ -6,9 +6,11 @@ import {Controller, useFormContext, useWatch} from 'react-hook-form';
 import ExistingTokenPartialForm from './addExistingToken';
 import CreateNewToken from './createNewToken';
 import {WhitelistWallets} from 'components/whitelistWallets';
+import {useWallet} from 'hooks/useWallet';
 
 const SetupCommunityForm: React.FC = () => {
   const {t} = useTranslation();
+  const {address} = useWallet();
 
   const {control, resetField, setValue} = useFormContext();
   const isNewToken = useWatch({
@@ -24,10 +26,10 @@ const SetupCommunityForm: React.FC = () => {
     resetField('tokenAddress');
     resetField('tokenTotalSupply');
     setValue('wallets', [
-      {address: 'DAO Treasury', amount: '0'},
-      {address: 'My Wallet', amount: '0'},
+      {address: t('labels.daoTreasury'), amount: '0'},
+      {address: address, amount: '0'},
     ]);
-    setValue('whitelistWallets', [{address: 'My Wallet'}]);
+    setValue('whitelistWallets', [{address: address}]);
   };
 
   return (
@@ -135,7 +137,7 @@ const SetupCommunityForm: React.FC = () => {
       {isNewToken === true && membership === 'token' && <CreateNewToken />}
 
       {isNewToken === false && membership === 'token' && (
-        <ExistingTokenPartialForm {...{resetTokenFields}} />
+        <ExistingTokenPartialForm />
       )}
     </>
   );

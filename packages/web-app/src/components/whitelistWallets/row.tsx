@@ -27,9 +27,9 @@ export const Row = ({index}: WhitelistWalletsRowProps) => {
     name: 'whitelistWallets',
   });
   const whitelistWallets: WhitelistWallet[] = watch('whitelistWallets');
+
   const addressValidator = (address: string, index: number) => {
-    let validationResult =
-      address === 'My Wallet' ? true : validateAddress(address);
+    let validationResult = validateAddress(address);
     if (whitelistWallets) {
       whitelistWallets.forEach(
         (wallet: WhitelistWallet, walletIndex: number) => {
@@ -41,7 +41,6 @@ export const Row = ({index}: WhitelistWalletsRowProps) => {
     }
     return validationResult;
   };
-
   return (
     <Controller
       name={`whitelistWallets.${index}.address`}
@@ -55,21 +54,15 @@ export const Row = ({index}: WhitelistWalletsRowProps) => {
         <Container>
           <InputContainer>
             <ValueInput
-              value={value}
+              value={value === address ? t('labels.myWallet') : value}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                onChange(
-                  e.target.value === address ? 'My Wallet' : e.target.value
-                );
+                onChange(e.target.value);
               }}
               mode="default"
               placeholder="0x..."
-              adornmentText={value ? 'Copy' : 'Paste'}
-              disabled={index === 0}
-              onAdornmentClick={() =>
-                handleClipboardActions(value, pasteValue =>
-                  onChange(pasteValue === address ? 'My Wallet' : value)
-                )
-              }
+              adornmentText={value ? t('labels.copy') : t('labels.paste')}
+              // disabled={index === 0}
+              onAdornmentClick={() => handleClipboardActions(value, onChange)}
             />
             {error?.message && (
               <AlertInline label={error.message} mode="critical" />
@@ -79,7 +72,6 @@ export const Row = ({index}: WhitelistWalletsRowProps) => {
             side="bottom"
             align="start"
             sideOffset={4}
-            disabled={index === 0}
             trigger={
               <ButtonIcon
                 size="large"

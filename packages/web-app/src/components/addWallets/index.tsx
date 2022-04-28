@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import styled from 'styled-components';
 import {
   ButtonText,
@@ -13,12 +13,17 @@ import {useFormContext, useFieldArray} from 'react-hook-form';
 import Row from './row';
 import Header from './header';
 import Footer from './footer';
+import {useWallet} from 'hooks/useWallet';
 
 const AddWallets: React.FC = () => {
   const {t} = useTranslation();
   const {control, watch, setValue, resetField, trigger} = useFormContext();
   const watchFieldArray = watch('wallets');
-  const {fields, append, remove} = useFieldArray({name: 'wallets', control});
+  const {fields, append, remove, update} = useFieldArray({
+    name: 'wallets',
+    control,
+  });
+  const {address} = useWallet();
 
   const controlledFields = fields.map((field, index) => {
     return {
@@ -41,6 +46,14 @@ const AddWallets: React.FC = () => {
       trigger(`wallets.${controlledFields.length}.address`);
     }, 50);
   };
+
+  useEffect(() => {
+    if (address) {
+      update(0, {address: t('labels.daoTreasury'), amount: '0'});
+      update(1, {address: address, amount: '0'});
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Container data-testid="add-wallets">
@@ -92,7 +105,7 @@ const AddWallets: React.FC = () => {
               ),
               callback: () => {
                 remove();
-                append([{address: 'DAO Treasury', amount: '0'}]);
+                append([{address: t('labels.daoTreasury'), amount: '0'}]);
                 resetField('tokenTotalSupply');
               },
             },

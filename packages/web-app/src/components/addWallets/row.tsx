@@ -49,8 +49,7 @@ const WalletRow: React.FC<WalletRowProps> = ({index, onDelete}) => {
   };
 
   const addressValidator = (address: string, index: number) => {
-    let validationResult =
-      address === 'My Wallet' ? true : validateAddress(address);
+    let validationResult = validateAddress(address);
     setIsDuplicate(false);
     if (walletFieldArray) {
       walletFieldArray.forEach((wallet: WalletField, walletIndex: number) => {
@@ -95,23 +94,14 @@ const WalletRow: React.FC<WalletRowProps> = ({index, onDelete}) => {
               <ValueInput
                 mode={error ? 'critical' : 'default'}
                 name={name}
-                value={value === address ? 'My Wallet' : value}
+                value={value === address ? t('labels.myWallet') : value}
                 onBlur={onBlur}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  onChange(
-                    e.target.value === address ? 'My Wallet' : e.target.value
-                  );
+                  onChange(e.target.value);
                 }}
                 disabled={index === 0}
                 adornmentText={value ? t('labels.copy') : t('labels.paste')}
-                onAdornmentClick={() => {
-                  handleClipboardActions(
-                    value === 'My Wallet' ? address : value,
-                    (newValue: string) => {
-                      onChange(newValue === address ? 'My Wallet' : newValue);
-                    }
-                  );
-                }}
+                onAdornmentClick={() => handleClipboardActions(value, onChange)}
               />
               {error?.message && (
                 <ErrorContainer>
