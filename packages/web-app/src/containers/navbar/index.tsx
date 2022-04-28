@@ -69,10 +69,6 @@ const Navbar: React.FC = () => {
     });
   };
 
-  if (pathname === '/') {
-    return <ExploreNav onWalletClick={handleWalletButtonClick} />;
-  }
-
   if (isDesktop) {
     return (
       <DesktopNav

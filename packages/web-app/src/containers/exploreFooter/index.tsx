@@ -42,16 +42,17 @@ const Footer: React.FC = () => {
 
 const Container = styled.div.attrs({
   className:
-    'bottom-0 col-span-full bg-primary-400 relative overflow-hidden max-h-10',
+    'bottom-0 col-span-full bg-primary-400 relative overflow-hidden desktop:h-11 h-40',
 })``;
 
 const ActionsContainer = styled.div.attrs({
   className:
-    'flex absolute top-0 justify-between items-center px-5 w-full h-10',
+    'flex desktop:flex-row flex-col space-y-4 desktop:space-y-0 absolute desktop:h-full top-0 justify-between items-center px-5 w-full py-4 desktop:py-0',
 })``;
 
 const ActionItemsWrapper = styled.div.attrs({
-  className: 'flex items-center space-x-4',
+  className:
+    'flex desktop:flex-row flex-col items-center justify-center desktop:space-x-4 space-y-4 desktop:space-y-0',
 })``;
 
 const GradientLeft = styled.img.attrs({
@@ -59,11 +60,11 @@ const GradientLeft = styled.img.attrs({
 })``;
 
 const GradientRight = styled.img.attrs({
-  className: 'h-40 -mt-12 -mr-7',
+  className: 'desktop:h-40 h-30 -mt-12 -mr-7',
 })``;
 
 const GradientWrapper = styled.div.attrs({
-  className: 'flex justify-between',
+  className: 'flex justify-between desktop:flex-row flex-col',
 })``;
 
 const LogoContainer = styled.img.attrs({
@@ -71,7 +72,7 @@ const LogoContainer = styled.img.attrs({
 })``;
 
 const StyledNavList = styled.ul.attrs({
-  className: 'desktop:flex desktop:space-x-4 desktop:items-center',
+  className: 'flex space-x-4 items-center justify-center',
 })``;
 
 const NavItem = styled.button.attrs({

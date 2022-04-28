@@ -3,7 +3,7 @@ import React, {useEffect, lazy, Suspense} from 'react';
 
 // FIXME: Change route to ApmRoute once package has been updated to be
 // compatible with react-router-dom v6
-import {Navigate, Routes, Route, useLocation} from 'react-router-dom';
+import {Navigate, Routes, Route, useLocation, Outlet} from 'react-router-dom';
 
 import Navbar from 'containers/navbar';
 import {WalletMenu} from 'containers/navbar/walletMenu';
@@ -40,17 +40,28 @@ function App() {
     window.scrollTo(0, 0);
   }, [pathname]);
 
+  function LayoutWrapper() {
+    return (
+      <div className="flex flex-col mb-14 desktop:mb-10 bg-ui-50">
+        <Navbar />
+        <Layout>
+          <Outlet />
+        </Layout>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col mb-14 desktop:mb-10 bg-ui-50">
-      <Navbar />
-      <Layout>
-        {/* TODO: replace with loading indicator */}
-        <Suspense fallback={<p>Loading...</p>}>
-          <Routes>
+    <>
+      {/* TODO: replace with loading indicator */}
+      <Suspense fallback={<p>Loading...</p>}>
+        <Routes>
+          <Route path={paths.Landing} element={<ExplorePage />} />
+          <Route path="/" element={<LayoutWrapper />}>
+            <Route path={paths.NewDeposit} element={<NewDepositPage />} />
             <Route path={paths.NewDeposit} element={<NewDepositPage />} />
             <Route path={paths.NewWithDraw} element={<NewWithdrawPage />} />
             <Route path={paths.CreateDAO} element={<CreateDAOPage />} />
-            <Route path={paths.Landing} element={<ExplorePage />} />
             <Route path={paths.Community} element={<CommunityPage />} />
             <Route path={paths.Finance} element={<FinancePage />} />
             <Route path={paths.Governance} element={<GovernancePage />} />
@@ -63,15 +74,15 @@ function App() {
               path="*"
               element={<Navigate to={paths.NotFound} replace />}
             />
-          </Routes>
-        </Suspense>
-      </Layout>
-      <Footer />
+            <Route path={paths.NewDeposit} element={<NewDepositPage />} />
+          </Route>
+        </Routes>
+      </Suspense>
       <PrivacyPolicy />
       <TransferMenu />
       <DaoSelectMenu />
       <WalletMenu />
-    </div>
+    </>
   );
 }
 
