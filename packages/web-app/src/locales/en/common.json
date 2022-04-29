@@ -500,5 +500,22 @@
     "content": "In order to use this feature you need to allow the usage of functional cookies so we can store your preferences within our app.",
     "accept": "Accept",
     "cancel": "Cancel"
+  },
+  "cta": {
+    "create": {
+      "title": "Create a DAO",
+      "description": "Create your Decentralized Autonomous Organization on open-source infrastructure with governance plugins.",
+      "actionLabel": "Create a DAO"
+    },
+    "learn": {
+      "title": "Learn about DAO",
+      "description": "Explore and learn through our “How-to Guides”, DAO Education, Educational Articles and more!",
+      "actionLabel": "Coming soon"
+    },
+    "build": {
+      "title": "Build faster",
+      "description": "Build something something on open-source infrastructure with governance plugins.",
+      "actionLabel": "Coming soon"
+    }
   }
 }

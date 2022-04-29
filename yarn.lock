@@ -163,6 +163,13 @@
   dependencies:
     "@apollographql/graphql-language-service-types" "^2.0.0"
 
+"@aragon/core-contracts-ethers@^0.0.1-alpha":
+  version "0.0.1-alpha"
+  resolved "https://registry.yarnpkg.com/@aragon/core-contracts-ethers/-/core-contracts-ethers-0.0.1-alpha.tgz#20484aa4b8805282b6d35d23923e250c3f09e45b"
+  integrity sha512-3xwzJfir43OK3WkqkW4yTPx1unaWpKvGc7AT0LkZ4QIZKLTYgt1C63z9GxsNMhG5f817wP44GIt4W7gSBdzbgg==
+  dependencies:
+    ethers "^5.6.2"
+
 "@aragon/provided-connector@^6.0.8":
   version "6.0.8"
   resolved "https://registry.yarnpkg.com/@aragon/provided-connector/-/provided-connector-6.0.8.tgz#5d22ccb2a0ff599fbe6c23fdf96cb06d59ff2716"
