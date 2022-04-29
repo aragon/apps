@@ -7,6 +7,9 @@ import {withTransaction} from '@elastic/apm-rum-react';
 
 import {CreateDAO, Finance} from 'utils/paths';
 
+import CTACard from 'components/ctaCard';
+import {CTACards} from 'components/ctaCard/data';
+
 const Home: React.FC = () => {
   const {t} = useTranslation();
   const navigate = useNavigate();
@@ -41,6 +44,17 @@ const Home: React.FC = () => {
         />
       </div>
 
+      <CTA>
+        {CTACards.map(card => (
+          <CTACard
+            key={card.title}
+            {...card}
+            className="flex-1"
+            onClick={navigate}
+          />
+        ))}
+      </CTA>
+
       <ButtonText
         label="Create DAO"
         className="mx-auto"
@@ -62,5 +76,9 @@ const Subtitle = styled.p.attrs({
   className:
     'my-3 text-4xl sm:text-5xl desktop:text-6xl font-bold sm:tracking-tight text-gray-900',
 })``;
+
+const CTA = styled.div.attrs({className: 'flex mb-4 mx-auto space-x-3'})`
+  width: 1130px;
+`;
 
 export default withTransaction('Dashboard', 'component')(Home);
