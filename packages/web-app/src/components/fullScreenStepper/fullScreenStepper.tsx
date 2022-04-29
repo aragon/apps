@@ -11,9 +11,7 @@ import {useNavigate} from 'react-router-dom';
 import styled from 'styled-components';
 
 import {StepProps} from './step';
-import {useNetwork} from 'context/network';
 import {useStepper} from 'hooks/useStepper';
-import {replaceNetworkParam} from 'utils/paths';
 
 export type FullScreenStepperProps = {
   navLabel: string;
@@ -43,7 +41,6 @@ export const FullScreenStepper: React.FC<FullScreenStepperProps> = ({
   returnPath,
 }) => {
   const {t} = useTranslation();
-  const {network} = useNetwork();
   const navigate = useNavigate();
 
   const {currentStep, prev, next, setStep} = useStepper(children.length);
@@ -106,7 +103,7 @@ export const FullScreenStepper: React.FC<FullScreenStepperProps> = ({
                 <Breadcrumb
                   crumbs={{
                     label: navLabel,
-                    path: replaceNetworkParam(returnPath, network),
+                    path: returnPath,
                   }}
                   onClick={(path: string) => navigate(path)}
                 />

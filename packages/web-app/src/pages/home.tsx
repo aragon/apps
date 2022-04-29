@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import {ButtonText} from '@aragon/ui-components';
-import {useNavigate} from 'react-router-dom';
+import {ButtonText, ActionListItem, IconExpand} from '@aragon/ui-components';
+import {generatePath, useNavigate} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
 
-import {CreateDAO} from 'utils/paths';
+import {CreateDAO, Finance} from 'utils/paths';
 
 const Home: React.FC = () => {
   const {t} = useTranslation();
@@ -17,6 +17,28 @@ const Home: React.FC = () => {
         <WelcomeMessage>{t('subtitle')}</WelcomeMessage>
         <Title>{t('title.part1')}</Title>
         <Subtitle>{t('title.part2')}</Subtitle>
+      </div>
+      <div className="space-y-1 m-10">
+        <ActionListItem
+          title={'Dao: 0x1234'}
+          subtitle={'ethereum mainnet'}
+          icon={<IconExpand />}
+          background={'white'}
+          onClick={() =>
+            navigate(
+              generatePath(Finance, {network: 'ethereum', dao: '0x1234'})
+            )
+          }
+        />
+        <ActionListItem
+          title={'Dao: 0x1234'}
+          subtitle={'Rinkeby testnet'}
+          icon={<IconExpand />}
+          background={'white'}
+          onClick={() =>
+            navigate(generatePath(Finance, {network: 'rinkeby', dao: '0x1234'}))
+          }
+        />
       </div>
 
       <ButtonText

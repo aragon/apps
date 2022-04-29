@@ -14,24 +14,26 @@ import styled from 'styled-components';
 import useScreen from 'hooks/useScreen';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
-import {useNavigate, useParams} from 'react-router-dom';
-import React, {useEffect, useMemo, useState} from 'react';
 import {useEditor} from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import TipTapLink from '@tiptap/extension-link';
 import {useQuery} from '@apollo/client';
+import {generatePath, useNavigate, useParams} from 'react-router-dom';
+import React, {useMemo, useState, useEffect} from 'react';
 
 import ResourceList from 'components/resourceList';
 import {StyledEditorContent} from 'containers/reviewProposal';
 import {VotingTerminal} from 'containers/votingTerminal';
 import {useMappedBreadcrumbs} from 'hooks/useMappedBreadcrumbs';
 import {useNetwork} from 'context/network';
-import {NotFound, replaceNetworkParam} from 'utils/paths';
 import {ERC20VOTING_PROPOSAL_DETAILS} from 'queries/proposals';
 import {
   erc20VotingProposal,
   erc20VotingProposalVariables,
 } from 'queries/__generated__/erc20VotingProposal';
+import {NotFound} from 'utils/paths';
+
+/* MOCK DATA ================================================================ */
 
 // TODO: This is just some mock data. Remove this while integration
 const publishedDone: ProgressStatusProps = {
@@ -59,7 +61,7 @@ const Proposal: React.FC = () => {
   const {breadcrumbs} = useMappedBreadcrumbs();
   const [expandedProposal, setExpandedProposal] = useState(false);
   const {t} = useTranslation();
-  const {id} = useParams();
+  const {dao, id} = useParams();
   const navigate = useNavigate();
   const {isDesktop} = useScreen();
   const {data, loading, error} = useQuery<
@@ -116,7 +118,7 @@ const Proposal: React.FC = () => {
         {!isDesktop && (
           <Breadcrumb
             onClick={(path: string) =>
-              navigate(replaceNetworkParam(path, network))
+              navigate(generatePath(path, {network, dao}))
             }
             crumbs={breadcrumbs}
             icon={<IconGovernance />}

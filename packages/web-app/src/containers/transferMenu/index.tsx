@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import {useNavigate} from 'react-router-dom';
+import {generatePath, useNavigate, useParams} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
 import {ActionListItem, IconChevronRight} from '@aragon/ui-components';
 
-import {NewDeposit, NewWithDraw, replaceNetworkParam} from 'utils/paths';
+import {NewDeposit, NewWithDraw} from 'utils/paths';
 import {useWallet} from 'hooks/useWallet';
 import {useGlobalModalContext} from 'context/globalModals';
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
@@ -16,6 +16,7 @@ const TransferMenu: React.FC = () => {
   const {isTransferOpen, close} = useGlobalModalContext();
   const {t} = useTranslation();
   const {network} = useNetwork();
+  const {dao} = useParams();
   const navigate = useNavigate();
   const {isConnected} = useWallet();
 
@@ -25,9 +26,9 @@ const TransferMenu: React.FC = () => {
       // Move to proper placing
       alert('Please connect your wallet');
     } else if (action === 'deposit') {
-      navigate(replaceNetworkParam(NewDeposit, network));
+      navigate(generatePath(NewDeposit, {network: network, dao: dao}));
     } else {
-      navigate(replaceNetworkParam(NewWithDraw, network));
+      navigate(generatePath(NewWithDraw, {network: network, dao: dao}));
     }
     close('default');
   };

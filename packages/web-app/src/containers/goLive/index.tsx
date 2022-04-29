@@ -13,24 +13,22 @@ import DaoMetadata from './daoMetadata';
 import Community from './community';
 import Governance from './governance';
 import goLive from 'public/goLive.svg';
-import {Dashboard, replaceNetworkParam} from 'utils/paths';
-import {useNetwork} from 'context/network';
+import {Landing} from 'utils/paths';
 import {useTransactionContext} from 'context/transactions';
 
 export const GoLiveHeader: React.FC = () => {
   const {t} = useTranslation();
   const navigate = useNavigate();
-  const {network} = useNetwork();
 
   const clickHandler = (path: string) => {
-    navigate(replaceNetworkParam(path, network));
+    navigate(path);
   };
 
   return (
     <div className="tablet:p-3 desktop:p-6 px-2 pt-2 desktop:pt-3 pb-3 bg-ui-0 tablet:rounded-xl">
       <div className="desktop:hidden">
         <Breadcrumb
-          crumbs={{label: t('createDAO.title'), path: Dashboard}}
+          crumbs={{label: t('createDAO.title'), path: Landing}}
           onClick={clickHandler}
         />
       </div>

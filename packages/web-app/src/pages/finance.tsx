@@ -15,6 +15,7 @@ import TransferList from 'components/transferList';
 import {useDaoVault} from 'hooks/useDaoVault';
 import TransactionDetail from 'containers/transactionDetail';
 import {useGlobalModalContext} from 'context/globalModals';
+import TransferMenu from 'containers/transferMenu';
 
 const Finance: React.FC = () => {
   const {t} = useTranslation();
@@ -78,6 +79,7 @@ const Finance: React.FC = () => {
         onClose={() => setShowTransactionDetail(false)}
         transfer={selectedTransfer}
       />
+      <TransferMenu />
     </>
   );
 };

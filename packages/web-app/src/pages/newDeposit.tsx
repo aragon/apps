@@ -14,6 +14,8 @@ import {BaseTokenInfo} from 'utils/types';
 import {TokenFormData} from './newWithdraw';
 import {useWalletTokens} from 'hooks/useWalletTokens';
 import {FullScreenStepper, Step} from 'components/fullScreenStepper';
+import {generatePath, useParams} from 'react-router-dom';
+import {useNetwork} from 'context/network';
 
 type DepositFormData = TokenFormData & {
   // Deposit data
@@ -37,12 +39,14 @@ const defaultValues = {
 
 const NewDeposit: React.FC = () => {
   const {t} = useTranslation();
+  const {network} = useNetwork();
+  const {dao} = useParams();
   const {address} = useWallet();
+  const {data: walletTokens} = useWalletTokens();
   const formMethods = useForm<DepositFormData>({
     defaultValues,
     mode: 'onChange',
   });
-  const {data: walletTokens} = useWalletTokens();
 
   /*************************************************
    *                    Hooks                      *
@@ -96,7 +100,7 @@ const NewDeposit: React.FC = () => {
     <FormProvider {...formMethods}>
       <FullScreenStepper
         navLabel={t('allTransfer.newTransfer')}
-        returnPath={Finance}
+        returnPath={generatePath(Finance, {network, dao})}
         wizardProcessName={t('newDeposit.depositAssets')}
       >
         <Step

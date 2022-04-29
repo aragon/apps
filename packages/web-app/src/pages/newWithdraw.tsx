@@ -25,6 +25,7 @@ import DefineProposal, {
 import SetupVotingForm, {
   isValid as setupVotingIsValid,
 } from 'containers/setupVotingForm';
+import {generatePath, useParams} from 'react-router-dom';
 import {useNetwork} from 'context/network';
 
 export type TokenFormData = {
@@ -75,7 +76,9 @@ export const defaultValues = {
 
 const NewWithdraw: React.FC = () => {
   const {t} = useTranslation();
+  const {dao} = useParams();
   const {network} = useNetwork();
+
   const formMethods = useForm<WithdrawFormData>({
     defaultValues,
     mode: 'onChange',
@@ -138,7 +141,7 @@ const NewWithdraw: React.FC = () => {
         <FullScreenStepper
           wizardProcessName={t('newWithdraw.withdrawAssets')}
           navLabel={t('allTransfer.newTransfer')}
-          returnPath={Finance}
+          returnPath={generatePath(Finance, {network, dao})}
         >
           <Step
             wizardTitle={t('newWithdraw.configureWithdraw.title')}

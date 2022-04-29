@@ -1,11 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import {Link} from 'react-router-dom';
+import {generatePath, Link, useParams} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
 import {ButtonText, IconChevronRight} from '@aragon/ui-components';
 
 import {useNetwork} from 'context/network';
-import {AllTokens, AllTransfers, replaceNetworkParam} from 'utils/paths';
+import {AllTokens, AllTransfers} from 'utils/paths';
 
 type SectionHeader = {
   title: string;
@@ -33,12 +33,13 @@ const SectionHeader = ({title}: SectionHeader) => (
 export const TokenSectionWrapper = ({title, children}: SectionWrapperProps) => {
   const {t} = useTranslation();
   const {network} = useNetwork();
+  const {dao} = useParams();
 
   return (
     <>
       <SectionHeader title={title} />
       {children}
-      <Link to={replaceNetworkParam(AllTokens, network)}>
+      <Link to={generatePath(AllTokens, {network, dao})}>
         <ButtonText
           mode="secondary"
           label={t('labels.seeAllTokens')}
@@ -64,6 +65,7 @@ export const TransferSectionWrapper = ({
 }: SectionWrapperProps) => {
   const {t} = useTranslation();
   const {network} = useNetwork();
+  const {dao} = useParams();
 
   return (
     <>
@@ -71,7 +73,7 @@ export const TransferSectionWrapper = ({
       {children}
       {showButton && (
         <div>
-          <Link to={replaceNetworkParam(AllTransfers, network)}>
+          <Link to={generatePath(AllTransfers, {network, dao})}>
             <ButtonText
               mode="secondary"
               label={t('labels.seeAllTransfers')}

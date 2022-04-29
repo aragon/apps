@@ -7,7 +7,7 @@ import {
 import React from 'react';
 import useBreadcrumbs, {BreadcrumbData} from 'use-react-router-breadcrumbs';
 
-import {NotFound} from 'utils/paths';
+import {Dashboard, NotFound} from 'utils/paths';
 
 type MappedBreadcrumbs = {
   breadcrumbs: {
@@ -26,7 +26,13 @@ function basePathIcons(path: string) {
 
 export function useMappedBreadcrumbs(): MappedBreadcrumbs {
   const breadcrumbs = useBreadcrumbs(undefined, {
-    excludePaths: ['/', NotFound, ':network/governance/proposals', ':network/'],
+    excludePaths: [
+      Dashboard,
+      NotFound,
+      ':ethereum/:dao/governance/proposals',
+      ':ethereum/:dao/',
+      ':ethereum/',
+    ],
   }).map((item: BreadcrumbData<string>) => ({
     path: item.match.pathname,
     label: item.breadcrumb as string,
