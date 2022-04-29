@@ -3,8 +3,8 @@ import {SupportedNetworks} from './chains';
 type SubgraphNetworkUrl = Record<SupportedNetworks, string | undefined>;
 
 // NOTE: I am temporarily pointing to the **proper** and **latest** version
-// of subgraph so financial data can QA properly (no DAOs on the older version)
-// has withdraws yet
+// of subgraph (with the dummy data) so we can QA financial screens properly
+// Older version of the contracts have no DAOs with withdraws yet
 
 // TODO: Replace the proper subgraph url with the one below once QA is done so that
 // the older version of the contracts can be used for further integration with the rest
