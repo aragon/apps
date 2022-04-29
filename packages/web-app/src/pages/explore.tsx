@@ -17,6 +17,8 @@ const Explore: React.FC = () => {
   );
 };
 
-const Container = styled.div.attrs({className: 'max-w-screen-wide h-10'})``;
+const Container = styled.div.attrs({
+  className: 'max-w-screen-wide mx-auto',
+})``;
 
 export default Explore;

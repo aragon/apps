@@ -4,8 +4,7 @@ import styled from 'styled-components';
 import IconLogo from 'public/iconLogo.svg';
 import Green from 'public/greenGradient.svg';
 import Purple from 'public/purpleGradient.svg';
-import {EXPLORE_NAV_LINKS} from 'utils/constants';
-import {PRIVACY_NAV_LINKS} from 'utils/constants';
+import {EXPLORE_NAV_LINKS, PRIVACY_NAV_LINKS} from 'utils/constants';
 
 const Footer: React.FC = () => {
   const ExploreNavLinks = EXPLORE_NAV_LINKS.map(item => (
@@ -33,7 +32,7 @@ const Footer: React.FC = () => {
         </ActionItemsWrapper>
         <ActionItemsWrapper>
           <StyledNavList>{PrivacyNavLinks}</StyledNavList>
-          <Copyright>©{`  ${new Date().getFullYear()}  `}Aragon</Copyright>
+          <Copyright>&copy;{`  ${new Date().getFullYear()}  `}Aragon</Copyright>
         </ActionItemsWrapper>
       </ActionsContainer>
     </Container>
@@ -75,6 +74,7 @@ const StyledNavList = styled.ul.attrs({
   className: 'flex space-x-4 items-center justify-center',
 })``;
 
+// Used button instead of links because not sure the navigation is internal or not!
 const NavItem = styled.button.attrs({
   className: 'text-ui-0',
 })``;

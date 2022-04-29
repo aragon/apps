@@ -3,15 +3,16 @@ import styled from 'styled-components';
 import Logo from 'public/coloredLogo.svg';
 import Green from 'public/circleGreenGradient.svg';
 import Purple from 'public/purpleGradient.svg';
+import {useTranslation} from 'react-i18next';
 
 function Hero() {
+  const {t} = useTranslation();
   return (
     <Container>
       <ContentWrapper>
-        <Title>EXPLORE THE DAO WORLD</Title>
+        <Title>{t('explore.hero.title')}</Title>
         <Subtitle>
-          Welcome to the Aragon Explore Portal. <br /> Take a look to the
-          ecosystem,find inspiration and learn.
+          {t('explore.hero.subtitle1')} <br /> {t('explore.hero.subtitle2')}
         </Subtitle>
       </ContentWrapper>
       <div className="h-full">
