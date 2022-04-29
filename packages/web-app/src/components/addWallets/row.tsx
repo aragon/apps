@@ -9,7 +9,7 @@ import {
   NumberInput,
   ValueInput,
 } from '@aragon/ui-components';
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import {Controller, useFormContext} from 'react-hook-form';
@@ -17,6 +17,7 @@ import {Controller, useFormContext} from 'react-hook-form';
 import {handleClipboardActions} from 'utils/library';
 import {useWallet} from 'hooks/useWallet';
 import {validateAddress} from 'utils/validators';
+import {constants} from 'ethers';
 
 type WalletRowProps = {
   index: number;
@@ -73,10 +74,25 @@ const WalletRow: React.FC<WalletRowProps> = ({index, onDelete}) => {
     return totalSupply === 0 ? t('errors.totalSupplyZero') : true;
   };
 
+  const getDisplayedWalletAddress = useCallback(
+    (value: string) => {
+      switch (value) {
+        case address:
+          return t('labels.myWallet');
+        case constants.AddressZero:
+          return t('labels.daoTreasury');
+        default:
+          return value;
+      }
+    },
+    [address, t]
+  );
+
   return (
     <Container data-testid="wallet-row">
       <LabelContainer>
         <Controller
+          defaultValue=""
           name={`wallets.${index}.address`}
           control={control}
           rules={{
@@ -94,7 +110,7 @@ const WalletRow: React.FC<WalletRowProps> = ({index, onDelete}) => {
               <ValueInput
                 mode={error ? 'critical' : 'default'}
                 name={name}
-                value={value === address ? t('labels.myWallet') : value}
+                value={getDisplayedWalletAddress(value)}
                 onBlur={onBlur}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   onChange(e.target.value);

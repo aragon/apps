@@ -2,18 +2,23 @@ import {SupportedNetworks} from './chains';
 
 type SubgraphNetworkUrl = Record<SupportedNetworks, string | undefined>;
 
+// NOTE: I am temporarily pointing to the **proper** and **latest** version
+// of subgraph so financial data can QA properly (no DAOs on the older version)
+// has withdraws yet
+
+// TODO: Replace the proper subgraph url with the one below once QA is done so that
+// the older version of the contracts can be used for further integration with the rest
+// of the application.
+// 'https://api.thegraph.com/subgraphs/name/aragon/aragon-zaragoza-arbitrum-rinkeby',
 export const SUBGRAPH_API_URL: SubgraphNetworkUrl = {
   ethereum: undefined,
   rinkeby:
-    // 'https://api.thegraph.com/subgraphs/name/aragon/aragon-zaragoza-rinkeby',
-    'https://api.thegraph.com/subgraphs/name/rekard0/rekard0-zaragoza-rinkeby',
+    'https://api.thegraph.com/subgraphs/name/aragon/aragon-zaragoza-rinkeby',
   polygon: undefined,
   mumbai:
-    // 'https://api.thegraph.com/subgraphs/name/aragon/aragon-zaragoza-mumbai',
-    'https://api.thegraph.com/subgraphs/name/rekard0/rekard0-zaragoza-rinkeby',
+    'https://api.thegraph.com/subgraphs/name/aragon/aragon-zaragoza-mumbai',
   arbitrum: undefined,
   'arbitrum-test':
-    // 'https://api.thegraph.com/subgraphs/name/aragon/aragon-zaragoza-arbitrum-rinkeby',
     'https://api.thegraph.com/subgraphs/name/rekard0/rekard0-zaragoza-rinkeby',
 };
 
@@ -33,4 +38,4 @@ export const ASSET_PLATFORMS: Record<SupportedNetworks, string | null> = {
 };
 
 // to be removed
-export const TEST_DAO = '0x4d68eaa86557f666decf789a8ab3d59fe390ff42';
+export const TEST_DAO = '0xf1ce79a45615ce1d32af6422ed77b9b7ffc35c88';

@@ -8,7 +8,7 @@ import {
   Dropdown,
 } from '@aragon/ui-components';
 import {useTranslation} from 'react-i18next';
-import {useFormContext, useFieldArray} from 'react-hook-form';
+import {useFormContext, useFieldArray, useWatch} from 'react-hook-form';
 
 import Row from './row';
 import Header from './header';
@@ -17,13 +17,14 @@ import {useWallet} from 'hooks/useWallet';
 
 const AddWallets: React.FC = () => {
   const {t} = useTranslation();
-  const {control, watch, setValue, resetField, trigger} = useFormContext();
-  const watchFieldArray = watch('wallets');
-  const {fields, append, remove, update} = useFieldArray({
+  const {address} = useWallet();
+
+  const {control, setValue, resetField, trigger} = useFormContext();
+  const watchFieldArray = useWatch({name: 'wallets', control: control});
+  const {fields, append, remove, insert} = useFieldArray({
     name: 'wallets',
     control,
   });
-  const {address} = useWallet();
 
   const controlledFields = fields.map((field, index) => {
     return {
@@ -31,6 +32,16 @@ const AddWallets: React.FC = () => {
       ...(watchFieldArray && {...watchFieldArray[index]}),
     };
   });
+
+  useEffect(() => {
+    if (
+      address &&
+      watchFieldArray[1]?.address !== address &&
+      controlledFields[1]?.address !== address
+    ) {
+      insert(1, {address: address, amount: '0'});
+    }
+  }, [address, controlledFields, insert, watchFieldArray]);
 
   const resetDistribution = () => {
     controlledFields.forEach((_, index) => {
@@ -46,17 +57,6 @@ const AddWallets: React.FC = () => {
       trigger(`wallets.${controlledFields.length}.address`);
     }, 50);
   };
-
-  useEffect(() => {
-    if (
-      address &&
-      address !== controlledFields[1]?.address &&
-      controlledFields[0].address !== t('labels.daoTreasury')
-    ) {
-      update(0, {address: t('labels.daoTreasury'), amount: '0'});
-      update(1, {address: address, amount: '0'});
-    }
-  }, [address, controlledFields, t, update]);
 
   return (
     <Container data-testid="add-wallets">

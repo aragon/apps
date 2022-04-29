@@ -13,7 +13,7 @@ import GoLive, {GoLiveHeader, GoLiveFooter} from 'containers/goLive';
 import {WalletField} from '../components/addWallets/row';
 import {Dashboard} from 'utils/paths';
 import {CreateDaoProvider} from 'context/createDao';
-import {i18n} from '../../i18n.config';
+import {constants} from 'ethers';
 
 export type WhitelistWallet = {
   id: string;
@@ -50,10 +50,7 @@ const defaultValues = {
   tokenSymbol: '',
   tokenTotalSupply: 0,
   links: [{label: '', href: ''}],
-  wallets: [
-    {address: i18n.t('labels.daoTreasury'), amount: '0'},
-    {address: i18n.t('labels.myWallet'), amount: '0'},
-  ],
+  wallets: [{address: constants.AddressZero, amount: '0'}],
   membership: 'token',
   whitelistWallets: [],
 };
@@ -207,6 +204,7 @@ const CreateDAO: React.FC = () => {
             <GoLive />
           </Step>
         </FullScreenStepper>
+        <>{JSON.stringify(formMethods.watch(), null, 2)}</>
       </CreateDaoProvider>
     </FormProvider>
   );

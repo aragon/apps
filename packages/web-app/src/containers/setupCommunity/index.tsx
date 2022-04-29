@@ -6,13 +6,11 @@ import {Controller, useFormContext, useWatch} from 'react-hook-form';
 import ExistingTokenPartialForm from './addExistingToken';
 import CreateNewToken from './createNewToken';
 import {WhitelistWallets} from 'components/whitelistWallets';
-import {useWallet} from 'hooks/useWallet';
 
 const SetupCommunityForm: React.FC = () => {
   const {t} = useTranslation();
-  const {address} = useWallet();
 
-  const {control, resetField, setValue} = useFormContext();
+  const {control, resetField} = useFormContext();
   const isNewToken = useWatch({
     name: 'isCustomToken',
   });
@@ -26,10 +24,7 @@ const SetupCommunityForm: React.FC = () => {
     resetField('tokenAddress');
     resetField('tokenTotalSupply');
     resetField('whitelistWallets');
-    setValue('wallets', [
-      {address: t('labels.daoTreasury'), amount: '0'},
-      {address: address, amount: '0'},
-    ]);
+    resetField('wallets');
   };
 
   return (
