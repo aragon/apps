@@ -1,58 +1,31 @@
-import {
-  ButtonIcon,
-  CrumbType,
-  Dropdown,
-  IconClose,
-  IconMenu,
-  ListItemAction,
-} from '@aragon/ui-components';
-import React from 'react';
+import {ButtonIcon, Dropdown, IconClose, IconMenu} from '@aragon/ui-components';
+import React, {useState} from 'react';
 import styled from 'styled-components';
 
 import NavLink from 'components/navLink';
-import {NAV_LINKS} from 'utils/constants';
+import {NAV_LINKS_DATA} from 'utils/constants';
 
-type BreadcrumbDropdownProps = {
-  open: boolean;
-  icon: JSX.Element;
-  crumbs: CrumbType[];
-  onClose?: () => void;
-  onCrumbClick: (path: string) => void;
-  onOpenChange?: (open: boolean) => void;
-};
+export const NavlinksDropdown: React.FC = () => {
+  const [showCrumbMenu, setShowCrumbMenu] = useState(false);
 
-export const BreadcrumbDropdown: React.FC<BreadcrumbDropdownProps> = props => {
   return (
     <StyledDropdown
-      open={props.open}
-      onOpenChange={props.onOpenChange}
+      open={showCrumbMenu}
+      onOpenChange={setShowCrumbMenu}
       align="start"
       trigger={
         <ButtonIcon
           mode="secondary"
           size="large"
-          icon={props.open ? <IconClose /> : <IconMenu />}
-          isActive={props.open}
+          icon={showCrumbMenu ? <IconClose /> : <IconMenu />}
+          isActive={showCrumbMenu}
         />
       }
       sideOffset={8}
-      listItems={NAV_LINKS.map(item => ({
-        component: (
-          <NavLink
-            to={item.path}
-            matchEnd={false}
-            render={selected => (
-              <ListItemAction
-                bgWhite
-                title={item.label}
-                mode={selected ? 'selected' : 'default'}
-                iconLeft={<item.icon />}
-              />
-            )}
-          />
-        ),
-
-        callback: () => props.onCrumbClick(item.path),
+      listItems={NAV_LINKS_DATA.map(d => ({
+        component: <NavLink caller="dropdown" data={d} />,
+        // Navlink component already takes care of callback
+        callback: (_: Event) => {},
       }))}
     />
   );

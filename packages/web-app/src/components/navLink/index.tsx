@@ -1,19 +1,91 @@
-import {matchRoutes, useLocation} from 'react-router-dom';
+import {ListItemAction} from '@aragon/ui-components';
+import {useNetwork} from 'context/network';
+import useScreen from 'hooks/useScreen';
+import React from 'react';
+import {
+  generatePath,
+  matchRoutes,
+  useLocation,
+  useNavigate,
+} from 'react-router-dom';
+import styled from 'styled-components';
+import {NavLinkData} from 'utils/constants';
 
 type NavLinkProps = {
-  matchEnd?: boolean;
-  to: string;
-  render: (selected: boolean) => React.ReactElement;
+  /** Where this component is called from. This has an impact on this
+   * component's styling. */
+  caller: 'dropdown' | 'navlinks';
+  /**
+   * Contains dao-page's path, label and icon.
+   */
+  data: NavLinkData;
+  /**
+   * Function to be performed when the NavLink is clicked IN ADDITION TO
+   * NAVIGATION. Navigation itseld is already taken care of within Navlink.
+   */
+  onItemClick?: () => void;
 };
 
-const NavLink = ({to, matchEnd = true, ...props}: NavLinkProps) => {
+/**
+ * Takes information about the basic navigation links for a dao (gov, fin, etc.)
+ * and renders them into a navigation link. The navigation link is
+ * automotatically set to active if the current route matches the path. The
+ * navigation link's styling is dependent on the screen size.
+ */
+const NavLink = ({caller, data, onItemClick}: NavLinkProps) => {
   const {pathname} = useLocation();
+  const {isDesktop} = useScreen();
+  const navigate = useNavigate();
+  const {network} = useNetwork();
 
-  const matches = matchEnd
-    ? matchRoutes([{path: to}], pathname) !== null
-    : matchRoutes([{path: to}], '/network/' + pathname.split('/')[2]) !== null;
+  const basePath = pathname.split('/').slice(0, 4).join('/');
+  const match = matchRoutes([{path: data.path}], basePath);
+  const dao = match?.at(0)?.params?.dao;
+  const matches = match !== null;
 
-  return props.render(matches);
+  const handleOnClick = (to: string) => {
+    onItemClick?.();
+    navigate(generatePath(to, {network, dao}));
+  };
+
+  if (caller === 'dropdown') {
+    return (
+      <ListItemAction
+        bgWhite
+        title={data.label}
+        iconLeft={<data.icon />}
+        onClick={() => handleOnClick(data.path)}
+        mode={matches ? 'selected' : 'default'}
+      />
+    );
+  } else if (isDesktop) {
+    return (
+      <NavItem isSelected={matches} onClick={() => handleOnClick(data.path)}>
+        {data.label}
+      </NavItem>
+    );
+  } else {
+    return (
+      <ListItemAction
+        title={data.label}
+        iconLeft={<data.icon />}
+        onClick={() => handleOnClick(data.path)}
+        mode={matches ? 'selected' : 'default'}
+      />
+    );
+  }
 };
+
+const NavItem = styled.button.attrs(({isSelected}: {isSelected: boolean}) => {
+  let className =
+    'py-1.5 px-2 rounded-xl font-bold hover:text-primary-500 ' +
+    'active:text-primary-700 disabled:text-ui-300 disabled:bg-ui-50' +
+    ' focus:ring-2 focus:ring-primary-500 focus:outline-none ';
+
+  if (isSelected) className += 'text-primary-500 bg-ui-0';
+  else className += 'text-ui-600';
+
+  return {className};
+})<{isSelected: boolean}>``;
 
 export default NavLink;

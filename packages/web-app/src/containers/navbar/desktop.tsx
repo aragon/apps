@@ -3,13 +3,13 @@ import styled from 'styled-components';
 import NavLinks from 'components/navLinks';
 import {useNavigate} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
-import React, {useMemo, useState} from 'react';
+import React, {useMemo} from 'react';
 
 import {useWallet} from 'hooks/useWallet';
 import {selectedDAO} from 'context/apolloClient';
 import NetworkIndicator from './networkIndicator';
 import {useReactiveVar} from '@apollo/client';
-import {BreadcrumbDropdown} from './breadcrumbDropdown';
+import {NavlinksDropdown} from './breadcrumbDropdown';
 import {replaceNetworkParam} from 'utils/paths';
 import {useNetwork} from 'context/network';
 import {useMappedBreadcrumbs} from 'hooks/useMappedBreadcrumbs';
@@ -36,8 +36,6 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
   const selectedDao = useReactiveVar(selectedDAO);
   const {breadcrumbs, icon} = useMappedBreadcrumbs();
   const {address, ensName, ensAvatarUrl, isConnected} = useWallet();
-
-  const [showCrumbMenu, setShowCrumbMenu] = useState(false);
 
   const isProcess = useMemo(
     () => props.returnURL && props.processLabel,
@@ -87,14 +85,7 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
               <NavLinks />
             ) : (
               <>
-                <BreadcrumbDropdown
-                  open={showCrumbMenu}
-                  icon={icon}
-                  crumbs={breadcrumbs}
-                  onClose={() => setShowCrumbMenu(false)}
-                  onCrumbClick={clickHandler}
-                  onOpenChange={setShowCrumbMenu}
-                />
+                <NavlinksDropdown />
                 <Breadcrumb
                   icon={icon}
                   crumbs={breadcrumbs}

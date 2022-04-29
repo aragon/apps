@@ -19,8 +19,6 @@ import {useWallet} from 'hooks/useWallet';
 import {usePrivacyContext} from 'context/privacyContext';
 import {useGlobalModalContext} from 'context/globalModals';
 
-// TODO is this stuff really only used in the Desktop version of the Navbar? If
-// so, it should be moved there.
 type StringIndexed = {[key: string]: {processLabel: string; returnURL: string}};
 
 const processPaths = [
