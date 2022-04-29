@@ -4,10 +4,14 @@ import {render, screen} from '@testing-library/react';
 import Footer from '..';
 
 describe('Footer', () => {
-  test('should render', () => {
+  // eslint-disable-next-line
+  function setup() {
     render(<Footer />);
+    return screen.getByTestId(/footer/i);
+  }
 
-    const element = screen.getByText(/footer/i);
-    expect(element).toBeVisible();
+  test('should render without crashing', () => {
+    const element = setup();
+    expect(element).toBeInTheDocument;
   });
 });

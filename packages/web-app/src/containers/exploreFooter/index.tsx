@@ -21,7 +21,7 @@ const Footer: React.FC = () => {
   ));
 
   return (
-    <Container>
+    <Container data-testid="footer">
       <GradientWrapper>
         <GradientLeft src={Green} />
         <GradientRight src={Purple} />

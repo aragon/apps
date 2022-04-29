@@ -1,4 +1,8 @@
 module.exports = {
+  transform: {
+    '^.+\\.tsx?$': 'babel-jest',
+    '^.+\\.svg$': '<rootDir>/svgTransform.ts',
+  },
   testEnvironment: 'jsdom',
   testPathIgnorePatterns: ['/node_modules/'],
   collectCoverage: true,
