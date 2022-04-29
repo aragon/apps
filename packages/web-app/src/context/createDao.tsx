@@ -3,11 +3,6 @@ import {
   ICreateDaoWhitelistVoting,
 } from '@aragon/sdk-client';
 
-import {
-  DaoConfig,
-  VotingConfig,
-} from '@aragon/sdk-client/dist/internal/interfaces/dao';
-
 import React, {
   createContext,
   useContext,
@@ -25,10 +20,10 @@ import {TransactionState} from 'utils/constants';
 import {getSecondsFromDHM} from 'utils/date';
 import {CreateDaoFormData} from 'pages/createDAO';
 
-type MemberShipSettings = ICreateDaoERC20Voting | ICreateDaoWhitelistVoting;
+type DAOCreationSettings = ICreateDaoERC20Voting | ICreateDaoWhitelistVoting;
 
 type CreateDaoContextType = {
-  /** Prepares the creation transaction awaiting user confirmation */
+  /** Prepares the creation data and awaiting user confirmation to start process */
   handlePublishDao: () => void;
 };
 
@@ -38,8 +33,9 @@ const CreateDaoContext = createContext<CreateDaoContextType | null>(null);
 
 const CreateDaoProvider: React.FC<Props> = ({children}) => {
   const [showModal, setShowModal] = useState(false);
-  const [transaction, setTransaction] = useState<MemberShipSettings>();
-  const [transactionState, setTransactionState] = useState<TransactionState>();
+  const [daoCreationData, setDaoCreationData] = useState<DAOCreationSettings>();
+  const [creationProcessState, setCreationProcessState] =
+    useState<TransactionState>();
 
   // Form values
   const {getValues, control} = useFormContext<CreateDaoFormData>();
@@ -53,30 +49,30 @@ const CreateDaoProvider: React.FC<Props> = ({children}) => {
   const handlePublishDao = () => {
     switch (membership) {
       case 'token':
-        setTransaction(getERC20VotingDaoSettings());
+        setDaoCreationData(getERC20VotingDaoSettings());
         break;
       case 'wallet':
-        setTransaction(getWhiteListVotingDaoSettings());
+        setDaoCreationData(getWhiteListVotingDaoSettings());
         break;
       default:
         throw new Error(`Unknown dao type: ${membership}`);
     }
-    setTransactionState(TransactionState.WAITING);
+    setCreationProcessState(TransactionState.WAITING);
     setShowModal(true);
   };
 
   // Handler for modal button click
-  const handleExecuteTransaction = async () => {
-    // if transaction has already been successfully executed,
+  const handleExecuteCreation = async () => {
+    // if DAO has been created, we don't need to do anything
     // do not execute it again, close the modal
     // TODO: navigate to new dao when available
-    if (transactionState === TransactionState.SUCCESS) {
+    if (creationProcessState === TransactionState.SUCCESS) {
       handleCloseModal();
       return;
     }
 
-    // if no transaction is set, or transaction already running, do nothing.
-    if (!transaction || transactionState === TransactionState.LOADING) {
+    // if no creation data is set, or transaction already running, do nothing.
+    if (!daoCreationData || creationProcessState === TransactionState.LOADING) {
       console.log('Transaction is running');
       return;
     }
@@ -87,14 +83,14 @@ const CreateDaoProvider: React.FC<Props> = ({children}) => {
 
   // Handler for modal close; don't close modal if transaction is still running
   const handleCloseModal = () => {
-    if (transactionState !== TransactionState.LOADING) setShowModal(false);
+    if (creationProcessState !== TransactionState.LOADING) setShowModal(false);
   };
 
   /*************************************************
    *                   Helpers                     *
    *************************************************/
   // get dao configurations
-  const getDaoConfig = useCallback((): DaoConfig => {
+  const getDaoConfig = useCallback(() => {
     const {daoName} = getValues();
     return {
       name: daoName,
@@ -103,7 +99,7 @@ const CreateDaoProvider: React.FC<Props> = ({children}) => {
   }, [getValues]);
 
   // get voting configuration
-  const getVotingConfig = useCallback((): VotingConfig => {
+  const getVotingConfig = useCallback(() => {
     const {
       minimumApproval,
       minimumParticipation,
@@ -167,25 +163,25 @@ const CreateDaoProvider: React.FC<Props> = ({children}) => {
 
   // run dao creation transaction
   const createDao = useCallback(async () => {
-    setTransactionState(TransactionState.LOADING);
+    setCreationProcessState(TransactionState.LOADING);
 
     try {
       const address =
         membership === 'token'
-          ? await createErc20(transaction as ICreateDaoERC20Voting)
-          : await createWhitelist(transaction as ICreateDaoWhitelistVoting);
+          ? await createErc20(daoCreationData as ICreateDaoERC20Voting)
+          : await createWhitelist(daoCreationData as ICreateDaoWhitelistVoting);
 
       // temporary, considering once transaction is successfully executed,
       // we can navigate to the new dao
       console.log('Newly created DAO address', address);
-      setTransaction(undefined);
-      setTransactionState(TransactionState.SUCCESS);
+      setDaoCreationData(undefined);
+      setCreationProcessState(TransactionState.SUCCESS);
     } catch (error) {
-      // unsuccessful execution, keep transaction for retry
+      // unsuccessful execution, keep creation data for retry
       console.log(error);
-      setTransactionState(TransactionState.ERROR);
+      setCreationProcessState(TransactionState.ERROR);
     }
-  }, [createErc20, createWhitelist, membership, transaction]);
+  }, [createErc20, createWhitelist, membership, daoCreationData]);
 
   /*************************************************
    *                    Render                     *
@@ -194,11 +190,11 @@ const CreateDaoProvider: React.FC<Props> = ({children}) => {
     <CreateDaoContext.Provider value={{handlePublishDao}}>
       {children}
       <PublishDaoModal
-        state={transactionState || TransactionState.WAITING}
+        state={creationProcessState || TransactionState.WAITING}
         isOpen={showModal}
         onClose={handleCloseModal}
-        callback={handleExecuteTransaction}
-        closeOnDrag={transactionState !== TransactionState.LOADING}
+        callback={handleExecuteCreation}
+        closeOnDrag={creationProcessState !== TransactionState.LOADING}
       />
     </CreateDaoContext.Provider>
   );
