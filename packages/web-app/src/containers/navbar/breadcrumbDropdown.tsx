@@ -24,8 +24,9 @@ export const NavlinksDropdown: React.FC = () => {
       sideOffset={8}
       listItems={NAV_LINKS_DATA.map(d => ({
         component: <NavLink caller="dropdown" data={d} />,
-        // Navlink component already takes care of callback
-        callback: (_: Event) => {},
+        // Navlink component already takes care of callback. Eventually we
+        // should probably make this optional on the dropdown component.
+        callback: () => {},
       }))}
     />
   );

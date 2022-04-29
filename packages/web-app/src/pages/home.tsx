@@ -18,7 +18,7 @@ const Home: React.FC = () => {
         <Title>{t('title.part1')}</Title>
         <Subtitle>{t('title.part2')}</Subtitle>
       </div>
-      <div className="space-y-1 m-10">
+      <div className="m-10 space-y-1 ">
         <ActionListItem
           title={'Dao: 0x1234'}
           subtitle={'ethereum mainnet'}
