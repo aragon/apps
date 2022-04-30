@@ -38,11 +38,14 @@ const ContentWrapper = styled.div.attrs({
 const Title = styled.h1.attrs({
   className:
     'text-ui-0 font-bold desktop:text-6xl text-4xl desktop:text-left text-center',
-})``;
+})`
+  font-family: Syne;
+  line-height: 60px;
+`;
 
 const Subtitle = styled.h3.attrs({
   className:
-    'text-ui-0 text-lg font-normal text-center desktop:text-left text-center',
+    'text-ui-0 text-lg font-normal text-center desktop:text-left text-center leading-8',
 })``;
 
 const StyledImage = styled.img.attrs({
