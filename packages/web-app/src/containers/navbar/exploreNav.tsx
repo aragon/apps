@@ -24,7 +24,10 @@ const ExploreNav: React.FC<DesktopNavProp> = props => {
         <LogoContainer src={Logo} />
         <ActionsWrapper>
           {isDesktop ? (
-            <SearchInput placeholder="Type to search ..." value="" />
+            <SearchInput
+              placeholder={t('placeHolders.searchTokens')}
+              value=""
+            />
           ) : (
             <SearchIcon />
           )}
@@ -47,7 +50,7 @@ const Container = styled.header.attrs({
 })``;
 
 const Menu = styled.nav.attrs({
-  className: `flex mx-auto justify-between items-center max-w-screen-wide
+  className: `flex mx-auto justify-between items-center
      px-2 desktop:px-5 py-3 bg-primary-400`,
 })``;
 

@@ -35,11 +35,11 @@ const Explore: React.FC = () => {
 };
 
 const Container = styled.div.attrs({
-  className: 'max-w-screen-wide mx-auto',
+  className: 'mx-auto',
 })``;
 
-const CTA = styled.div.attrs({className: 'flex mb-4 mx-auto space-x-3'})`
-  width: 1130px;
-`;
+const CTA = styled.div.attrs({
+  className: 'flex desktop:flex-row flex-col mb-4 space-x-3 max-w-fit px-10',
+})``;
 
 export default Explore;
