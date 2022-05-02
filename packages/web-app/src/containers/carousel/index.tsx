@@ -1,4 +1,4 @@
-import React, {ReactNode, useMemo} from 'react';
+import React, {useMemo} from 'react';
 import {Carousel as ReactResponsiveCarousel} from 'react-responsive-carousel';
 import styled from 'styled-components';
 import {useNavigate} from 'react-router-dom';
@@ -22,7 +22,7 @@ const Carousel: React.FC = () => {
           onClick={navigate}
         />
       )),
-    []
+    [navigate]
   );
 
   if (isDesktop) {
