@@ -21,10 +21,12 @@ const Footer: React.FC = () => {
 
   return (
     <Container data-testid="footer">
-      <GradientWrapper>
-        <GradientLeft src={Green} />
-        <GradientRight src={Purple} />
-      </GradientWrapper>
+      <GradientContainer>
+        <GradientWrapper>
+          <GradientGreen src={Green} />
+          <GradientPurple src={Purple} />
+        </GradientWrapper>
+      </GradientContainer>
       <ActionsContainer>
         <ActionItemsWrapper>
           <LogoContainer src={IconLogo} />
@@ -41,12 +43,12 @@ const Footer: React.FC = () => {
 
 const Container = styled.div.attrs({
   className:
-    'bottom-0 col-span-full bg-primary-400 relative overflow-hidden desktop:h-11 h-40',
+    'bottom-0 col-span-full bg-primary-400 overflow-hidden desktop:h-11 h-35',
 })``;
 
 const ActionsContainer = styled.div.attrs({
   className:
-    'flex desktop:flex-row flex-col space-y-4 desktop:space-y-0 absolute desktop:h-full top-0 justify-between items-center px-5 w-full py-4 desktop:py-0',
+    'flex desktop:flex-row flex-col space-y-4 desktop:space-y-0 h-full desktop:justify-between justify-center items-center px-5 w-full desktop:py-0 relative',
 })``;
 
 const ActionItemsWrapper = styled.div.attrs({
@@ -54,16 +56,20 @@ const ActionItemsWrapper = styled.div.attrs({
     'flex desktop:flex-row flex-col items-center justify-center desktop:space-x-4 space-y-4 desktop:space-y-0',
 })``;
 
-const GradientLeft = styled.img.attrs({
-  className: 'h-40 -mt-12 -ml-8',
+const GradientGreen = styled.img.attrs({
+  className: 'h-50 absolute -top-16 -left-16',
 })``;
 
-const GradientRight = styled.img.attrs({
-  className: 'desktop:h-40 h-30 -mt-12 -mr-7',
+const GradientPurple = styled.img.attrs({
+  className: 'desktop:h-40 h-30 absolute -right-5 desktop:-top-11 top-16',
+})``;
+
+const GradientContainer = styled.div.attrs({
+  className: 'flex justify-between desktop:flex-row flex-col',
 })``;
 
 const GradientWrapper = styled.div.attrs({
-  className: 'flex justify-between desktop:flex-row flex-col',
+  className: 'relative w-full h-full',
 })``;
 
 const LogoContainer = styled.img.attrs({

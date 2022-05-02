@@ -18,15 +18,15 @@ function Hero() {
               {t('explore.hero.subtitle1')} <br /> {t('explore.hero.subtitle2')}
             </Subtitle>
           </ContentWrapper>
-          <div className="h-full">
+          <ImageWrapper>
             <StyledImage src={Logo} />
-          </div>
-          <GradientWrapper>
-            <div className="relative w-full h-full">
+          </ImageWrapper>
+          <GradientContainer>
+            <GradientWrapper>
               <GradientGreen src={Green} />
               <GradientPurple src={Purple} />
-            </div>
-          </GradientWrapper>
+            </GradientWrapper>
+          </GradientContainer>
         </Wrapper>
       </Layout>
     </Container>
@@ -58,12 +58,20 @@ const Subtitle = styled.h3.attrs({
     'text-ui-0 desktop:text-lg text-base font-normal text-center desktop:text-left text-center leading-3 desktop:leading-3.75',
 })``;
 
+const ImageWrapper = styled.div.attrs({
+  className: 'h-full',
+})``;
+
 const StyledImage = styled.img.attrs({
   className: 'w-71 hidden desktop:block',
 })``;
 
-const GradientWrapper = styled.div.attrs({
+const GradientContainer = styled.div.attrs({
   className: 'absolute top-64 desktop:top-20 right-0 w-71',
+})``;
+
+const GradientWrapper = styled.div.attrs({
+  className: 'relative w-full h-full',
 })``;
 
 const GradientGreen = styled.img.attrs({

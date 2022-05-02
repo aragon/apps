@@ -37,7 +37,7 @@ const Carousel: React.FC = () => {
           showArrows={false}
           showStatus={false}
           transitionTime={0}
-          centerSlidePercentage={90}
+          centerSlidePercentage={92}
           renderIndicator={(onClickHandler, isSelected, index, label) => {
             if (isSelected) {
               return (
