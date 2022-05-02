@@ -18,6 +18,7 @@ const Explore: React.FC = () => {
   const {open} = useGlobalModalContext();
   const navigate = useNavigate();
 
+  // TODO move this into the navbar
   const handleWalletButtonClick = () => {
     if (isConnected) {
       open('wallet');

@@ -17,18 +17,10 @@ import ExplorePage from 'pages/explore';
 import * as paths from 'utils/paths';
 import DaoSelectMenu from 'containers/navbar/daoSelectMenu';
 
-const TokensPage = lazy(() => import('pages/tokens'));
 const FinancePage = lazy(() => import('pages/finance'));
-const NotFoundPage = lazy(() => import('pages/notFound'));
-const CommunityPage = lazy(() => import('pages/community'));
-const TransfersPage = lazy(() => import('pages/transfers'));
 const GovernancePage = lazy(() => import('pages/governance'));
-const ProposalPage = lazy(() => import('pages/proposal'));
-const NewDepositPage = lazy(() => import('pages/newDeposit'));
-const NewWithdrawPage = lazy(() => import('pages/newWithdraw'));
-const CreateDAOPage = lazy(() => import('pages/createDAO'));
-const NewProposalPage = lazy(() => import('pages/newProposal'));
-const SettingsPage = lazy(() => import('pages/settings'));
+const CommunityPage = lazy(() => import('pages/community'));
+const NotFoundPage = lazy(() => import('pages/notFound'));
 
 function App() {
   const {pathname} = useLocation();
@@ -38,51 +30,55 @@ function App() {
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  function LayoutWrapper() {
-    return (
-      <div className="flex flex-col mb-14 desktop:mb-10 bg-ui-50">
-        <Navbar />
-        <Layout>
-          <Outlet />
-        </Layout>
-      </div>
-    );
-  }
-
   return (
-    <>
+    <div className="flex flex-col mb-14 desktop:mb-10 bg-ui-50">
       {/* TODO: replace with loading indicator */}
       <Suspense fallback={<p>Loading...</p>}>
         <Routes>
-          <Route path={paths.Landing} element={<ExplorePage />} />
-          <Route path="/" element={<LayoutWrapper />}>
-            <Route path={paths.NewDeposit} element={<NewDepositPage />} />
-            <Route path={paths.NewDeposit} element={<NewDepositPage />} />
-            <Route path={paths.NewWithDraw} element={<NewWithdrawPage />} />
-            <Route path={paths.CreateDAO} element={<CreateDAOPage />} />
-            <Route path={paths.Community} element={<CommunityPage />} />
-            <Route path={paths.Finance} element={<FinancePage />} />
-            <Route path={paths.Dashboard} element={<CommunityPage />} />
-            <Route path={paths.Governance} element={<GovernancePage />} />
-            <Route path={paths.NewProposal} element={<NewProposalPage />} />
-            <Route path={paths.Proposal} element={<ProposalPage />} />
-            <Route path={paths.AllTokens} element={<TokensPage />} />
-            <Route path={paths.AllTransfers} element={<TransfersPage />} />
-            <Route path={paths.Settings} element={<SettingsPage />} />
+          <Route path="/" element={<ExplorePage />} />
+          {/* Reintroduce code below */}
+          {/* <Route element={<ExploreLayout />}>
+          </Route> */}
+          <Route element={<DaoLayout />}>
+            <Route path=":network/:dao">
+              <Route path="finance/*" element={<FinancePage />} />
+              <Route path="governance/*" element={<GovernancePage />} />
+              <Route path="community" element={<CommunityPage />} />
+            </Route>
             <Route path={paths.NotFound} element={<NotFoundPage />} />
-            <Route
-              path="*"
-              element={<Navigate to={paths.NotFound} replace />}
-            />
-            <Route path={paths.NewDeposit} element={<NewDepositPage />} />
           </Route>
+          <Route path="*" element={<Navigate to={paths.NotFound} replace />} />
         </Routes>
       </Suspense>
       <DaoSelectMenu />
       <WalletMenu />
-    </>
+    </div>
   );
 }
+
+// const ExploreLayout: React.FC = () => (
+//   <>
+//     {/* Replace Navbar with explorer Navbar */}
+//     <Navbar />
+//     <LayoutRoute />
+//   </>
+// );
+
+const DaoLayout: React.FC = () => (
+  <>
+    <Navbar />
+    <LayoutRoute />
+  </>
+);
+
+// Components that are rendered via the Route element prop need to be expressed
+// called via the Outlet component. Calling them as children does not work. This
+// why simply passing Layout won't work.
+const LayoutRoute: React.FC = () => (
+  <Layout>
+    <Outlet />
+  </Layout>
+);
 
 export const Layout = styled.main.attrs({
   className:
