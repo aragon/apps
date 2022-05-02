@@ -18,7 +18,7 @@ const CTACard: React.FC<Props> = props => {
   return (
     <CTACardWrapper className={props.className}>
       <Content>
-        <img src={props.imgSrc} />
+        <StyledImg src={props.imgSrc} />
         <Title>{props.title}</Title>
         <Subtitle>{props.subtitle}</Subtitle>
       </Content>
@@ -30,6 +30,7 @@ const CTACard: React.FC<Props> = props => {
           ? {mode: 'primary'}
           : {mode: 'ghost', disabled: true})}
         onClick={() => props.onClick(props.path)}
+        className=""
       />
     </CTACardWrapper>
   );
@@ -38,14 +39,21 @@ const CTACard: React.FC<Props> = props => {
 export default CTACard;
 
 const CTACardWrapper = styled.div.attrs({
-  className: 'p-3 space-y-3 rounded-xl' as string,
+  className:
+    'flex flex-col desktop:items-start items-center p-3 space-y-3 rounded-xl' as string,
 })`
   background: rgba(255, 255, 255, 0.68);
   backdrop-filter: blur(50px);
 `;
 
-const Content = styled.div.attrs({className: 'space-y-2'})``;
+const Content = styled.div.attrs({
+  className: 'flex desktop:items-start items-center flex-col space-y-2',
+})``;
 
 const Title = styled.p.attrs({className: 'text-2xl font-bold text-ui-800'})``;
 
 const Subtitle = styled.p.attrs({className: 'text-ui-600'})``;
+
+const StyledImg = styled.img.attrs({})`
+  height: 88px;
+`;
