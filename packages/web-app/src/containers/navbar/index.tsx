@@ -75,13 +75,16 @@ const Navbar: React.FC = () => {
     });
   };
 
-  return isDesktop ? (
-    <DesktopNav
-      {...(processName ? {...processes[processName]} : {})}
-      onDaoSelect={handleOnDaoSelect}
-      onWalletClick={handleWalletButtonClick}
-    />
-  ) : (
+  if (isDesktop) {
+    return (
+      <DesktopNav
+        {...(processName ? {...processes[processName]} : {})}
+        onDaoSelect={handleOnDaoSelect}
+        onWalletClick={handleWalletButtonClick}
+      />
+    );
+  }
+  return (
     <MobileNav
       isProcess={processName !== undefined}
       onDaoSelect={handleOnDaoSelect}
