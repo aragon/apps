@@ -15,14 +15,12 @@ const Carousel: React.FC = () => {
   const ctaList = useMemo(
     () =>
       CTACards.map(card => (
-        <div className="pb-3 px-0">
-          <CTACard
-            key={card.title}
-            {...card}
-            className="flex-1"
-            onClick={navigate}
-          />
-        </div>
+        <CTACard
+          key={card.title}
+          {...card}
+          className="flex-1"
+          onClick={navigate}
+        />
       )),
     []
   );
