@@ -33,9 +33,11 @@ const Carousel: React.FC = () => {
         <StyledCarousel
           swipeable
           emulateTouch
+          centerMode
           showArrows={false}
           showStatus={false}
-          centerSlidePercentage={80}
+          transitionTime={0}
+          centerSlidePercentage={90}
           renderIndicator={(onClickHandler, isSelected, index, label) => {
             if (isSelected) {
               return (
