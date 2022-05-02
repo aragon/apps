@@ -15,8 +15,8 @@ jobs:
           pip install --user pyyaml packaging
       - name: Install ipfs-cluster-ctl
         run: |
-          wget https://dist.ipfs.io/ipfs-cluster-ctl/v0.14.1/ipfs-cluster-ctl_v0.14.1_linux-amd64.tar.gz
-          tar xvfz ipfs-cluster-ctl_v0.14.1_linux-amd64.tar.gz
+          wget https://dist.ipfs.io/ipfs-cluster-ctl/v1.0.0/ipfs-cluster-ctl_v1.0.0_linux-amd64.tar.gz
+          tar xvfz ipfs-cluster-ctl_v1.0.0_linux-amd64.tar.gz
       - name: Find Previous WebApp Deployment
         uses: peter-evans/find-comment@v1
         id: fcwebapp
