@@ -7,7 +7,7 @@ import {useTranslation} from 'react-i18next';
 import {useWallet} from 'hooks/useWallet';
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 import {useGlobalModalContext} from 'context/globalModals';
-import {constants} from 'ethers';
+import {getUserFriendlyWalletLabel} from 'utils/library';
 
 type CommunityAddressesModalProps = {
   tokenMembership: boolean;
@@ -35,25 +35,15 @@ const CommunityAddressesModal: React.FC<CommunityAddressesModalProps> = ({
     [searchValue]
   );
 
-  const getDisplayedWalletAddress = useCallback(
-    (value: string) => {
-      switch (value) {
-        case connectedWalletAddress:
-          return t('labels.myWallet');
-        case constants.AddressZero:
-          return t('labels.daoTreasury');
-        default:
-          return value;
-      }
-    },
-    [connectedWalletAddress, t]
-  );
-
   const filteredAddressList = useMemo(() => {
     return (tokenMembership ? wallets : whitelistWallets)
       .filter(filterValidator)
       .map(({address, amount}: {address: string; amount: string}) => ({
-        wallet: getDisplayedWalletAddress(address),
+        wallet: getUserFriendlyWalletLabel(
+          address,
+          connectedWalletAddress || '',
+          t
+        ),
         tokenAmount: `${amount} ${tokenSymbol}`,
       }));
   }, [
@@ -61,7 +51,8 @@ const CommunityAddressesModal: React.FC<CommunityAddressesModalProps> = ({
     wallets,
     whitelistWallets,
     filterValidator,
-    getDisplayedWalletAddress,
+    connectedWalletAddress,
+    t,
     tokenSymbol,
   ]);
 

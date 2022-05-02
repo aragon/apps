@@ -14,6 +14,7 @@ import Row from './row';
 import Header from './header';
 import Footer from './footer';
 import {useWallet} from 'hooks/useWallet';
+import {constants} from 'ethers';
 
 const AddWallets: React.FC = () => {
   const {t} = useTranslation();
@@ -108,7 +109,7 @@ const AddWallets: React.FC = () => {
               ),
               callback: () => {
                 remove();
-                append([{address: t('labels.daoTreasury'), amount: '0'}]);
+                append([{address: constants.AddressZero, amount: '0'}]);
                 resetField('tokenTotalSupply');
               },
             },

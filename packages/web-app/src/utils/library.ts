@@ -1,5 +1,6 @@
 // Library utils / Ethers for now
-import {BigNumberish, ethers} from 'ethers';
+import {BigNumberish, constants, ethers} from 'ethers';
+import {TFunction} from 'react-i18next';
 
 export function formatUnits(amount: BigNumberish, decimals: number) {
   if (amount.toString().includes('.') || !decimals) {
@@ -36,4 +37,29 @@ export async function handleClipboardActions(
  */
 export const isOnlyWhitespace = (value: string) => {
   return value.trim() === '';
+};
+
+/**
+ * Return user friendly wallet address label if available
+ * @param value address
+ * @param connectedWalletAddress user connected address
+ * @param t translation function
+ * @returns user friendly label or wallet address
+ */
+export const getUserFriendlyWalletLabel = (
+  value: string,
+  connectedWalletAddress: string,
+  t: TFunction<'translation', undefined>
+) => {
+  switch (value) {
+    case '':
+      return '';
+    case connectedWalletAddress:
+      return t('labels.myWallet');
+    case constants.AddressZero:
+      return t('labels.daoTreasury');
+
+    default:
+      return value;
+  }
 };

@@ -9,7 +9,7 @@ type SubgraphNetworkUrl = Record<SupportedNetworks, string | undefined>;
 // TODO: Replace the proper subgraph url with the one below once QA is done so that
 // the older version of the contracts can be used for further integration with the rest
 // of the application.
-// 'https://api.thegraph.com/subgraphs/name/aragon/aragon-zaragoza-arbitrum-rinkeby',
+// 'https://api.thegraph.com/subgraphs/name/rekard0/rekard0-zaragoza-rinkeby',
 export const SUBGRAPH_API_URL: SubgraphNetworkUrl = {
   ethereum: undefined,
   rinkeby:
@@ -19,7 +19,7 @@ export const SUBGRAPH_API_URL: SubgraphNetworkUrl = {
     'https://api.thegraph.com/subgraphs/name/aragon/aragon-zaragoza-mumbai',
   arbitrum: undefined,
   'arbitrum-test':
-    'https://api.thegraph.com/subgraphs/name/rekard0/rekard0-zaragoza-rinkeby',
+    'https://api.thegraph.com/subgraphs/name/aragon/aragon-zaragoza-arbitrum-rinkeby',
 };
 
 export const BASE_URL = 'https://api.coingecko.com/api/v3';

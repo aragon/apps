@@ -42,7 +42,7 @@ export type CreateDaoFormData = {
 };
 
 // both wallets and whitelistWallets values are updated
-// afterwars to have the acual wallet address instead of
+// afterwards to have the actual wallet address instead of
 // the My Wallet string
 const defaultValues = {
   tokenName: '',
@@ -204,7 +204,6 @@ const CreateDAO: React.FC = () => {
             <GoLive />
           </Step>
         </FullScreenStepper>
-        <>{JSON.stringify(formMethods.watch(), null, 2)}</>
       </CreateDaoProvider>
     </FormProvider>
   );
