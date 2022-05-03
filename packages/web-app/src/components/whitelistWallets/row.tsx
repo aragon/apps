@@ -20,7 +20,6 @@ type WhitelistWalletsRowProps = {
   index: number;
   onResetEntry: (index: number) => void;
   onDeleteEntry: (index: number) => void;
-  onDuplicateEntry: (index: number) => void;
 };
 
 export const Row = ({index, ...props}: WhitelistWalletsRowProps) => {

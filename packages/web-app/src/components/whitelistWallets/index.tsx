@@ -76,12 +76,6 @@ export const WhitelistWallets = () => {
     trigger('whitelistWallets');
   };
 
-  // duplicate wallet
-  const handleDuplicateEntry = (index: number) => {
-    append(controlledWallets[index]);
-    trigger('whitelistWallets');
-  };
-
   return (
     <Container>
       <TableContainer>
@@ -93,7 +87,6 @@ export const WhitelistWallets = () => {
               index={index}
               onResetEntry={handleResetEntry}
               onDeleteEntry={handleDeleteEntry}
-              onDuplicateEntry={handleDuplicateEntry}
             />
           </div>
         ))}
