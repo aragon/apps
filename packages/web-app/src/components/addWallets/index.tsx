@@ -8,22 +8,24 @@ import {
   Dropdown,
 } from '@aragon/ui-components';
 import {useTranslation} from 'react-i18next';
-import {useFormContext, useFieldArray} from 'react-hook-form';
+import {useFormContext, useFieldArray, useWatch} from 'react-hook-form';
 
 import Row from './row';
 import Header from './header';
 import Footer from './footer';
 import {useWallet} from 'hooks/useWallet';
+import {constants} from 'ethers';
 
 const AddWallets: React.FC = () => {
   const {t} = useTranslation();
-  const {control, watch, setValue, resetField, trigger} = useFormContext();
-  const watchFieldArray = watch('wallets');
-  const {fields, append, remove, update} = useFieldArray({
+  const {address} = useWallet();
+
+  const {control, setValue, resetField, trigger} = useFormContext();
+  const watchFieldArray = useWatch({name: 'wallets', control: control});
+  const {fields, append, remove, insert} = useFieldArray({
     name: 'wallets',
     control,
   });
-  const {address} = useWallet();
 
   const controlledFields = fields.map((field, index) => {
     return {
@@ -31,6 +33,16 @@ const AddWallets: React.FC = () => {
       ...(watchFieldArray && {...watchFieldArray[index]}),
     };
   });
+
+  useEffect(() => {
+    if (
+      address &&
+      watchFieldArray[1]?.address !== address &&
+      controlledFields[1]?.address !== address
+    ) {
+      insert(1, {address: address, amount: '0'});
+    }
+  }, [address, controlledFields, insert, watchFieldArray]);
 
   const resetDistribution = () => {
     controlledFields.forEach((_, index) => {
@@ -46,14 +58,6 @@ const AddWallets: React.FC = () => {
       trigger(`wallets.${controlledFields.length}.address`);
     }, 50);
   };
-
-  useEffect(() => {
-    if (address) {
-      update(0, {address: t('labels.daoTreasury'), amount: '0'});
-      update(1, {address: address, amount: '0'});
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <Container data-testid="add-wallets">
@@ -105,7 +109,7 @@ const AddWallets: React.FC = () => {
               ),
               callback: () => {
                 remove();
-                append([{address: t('labels.daoTreasury'), amount: '0'}]);
+                append([{address: constants.AddressZero, amount: '0'}]);
                 resetField('tokenTotalSupply');
               },
             },

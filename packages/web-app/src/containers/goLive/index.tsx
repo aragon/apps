@@ -14,7 +14,7 @@ import Community from './community';
 import Governance from './governance';
 import goLive from 'public/goLive.svg';
 import {Landing} from 'utils/paths';
-import {useTransactionContext} from 'context/transactions';
+import {useCreateDaoContext} from 'context/createDao';
 
 export const GoLiveHeader: React.FC = () => {
   const {t} = useTranslation();
@@ -62,7 +62,7 @@ export const GoLiveFooter: React.FC = () => {
   const {watch} = useFormContext();
   const {reviewCheck} = watch();
   const {t} = useTranslation();
-  const {setIsModalOpen} = useTransactionContext();
+  const {handlePublishDao} = useCreateDaoContext();
 
   const IsButtonDisabled = () =>
     !Object.values(reviewCheck).every(v => v === true);
@@ -73,7 +73,7 @@ export const GoLiveFooter: React.FC = () => {
         size="large"
         iconRight={<IconChevronRight />}
         label={t('createDAO.review.button')}
-        onClick={() => setIsModalOpen(true)}
+        onClick={handlePublishDao}
         disabled={IsButtonDisabled()}
       />
     </div>

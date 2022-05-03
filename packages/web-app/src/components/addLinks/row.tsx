@@ -1,10 +1,10 @@
 import {
   AlertInline,
   ButtonIcon,
+  Dropdown,
   IconMenuVertical,
   Label,
   ListItemAction,
-  Popover,
   TextInput,
 } from '@aragon/ui-components';
 import React, {useCallback} from 'react';
@@ -162,30 +162,27 @@ const LinkRow: React.FC<LinkRowProps> = ({index, onDelete}) => {
 
       <Break />
       <ButtonContainer>
-        <Popover
-          side="bottom"
+        <Dropdown
           align="end"
-          width={156}
-          content={
-            <div className="p-1.5">
-              <ListItemAction
-                title={t('labels.removeLink')}
-                {...(typeof onDelete === 'function'
-                  ? {onClick: () => onDelete(index)}
-                  : {mode: 'disabled'})}
-                bgWhite
-              />
-            </div>
+          sideOffset={8}
+          trigger={
+            <ButtonIcon
+              mode="ghost"
+              size="large"
+              bgWhite
+              icon={<IconMenuVertical />}
+              data-testid="trigger"
+            />
           }
-        >
-          <ButtonIcon
-            mode="ghost"
-            size="large"
-            bgWhite
-            icon={<IconMenuVertical />}
-            data-testid="trigger"
-          />
-        </Popover>
+          listItems={[
+            {
+              component: (
+                <ListItemAction title={t('labels.removeLink')} bgWhite />
+              ),
+              callback: () => onDelete?.(index),
+            },
+          ]}
+        />
       </ButtonContainer>
     </Container>
   );

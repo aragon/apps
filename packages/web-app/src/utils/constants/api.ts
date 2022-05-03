@@ -2,6 +2,14 @@ import {SupportedNetworks} from './chains';
 
 type SubgraphNetworkUrl = Record<SupportedNetworks, string | undefined>;
 
+// NOTE: I am temporarily pointing to the **proper** and **latest** version
+// of subgraph (with the dummy data) so we can QA financial screens properly
+// Older version of the contracts have no DAOs with withdraws yet
+
+// TODO: Replace the proper subgraph url with the one below once QA is done so that
+// the older version of the contracts can be used for further integration with the rest
+// of the application.
+// 'https://api.thegraph.com/subgraphs/name/rekard0/rekard0-zaragoza-rinkeby',
 export const SUBGRAPH_API_URL: SubgraphNetworkUrl = {
   ethereum: undefined,
   rinkeby:
@@ -30,4 +38,4 @@ export const ASSET_PLATFORMS: Record<SupportedNetworks, string | null> = {
 };
 
 // to be removed
-export const TEST_DAO = '0x4d68eaa86557f666decf789a8ab3d59fe390ff42';
+export const TEST_DAO = '0xf1ce79a45615ce1d32af6422ed77b9b7ffc35c88';

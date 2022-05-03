@@ -179,10 +179,10 @@
     "@web3-react/types" "^6.0.7"
     tiny-warning "^1.0.3"
 
-"@aragon/sdk-client@0.0.3-alpha":
-  version "0.0.3-alpha"
-  resolved "https://registry.yarnpkg.com/@aragon/sdk-client/-/sdk-client-0.0.3-alpha.tgz#0ccda7265c7c0be7a73dbec22acc37c605a025f8"
-  integrity sha512-uVQZL7WMFiHAQAZSpScES+0cJkf7lFpZ9w4/SiPvmhTtPptDg+55lmX9vfu+N1yZ3IlchUC2HoGXC3R4Q6uE2w==
+"@aragon/sdk-client@^0.0.5-alpha":
+  version "0.0.5-alpha"
+  resolved "https://registry.yarnpkg.com/@aragon/sdk-client/-/sdk-client-0.0.5-alpha.tgz#f9d5fa002ba1e6489b3c11ada7d2793e011a2399"
+  integrity sha512-sX8hqYWy3Jqo9GVYz1EGoeWJOUPL0kHambK3yRxTfe1mQDqiBmN782EFAIYfB/QD2HRaty+3cjZylYH3PpqdRw==
   dependencies:
     "@aragon/core-contracts-ethers" "^0.0.1-alpha"
     "@aragon/sdk-common" "^0.0.1-alpha"
@@ -192,7 +192,7 @@
     "@ethersproject/providers" "^5.5.0"
     "@ethersproject/wallet" "^5.6.0"
 
-"@aragon/sdk-common@0.0.1-alpha", "@aragon/sdk-common@^0.0.1-alpha":
+"@aragon/sdk-common@^0.0.1-alpha":
   version "0.0.1-alpha"
   resolved "https://registry.yarnpkg.com/@aragon/sdk-common/-/sdk-common-0.0.1-alpha.tgz#28c4f8c1343bd5cfcd2ac3c7e3c8a9b828abb69c"
   integrity sha512-D2aQThCsXn+NA9LifTudPB9dCUCzY1G8lOHMQ/JAA8SaRnUt8oNVbVhE9RPeXotYRbAKiG8l3jl0rXdlNSU9Ew==

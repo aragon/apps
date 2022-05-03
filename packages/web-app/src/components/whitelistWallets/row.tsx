@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   ButtonIcon,
   IconMenuVertical,
@@ -7,26 +6,33 @@ import {
   ValueInput,
   Dropdown,
 } from '@aragon/ui-components';
-import {t} from 'i18next';
-import {Controller, useFieldArray, useFormContext} from 'react-hook-form';
+import React, {useMemo} from 'react';
 import styled from 'styled-components';
+import {useTranslation} from 'react-i18next';
+import {Controller, useFormContext, useWatch} from 'react-hook-form';
+
 import {useWallet} from 'hooks/useWallet';
-import {handleClipboardActions} from 'utils/library';
 import {validateAddress} from 'utils/validators';
 import {WhitelistWallet} from 'pages/createDAO';
+import {handleClipboardActions} from 'utils/library';
 
 type WhitelistWalletsRowProps = {
   index: number;
+  onResetEntry: (index: number) => void;
+  onDeleteEntry: (index: number) => void;
+  onDuplicateEntry: (index: number) => void;
 };
 
-export const Row = ({index}: WhitelistWalletsRowProps) => {
-  const {control, watch, trigger} = useFormContext();
+export const Row = ({index, ...props}: WhitelistWalletsRowProps) => {
+  const {t} = useTranslation();
   const {address} = useWallet();
-  const {remove, update, append} = useFieldArray({
-    control,
-    name: 'whitelistWallets',
-  });
-  const whitelistWallets: WhitelistWallet[] = watch('whitelistWallets');
+
+  const {control} = useFormContext();
+  const whitelistWallets = useWatch({name: 'whitelistWallets', control});
+
+  const shouldDisable = useMemo(() => {
+    return index === 0 && whitelistWallets[index].address === address;
+  }, [address, index, whitelistWallets]);
 
   const addressValidator = (address: string, index: number) => {
     let validationResult = validateAddress(address);
@@ -34,7 +40,7 @@ export const Row = ({index}: WhitelistWalletsRowProps) => {
       whitelistWallets.forEach(
         (wallet: WhitelistWallet, walletIndex: number) => {
           if (address === wallet.address && index !== walletIndex) {
-            validationResult = t('errors.duplicateAddress') as string;
+            validationResult = t('errors.duplicateAddress');
           }
         }
       );
@@ -44,10 +50,10 @@ export const Row = ({index}: WhitelistWalletsRowProps) => {
   return (
     <Controller
       name={`whitelistWallets.${index}.address`}
-      defaultValue={null}
+      defaultValue=""
       control={control}
       rules={{
-        required: t('errors.required.walletAddress') as string,
+        required: t('errors.required.walletAddress'),
         validate: value => addressValidator(value, index),
       }}
       render={({field: {onChange, value}, fieldState: {error}}) => (
@@ -61,7 +67,7 @@ export const Row = ({index}: WhitelistWalletsRowProps) => {
               mode="default"
               placeholder="0x..."
               adornmentText={value ? t('labels.copy') : t('labels.paste')}
-              // disabled={index === 0}
+              disabled={shouldDisable}
               onAdornmentClick={() => handleClipboardActions(value, onChange)}
             />
             {error?.message && (
@@ -72,11 +78,12 @@ export const Row = ({index}: WhitelistWalletsRowProps) => {
             side="bottom"
             align="start"
             sideOffset={4}
+            disabled={shouldDisable}
             trigger={
               <ButtonIcon
                 size="large"
                 mode="secondary"
-                disabled={index === 0}
+                disabled={shouldDisable}
                 icon={<IconMenuVertical />}
                 data-testid="trigger"
               />
@@ -90,8 +97,7 @@ export const Row = ({index}: WhitelistWalletsRowProps) => {
                   />
                 ),
                 callback: () => {
-                  append(whitelistWallets[index]);
-                  trigger('whitelistWallets');
+                  props.onDuplicateEntry(index);
                 },
               },
               {
@@ -102,8 +108,7 @@ export const Row = ({index}: WhitelistWalletsRowProps) => {
                   />
                 ),
                 callback: () => {
-                  trigger('whitelistWallets');
-                  update(index, {address: ''});
+                  props.onResetEntry(index);
                 },
               },
               {
@@ -114,7 +119,7 @@ export const Row = ({index}: WhitelistWalletsRowProps) => {
                   />
                 ),
                 callback: () => {
-                  remove(index);
+                  props.onDeleteEntry(index);
                 },
               },
             ]}

@@ -9,12 +9,15 @@ import {
   NumberInput,
   ValueInput,
 } from '@aragon/ui-components';
-import React, {useState} from 'react';
 import styled from 'styled-components';
+import React, {useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Controller, useFormContext} from 'react-hook-form';
 
-import {handleClipboardActions} from 'utils/library';
+import {
+  getUserFriendlyWalletLabel,
+  handleClipboardActions,
+} from 'utils/library';
 import {useWallet} from 'hooks/useWallet';
 import {validateAddress} from 'utils/validators';
 
@@ -77,6 +80,7 @@ const WalletRow: React.FC<WalletRowProps> = ({index, onDelete}) => {
     <Container data-testid="wallet-row">
       <LabelContainer>
         <Controller
+          defaultValue=""
           name={`wallets.${index}.address`}
           control={control}
           rules={{
@@ -94,7 +98,7 @@ const WalletRow: React.FC<WalletRowProps> = ({index, onDelete}) => {
               <ValueInput
                 mode={error ? 'critical' : 'default'}
                 name={name}
-                value={value === address ? t('labels.myWallet') : value}
+                value={getUserFriendlyWalletLabel(value, address || '', t)}
                 onBlur={onBlur}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   onChange(e.target.value);

@@ -15,6 +15,7 @@ type PublishDaoModalProps = {
   callback: () => void;
   isOpen: boolean;
   onClose: () => void;
+  closeOnDrag: boolean;
 };
 
 const icons = {
@@ -29,6 +30,7 @@ const PublishDaoModal: React.FC<PublishDaoModalProps> = ({
   callback,
   isOpen,
   onClose,
+  closeOnDrag,
 }) => {
   const {t} = useTranslation();
 
@@ -45,7 +47,7 @@ const PublishDaoModal: React.FC<PublishDaoModalProps> = ({
 
   return (
     <ModalBottomSheetSwitcher
-      {...{isOpen, onClose}}
+      {...{isOpen, onClose, closeOnDrag}}
       title={t('TransactionModal.publishDao')}
     >
       <GasCostTableContainer>

@@ -12,14 +12,15 @@ import SetupCommunity from 'containers/setupCommunity';
 import GoLive, {GoLiveHeader, GoLiveFooter} from 'containers/goLive';
 import {WalletField} from '../components/addWallets/row';
 import {Dashboard} from 'utils/paths';
-import {TransactionsProvider} from 'context/transactions';
+import {CreateDaoProvider} from 'context/createDao';
+import {constants} from 'ethers';
 
 export type WhitelistWallet = {
   id: string;
   address: string;
 };
 
-type FormData = {
+export type CreateDaoFormData = {
   daoLogo: string;
   daoName: string;
   daoSummary: string;
@@ -41,7 +42,7 @@ type FormData = {
 };
 
 // both wallets and whitelistWallets values are updated
-// afterwars to have the acual wallet address instead of
+// afterwards to have the actual wallet address instead of
 // the My Wallet string
 const defaultValues = {
   tokenName: '',
@@ -49,23 +50,25 @@ const defaultValues = {
   tokenSymbol: '',
   tokenTotalSupply: 0,
   links: [{label: '', href: ''}],
-  wallets: [
-    {address: 'DAO Treasury', amount: '0'},
-    {address: 'My Wallet', amount: '0'},
-  ],
+  wallets: [{address: constants.AddressZero, amount: '0'}],
   membership: 'token',
   whitelistWallets: [],
 };
 
 const CreateDAO: React.FC = () => {
   const {t} = useTranslation();
-  const formMethods = useForm<FormData>({mode: 'onChange', defaultValues});
+  const formMethods = useForm<CreateDaoFormData>({
+    mode: 'onChange',
+    defaultValues,
+  });
   const {errors, dirtyFields} = useFormState({control: formMethods.control});
-  const [isCustomToken, tokenTotalSupply, membership] = formMethods.getValues([
-    'isCustomToken',
-    'tokenTotalSupply',
-    'membership',
-  ]);
+  const [whitelistWallets, isCustomToken, tokenTotalSupply, membership] =
+    formMethods.getValues([
+      'whitelistWallets',
+      'isCustomToken',
+      'tokenTotalSupply',
+      'membership',
+    ]);
 
   /*************************************************
    *             Step Validation States            *
@@ -88,7 +91,7 @@ const CreateDAO: React.FC = () => {
     // required fields not dirty
     // if wallet based dao
     if (membership === 'wallet') {
-      if (errors.whitelistWallets) {
+      if (errors.whitelistWallets || whitelistWallets.length === 0) {
         return false;
       }
       return true;
@@ -112,18 +115,19 @@ const CreateDAO: React.FC = () => {
       }
     }
   }, [
-    dirtyFields.tokenAddress,
-    dirtyFields.tokenName,
-    dirtyFields.tokenSymbol,
-    dirtyFields.wallets,
-    errors.tokenAddress,
+    membership,
+    errors.whitelistWallets,
+    errors.wallets,
     errors.tokenName,
     errors.tokenSymbol,
-    errors.wallets,
-    errors.whitelistWallets,
+    errors.tokenAddress,
+    whitelistWallets.length,
     isCustomToken,
+    dirtyFields.tokenName,
+    dirtyFields.wallets,
+    dirtyFields.tokenSymbol,
+    dirtyFields.tokenAddress,
     tokenTotalSupply,
-    membership,
   ]);
 
   const daoConfigureCommunity = useMemo(() => {
@@ -149,7 +153,7 @@ const CreateDAO: React.FC = () => {
    *************************************************/
   return (
     <FormProvider {...formMethods}>
-      <TransactionsProvider>
+      <CreateDaoProvider>
         <FullScreenStepper
           wizardProcessName={t('createDAO.title')}
           navLabel={t('createDAO.title')}
@@ -200,7 +204,7 @@ const CreateDAO: React.FC = () => {
             <GoLive />
           </Step>
         </FullScreenStepper>
-      </TransactionsProvider>
+      </CreateDaoProvider>
     </FormProvider>
   );
 };

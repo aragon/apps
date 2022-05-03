@@ -10,7 +10,13 @@
     "dashboard": "Dashboard",
     "governance": "Governance",
     "finance": "Finance",
-    "community": "Community"
+    "community": "Community",
+    "explore": "Explore",
+    "learn": "Learn",
+    "build": "Build",
+    "help": "Help",
+    "terms": "Terms of Service",
+    "privacy": "Privacy"
   },
   "daoSwitcher": {
     "title": "Select your DAO",
@@ -461,6 +467,13 @@
     "cancel": "Cancel",
     "remainingTime": "Remaining time",
     "voteNow": "Vote now"
+  },
+  "explore": {
+    "hero": {
+      "title": "EXPLORE THE DAO WORLD",
+      "subtitle1": "Welcome to the Aragon Explore Portal.",
+      "subtitle2": "Take a look to the ecosystem,find inspiration and learn."
+    }
   },
   "privacyPolicy": {
     "title": "Privacy policy",

@@ -3,7 +3,7 @@ import React, {useEffect, lazy, Suspense} from 'react';
 
 // FIXME: Change route to ApmRoute once package has been updated to be
 // compatible with react-router-dom v6
-import {Navigate, Routes, Route, useLocation} from 'react-router-dom';
+import {Navigate, Routes, Route, useLocation, Outlet} from 'react-router-dom';
 
 import Navbar from 'containers/navbar';
 import {WalletMenu} from 'containers/navbar/walletMenu';
@@ -13,7 +13,7 @@ import '../i18n.config';
 // HACK: All pages MUST be exported with the withTransaction function
 // from the '@elastic/apm-rum-react' package in order for analytics to
 // work properly on the pages.
-import HomePage from 'pages/home';
+import ExplorePage from 'pages/explore';
 import * as paths from 'utils/paths';
 import DaoSelectMenu from 'containers/navbar/daoSelectMenu';
 
@@ -37,17 +37,28 @@ function App() {
     window.scrollTo(0, 0);
   }, [pathname]);
 
+  function LayoutWrapper() {
+    return (
+      <div className="flex flex-col mb-14 desktop:mb-10 bg-ui-50">
+        <Navbar />
+        <Layout>
+          <Outlet />
+        </Layout>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col mb-14 desktop:mb-10 bg-ui-50">
-      <Navbar />
-      <Layout>
-        {/* TODO: replace with loading indicator */}
-        <Suspense fallback={<p>Loading...</p>}>
-          <Routes>
+    <>
+      {/* TODO: replace with loading indicator */}
+      <Suspense fallback={<p>Loading...</p>}>
+        <Routes>
+          <Route path={paths.Landing} element={<ExplorePage />} />
+          <Route path="/" element={<LayoutWrapper />}>
+            <Route path={paths.NewDeposit} element={<NewDepositPage />} />
             <Route path={paths.NewDeposit} element={<NewDepositPage />} />
             <Route path={paths.NewWithDraw} element={<NewWithdrawPage />} />
             <Route path={paths.CreateDAO} element={<CreateDAOPage />} />
-            <Route path={paths.Landing} element={<HomePage />} />
             <Route path={paths.Community} element={<CommunityPage />} />
             <Route path={paths.Finance} element={<FinancePage />} />
             <Route path={paths.Dashboard} element={<CommunityPage />} />
@@ -61,16 +72,17 @@ function App() {
               path="*"
               element={<Navigate to={paths.NotFound} replace />}
             />
-          </Routes>
-        </Suspense>
-      </Layout>
+            <Route path={paths.NewDeposit} element={<NewDepositPage />} />
+          </Route>
+        </Routes>
+      </Suspense>
       <DaoSelectMenu />
       <WalletMenu />
-    </div>
+    </>
   );
 }
 
-const Layout = styled.main.attrs({
+export const Layout = styled.main.attrs({
   className:
     'grid grid-cols-4 tablet:grid-cols-8 ' +
     'desktop:grid-cols-12 gap-x-2 desktop:gap-x-3 ' +
