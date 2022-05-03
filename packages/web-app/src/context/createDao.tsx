@@ -10,17 +10,17 @@ import React, {
   ReactNode,
   useCallback,
 } from 'react';
-import { isAddress } from 'ethers/lib/utils';
-import { constants } from 'ethers';
-import { useFormContext, useWatch } from 'react-hook-form';
+import {isAddress} from 'ethers/lib/utils';
+import {constants} from 'ethers';
+import {useFormContext, useWatch} from 'react-hook-form';
 
-import { useDao } from 'hooks/useCachedDao';
+import {useDao} from 'hooks/useCachedDao';
 import PublishDaoModal from 'containers/transactionModals/publishDaoModal';
-import { TransactionState } from 'utils/constants';
-import { getSecondsFromDHM } from 'utils/date';
-import { CreateDaoFormData } from 'pages/createDAO';
-import { useNavigate } from 'react-router-dom';
-import { Landing } from 'utils/paths';
+import {TransactionState} from 'utils/constants';
+import {getSecondsFromDHM} from 'utils/date';
+import {CreateDaoFormData} from 'pages/createDAO';
+import {useNavigate} from 'react-router-dom';
+import {Landing} from 'utils/paths';
 
 type DAOCreationSettings = ICreateDaoERC20Voting | ICreateDaoWhitelistVoting;
 
@@ -33,7 +33,7 @@ type Props = Record<'children', ReactNode>;
 
 const CreateDaoContext = createContext<CreateDaoContextType | null>(null);
 
-const CreateDaoProvider: React.FC<Props> = ({ children }) => {
+const CreateDaoProvider: React.FC<Props> = ({children}) => {
   const [showModal, setShowModal] = useState(false);
   const [daoCreationData, setDaoCreationData] = useState<DAOCreationSettings>();
   const navigate = useNavigate();
@@ -41,10 +41,10 @@ const CreateDaoProvider: React.FC<Props> = ({ children }) => {
     useState<TransactionState>();
 
   // Form values
-  const { getValues, control } = useFormContext<CreateDaoFormData>();
-  const [membership] = useWatch({ name: ['membership'], control });
+  const {getValues, control} = useFormContext<CreateDaoFormData>();
+  const [membership] = useWatch({name: ['membership'], control});
 
-  const { createErc20, createWhitelist } = useDao();
+  const {createErc20, createWhitelist} = useDao();
 
   /*************************************************
    *                   Handlers                    *
@@ -88,11 +88,12 @@ const CreateDaoProvider: React.FC<Props> = ({ children }) => {
   const handleCloseModal = () => {
     switch (creationProcessState) {
       case TransactionState.LOADING:
-        return
+        break;
       case TransactionState.SUCCESS:
-        navigate(Landing)
+        navigate(Landing);
+        break;
       default:
-        setShowModal(false)
+        setShowModal(false);
     }
   };
 
@@ -101,7 +102,7 @@ const CreateDaoProvider: React.FC<Props> = ({ children }) => {
    *************************************************/
   // get dao configurations
   const getDaoConfig = useCallback(() => {
-    const { daoName } = getValues();
+    const {daoName} = getValues();
     return {
       name: daoName,
       metadata: constants.AddressZero,
@@ -197,7 +198,7 @@ const CreateDaoProvider: React.FC<Props> = ({ children }) => {
    *                    Render                     *
    *************************************************/
   return (
-    <CreateDaoContext.Provider value={{ handlePublishDao }}>
+    <CreateDaoContext.Provider value={{handlePublishDao}}>
       {children}
       <PublishDaoModal
         state={creationProcessState || TransactionState.WAITING}
@@ -214,4 +215,4 @@ function useCreateDaoContext(): CreateDaoContextType {
   return useContext(CreateDaoContext) as CreateDaoContextType;
 }
 
-export { useCreateDaoContext, CreateDaoProvider };
+export {useCreateDaoContext, CreateDaoProvider};
