@@ -78,83 +78,42 @@ const WalletRow: React.FC<WalletRowProps> = ({index, onDelete}) => {
 
   return (
     <Container data-testid="wallet-row">
-      <LabelContainer>
-        <Controller
-          defaultValue=""
-          name={`wallets.${index}.address`}
-          control={control}
-          rules={{
-            required: t('errors.required.walletAddress') as string,
-            validate: value => addressValidator(value, index),
-          }}
-          render={({
-            field: {name, value, onBlur, onChange},
-            fieldState: {error},
-          }) => (
-            <>
-              <LabelWrapper>
-                <Label label={t('labels.whitelistWallets.address')} />
-              </LabelWrapper>
-              <ValueInput
-                mode={error ? 'critical' : 'default'}
-                name={name}
-                value={getUserFriendlyWalletLabel(value, address || '', t)}
-                onBlur={onBlur}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  onChange(e.target.value);
-                }}
-                disabled={index === 0}
-                adornmentText={value ? t('labels.copy') : t('labels.paste')}
-                onAdornmentClick={() => handleClipboardActions(value, onChange)}
-              />
-              {error?.message && (
-                <ErrorContainer>
-                  <AlertInline label={error.message} mode="critical" />
-                </ErrorContainer>
-              )}
-            </>
-          )}
-        />
-      </LabelContainer>
-
-      <WalletMenuContainer>
-        <Dropdown
-          align="start"
-          trigger={
-            <ButtonIcon
-              mode="ghost"
-              size="large"
-              bgWhite
-              icon={<IconMenuVertical />}
-              data-testid="trigger"
+      <Controller
+        defaultValue=""
+        name={`wallets.${index}.address`}
+        control={control}
+        rules={{
+          required: t('errors.required.walletAddress') as string,
+          validate: value => addressValidator(value, index),
+        }}
+        render={({
+          field: {name, value, onBlur, onChange},
+          fieldState: {error},
+        }) => (
+          <div className="flex-1 order-1">
+            <LabelWrapper>
+              <Label label={t('labels.whitelistWallets.address')} />
+            </LabelWrapper>
+            <ValueInput
+              mode={error ? 'critical' : 'default'}
+              name={name}
+              value={getUserFriendlyWalletLabel(value, address || '', t)}
+              onBlur={onBlur}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                onChange(e.target.value);
+              }}
+              disabled={index === 0}
+              adornmentText={value ? t('labels.copy') : t('labels.paste')}
+              onAdornmentClick={() => handleClipboardActions(value, onChange)}
             />
-          }
-          sideOffset={8}
-          listItems={[
-            {
-              component: (
-                <ListItemAction
-                  title={t('labels.removeWallet')}
-                  {...(typeof onDelete !== 'function' && {mode: 'disabled'})}
-                  bgWhite
-                />
-              ),
-              callback: () => {
-                if (typeof onDelete === 'function') {
-                  const [totalSupply, amount] = getValues([
-                    'tokenTotalSupply',
-                    `wallets.${index}.amount`,
-                  ]);
-                  setValue('tokenTotalSupply', totalSupply - amount);
-                  onDelete(index);
-                }
-              },
-            },
-          ]}
-        />
-      </WalletMenuContainer>
-
-      <Break />
+            {error?.message && (
+              <ErrorContainer>
+                <AlertInline label={error.message} mode="critical" />
+              </ErrorContainer>
+            )}
+          </div>
+        )}
+      />
 
       <Controller
         name={`wallets.${index}.amount`}
@@ -164,39 +123,80 @@ const WalletRow: React.FC<WalletRowProps> = ({index, onDelete}) => {
           validate: () => amountValidation(index),
         }}
         render={({field, fieldState: {error}}) => (
-          <>
-            <ButtonWrapper>
-              <LabelWrapper>
-                <Label label={t('labels.amount')} />
-              </LabelWrapper>
+          <div className="flex-1 tablet:flex-none order-4 tablet:order-2 w-25">
+            <LabelWrapper>
+              <Label label={t('labels.amount')} />
+            </LabelWrapper>
 
-              <NumberInput
-                name={field.name}
-                onBlur={field.onBlur}
-                onChange={field.onChange}
-                placeholder="0"
-                min={0}
-                disabled={isDuplicate}
-                mode={error?.message ? 'critical' : 'default'}
-                value={field.value}
-              />
-              {error?.message && (
-                <ErrorContainer>
-                  <AlertInline label={error.message} mode="critical" />
-                </ErrorContainer>
-              )}
-            </ButtonWrapper>
-            <InputWrapper>
-              <TextInput
-                name={field.name}
-                value={calculateTotalTokenSupply(field.value)}
-                mode="default"
-                disabled
-              />
-            </InputWrapper>
-          </>
+            <NumberInput
+              name={field.name}
+              onBlur={field.onBlur}
+              onChange={field.onChange}
+              placeholder="0"
+              min={0}
+              disabled={isDuplicate}
+              mode={error?.message ? 'critical' : 'default'}
+              value={field.value}
+            />
+
+            {error?.message && (
+              <ErrorContainer>
+                <AlertInline label={error.message} mode="critical" />
+              </ErrorContainer>
+            )}
+          </div>
         )}
       />
+
+      <Break />
+
+      <PercentageInputDisplayWrapper>
+        <PercentageInputDisplay
+          name={`wallets.${index}.amount`}
+          value={calculateTotalTokenSupply(walletFieldArray[index].amount)}
+          mode="default"
+          disabled
+        />
+      </PercentageInputDisplayWrapper>
+
+      <DropdownMenuWrapper>
+        {index !== 0 && (
+          <Dropdown
+            align="start"
+            trigger={
+              <ButtonIcon
+                mode="ghost"
+                size="large"
+                bgWhite
+                icon={<IconMenuVertical />}
+                data-testid="trigger"
+              />
+            }
+            sideOffset={8}
+            listItems={[
+              {
+                component: (
+                  <ListItemAction
+                    title={t('labels.removeWallet')}
+                    {...(typeof onDelete !== 'function' && {mode: 'disabled'})}
+                    bgWhite
+                  />
+                ),
+                callback: () => {
+                  if (typeof onDelete === 'function') {
+                    const [totalSupply, amount] = getValues([
+                      'tokenTotalSupply',
+                      `wallets.${index}.amount`,
+                    ]);
+                    setValue('tokenTotalSupply', totalSupply - amount);
+                    onDelete(index);
+                  }
+                },
+              },
+            ]}
+          />
+        )}
+      </DropdownMenuWrapper>
     </Container>
   );
 };
@@ -207,30 +207,26 @@ const Container = styled.div.attrs({
   className: 'flex flex-wrap gap-x-2 gap-y-1.5 p-2 bg-ui-0',
 })``;
 
-const LabelContainer = styled.div.attrs({
-  className: 'flex-1 tablet:order-1 h-full',
+const PercentageInputDisplay = styled(TextInput).attrs({
+  className: 'text-right',
+})``;
+
+const PercentageInputDisplayWrapper = styled.div.attrs({
+  className: 'flex order-5 tablet:order-4 mt-3.5 tablet:mt-0 w-10',
 })``;
 
 const LabelWrapper = styled.div.attrs({
   className: 'tablet:hidden mb-0.5',
 })``;
 
-const InputWrapper = styled.div.attrs({
-  className:
-    'flex items-end tablet:items-start tablet:order-3 tablet:pt-0 w-10',
-})``;
-
-const WalletMenuContainer = styled.div.attrs({
-  className:
-    'flex items-start tablet:items-start tablet:order-4 mt-3 tablet:mt-0',
-})``;
-
 const ErrorContainer = styled.div.attrs({
   className: 'mt-0.5',
 })``;
 
-const Break = styled.hr.attrs({className: 'tablet:hidden w-full border-0'})``;
+const Break = styled.hr.attrs({
+  className: 'order-3 tablet:hidden w-full border-0',
+})``;
 
-const ButtonWrapper = styled.div.attrs({
-  className: 'flex-1 tablet:order-2 h-full',
+const DropdownMenuWrapper = styled.div.attrs({
+  className: 'flex order-2 tablet:order-5 mt-3.5 tablet:mt-0 w-6',
 })``;
