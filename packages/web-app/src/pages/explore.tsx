@@ -1,12 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
-import {useNavigate} from 'react-router-dom';
+import {generatePath, useNavigate} from 'react-router-dom';
 
 import Footer from 'containers/exploreFooter';
 import ExploreNav from 'containers/navbar/exploreNav';
 import Hero from 'containers/hero';
 import CTACard from 'components/ctaCard';
 import {CTACards} from 'components/ctaCard/data';
+import {ActionListItem, IconExpand} from '@aragon/ui-components';
+import {Finance} from 'utils/paths';
 
 const Explore: React.FC = () => {
   const navigate = useNavigate();
@@ -16,6 +18,34 @@ const Explore: React.FC = () => {
       <Container>
         <ExploreNav onWalletClick={() => null} />
         <Hero />
+        <div className="space-y-1 m-5 p-2 bg-primary-100">
+          <p>
+            This is a temporarily added section for demonstration purposes. It
+            allows you to navigate to a mock dao to test daos URLs.
+          </p>
+          <ActionListItem
+            title={'Dao: 0x1234'}
+            subtitle={'ethereum mainnet'}
+            icon={<IconExpand />}
+            background={'white'}
+            onClick={() =>
+              navigate(
+                generatePath(Finance, {network: 'ethereum', dao: '0x1234'})
+              )
+            }
+          />
+          <ActionListItem
+            title={'Dao: 0x1234'}
+            subtitle={'Rinkeby testnet'}
+            icon={<IconExpand />}
+            background={'white'}
+            onClick={() =>
+              navigate(
+                generatePath(Finance, {network: 'rinkeby', dao: '0x1234'})
+              )
+            }
+          />
+        </div>
         <div className="h-20"></div>
         <CTA>
           {CTACards.map(card => (
