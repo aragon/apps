@@ -5,15 +5,14 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import Footer from 'containers/exploreFooter';
 import ExploreNav from 'containers/navbar/exploreNav';
 import Hero from 'containers/hero';
-import CTACard from 'components/ctaCard';
-import {CTACards} from 'components/ctaCard/data';
+import Carousel from 'containers/carousel';
+import {Layout} from '../app';
 import {useWallet} from 'hooks/useWallet';
 import {useGlobalModalContext} from 'context/globalModals';
 
 const Explore: React.FC = () => {
   const {isConnected, methods} = useWallet();
   const {open} = useGlobalModalContext();
-  const navigate = useNavigate();
 
   const handleWalletButtonClick = () => {
     if (isConnected) {
