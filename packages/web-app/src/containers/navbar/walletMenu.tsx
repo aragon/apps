@@ -41,8 +41,8 @@ export const WalletMenu = () => {
         <AvatarAddressContainer>
           <Avatar src={ensAvatarUrl || address || ''} size="small" />
           <AddressContainer>
-            {ensName && <Title>{ensName}</Title>}
-            <SubTitle>{shortenAddress(address)}</SubTitle>
+            <Title>{ensName ? ensName : shortenAddress(address)}</Title>
+            {ensName && <SubTitle>{shortenAddress(address)}</SubTitle>}
           </AddressContainer>
         </AvatarAddressContainer>
         <ButtonIcon
@@ -92,7 +92,7 @@ const Title = styled.div.attrs({
   className: 'flex-1 font-bold text-ui-800',
 })``;
 const SubTitle = styled.div.attrs({
-  className: 'flex-1 font-medium text-ui-500 text-xs',
+  className: 'flex-1 font-medium text-ui-500 text-sm',
 })``;
 const AvatarAddressContainer = styled.div.attrs({
   className: 'flex flex-1 gap-1.5 items-center',
