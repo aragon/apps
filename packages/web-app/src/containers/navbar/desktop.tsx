@@ -81,7 +81,7 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
           />
 
           <LinksWrapper>
-            {breadcrumbs.length < MIN_ROUTE_DEPTH_FOR_BREADCRUMBS ? (
+            {breadcrumbs.length <= MIN_ROUTE_DEPTH_FOR_BREADCRUMBS ? (
               <NavLinks />
             ) : (
               <>
