@@ -29,9 +29,10 @@ export function useMappedBreadcrumbs(): MappedBreadcrumbs {
     excludePaths: [
       Dashboard,
       NotFound,
-      ':ethereum/:dao/governance/proposals',
-      ':ethereum/:dao/',
-      ':ethereum/',
+      '/:ethereum/:dao/governance/proposals',
+      '/:ethereum/:dao/',
+      '/:ethereum/',
+      '/',
     ],
   }).map((item: BreadcrumbData<string>) => ({
     path: item.match.pathname,
