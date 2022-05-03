@@ -19,7 +19,7 @@ const Explore: React.FC = () => {
             <Carousel />
           </ContentWrapper>
         </Layout>
-        <div className="h-20"></div>
+        <div className="h-96"></div>
         <Footer />
       </Container>
     </>
