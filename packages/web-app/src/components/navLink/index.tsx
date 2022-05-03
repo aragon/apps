@@ -6,6 +6,7 @@ import {
   generatePath,
   matchRoutes,
   useLocation,
+  useMatch,
   useNavigate,
 } from 'react-router-dom';
 import styled from 'styled-components';
@@ -37,15 +38,19 @@ const NavLink = ({caller, data, onItemClick}: NavLinkProps) => {
   const {isDesktop} = useScreen();
   const navigate = useNavigate();
   const {network} = useNetwork();
+  const daoMatch = useMatch(':network/:dao/*');
 
+  // This logic is used to determine whether this NavLink is active or not.
+  // I.e., whether the Navlink is the current page (or a subpage of it). It
+  // should no longer be necessary after refactoring, as the NavItem and
+  // ListItem can then be wrapped in a component that handles this logic.
   const basePath = pathname.split('/').slice(0, 4).join('/');
-  const match = matchRoutes([{path: data.path}], basePath);
-  const dao = match?.at(0)?.params?.dao;
-  const matches = match !== null;
+  const matches = matchRoutes([{path: data.path}], basePath) !== null;
 
-  const handleOnClick = (to: string) => {
+  const handleOnClick = () => {
+    const dao = daoMatch?.params?.dao;
     onItemClick?.();
-    navigate(generatePath(to, {network, dao}));
+    navigate(generatePath(data.path, {network, dao}));
   };
 
   if (caller === 'dropdown') {
@@ -54,13 +59,13 @@ const NavLink = ({caller, data, onItemClick}: NavLinkProps) => {
         bgWhite
         title={data.label}
         iconLeft={<data.icon />}
-        onClick={() => handleOnClick(data.path)}
+        onClick={handleOnClick}
         mode={matches ? 'selected' : 'default'}
       />
     );
   } else if (isDesktop) {
     return (
-      <NavItem isSelected={matches} onClick={() => handleOnClick(data.path)}>
+      <NavItem isSelected={matches} onClick={handleOnClick}>
         {data.label}
       </NavItem>
     );
@@ -69,7 +74,7 @@ const NavLink = ({caller, data, onItemClick}: NavLinkProps) => {
       <ListItemAction
         title={data.label}
         iconLeft={<data.icon />}
-        onClick={() => handleOnClick(data.path)}
+        onClick={handleOnClick}
         mode={matches ? 'selected' : 'default'}
       />
     );
