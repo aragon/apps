@@ -17,12 +17,14 @@ import TransactionDetail from 'containers/transactionDetail';
 import {useGlobalModalContext} from 'context/globalModals';
 import TransferMenu from 'containers/transferMenu';
 import styled from 'styled-components';
+import {useDaoExists} from 'hooks/data/useDaoExists';
 
 const Finance: React.FC = () => {
   const {t} = useTranslation();
   const {open} = useGlobalModalContext();
   const {tokens, totalAssetChange, totalAssetValue, transfers} =
     useDaoVault(TEST_DAO);
+  const {data} = useDaoExists('0x07de9a02a1c7e09bae5b15b7270e5b1ba2029bfd');
 
   // Transaction detail
   const [selectedTransfer, setSelectedTransfer] = useState<Transfer>(
@@ -74,6 +76,13 @@ const Finance: React.FC = () => {
             />
           </ListContainer>
         </TransferSectionWrapper>
+        <div className="p-2 m-5 space-y-1 bg-primary-100">
+          <p>
+            This is a temporarily added section for demonstration purposes. It
+            tests querying of existence of daos.
+          </p>
+          {data ? <p>DAO exists</p> : <p>DAO does not exist</p>}
+        </div>
       </PageWrapper>
       <TransactionDetail
         isOpen={showTransactionDetail}
