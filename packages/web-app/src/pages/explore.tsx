@@ -18,7 +18,7 @@ const Explore: React.FC = () => {
       <Container>
         <ExploreNav onWalletClick={() => null} />
         <Hero />
-        <div className="space-y-1 m-5 p-2 bg-primary-100">
+        <div className="p-2 m-5 space-y-1 bg-primary-100">
           <p>
             This is a temporarily added section for demonstration purposes. It
             allows you to navigate to a mock dao to test daos URLs.
