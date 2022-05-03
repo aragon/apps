@@ -11,7 +11,7 @@ import ConfigureCommunity from 'containers/configureCommunity';
 import SetupCommunity from 'containers/setupCommunity';
 import GoLive, {GoLiveHeader, GoLiveFooter} from 'containers/goLive';
 import {WalletField} from '../components/addWallets/row';
-import {Dashboard} from 'utils/paths';
+import {Landing} from 'utils/paths';
 import {CreateDaoProvider} from 'context/createDao';
 import {constants} from 'ethers';
 
@@ -157,7 +157,7 @@ const CreateDAO: React.FC = () => {
         <FullScreenStepper
           wizardProcessName={t('createDAO.title')}
           navLabel={t('createDAO.title')}
-          returnPath={Dashboard}
+          returnPath={Landing}
         >
           <Step
             fullWidth

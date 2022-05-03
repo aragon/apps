@@ -4,7 +4,7 @@ import {matchRoutes, useLocation} from 'react-router-dom';
 
 import {
   CreateDAO,
-  Dashboard,
+  Landing,
   Finance,
   Governance,
   NewDeposit,
@@ -29,7 +29,7 @@ const processPaths = [
 ];
 
 const processes: StringIndexed = {
-  [CreateDAO]: {processLabel: i18n.t('createDAO.title'), returnURL: Dashboard},
+  [CreateDAO]: {processLabel: i18n.t('createDAO.title'), returnURL: Landing},
   [NewDeposit]: {
     processLabel: i18n.t('allTransfer.newTransfer'),
     returnURL: Finance,
