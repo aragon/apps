@@ -1,7 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import {useNavigate} from 'react-router-dom';
-import {Badge, Breadcrumb, ButtonText, IconAdd} from '@aragon/ui-components';
+import {
+  Badge,
+  Breadcrumb,
+  ButtonText,
+  IconAdd,
+  IconType,
+} from '@aragon/ui-components';
 
 import useScreen from 'hooks/useScreen';
 import {SectionWrapperProps} from './sectionWrappers';
@@ -11,7 +17,9 @@ type ChangeSign = -1 | 0 | 1;
 
 export type PageWrapperProps = SectionWrapperProps & {
   buttonLabel: string;
-  subtitle: string;
+  displayButton?: boolean;
+  buttonIcon?: React.FunctionComponentElement<IconType>;
+  subtitle?: string;
   timePeriod?: string;
   sign?: number;
   onClick?: () => void;
@@ -31,9 +39,11 @@ export const PageWrapper = ({
   title,
   children,
   buttonLabel,
+  buttonIcon,
   timePeriod,
   sign = 0,
   subtitle,
+  displayButton = true,
   onClick,
 }: PageWrapperProps) => {
   const {isDesktop} = useScreen();
@@ -49,19 +59,23 @@ export const PageWrapper = ({
         <ContentWrapper>
           <TextWrapper>
             <PageTitle>{title}</PageTitle>
-            <PageSubtitleContainer>
-              {timePeriod && <Badge label={timePeriod} />}
-              <p className={textColors[sign as ChangeSign]}>{subtitle}</p>
-            </PageSubtitleContainer>
+            {subtitle && (
+              <PageSubtitleContainer>
+                {timePeriod && <Badge label={timePeriod} />}
+                <p className={textColors[sign as ChangeSign]}>{subtitle}</p>
+              </PageSubtitleContainer>
+            )}
           </TextWrapper>
 
-          <ButtonText
-            size="large"
-            label={buttonLabel}
-            iconLeft={<IconAdd />}
-            className="w-full tablet:w-auto"
-            onClick={onClick}
-          />
+          {displayButton && (
+            <ButtonText
+              size="large"
+              label={buttonLabel}
+              iconLeft={buttonIcon || <IconAdd />}
+              className="w-full tablet:w-auto"
+              onClick={onClick}
+            />
+          )}
         </ContentWrapper>
       </HeaderContainer>
 
