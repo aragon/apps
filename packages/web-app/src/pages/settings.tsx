@@ -13,13 +13,20 @@ import {useTranslation} from 'react-i18next';
 import {PageWrapper} from 'components/wrappers';
 import {DescriptionListContainer, Dl, Dt, Dd} from 'components/descriptionList';
 import {useGlobalModalContext} from 'context/globalModals';
+import useScreen from 'hooks/useScreen';
 
 const Settings: React.FC = () => {
   const {t} = useTranslation();
   const {open} = useGlobalModalContext();
+  const {isMobile} = useScreen();
 
   return (
-    <PageWrapper title={'DAO Settings'}>
+    <PageWrapper
+      title={t('labels.daoSettings')}
+      buttonLabel={t('labels.newSettings')}
+      displayButton={isMobile}
+      buttonIcon={<IconGovernance />}
+    >
       <div className="mt-3 desktop:mt-8 space-y-5">
         <DescriptionListContainer title={t('labels.review.blockchain')}>
           <Dl>
@@ -64,13 +71,13 @@ const Settings: React.FC = () => {
         <DescriptionListContainer title={t('labels.review.community')}>
           <Dl>
             <Dt>{t('labels.review.eligibleMembers')}</Dt>
-            <Dd>Token Holders</Dd>
+            <Dd>{t('createDAO.step3.tokenMembership')}</Dd>
           </Dl>
           <Dl>
             <Dt>{t('votingTerminal.token')}</Dt>
             <Dd>
               <div className="flex items-center space-x-1.5">
-                <p>Token Name</p>
+                <p>{t('createDAO.step3.tokenName')}</p>
                 <p>TKN</p>
                 <Badge label="New" colorScheme="info" />
               </div>
@@ -115,7 +122,7 @@ const Settings: React.FC = () => {
 
         <ButtonText
           label={t('labels.newSettings')}
-          className="mx-auto"
+          className="mx-auto w-full tablet:w-max"
           size="large"
           iconLeft={<IconGovernance />}
         />

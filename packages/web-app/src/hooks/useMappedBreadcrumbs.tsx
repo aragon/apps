@@ -3,6 +3,7 @@ import {
   IconCommunity,
   IconFinance,
   IconGovernance,
+  IconSettings,
 } from '@aragon/ui-components';
 import React from 'react';
 import useBreadcrumbs, {BreadcrumbData} from 'use-react-router-breadcrumbs';
@@ -21,6 +22,7 @@ function basePathIcons(path: string) {
   if (path.includes('dashboard')) return <IconDashboard />;
   if (path.includes('community')) return <IconCommunity />;
   if (path.includes('finance')) return <IconFinance />;
+  if (path.includes('settings')) return <IconSettings />;
   else return <IconGovernance />;
 }
 

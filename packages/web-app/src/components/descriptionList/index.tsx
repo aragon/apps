@@ -1,5 +1,6 @@
 import {ButtonText, CheckboxSimple} from '@aragon/ui-components';
 import React from 'react';
+import {useTranslation} from 'react-i18next';
 import styled from 'styled-components';
 
 export type DescriptionListProps = {
@@ -13,24 +14,32 @@ export const DescriptionListContainer: React.FC<DescriptionListProps> = ({
   children,
   onEditClick,
   onChecked,
-}) => (
-  <Container>
-    <TitleText>{title}</TitleText>
-    <DlContainer>{children}</DlContainer>
-    {onEditClick && onChecked && (
-      <HStack>
-        <ButtonText label="Edit" mode="ghost" onClick={onEditClick} />
-        <div className="flex-shrink-0 tablet:w-3/4">
-          <CheckboxSimple
-            label="These values are correct"
-            multiSelect
-            onClick={onChecked}
+}) => {
+  const {t} = useTranslation();
+
+  return (
+    <Container>
+      <TitleText>{title}</TitleText>
+      <DlContainer>{children}</DlContainer>
+      {onEditClick && onChecked && (
+        <HStack>
+          <ButtonText
+            label={t('labels.edit')}
+            mode="ghost"
+            onClick={onEditClick}
           />
-        </div>
-      </HStack>
-    )}
-  </Container>
-);
+          <div className="flex-shrink-0 tablet:w-3/4">
+            <CheckboxSimple
+              label="These values are correct"
+              multiSelect
+              onClick={onChecked}
+            />
+          </div>
+        </HStack>
+      )}
+    </Container>
+  );
+};
 
 export const Dt: React.FC = ({children}) => (
   <DtContainer>{children}</DtContainer>

@@ -124,7 +124,9 @@
     "sec": "sec",
     "ago": "ago",
     "step": "Step",
-    "of": "of"
+    "of": "of",
+    "edit": "Edit",
+    "daoSettings": "DAO Settings"
   },
   "placeHolders": {
     "selectToken": "Select a Token ...",
@@ -386,6 +388,7 @@
       "existingTokenSubtitle": "Yes, we already have a token.",
       "description": "Who is eligible to participate in the DAO? Create a token if needed.",
       "tokenMembership": "Token Holders",
+      "tokenName": "Token Name",
       "tokenMembershipSubtitle": "All those who have a token are entitled to participate. 1 token equals 1 vote.",
       "walletMemberShip": "Authorized Wallets",
       "walletMemberShipSubtitle": "Only authorised wallets are entitled to particpiate. 1 Wallet equals 1 vote.",
