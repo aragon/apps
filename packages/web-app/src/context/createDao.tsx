@@ -150,7 +150,13 @@ const CreateDaoProvider: React.FC<Props> = ({children}) => {
 
       // mint configuration
       mintConfig: values.wallets
-        .filter(wallet => isAddress(wallet.address))
+        .filter(
+          wallet =>
+            isAddress(wallet.address) &&
+            // Temporarily removing dao treasury; not yet supported
+            // TODO: add DAO treasury once contracts have been refactored
+            wallet.address !== constants.AddressZero
+        )
         .map(wallet => ({
           address: wallet.address,
           balance: BigInt(wallet.amount),

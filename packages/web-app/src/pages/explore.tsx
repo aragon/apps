@@ -34,6 +34,12 @@ const Explore: React.FC = () => {
       <Container>
         <ExploreNav onWalletClick={handleWalletButtonClick} />
         <Hero />
+        <Layout>
+          <ContentWrapper>
+            <Carousel />
+          </ContentWrapper>
+        </Layout>
+        <div className="h-20"></div>
         <div className="p-2 m-5 space-y-1 bg-primary-100">
           <p>
             This is a temporarily added section for demonstration purposes. It
@@ -62,12 +68,6 @@ const Explore: React.FC = () => {
             }
           />
         </div>
-        <div className="h-20"></div>
-        <Layout>
-          <ContentWrapper>
-            <Carousel />
-          </ContentWrapper>
-        </Layout>
         <div className="h-96"></div>
         <Footer />
       </Container>
