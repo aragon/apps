@@ -21,9 +21,7 @@ const CTACard: React.FC<Props> = props => {
   return (
     <CTACardWrapper className={props.className}>
       <Content>
-        <ImgWrapper>
-          <img src={props.imgSrc} />
-        </ImgWrapper>
+        <StyledImg src={props.imgSrc} />
         <Title>{props.title}</Title>
         <Subtitle>{props.subtitle}</Subtitle>
       </Content>
@@ -52,18 +50,17 @@ const CTACardWrapper = styled.div.attrs({
 `;
 
 const Content = styled.div.attrs({
-  className:
-    'flex desktop:items-start items-center flex-col space-y-2 desktop:m-0 mb-3',
+  className: 'flex desktop:items-start items-center flex-col desktop:m-0 mb-3',
 })``;
 
 const Title = styled.p.attrs({
-  className: 'desktop:text-2xl text-xl font-bold text-ui-800',
+  className: 'desktop:text-2xl text-xl font-bold text-ui-800 desktop:mt-2 mt-0',
 })``;
 
 const Subtitle = styled.p.attrs({
-  className: 'text-ui-600 h-9 text-base',
+  className: 'text-ui-600 h-9 text-base desktop:mt-2 mt-1.5',
 })``;
 
-const ImgWrapper = styled.div.attrs({
-  className: 'flex align-items-center desktop:h-10 h-14 pr-2',
+const StyledImg = styled.img.attrs({
+  className: 'h-12 w-12',
 })``;
