@@ -91,17 +91,6 @@ export const Row = ({index, ...props}: WhitelistWalletsRowProps) => {
               {
                 component: (
                   <ListItemAction
-                    title={t('labels.whitelistWallets.duplicateEntry')}
-                    bgWhite
-                  />
-                ),
-                callback: () => {
-                  props.onDuplicateEntry(index);
-                },
-              },
-              {
-                component: (
-                  <ListItemAction
                     title={t('labels.whitelistWallets.resetEntry')}
                     bgWhite
                   />
