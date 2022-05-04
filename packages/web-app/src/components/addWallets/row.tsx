@@ -90,7 +90,7 @@ const WalletRow: React.FC<WalletRowProps> = ({index, onDelete}) => {
           field: {name, value, onBlur, onChange},
           fieldState: {error},
         }) => (
-          <div className="flex-1 order-1">
+          <AddressWrapper>
             <LabelWrapper>
               <Label label={t('labels.whitelistWallets.address')} />
             </LabelWrapper>
@@ -111,7 +111,7 @@ const WalletRow: React.FC<WalletRowProps> = ({index, onDelete}) => {
                 <AlertInline label={error.message} mode="critical" />
               </ErrorContainer>
             )}
-          </div>
+          </AddressWrapper>
         )}
       />
 
@@ -123,7 +123,7 @@ const WalletRow: React.FC<WalletRowProps> = ({index, onDelete}) => {
           validate: () => amountValidation(index),
         }}
         render={({field, fieldState: {error}}) => (
-          <div className="flex-1 tablet:flex-none order-4 tablet:order-2 w-25">
+          <AmountsWrapper>
             <LabelWrapper>
               <Label label={t('labels.amount')} />
             </LabelWrapper>
@@ -144,7 +144,7 @@ const WalletRow: React.FC<WalletRowProps> = ({index, onDelete}) => {
                 <AlertInline label={error.message} mode="critical" />
               </ErrorContainer>
             )}
-          </div>
+          </AmountsWrapper>
         )}
       />
 
@@ -217,6 +217,14 @@ const PercentageInputDisplayWrapper = styled.div.attrs({
 
 const LabelWrapper = styled.div.attrs({
   className: 'tablet:hidden mb-0.5',
+})``;
+
+const AddressWrapper = styled.div.attrs({
+  className: 'flex-1 order-1',
+})``;
+
+const AmountsWrapper = styled.div.attrs({
+  className: 'flex-1 tablet:flex-none order-4 tablet:order-2 w-25',
 })``;
 
 const ErrorContainer = styled.div.attrs({
