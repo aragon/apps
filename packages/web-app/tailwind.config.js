@@ -93,14 +93,17 @@ module.exports = {
         6: '48px',
         7: '56px',
         8: '64px',
+        9: '72px',
         10: '80px',
         11: '88px',
         12: '96px',
         14: '112px',
         16: '128px',
         19: '152px',
+        20: '160px',
         25: '200px',
         30: '240px',
+        35: '280px',
         40: '320px',
         50: '400px',
         55: '440px',
@@ -117,6 +120,12 @@ module.exports = {
     fontWeight: {
       normal: 500,
       bold: 700,
+    },
+    lineHeight: {
+      3: '24px',
+      3.75: '30px',
+      4.75: '38px',
+      7.5: '60px',
     },
     // overrides screen breakpoints according to design system
     screens: {

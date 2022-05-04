@@ -1,22 +1,38 @@
 import React from 'react';
 import styled from 'styled-components';
 import {generatePath, useNavigate} from 'react-router-dom';
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import {ActionListItem, IconExpand} from '@aragon/ui-components';
 
 import Footer from 'containers/exploreFooter';
 import ExploreNav from 'containers/navbar/exploreNav';
 import Hero from 'containers/hero';
-import CTACard from 'components/ctaCard';
-import {CTACards} from 'components/ctaCard/data';
-import {ActionListItem, IconExpand} from '@aragon/ui-components';
 import {Finance} from 'utils/paths';
+import Carousel from 'containers/carousel';
+import {Layout} from '../app';
+import {useWallet} from 'hooks/useWallet';
+import {useGlobalModalContext} from 'context/globalModals';
 
 const Explore: React.FC = () => {
+  const {isConnected, methods} = useWallet();
+  const {open} = useGlobalModalContext();
   const navigate = useNavigate();
 
+  const handleWalletButtonClick = () => {
+    if (isConnected) {
+      open('wallet');
+      return;
+    }
+    methods.selectWallet().catch((err: Error) => {
+      // To be implemented: maybe add an error message when
+      // the error is different from closing the window
+      console.error(err);
+    });
+  };
   return (
     <>
       <Container>
-        <ExploreNav onWalletClick={() => null} />
+        <ExploreNav onWalletClick={handleWalletButtonClick} />
         <Hero />
         <div className="p-2 m-5 space-y-1 bg-primary-100">
           <p>
@@ -47,17 +63,12 @@ const Explore: React.FC = () => {
           />
         </div>
         <div className="h-20"></div>
-        <CTA>
-          {CTACards.map(card => (
-            <CTACard
-              key={card.title}
-              {...card}
-              className="flex-1"
-              onClick={navigate}
-            />
-          ))}
-        </CTA>
-        <div className="h-20"></div>
+        <Layout>
+          <ContentWrapper>
+            <Carousel />
+          </ContentWrapper>
+        </Layout>
+        <div className="h-96"></div>
         <Footer />
       </Container>
     </>
@@ -68,8 +79,8 @@ const Container = styled.div.attrs({
   className: 'mx-auto',
 })``;
 
-const CTA = styled.div.attrs({
-  className: 'flex desktop:flex-row flex-col mb-4 space-x-3 max-w-fit px-10',
+const ContentWrapper = styled.div.attrs({
+  className: 'col-span-full desktop:col-start-2 desktop:col-end-12',
 })``;
 
 export default Explore;
