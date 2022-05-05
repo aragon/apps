@@ -6,17 +6,25 @@ import {useTranslation} from 'react-i18next';
 import {useWallet} from 'hooks/useWallet';
 import Logo from 'public/logo.svg';
 import useScreen from 'hooks/useScreen';
+import {useGlobalModalContext} from 'context/globalModals';
 
-type DesktopNavProp = {
-  returnURL?: string;
-  processLabel?: string;
-  onWalletClick?: () => void;
-};
-
-const ExploreNav: React.FC<DesktopNavProp> = props => {
+const ExploreNav: React.FC = () => {
   const {t} = useTranslation();
-  const {address, ensName, ensAvatarUrl, isConnected} = useWallet();
+  const {address, ensName, ensAvatarUrl, isConnected, methods} = useWallet();
   const {isDesktop} = useScreen();
+  const {open} = useGlobalModalContext();
+
+  const handleWalletButtonClick = () => {
+    if (isConnected) {
+      open('wallet');
+      return;
+    }
+    methods.selectWallet().catch((err: Error) => {
+      // To be implemented: maybe add an error message when
+      // the error is different from closing the window
+      console.error(err);
+    });
+  };
 
   return (
     <Container data-testid="navbar">
@@ -33,7 +41,7 @@ const ExploreNav: React.FC<DesktopNavProp> = props => {
           )}
           <ButtonWallet
             src={ensAvatarUrl || address}
-            onClick={props.onWalletClick}
+            onClick={handleWalletButtonClick}
             isConnected={isConnected}
             label={
               isConnected ? ensName || address : t('navButtons.connectWallet')
