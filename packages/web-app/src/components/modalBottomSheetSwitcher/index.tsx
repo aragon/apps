@@ -23,7 +23,6 @@ const ModalBottomSheetSwitcher: React.FC<ModalProps & BottomSheetProps> = ({
           title={title}
           subtitle={subtitle}
           onOpenAutoFocus={onOpenAutoFocus}
-          // style={{width: 448}}
         >
           {children}
         </Modal>
