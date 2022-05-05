@@ -13,14 +13,24 @@ import '../i18n.config';
 // HACK: All pages MUST be exported with the withTransaction function
 // from the '@elastic/apm-rum-react' package in order for analytics to
 // work properly on the pages.
-import ExplorePage from 'pages/explore';
 import * as paths from 'utils/paths';
 import DaoSelectMenu from 'containers/navbar/daoSelectMenu';
+
+const ExplorePage = lazy(() => import('pages/explore'));
+const NotFoundPage = lazy(() => import('pages/notFound'));
 
 const FinancePage = lazy(() => import('pages/finance'));
 const GovernancePage = lazy(() => import('pages/governance'));
 const CommunityPage = lazy(() => import('pages/community'));
-const NotFoundPage = lazy(() => import('pages/notFound'));
+const SettingsPage = lazy(() => import('pages/settings'));
+
+const TokensPage = lazy(() => import('pages/tokens'));
+const TransfersPage = lazy(() => import('pages/transfers'));
+const NewDepositPage = lazy(() => import('pages/newDeposit'));
+const NewWithdrawPage = lazy(() => import('pages/newWithdraw'));
+
+const NewProposalPage = lazy(() => import('pages/newProposal'));
+const ProposalPage = lazy(() => import('pages/proposal'));
 
 function App() {
   const {pathname} = useLocation();
@@ -36,14 +46,24 @@ function App() {
       <Suspense fallback={<p>Loading...</p>}>
         <Routes>
           <Route path="/" element={<ExplorePage />} />
-          {/* Reintroduce code below */}
-          {/* <Route element={<ExploreLayout />}>
-          </Route> */}
           <Route element={<DaoLayout />}>
             <Route path=":network/:dao">
-              <Route path="finance/*" element={<FinancePage />} />
-              <Route path="governance/*" element={<GovernancePage />} />
+              <Route path="finance" element={<FinancePage />} />
+              <Route path="finance/deposit" element={<NewDepositPage />} />
+              <Route path="finance/withdraw" element={<NewWithdrawPage />} />
+              <Route path="finance/tokens" element={<TokensPage />} />
+              <Route path="finance/transfers" element={<TransfersPage />} />
+              <Route path="governance" element={<GovernancePage />} />
+              <Route
+                path="governance/new-proposal"
+                element={<NewProposalPage />}
+              />
+              <Route
+                path="governance/proposal/:id"
+                element={<ProposalPage />}
+              />
               <Route path="community" element={<CommunityPage />} />
+              <Route path="settings" element={<SettingsPage />} />
             </Route>
             <Route path={paths.NotFound} element={<NotFoundPage />} />
           </Route>

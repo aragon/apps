@@ -1,4 +1,4 @@
-import React, {lazy, useState} from 'react';
+import React, {useState} from 'react';
 import {withTransaction} from '@elastic/apm-rum-react';
 import {
   Option,
@@ -9,13 +9,7 @@ import {
   Link,
 } from '@aragon/ui-components';
 import {useTranslation} from 'react-i18next';
-import {
-  generatePath,
-  Route,
-  Routes,
-  useNavigate,
-  useParams,
-} from 'react-router-dom';
+import {generatePath, useNavigate, useParams} from 'react-router-dom';
 import styled from 'styled-components';
 import {useQuery} from '@apollo/client';
 
@@ -31,9 +25,6 @@ import {
 } from 'queries/__generated__/erc20VotingProposals';
 import {NewProposal} from 'utils/paths';
 import {TEST_DAO} from 'utils/constants';
-
-const NewProposalPage = lazy(() => import('pages/newProposal'));
-const ProposalPage = lazy(() => import('pages/proposal'));
 
 const Governance: React.FC = () => {
   const {t} = useTranslation();
@@ -87,7 +78,6 @@ const Governance: React.FC = () => {
   if (!daoProposals || daoProposals.length === 0) {
     return (
       <>
-        <Subroutes />
         <Container>
           <EmptyStateContainer>
             <ImageContainer src={NoProposals} />
@@ -115,7 +105,6 @@ const Governance: React.FC = () => {
 
   return (
     <>
-      <Subroutes />
       <PageWrapper
         title={'Proposals'}
         buttonLabel={'New Proposal'}
@@ -170,13 +159,6 @@ const Governance: React.FC = () => {
 };
 
 export default withTransaction('Governance', 'component')(Governance);
-
-const Subroutes = () => (
-  <Routes>
-    <Route path={'new-proposal'} element={<NewProposalPage />} />
-    <Route path={'proposal/:id'} element={<ProposalPage />} />
-  </Routes>
-);
 
 const Container = styled.div.attrs({
   className: 'col-span-full desktop:col-start-3 desktop:col-end-11',

@@ -1,4 +1,4 @@
-import React, {lazy, useCallback, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
 
@@ -16,12 +16,6 @@ import {useDaoVault} from 'hooks/useDaoVault';
 import TransactionDetail from 'containers/transactionDetail';
 import {useGlobalModalContext} from 'context/globalModals';
 import TransferMenu from 'containers/transferMenu';
-import {Route, Routes} from 'react-router-dom';
-
-const TokensPage = lazy(() => import('pages/tokens'));
-const TransfersPage = lazy(() => import('pages/transfers'));
-const NewDepositPage = lazy(() => import('pages/newDeposit'));
-const NewWithdrawPage = lazy(() => import('pages/newWithdraw'));
 
 const Finance: React.FC = () => {
   const {t} = useTranslation();
@@ -49,12 +43,6 @@ const Finance: React.FC = () => {
 
   return (
     <>
-      <Routes>
-        <Route path={'deposit'} element={<NewDepositPage />} />
-        <Route path={'withdraw'} element={<NewWithdrawPage />} />
-        <Route path={'tokens'} element={<TokensPage />} />
-        <Route path={'transfers'} element={<TransfersPage />} />
-      </Routes>
       <PageWrapper
         title={new Intl.NumberFormat('en-US', {
           style: 'currency',
