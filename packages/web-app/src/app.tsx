@@ -31,7 +31,7 @@ function App() {
   }, [pathname]);
 
   return (
-    <div className="flex flex-col mb-14 desktop:mb-10 bg-ui-50">
+    <>
       {/* TODO: replace with loading indicator */}
       <Suspense fallback={<p>Loading...</p>}>
         <Routes>
@@ -52,33 +52,27 @@ function App() {
       </Suspense>
       <DaoSelectMenu />
       <WalletMenu />
-    </div>
+    </>
   );
 }
-
-// const ExploreLayout: React.FC = () => (
-//   <>
-//     {/* Replace Navbar with explorer Navbar */}
-//     <Navbar />
-//     <LayoutRoute />
-//   </>
-// );
-
-const DaoLayout: React.FC = () => (
-  <>
-    <Navbar />
-    <LayoutRoute />
-  </>
-);
 
 // Components that are rendered via the Route element prop need to be expressed
 // called via the Outlet component. Calling them as children does not work. This
 // why simply passing Layout won't work.
-const LayoutRoute: React.FC = () => (
-  <Layout>
-    <Outlet />
-  </Layout>
+const DaoLayout: React.FC = () => (
+  <>
+    <Navbar />
+    <Background>
+      <Layout>
+        <Outlet />
+      </Layout>
+    </Background>
+  </>
 );
+
+const Background = styled.div.attrs({
+  className: 'flex flex-col mb-14 desktop:mb-10 bg-ui-50',
+})``;
 
 export const Layout = styled.main.attrs({
   className:
