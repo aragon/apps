@@ -9,6 +9,9 @@ import Hero from 'containers/hero';
 import {Finance} from 'utils/paths';
 import Carousel from 'containers/carousel';
 import {Layout} from '../app';
+import {useWallet} from 'hooks/useWallet';
+import {useGlobalModalContext} from 'context/globalModals';
+import { DaoCard } from 'components/daoCard';
 import ActiveProposalsExplore from 'containers/activeProposalsExplore';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 
@@ -54,6 +57,11 @@ const Explore: React.FC = () => {
               />
             </div>
           </ContentWrapper>
+          <DaoWrapper>
+            <DaoCard />
+            <DaoCard />
+            <DaoCard />
+          </DaoWrapper>
         </Layout>
         <div className="h-96"></div>
         <Footer />
@@ -64,6 +72,10 @@ const Explore: React.FC = () => {
 
 const Container = styled.div.attrs({
   className: 'mx-auto',
+})``;
+
+const DaoWrapper = styled.div.attrs({
+  className: 'col-span-full desktop:col-start-2 desktop:col-end-12 flex flex-row space-x-4',
 })``;
 
 const ContentWrapper = styled.div.attrs({
