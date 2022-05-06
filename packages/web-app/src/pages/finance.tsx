@@ -16,6 +16,7 @@ import {useDaoVault} from 'hooks/useDaoVault';
 import TransactionDetail from 'containers/transactionDetail';
 import {useGlobalModalContext} from 'context/globalModals';
 import TransferMenu from 'containers/transferMenu';
+import styled from 'styled-components';
 
 const Finance: React.FC = () => {
   const {t} = useTranslation();
@@ -60,18 +61,18 @@ const Finance: React.FC = () => {
       >
         <div className={'h-4'} />
         <TokenSectionWrapper title={t('finance.tokenSection')}>
-          <div className="py-2 space-y-2 border-solid">
+          <ListContainer>
             <TokenList tokens={displayedTokens} />
-          </div>
+          </ListContainer>
         </TokenSectionWrapper>
         <div className={'h-4'} />
         <TransferSectionWrapper title={t('finance.transferSection')} showButton>
-          <div className="py-2 space-y-2">
+          <ListContainer>
             <TransferList
               transfers={transfers}
               onTransferClick={handleTransferClicked}
             />
-          </div>
+          </ListContainer>
         </TransferSectionWrapper>
       </PageWrapper>
       <TransactionDetail
@@ -83,5 +84,9 @@ const Finance: React.FC = () => {
     </>
   );
 };
+
+const ListContainer = styled.div.attrs({
+  className: 'py-2 space-y-2',
+})``;
 
 export default withTransaction('Finance', 'component')(Finance);
