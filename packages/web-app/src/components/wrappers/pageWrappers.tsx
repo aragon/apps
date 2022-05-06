@@ -17,7 +17,6 @@ type ChangeSign = -1 | 0 | 1;
 
 export type PageWrapperProps = SectionWrapperProps & {
   buttonLabel: string;
-  displayButton?: boolean;
   buttonIcon?: React.FunctionComponentElement<IconType>;
   subtitle?: string;
   timePeriod?: string;
@@ -43,7 +42,7 @@ export const PageWrapper = ({
   timePeriod,
   sign = 0,
   subtitle,
-  displayButton = true,
+  showButton = true,
   onClick,
 }: PageWrapperProps) => {
   const {isDesktop} = useScreen();
@@ -67,7 +66,7 @@ export const PageWrapper = ({
             )}
           </TextWrapper>
 
-          {displayButton && (
+          {showButton && (
             <ButtonText
               size="large"
               label={buttonLabel}
