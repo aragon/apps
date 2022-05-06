@@ -65,9 +65,8 @@ function App() {
               <Route path="community" element={<CommunityPage />} />
               <Route path="settings" element={<SettingsPage />} />
             </Route>
-            <Route path={paths.NotFound} element={<NotFoundPage />} />
-          </Route>
-          <Route path="*" element={<Navigate to={paths.NotFound} replace />} />
+          <Route path={paths.NotFound} element={<NotFoundPage />} />
+          <Route path="*" element={<NotFoundWrapper />} />
         </Routes>
       </Suspense>
       <DaoSelectMenu />
@@ -76,6 +75,14 @@ function App() {
   );
 }
 
+const NotFoundWrapper: React.FC = () => {
+  const {pathname} = useLocation();
+  console.log('[LOGGING] pathname ' + pathname);
+
+  return (
+    <Navigate to={paths.NotFound} state={{incorrectPath: pathname}} replace />
+  );
+};
 // Components that are rendered via the Route element prop need to be expressed
 // called via the Outlet component. Calling them as children does not work. This
 // why simply passing Layout won't work.
