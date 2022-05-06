@@ -34,6 +34,8 @@ const NewProposalPage = lazy(() => import('pages/newProposal'));
 const ProposalPage = lazy(() => import('pages/proposal'));
 
 function App() {
+  // TODO this needs to be inside a Routes component. Will be moved there with
+  // further refactoring of layout (see further below).
   const {pathname} = useLocation();
 
   useEffect(() => {
