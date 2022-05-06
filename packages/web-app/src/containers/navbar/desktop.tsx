@@ -1,7 +1,7 @@
 import {Breadcrumb, ButtonWallet, CardDao} from '@aragon/ui-components';
 import styled from 'styled-components';
 import NavLinks from 'components/navLinks';
-import {useNavigate} from 'react-router-dom';
+import {generatePath, useNavigate, useParams} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
 import React, {useMemo} from 'react';
 
@@ -10,7 +10,6 @@ import {selectedDAO} from 'context/apolloClient';
 import NetworkIndicator from './networkIndicator';
 import {useReactiveVar} from '@apollo/client';
 import {NavlinksDropdown} from './breadcrumbDropdown';
-import {replaceNetworkParam} from 'utils/paths';
 import {useNetwork} from 'context/network';
 import {useMappedBreadcrumbs} from 'hooks/useMappedBreadcrumbs';
 
@@ -33,6 +32,7 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
   const {t} = useTranslation();
   const navigate = useNavigate();
   const {network} = useNetwork();
+  const {dao} = useParams();
   const selectedDao = useReactiveVar(selectedDAO);
   const {breadcrumbs, icon} = useMappedBreadcrumbs();
   const {address, ensName, ensAvatarUrl, isConnected} = useWallet();
@@ -43,7 +43,7 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
   );
 
   const clickHandler = (path: string) => {
-    navigate(replaceNetworkParam(path, network));
+    navigate(generatePath(path, {network, dao}));
   };
 
   if (isProcess) {
