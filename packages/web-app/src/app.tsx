@@ -49,8 +49,11 @@ function App() {
           <Route path=":network/:dao">
             <Route element={<DaoLayout />}>
               <Route path="finance" element={<FinancePage />} />
-              <Route path="finance/deposit" element={<NewDepositPage />} />
-              <Route path="finance/withdraw" element={<NewWithdrawPage />} />
+              <Route path="finance/new-deposit" element={<NewDepositPage />} />
+              <Route
+                path="finance/new-withdraw"
+                element={<NewWithdrawPage />}
+              />
               <Route path="finance/tokens" element={<TokensPage />} />
               <Route path="finance/transfers" element={<TransfersPage />} />
               <Route path="governance" element={<GovernancePage />} />
