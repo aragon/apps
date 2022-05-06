@@ -19,6 +19,7 @@ import DaoSelectMenu from 'containers/navbar/daoSelectMenu';
 const ExplorePage = lazy(() => import('pages/explore'));
 const NotFoundPage = lazy(() => import('pages/notFound'));
 
+const DashboardPage = lazy(() => import('pages/dashboard'));
 const FinancePage = lazy(() => import('pages/finance'));
 const GovernancePage = lazy(() => import('pages/governance'));
 const CommunityPage = lazy(() => import('pages/community'));
@@ -48,6 +49,7 @@ function App() {
           <Route path="/" element={<ExplorePage />} />
           <Route path=":network/:dao">
             <Route element={<DaoLayout />}>
+              <Route path="dashboard" element={<DashboardPage />} />
               <Route path="finance" element={<FinancePage />} />
               <Route path="finance/new-deposit" element={<NewDepositPage />} />
               <Route
@@ -81,12 +83,15 @@ function App() {
 
 const NotFoundWrapper: React.FC = () => {
   const {pathname} = useLocation();
-  console.log('[LOGGING] pathname ' + pathname);
 
   return (
     <Navigate to={paths.NotFound} state={{incorrectPath: pathname}} replace />
   );
 };
+
+// TODO the layout/background structure for the application will be
+// refactored even further in a separate PR. This will also take care of
+// the navbar width/position issue.
 
 // Components that are rendered via the Route element prop need to be expressed
 // called via the Outlet component. Calling them as children does not work. This
