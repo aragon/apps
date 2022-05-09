@@ -39,7 +39,7 @@ const Container = styled.div.attrs({
 
 const Wrapper = styled.div.attrs({
   className:
-    'flex justify-between col-span-full desktop:col-start-2 desktop:col-end-12 relative',
+    'flex justify-center desktop:justify-between col-span-full desktop:col-start-2 desktop:col-end-12 relative',
 })``;
 
 const ContentWrapper = styled.div.attrs({
@@ -55,7 +55,7 @@ const Title = styled.h1.attrs({
 
 const Subtitle = styled.h3.attrs({
   className:
-    'text-ui-0 desktop:text-lg text-base font-normal text-center desktop:text-left text-center leading-3 desktop:leading-3.75',
+    'text-ui-0 desktop:text-lg text-base font-normal text-center desktop:text-left leading-3 desktop:leading-3.75',
 })``;
 
 const ImageWrapper = styled.div.attrs({

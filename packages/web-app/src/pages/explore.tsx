@@ -80,7 +80,8 @@ const Container = styled.div.attrs({
 })``;
 
 const ContentWrapper = styled.div.attrs({
-  className: 'col-span-full desktop:col-start-2 desktop:col-end-12',
+  className:
+    'col-span-full desktop:col-start-2 desktop:col-end-12 -mx-2 tablet:-mx-3 desktop:mx-0',
 })``;
 
 export default Explore;
