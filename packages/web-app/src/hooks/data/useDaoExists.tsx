@@ -8,7 +8,7 @@ export const useDaoExists = (daoAddress: Address) => {
     variables: {id: daoAddress},
   });
 
-  const daoExists: boolean = data?.dao?.id ? true : false;
+  const daoExists: boolean = data?.dao?.id || false;
 
   return {
     data: daoExists,
