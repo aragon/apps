@@ -9,6 +9,7 @@ export {IconChevronDown} from './icon_chevron_down';
 export {IconChevronUp} from './icon_chevron_up';
 export {IconChevronRight} from './icon_chevron_right';
 export {IconChevronLeft} from './icon_chevron_left';
+export {IconClock} from './icon_clock';
 export {IconClose} from './icon_close';
 export {IconCopy} from './icon_copy';
 export {IconDeposit} from './icon_deposit';
