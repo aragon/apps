@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, {useState} from 'react';
 import {DaoCard, DaoType} from 'components/daoCard';
 import {useTranslation} from 'react-i18next';
 import styled from 'styled-components';
