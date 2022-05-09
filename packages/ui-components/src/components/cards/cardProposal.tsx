@@ -2,10 +2,11 @@ import React, {ReactNode} from 'react';
 import styled from 'styled-components';
 import {Badge} from '../badge';
 import {LinearProgress} from '../progress';
-import {ButtonText} from '../button';
 import {AlertInline} from '../alerts';
 import {Address, shortenAddress} from '../../utils/addresses';
 import {Link} from '../link';
+import {AvatarDao} from '../avatar';
+import {IconClock} from '../icons';
 
 export type CardProposalProps = {
   /** Proposal Title / Title of the card */
@@ -22,6 +23,10 @@ export type CardProposalProps = {
    * section only available on active state.
    * */
   state: 'draft' | 'pending' | 'active' | 'succeeded' | 'executed' | 'defeated';
+  /** Indicates whether the proposal is in being used in list or in its special form (see explore page) */
+  type?: 'list' | 'explore';
+  /** Url for the dao avatar */
+  daoLogo?: 'string';
   /** The title that appears at the top of the progress bar */
   voteTitle: string;
   /** Progress bar value in percentage (max: 100) */
@@ -34,8 +39,10 @@ export type CardProposalProps = {
   tokenSymbol?: string;
   /** Publish by sentence in any available languages */
   publishLabel: string;
-  /** Publisher's ethereum address **or** ENS name */
+  /** Publisher's ethereum address, ENS name **or** DAO address when type is explore */
   publisherAddress?: Address;
+  /** DAO name to display when type is explore */
+  daoName?: string;
   /** Chain ID for redirect user to the right explorer */
   chainId?: number;
   /**
@@ -74,11 +81,15 @@ export const CardProposal: React.FC<CardProposalProps> = ({
   publishLabel,
   publisherAddress,
   chainId = 1,
-  buttonLabel,
   AlertMessage,
   StateLabel,
+  type = 'list',
+  daoLogo,
+  daoName,
   onClick,
 }: CardProposalProps) => {
+  const isTypeExplore = type === 'explore';
+
   const headerOptions: {
     [key in CardProposalProps['state']]: ReactNode;
   } = {
@@ -86,13 +97,25 @@ export const CardProposal: React.FC<CardProposalProps> = ({
     pending: (
       <>
         <Badge label={StateLabel[1]} />
-        {AlertMessage && <AlertInline label={AlertMessage} />}
+        {AlertMessage && (
+          <AlertInline
+            label={AlertMessage}
+            icon={<IconClock className="text-info-500" />}
+            mode="neutral"
+          />
+        )}
       </>
     ),
     active: (
       <>
-        <Badge label={StateLabel[2]} colorScheme={'info'} />
-        {AlertMessage && <AlertInline label={AlertMessage} />}
+        {!isTypeExplore && <Badge label={StateLabel[2]} colorScheme={'info'} />}
+        {AlertMessage && (
+          <AlertInline
+            label={AlertMessage}
+            icon={<IconClock className="text-info-500" />}
+            mode="neutral"
+          />
+        )}
       </>
     ),
     executed: <Badge label={StateLabel[3]} colorScheme={'success'} />,
@@ -100,61 +123,25 @@ export const CardProposal: React.FC<CardProposalProps> = ({
     defeated: <Badge label={StateLabel[5]} colorScheme={'critical'} />,
   };
 
-  const SelectButtonStatus = (state: CardProposalProps['state']) => {
-    if (['pending', 'executed', 'defeated'].includes(state)) {
-      return (
-        <StyledButton
-          size="large"
-          mode="secondary"
-          label={buttonLabel[0]}
-          onClick={onClick}
-          bgWhite
-        />
-      );
-    } else if (state === 'active') {
-      return (
-        <StyledButton
-          size="large"
-          mode="primary"
-          label={buttonLabel[1]}
-          onClick={onClick}
-        />
-      );
-    } else if (state === 'succeeded') {
-      return (
-        <StyledButton
-          size="large"
-          mode="primary"
-          label={buttonLabel[2]}
-          onClick={onClick}
-        />
-      );
-    } else {
-      // Draft
-      return (
-        <StyledButton
-          size="large"
-          mode="secondary"
-          label={buttonLabel[3]}
-          onClick={onClick}
-          bgWhite
-        />
-      );
-    }
-  };
-
   return (
-    <Card data-testid="cardProposal">
+    <Card data-testid="cardProposal" onClick={onClick}>
       <Header>{headerOptions[state]}</Header>
       <TextContent>
         <Title>{title}</Title>
         <Description>{description}</Description>
         <Publisher>
-          {publishLabel}{' '}
+          {isTypeExplore ? (
+            <AvatarDao daoName={daoName!} size="small" src={daoLogo} />
+          ) : (
+            <PublisherLabel>{publishLabel}</PublisherLabel>
+          )}
+
           <Link
             external
-            label={shortenAddress(publisherAddress || '')}
             href={`${explorers[chainId]}${publisherAddress}`}
+            label={shortenAddress(
+              (isTypeExplore ? daoName : publisherAddress) || ''
+            )}
             className="text-sm"
           />
         </Publisher>
@@ -174,37 +161,45 @@ export const CardProposal: React.FC<CardProposalProps> = ({
           </ProgressInfoWrapper>
         </LoadingContent>
       )}
-      <Actions>{SelectButtonStatus(state)}</Actions>
     </Card>
   );
 };
 
-const Card = styled.div.attrs({
-  className: 'flex justify-between flex-col bg-white rounded-xl p-3 space-y-3',
-})``;
+const Card = styled.button.attrs({
+  className:
+    'w-full bg-white rounded-xl p-2 space-y-3 ' +
+    'active:border active:border-ui-200' +
+    'hover:border hover:border-ui-100 ' +
+    'focus:outline-none focus:ring-2 focus:ring-primary-500',
+})`
+  &:hover {
+    box-shadow: 0px 4px 8px rgba(31, 41, 51, 0.04),
+      0px 0px 2px rgba(31, 41, 51, 0.06), 0px 0px 1px rgba(31, 41, 51, 0.04);
+  }
+`;
 
 const Header = styled.div.attrs({
   className: 'flex justify-between',
 })``;
 
-const Title = styled.h2.attrs({
-  className: 'text-ui-800 font-bold text-xl',
+const Title = styled.p.attrs({
+  className: 'text-ui-800 text-left font-bold text-xl',
 })``;
 
 const Description = styled.p.attrs({
-  className: 'text-ui-600 font-normal text-base',
+  className: 'text-ui-600 text-left font-normal text-base',
 })``;
 
 const Publisher = styled.span.attrs({
-  className: 'text-ui-500 text-sm',
+  className: 'flex space-x-1 text-ui-500 text-sm',
 })``;
 
 const TextContent = styled.div.attrs({
-  className: 'flex flex-col space-y-1.5',
+  className: 'space-y-1.5',
 })``;
 
 const LoadingContent = styled.div.attrs({
-  className: 'flex flex-col space-y-2',
+  className: 'space-y-2 p-2 bg-ui-50 rounded-xl',
 })``;
 
 const ProgressInfoWrapper = styled.div.attrs({
@@ -227,10 +222,4 @@ const Percentage = styled.span.attrs({
   className: 'text-primary-500 font-bold text-base',
 })``;
 
-const Actions = styled.div.attrs({
-  className: 'flex',
-})``;
-
-const StyledButton = styled(ButtonText).attrs({
-  className: 'tablet:w-auto w-full',
-})``;
+const PublisherLabel = styled.p.attrs({className: '-mr-0.5'})``;
