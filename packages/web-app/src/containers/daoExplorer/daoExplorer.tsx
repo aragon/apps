@@ -69,21 +69,12 @@ export const DaoExplorer = () => {
             bgWhite={false}
           >
             {isConnected ? (
-              <Option
-                label={t('explore.explorer.myDaos')}
-                value="my-daos"
-              />
+              <Option label={t('explore.explorer.myDaos')} value="my-daos" />
             ) : (
               <></>
             )}
-            <Option
-              label={t('explore.explorer.popular')}
-              value="popular"
-            />
-            <Option
-              label={t('explore.explorer.newest')}
-              value="newest"
-            />
+            <Option label={t('explore.explorer.popular')} value="popular" />
+            <Option label={t('explore.explorer.newest')} value="newest" />
           </ButtonGroup>
         </HeaderWrapper>
         <CardsWrapper>
