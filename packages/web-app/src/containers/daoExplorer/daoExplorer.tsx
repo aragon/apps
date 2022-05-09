@@ -70,18 +70,18 @@ export const DaoExplorer = () => {
           >
             {isConnected ? (
               <Option
-                label={t('explore.explorer.myDaos') as string}
+                label={t('explore.explorer.myDaos')}
                 value="my-daos"
               />
             ) : (
               <></>
             )}
             <Option
-              label={t('explore.explorer.popular') as string}
+              label={t('explore.explorer.popular')}
               value="popular"
             />
             <Option
-              label={t('explore.explorer.newest') as string}
+              label={t('explore.explorer.newest')}
               value="newest"
             />
           </ButtonGroup>
@@ -102,7 +102,7 @@ export const DaoExplorer = () => {
       {filter !== 'my-daos' && (
         <div>
           <ButtonText
-            label={t('explore.explorer.showMore') as string}
+            label={t('explore.explorer.showMore')}
             iconRight={<IconChevronDown />}
             bgWhite
             mode="ghost"
