@@ -11,6 +11,7 @@ import Carousel from 'containers/carousel';
 import {Layout} from '../app';
 import {useWallet} from 'hooks/useWallet';
 import {useGlobalModalContext} from 'context/globalModals';
+import {DaoExplorer} from 'containers/daoExplorer';
 import { DaoCard } from 'components/daoCard';
 import ActiveProposalsExplore from 'containers/activeProposalsExplore';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
@@ -57,10 +58,9 @@ const Explore: React.FC = () => {
               />
             </div>
           </ContentWrapper>
+
           <DaoWrapper>
-            <DaoCard />
-            <DaoCard />
-            <DaoCard />
+            <DaoExplorer />
           </DaoWrapper>
         </Layout>
         <div className="h-96"></div>
@@ -75,7 +75,8 @@ const Container = styled.div.attrs({
 })``;
 
 const DaoWrapper = styled.div.attrs({
-  className: 'col-span-full desktop:col-start-2 desktop:col-end-12 flex flex-row space-x-4',
+  className:
+    'col-span-full desktop:col-start-2 desktop:col-end-12 flex flex-row space-x-4',
 })``;
 
 const ContentWrapper = styled.div.attrs({
