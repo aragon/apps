@@ -22,23 +22,25 @@ import {
   erc20VotingProposals,
   erc20VotingProposals_erc20VotingProposals,
 } from 'queries/__generated__/erc20VotingProposals';
-import {TEST_DAO} from 'utils/constants';
+import {useDaoParam} from 'hooks/useDao';
+import {Loading} from 'components/temporary';
 
 const Governance: React.FC = () => {
   const {t} = useTranslation();
   const navigate = useNavigate();
   const [filterValue, setFilterValue] = useState<string>('all');
-  const [page, setPage] = useState(1);
+  const {data: daoId, loading: daoIdLoading, error: daoIdError} = useDaoParam();
   const {
     data: uncategorizedDaoProposals,
-    loading,
-    error,
+    loading: proposalsLoading,
+    error: proposalsError,
   } = useQuery<erc20VotingProposals>(ERC20VOTING_PROPOSAL_LIST, {
-    variables: {dao: TEST_DAO},
+    variables: {dao: daoId},
   });
 
   // The number of proposals displayed on each page
   const ProposalsPerPage = 6;
+  const [page, setPage] = useState(1);
 
   // This sort function should implement on graph side!
   // function sortProposals(a: ProposalData, b: ProposalData): number {
@@ -63,11 +65,11 @@ const Governance: React.FC = () => {
     );
   }
 
-  if (loading) {
-    return <p>Loading</p>;
+  if (proposalsLoading || daoIdLoading) {
+    return <Loading />;
   }
 
-  if (error) {
+  if (proposalsError || daoIdError) {
     return <p>Error. Check console</p>;
   }
 

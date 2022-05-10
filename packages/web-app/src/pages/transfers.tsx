@@ -13,15 +13,17 @@ import TransactionDetail from 'containers/transactionDetail';
 import useCategorizedTransfers from 'hooks/useCategorizedTransfers';
 import {useGlobalModalContext} from 'context/globalModals';
 import {TransferSectionWrapper} from 'components/wrappers';
-import {TEST_DAO, TransferTypes} from 'utils/constants';
+import {TransferTypes} from 'utils/constants';
+import {Loading} from 'components/temporary';
+import {useDaoParam} from 'hooks/useDao';
 
 const Transfers: React.FC = () => {
+  const {data: dao, loading} = useDaoParam();
   const {t, i18n} = useTranslation();
   const {open} = useGlobalModalContext();
-  const [filterValue, setFilterValue] = useState('');
-  const [searchValue, setSearchValue] = useState('');
+
   const {data: categorizedTransfers, totalTransfers} =
-    useCategorizedTransfers(TEST_DAO);
+    useCategorizedTransfers(dao);
 
   // Transaction detail
   const [selectedTransfer, setSelectedTransfer] = useState<Transfer>(
@@ -29,10 +31,13 @@ const Transfers: React.FC = () => {
   );
   const [showTransactionDetail, setShowTransactionDetail] =
     useState<boolean>(false);
+  const [filterValue, setFilterValue] = useState('');
+  const [searchValue, setSearchValue] = useState('');
 
   /*************************************************
    *             Callbacks and Handlers            *
    *************************************************/
+
   const handleTransferClicked = useCallback((transfer: Transfer) => {
     setSelectedTransfer(transfer);
     setShowTransactionDetail(true);
@@ -83,6 +88,10 @@ const Transfers: React.FC = () => {
       categorizedTransfers.year.length,
     ]
   );
+
+  if (loading) {
+    return <Loading />;
+  }
 
   /**
    * Note: We can add a nested iterator for both sections and transfer cards

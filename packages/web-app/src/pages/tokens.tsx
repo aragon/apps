@@ -4,17 +4,21 @@ import {withTransaction} from '@elastic/apm-rum-react';
 import React, {useState} from 'react';
 
 import TokenList from 'components/tokenList';
-import {TEST_DAO} from 'utils/constants';
 import {useDaoVault} from 'hooks/useDaoVault';
 import {PageWrapper} from 'components/wrappers';
 import {filterTokens} from 'utils/tokens';
 import type {VaultToken} from 'utils/types';
 import {useGlobalModalContext} from 'context/globalModals';
+import {Loading} from 'components/temporary';
+import {useDaoParam} from 'hooks/useDao';
 
 const Tokens: React.FC = () => {
+  const {data: dao, loading} = useDaoParam();
+
   const {t} = useTranslation();
   const {open} = useGlobalModalContext();
-  const {tokens} = useDaoVault(TEST_DAO);
+
+  const {tokens} = useDaoVault(dao);
 
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -23,6 +27,10 @@ const Tokens: React.FC = () => {
   };
 
   const filteredTokens: VaultToken[] = filterTokens(tokens, searchTerm);
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <PageWrapper

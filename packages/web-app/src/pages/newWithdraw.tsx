@@ -6,7 +6,6 @@ import {useForm, FormProvider, useWatch, useFormState} from 'react-hook-form';
 
 import TokenMenu from 'containers/tokenMenu';
 import {Finance} from 'utils/paths';
-import {TEST_DAO} from 'utils/constants';
 import {formatUnits} from 'utils/library';
 import ReviewProposal from 'containers/reviewProposal';
 import {BaseTokenInfo} from 'utils/types';
@@ -25,8 +24,10 @@ import DefineProposal, {
 import SetupVotingForm, {
   isValid as setupVotingIsValid,
 } from 'containers/setupVotingForm';
-import {generatePath, useParams} from 'react-router-dom';
+import {generatePath} from 'react-router-dom';
 import {useNetwork} from 'context/network';
+import {useDaoParam} from 'hooks/useDao';
+import {Loading} from 'components/temporary';
 
 export type TokenFormData = {
   tokenName: string;
@@ -76,7 +77,7 @@ export const defaultValues = {
 
 const NewWithdraw: React.FC = () => {
   const {t} = useTranslation();
-  const {dao} = useParams();
+  const {data: dao, loading} = useDaoParam();
   const {network} = useNetwork();
 
   const formMethods = useForm<WithdrawFormData>({
@@ -91,7 +92,7 @@ const NewWithdraw: React.FC = () => {
     control: formMethods.control,
   });
 
-  const {data: balances} = useDaoBalances(TEST_DAO);
+  const {data: balances} = useDaoBalances(dao);
 
   /*************************************************
    *             Callbacks and Handlers            *
@@ -135,6 +136,11 @@ const NewWithdraw: React.FC = () => {
   /*************************************************
    *                    Render                     *
    *************************************************/
+
+  if (loading) {
+    return <Loading />;
+  }
+
   return (
     <>
       <FormProvider {...formMethods}>

@@ -14,11 +14,18 @@ import {PageWrapper} from 'components/wrappers';
 import {DescriptionListContainer, Dl, Dt, Dd} from 'components/descriptionList';
 import {useGlobalModalContext} from 'context/globalModals';
 import useScreen from 'hooks/useScreen';
+import {useDaoParam} from 'hooks/useDao';
+import {Loading} from 'components/temporary';
 
 const Settings: React.FC = () => {
+  const {data: dao, loading} = useDaoParam();
   const {t} = useTranslation();
   const {open} = useGlobalModalContext();
   const {isMobile} = useScreen();
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <PageWrapper

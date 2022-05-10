@@ -19,7 +19,7 @@ import StarterKit from '@tiptap/starter-kit';
 import TipTapLink from '@tiptap/extension-link';
 import {useQuery} from '@apollo/client';
 import {generatePath, useNavigate, useParams} from 'react-router-dom';
-import React, {useMemo, useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 
 import ResourceList from 'components/resourceList';
 import {StyledEditorContent} from 'containers/reviewProposal';
@@ -32,6 +32,8 @@ import {
   erc20VotingProposalVariables,
 } from 'queries/__generated__/erc20VotingProposal';
 import {NotFound} from 'utils/paths';
+import {useDaoParam} from 'hooks/useDao';
+import {Loading} from 'components/temporary';
 
 /* MOCK DATA ================================================================ */
 
@@ -57,19 +59,29 @@ const proposalTags = ['Finance', 'Withdraw'];
 /* PROPOSAL COMPONENT ======================================================= */
 
 const Proposal: React.FC = () => {
+  const {data: daoId, loading: daoIdLoading, error: daoIdError} = useDaoParam();
   const {network} = useNetwork();
   const {breadcrumbs} = useMappedBreadcrumbs();
-  const [expandedProposal, setExpandedProposal] = useState(false);
   const {t} = useTranslation();
-  const {dao, id} = useParams();
+  const {id} = useParams();
   const navigate = useNavigate();
   const {isDesktop} = useScreen();
-  const {data, loading, error} = useQuery<
-    erc20VotingProposal,
-    erc20VotingProposalVariables
-  >(ERC20VOTING_PROPOSAL_DETAILS, {variables: {id}});
+
+  let proposalId = '';
+  if (!id) navigate(NotFound);
+  else proposalId = id;
+
+  const {
+    data: proposalData,
+    loading: proposalLoading,
+    error: proposalError,
+  } = useQuery<erc20VotingProposal, erc20VotingProposalVariables>(
+    ERC20VOTING_PROPOSAL_DETAILS,
+    {variables: {id: proposalId}}
+  );
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [metadata, setMetadata] = useState<Record<string, any> | undefined>();
+  const [expandedProposal, setExpandedProposal] = useState(false);
 
   const editor = useEditor({
     editable: false,
@@ -82,28 +94,22 @@ const Proposal: React.FC = () => {
   });
 
   useEffect(() => {
-    if (!loading && data) {
-      setMetadata(JSON.parse(data.erc20VotingProposals[0].metadata));
+    if (!proposalLoading && proposalData) {
+      setMetadata(JSON.parse(proposalData.erc20VotingProposals[0].metadata));
       editor?.commands.setContent(metadata?.proposal);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loading, data]);
+  }, [proposalLoading, proposalData]);
 
-  const publisher = useMemo(() => {
-    // if (publisherAddress === account) return 'you';
-    // return shortenAddress(publisherAddress);
-    return 'you';
-  }, []);
+  // TODO Do we still need this? [VR 10-05-2022]
+  // const publisher (publisherAddress === account) ? 'you' : shortenAddress(publisherAddress);
+  const publisher = 'you';
 
-  if (!id) {
-    navigate(NotFound);
+  if (proposalLoading || daoIdLoading) {
+    return <Loading />;
   }
 
-  if (loading) {
-    return <p>Loading</p>;
-  }
-
-  if (error) {
+  if (proposalError || daoIdError) {
     return <p>Error. Check console</p>;
   }
 
@@ -118,7 +124,7 @@ const Proposal: React.FC = () => {
         {!isDesktop && (
           <Breadcrumb
             onClick={(path: string) =>
-              navigate(generatePath(path, {network, dao}))
+              navigate(generatePath(path, {network, daoId}))
             }
             crumbs={breadcrumbs}
             icon={<IconGovernance />}
