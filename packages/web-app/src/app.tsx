@@ -15,6 +15,7 @@ import '../i18n.config';
 // work properly on the pages.
 import * as paths from 'utils/paths';
 import DaoSelectMenu from 'containers/navbar/daoSelectMenu';
+import CreateDAO from 'pages/createDAO';
 
 const ExplorePage = lazy(() => import('pages/explore'));
 const NotFoundPage = lazy(() => import('pages/notFound'));
@@ -49,6 +50,9 @@ function App() {
       <Suspense fallback={<p>Loading...</p>}>
         <Routes>
           <Route path="/" element={<ExplorePage />} />
+          <Route element={<DaoLayout />}>
+            <Route path="/create" element={<CreateDAO />} />
+          </Route>
           <Route path=":network/:dao">
             <Route element={<DaoLayout />}>
               <Route path="dashboard" element={<DashboardPage />} />
