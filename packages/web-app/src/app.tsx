@@ -15,6 +15,7 @@ import '../i18n.config';
 // work properly on the pages.
 import {NotFound} from 'utils/paths';
 import DaoSelectMenu from 'containers/navbar/daoSelectMenu';
+import {Loading} from 'components/temporary/loading';
 
 const ExplorePage = lazy(() => import('pages/explore'));
 const NotFoundPage = lazy(() => import('pages/notFound'));
@@ -46,7 +47,7 @@ function App() {
   return (
     <>
       {/* TODO: replace with loading indicator */}
-      <Suspense fallback={<p>Loading...</p>}>
+      <Suspense fallback={<Loading />}>
         <Routes>
           <Route path="/" element={<ExplorePage />} />
           <Route path=":network/:dao">
