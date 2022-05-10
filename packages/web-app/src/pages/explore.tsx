@@ -10,6 +10,7 @@ import Hero from 'containers/hero';
 import {Finance} from 'utils/paths';
 import Carousel from 'containers/carousel';
 import {Layout} from '../app';
+import {TemporarySection} from 'components/temporary';
 
 const existingDaos = [
   '0x07de9a02a1c7e09bae5b15b7270e5b1ba2029bfd',
@@ -28,11 +29,8 @@ const Explore: React.FC = () => {
           <ContentWrapper>
             <Carousel />
             <div className="h-20"></div>
-            <div className="p-2 m-5 space-y-1 bg-primary-100">
-              <p>
-                This is a temporarily added section for demonstration purposes.
-                It allows you to navigate to a mock dao to test daos URLs.
-              </p>
+
+            <TemporarySection purpose="It allows you to navigate to a mock dao to test daos URLs.">
               {existingDaos.map(dao => (
                 <ActionListItem
                   key={dao}
@@ -58,7 +56,7 @@ const Explore: React.FC = () => {
                   )
                 }
               />
-            </div>
+            </TemporarySection>
           </ContentWrapper>
         </Layout>
         <div className="h-96"></div>
