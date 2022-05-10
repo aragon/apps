@@ -2,7 +2,6 @@ import React, {ReactNode} from 'react';
 import styled from 'styled-components';
 import {Badge} from '../badge';
 import {LinearProgress} from '../progress';
-import {AlertInline} from '../alerts';
 import {Address, shortenAddress} from '../../utils/addresses';
 import {Link} from '../link';
 import {AvatarDao} from '../avatar';
@@ -22,7 +21,13 @@ export type CardProposalProps = {
    * the headers & buttons wil change to proper format also the progress
    * section only available on active state.
    * */
-  state: 'draft' | 'pending' | 'active' | 'succeeded' | 'executed' | 'defeated';
+  process:
+    | 'draft'
+    | 'pending'
+    | 'active'
+    | 'succeeded'
+    | 'executed'
+    | 'defeated';
   /** Indicates whether the proposal is in being used in list or in its special form (see explore page) */
   type?: 'list' | 'explore';
   /** Url for the dao avatar */
@@ -45,20 +50,12 @@ export type CardProposalProps = {
   daoName?: string;
   /** Chain ID for redirect user to the right explorer */
   chainId?: number;
-  /**
-   * Button label for different status
-   * ['pending / executed / defeated label', 'active label', 'succeeded label', 'draft label']
-   * TODO: I thought to add 4 button Label
-   * props for different states and implement
-   * condition here but i decided to use only one prop
-   * for reducing the complexity
-   */
-  buttonLabel: string[];
-  AlertMessage?: string;
+
+  alertMessage?: string;
   /**
    * ['Draft', 'Pending', 'Active', 'Executed', 'Succeeded', 'Defeated']
    */
-  StateLabel: string[];
+  stateLabel: string[];
 };
 
 export const explorers: {
@@ -70,7 +67,7 @@ export const explorers: {
 };
 
 export const CardProposal: React.FC<CardProposalProps> = ({
-  state = 'pending',
+  process = 'pending',
   title,
   description,
   voteTitle,
@@ -81,8 +78,8 @@ export const CardProposal: React.FC<CardProposalProps> = ({
   publishLabel,
   publisherAddress,
   chainId = 1,
-  AlertMessage,
-  StateLabel,
+  alertMessage,
+  stateLabel,
   type = 'list',
   daoLogo,
   daoName,
@@ -91,41 +88,29 @@ export const CardProposal: React.FC<CardProposalProps> = ({
   const isTypeExplore = type === 'explore';
 
   const headerOptions: {
-    [key in CardProposalProps['state']]: ReactNode;
+    [key in CardProposalProps['process']]: ReactNode;
   } = {
-    draft: <Badge label={StateLabel[0]} />,
+    draft: <Badge label={stateLabel[0]} />,
     pending: (
       <>
-        <Badge label={StateLabel[1]} />
-        {AlertMessage && (
-          <AlertInline
-            label={AlertMessage}
-            icon={<IconClock className="text-info-500" />}
-            mode="neutral"
-          />
-        )}
+        <Badge label={stateLabel[1]} />
+        {alertMessage && <InlineAlert message={alertMessage} />}
       </>
     ),
     active: (
       <>
-        {!isTypeExplore && <Badge label={StateLabel[2]} colorScheme={'info'} />}
-        {AlertMessage && (
-          <AlertInline
-            label={AlertMessage}
-            icon={<IconClock className="text-info-500" />}
-            mode="neutral"
-          />
-        )}
+        {!isTypeExplore && <Badge label={stateLabel[2]} colorScheme={'info'} />}
+        {alertMessage && <InlineAlert message={alertMessage} />}
       </>
     ),
-    executed: <Badge label={StateLabel[3]} colorScheme={'success'} />,
-    succeeded: <Badge label={StateLabel[4]} colorScheme={'success'} />,
-    defeated: <Badge label={StateLabel[5]} colorScheme={'critical'} />,
+    executed: <Badge label={stateLabel[3]} colorScheme={'success'} />,
+    succeeded: <Badge label={stateLabel[4]} colorScheme={'success'} />,
+    defeated: <Badge label={stateLabel[5]} colorScheme={'critical'} />,
   };
 
   return (
     <Card data-testid="cardProposal" onClick={onClick}>
-      <Header>{headerOptions[state]}</Header>
+      <Header>{headerOptions[process]}</Header>
       <TextContent>
         <Title>{title}</Title>
         <Description>{description}</Description>
@@ -146,7 +131,7 @@ export const CardProposal: React.FC<CardProposalProps> = ({
           />
         </Publisher>
       </TextContent>
-      {state === 'active' && (
+      {process === 'active' && (
         <LoadingContent>
           <ProgressInfoWrapper>
             <ProgressTitle>{voteTitle}</ProgressTitle>
@@ -164,6 +149,14 @@ export const CardProposal: React.FC<CardProposalProps> = ({
     </Card>
   );
 };
+
+// Temporary because alertInline does not contain option with clock icon and text color
+const InlineAlert: React.FC<{message: string}> = ({message}) => (
+  <span className="flex items-center text-sm font-bold text-info-700">
+    <IconClock className="mr-1 text-info-500" />
+    {message}
+  </span>
+);
 
 const Card = styled.button.attrs({
   className:
