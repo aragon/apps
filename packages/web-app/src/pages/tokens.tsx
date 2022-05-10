@@ -10,6 +10,7 @@ import {PageWrapper} from 'components/wrappers';
 import {filterTokens} from 'utils/tokens';
 import type {VaultToken} from 'utils/types';
 import {useGlobalModalContext} from 'context/globalModals';
+import TransferMenu from 'containers/transferMenu';
 
 const Tokens: React.FC = () => {
   const {t} = useTranslation();
@@ -43,6 +44,7 @@ const Tokens: React.FC = () => {
         />
         <TokenList tokens={filteredTokens} />
       </div>
+      <TransferMenu />
     </PageWrapper>
   );
 };

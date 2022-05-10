@@ -14,6 +14,7 @@ import useCategorizedTransfers from 'hooks/useCategorizedTransfers';
 import {useGlobalModalContext} from 'context/globalModals';
 import {TransferSectionWrapper} from 'components/wrappers';
 import {TEST_DAO, TransferTypes} from 'utils/constants';
+import TransferMenu from 'containers/transferMenu';
 
 const Transfers: React.FC = () => {
   const {t, i18n} = useTranslation();
@@ -178,6 +179,7 @@ const Transfers: React.FC = () => {
           )}
         </div>
       </PageWrapper>
+      <TransferMenu />
       <TransactionDetail
         isOpen={showTransactionDetail}
         onClose={() => setShowTransactionDetail(false)}
