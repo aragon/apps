@@ -9,27 +9,23 @@ import {
   Link,
 } from '@aragon/ui-components';
 import {useTranslation} from 'react-i18next';
-import {generatePath, useNavigate, useParams} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import styled from 'styled-components';
 import {useQuery} from '@apollo/client';
 
 import {PageWrapper} from 'components/wrappers';
 import ProposalList from 'components/proposalList';
 import NoProposals from 'public/noProposals.svg';
-import {useNetwork} from 'context/network';
 import {getRemainingTime} from 'utils/date';
 import {ERC20VOTING_PROPOSAL_LIST} from 'queries/proposals';
 import {
   erc20VotingProposals,
   erc20VotingProposals_erc20VotingProposals,
 } from 'queries/__generated__/erc20VotingProposals';
-import {NewProposal} from 'utils/paths';
 import {TEST_DAO} from 'utils/constants';
 
 const Governance: React.FC = () => {
   const {t} = useTranslation();
-  const {network} = useNetwork();
-  const {dao} = useParams();
   const navigate = useNavigate();
   const [filterValue, setFilterValue] = useState<string>('all');
   const [page, setPage] = useState(1);
@@ -77,78 +73,84 @@ const Governance: React.FC = () => {
 
   if (!daoProposals || daoProposals.length === 0) {
     return (
-      <Container>
-        <EmptyStateContainer>
-          <ImageContainer src={NoProposals} />
-          <EmptyStateHeading>
-            {t('governance.emptyState.title')}
-          </EmptyStateHeading>
+      <>
+        <Container>
+          <EmptyStateContainer>
+            <ImageContainer src={NoProposals} />
+            <EmptyStateHeading>
+              {t('governance.emptyState.title')}
+            </EmptyStateHeading>
 
-          <p className="mt-1.5 lg:w-1/2 text-center">
-            {t('governance.emptyState.subtitleLine1')}{' '}
-            {t('governance.emptyState.subtitleLine2')}{' '}
-            <Link label={t('governance.emptyState.proposalGuide')} />
-          </p>
-          <ButtonText
-            size="large"
-            label="New Proposal"
-            iconLeft={<IconAdd />}
-            className="mt-4"
-            onClick={() => navigate(generatePath(NewProposal, {network, dao}))}
-          />
-        </EmptyStateContainer>
-      </Container>
+            <p className="mt-1.5 lg:w-1/2 text-center">
+              {t('governance.emptyState.subtitleLine1')}{' '}
+              {t('governance.emptyState.subtitleLine2')}{' '}
+              <Link label={t('governance.emptyState.proposalGuide')} />
+            </p>
+            <ButtonText
+              size="large"
+              label="New Proposal"
+              iconLeft={<IconAdd />}
+              className="mt-4"
+              onClick={() => navigate('new-proposal')}
+            />
+          </EmptyStateContainer>
+        </Container>
+      </>
     );
   }
 
   return (
-    <PageWrapper
-      title={'Proposals'}
-      buttonLabel={'New Proposal'}
-      subtitle={'1 active Proposal'}
-      onClick={() => navigate(generatePath(NewProposal, {network, dao}))}
-    >
-      <div className="flex mt-3 desktop:mt-8">
-        <ButtonGroup
-          bgWhite
-          defaultValue="all"
-          onChange={(selected: string) => {
-            setFilterValue(selected);
-            setPage(1);
-          }}
-        >
-          <Option value="all" label="All" />
-          <Option value="draft" label="Draft" />
-          <Option value="pending" label="Pending" />
-          <Option value="active" label="Active" />
-          <Option value="succeeded" label="Succeeded" />
-          <Option value="executed" label="Executed" />
-          <Option value="defeated" label="Defeated" />
-        </ButtonGroup>
-      </div>
-      <ListWrapper>
-        <ProposalList
-          proposals={displayedProposals.slice(
-            (page - 1) * ProposalsPerPage,
-            page * ProposalsPerPage
-          )}
-        />
-      </ListWrapper>
-      <PaginationWrapper>
-        {displayedProposals.length > ProposalsPerPage && (
-          <Pagination
-            totalPages={
-              Math.ceil(displayedProposals.length / ProposalsPerPage) as number
-            }
-            activePage={page}
-            onChange={(activePage: number) => {
-              setPage(activePage);
-              window.scrollTo({top: 0, behavior: 'smooth'});
+    <>
+      <PageWrapper
+        title={'Proposals'}
+        buttonLabel={'New Proposal'}
+        subtitle={'1 active Proposal'}
+        onClick={() => navigate('new-proposal')}
+      >
+        <div className="flex mt-3 desktop:mt-8">
+          <ButtonGroup
+            bgWhite
+            defaultValue="all"
+            onChange={(selected: string) => {
+              setFilterValue(selected);
+              setPage(1);
             }}
+          >
+            <Option value="all" label="All" />
+            <Option value="draft" label="Draft" />
+            <Option value="pending" label="Pending" />
+            <Option value="active" label="Active" />
+            <Option value="succeeded" label="Succeeded" />
+            <Option value="executed" label="Executed" />
+            <Option value="defeated" label="Defeated" />
+          </ButtonGroup>
+        </div>
+        <ListWrapper>
+          <ProposalList
+            proposals={displayedProposals.slice(
+              (page - 1) * ProposalsPerPage,
+              page * ProposalsPerPage
+            )}
           />
-        )}
-      </PaginationWrapper>
-    </PageWrapper>
+        </ListWrapper>
+        <PaginationWrapper>
+          {displayedProposals.length > ProposalsPerPage && (
+            <Pagination
+              totalPages={
+                Math.ceil(
+                  displayedProposals.length / ProposalsPerPage
+                ) as number
+              }
+              activePage={page}
+              onChange={(activePage: number) => {
+                setPage(activePage);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+              }}
+            />
+          )}
+        </PaginationWrapper>
+      </PageWrapper>
+    </>
   );
 };
 

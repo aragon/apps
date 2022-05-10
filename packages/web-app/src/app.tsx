@@ -13,24 +13,29 @@ import '../i18n.config';
 // HACK: All pages MUST be exported with the withTransaction function
 // from the '@elastic/apm-rum-react' package in order for analytics to
 // work properly on the pages.
-import ExplorePage from 'pages/explore';
 import * as paths from 'utils/paths';
 import DaoSelectMenu from 'containers/navbar/daoSelectMenu';
 
-const TokensPage = lazy(() => import('pages/tokens'));
-const FinancePage = lazy(() => import('pages/finance'));
+const ExplorePage = lazy(() => import('pages/explore'));
 const NotFoundPage = lazy(() => import('pages/notFound'));
-const CommunityPage = lazy(() => import('pages/community'));
-const TransfersPage = lazy(() => import('pages/transfers'));
+
+const DashboardPage = lazy(() => import('pages/dashboard'));
+const FinancePage = lazy(() => import('pages/finance'));
 const GovernancePage = lazy(() => import('pages/governance'));
-const ProposalPage = lazy(() => import('pages/proposal'));
-const NewDepositPage = lazy(() => import('pages/newDeposit'));
-const NewWithdrawPage = lazy(() => import('pages/newWithdraw'));
-const CreateDAOPage = lazy(() => import('pages/createDAO'));
-const NewProposalPage = lazy(() => import('pages/newProposal'));
+const CommunityPage = lazy(() => import('pages/community'));
 const SettingsPage = lazy(() => import('pages/settings'));
 
+const TokensPage = lazy(() => import('pages/tokens'));
+const TransfersPage = lazy(() => import('pages/transfers'));
+const NewDepositPage = lazy(() => import('pages/newDeposit'));
+const NewWithdrawPage = lazy(() => import('pages/newWithdraw'));
+
+const NewProposalPage = lazy(() => import('pages/newProposal'));
+const ProposalPage = lazy(() => import('pages/proposal'));
+
 function App() {
+  // TODO this needs to be inside a Routes component. Will be moved there with
+  // further refactoring of layout (see further below).
   const {pathname} = useLocation();
 
   useEffect(() => {
@@ -38,44 +43,38 @@ function App() {
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  function LayoutWrapper() {
-    return (
-      <div className="flex flex-col mb-14 desktop:mb-10 bg-ui-50">
-        <Navbar />
-        <Layout>
-          <Outlet />
-        </Layout>
-      </div>
-    );
-  }
-
   return (
     <>
       {/* TODO: replace with loading indicator */}
       <Suspense fallback={<p>Loading...</p>}>
         <Routes>
-          <Route path={paths.Landing} element={<ExplorePage />} />
-          <Route path="/" element={<LayoutWrapper />}>
-            <Route path={paths.NewDeposit} element={<NewDepositPage />} />
-            <Route path={paths.NewDeposit} element={<NewDepositPage />} />
-            <Route path={paths.NewWithDraw} element={<NewWithdrawPage />} />
-            <Route path={paths.CreateDAO} element={<CreateDAOPage />} />
-            <Route path={paths.Community} element={<CommunityPage />} />
-            <Route path={paths.Finance} element={<FinancePage />} />
-            <Route path={paths.Dashboard} element={<CommunityPage />} />
-            <Route path={paths.Governance} element={<GovernancePage />} />
-            <Route path={paths.NewProposal} element={<NewProposalPage />} />
-            <Route path={paths.Proposal} element={<ProposalPage />} />
-            <Route path={paths.AllTokens} element={<TokensPage />} />
-            <Route path={paths.AllTransfers} element={<TransfersPage />} />
-            <Route path={paths.Settings} element={<SettingsPage />} />
-            <Route path={paths.NotFound} element={<NotFoundPage />} />
-            <Route
-              path="*"
-              element={<Navigate to={paths.NotFound} replace />}
-            />
-            <Route path={paths.NewDeposit} element={<NewDepositPage />} />
+          <Route path="/" element={<ExplorePage />} />
+          <Route path=":network/:dao">
+            <Route element={<DaoLayout />}>
+              <Route path="dashboard" element={<DashboardPage />} />
+              <Route path="finance" element={<FinancePage />} />
+              <Route path="finance/new-deposit" element={<NewDepositPage />} />
+              <Route
+                path="finance/new-withdraw"
+                element={<NewWithdrawPage />}
+              />
+              <Route path="finance/tokens" element={<TokensPage />} />
+              <Route path="finance/transfers" element={<TransfersPage />} />
+              <Route path="governance" element={<GovernancePage />} />
+              <Route
+                path="governance/new-proposal"
+                element={<NewProposalPage />}
+              />
+              <Route
+                path="governance/proposal/:id"
+                element={<ProposalPage />}
+              />
+              <Route path="community" element={<CommunityPage />} />
+              <Route path="settings" element={<SettingsPage />} />
+            </Route>
           </Route>
+          <Route path={paths.NotFound} element={<NotFoundPage />} />
+          <Route path="*" element={<NotFoundWrapper />} />
         </Routes>
       </Suspense>
       <DaoSelectMenu />
@@ -83,6 +82,36 @@ function App() {
     </>
   );
 }
+
+const NotFoundWrapper: React.FC = () => {
+  const {pathname} = useLocation();
+
+  return (
+    <Navigate to={paths.NotFound} state={{incorrectPath: pathname}} replace />
+  );
+};
+
+// TODO the layout/background structure for the application will be
+// refactored even further in a separate PR. This will also take care of
+// the navbar width/position issue.
+
+// Components that are rendered via the Route element prop need to be expressed
+// called via the Outlet component. Calling them as children does not work. This
+// why simply passing Layout won't work.
+const DaoLayout: React.FC = () => (
+  <>
+    <Navbar />
+    <Background>
+      <Layout>
+        <Outlet />
+      </Layout>
+    </Background>
+  </>
+);
+
+const Background = styled.div.attrs({
+  className: 'flex flex-col mb-14 desktop:mb-10 bg-ui-50',
+})``;
 
 export const Layout = styled.main.attrs({
   className:

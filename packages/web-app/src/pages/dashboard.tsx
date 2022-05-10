@@ -2,11 +2,11 @@ import React from 'react';
 import {withTransaction} from '@elastic/apm-rum-react';
 import {PageWrapper} from 'components/wrappers';
 
-const Community: React.FC = () => {
+const Dashboard: React.FC = () => {
   return (
     <PageWrapper
-      title="Community Page"
-      subtitle="Placeholder for the Community page"
+      title="Dashboard Page"
+      subtitle="Placeholder for the Dashboard page"
       showButton={false}
       buttonLabel={'sdf'}
     >
@@ -15,4 +15,4 @@ const Community: React.FC = () => {
   );
 };
 
-export default withTransaction('Community', 'component')(Community);
+export default withTransaction('Dashboard', 'component')(Dashboard);
