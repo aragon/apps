@@ -2,18 +2,12 @@ import {SupportedNetworks} from './chains';
 
 type SubgraphNetworkUrl = Record<SupportedNetworks, string | undefined>;
 
-// NOTE: I am temporarily pointing to the **proper** and **latest** version
-// of subgraph (with the dummy data) so we can QA financial screens properly
-// Older version of the contracts have no DAOs with withdraws yet
-
-// TODO: Replace the proper subgraph url with the one below once QA is done so that
-// the older version of the contracts can be used for further integration with the rest
-// of the application.
-// 'https://api.thegraph.com/subgraphs/name/rekard0/rekard0-zaragoza-rinkeby',
+// TODO: Replace with proper subgraph URL after future proof tasks have been performed
 export const SUBGRAPH_API_URL: SubgraphNetworkUrl = {
   ethereum: undefined,
   rinkeby:
-    'https://api.thegraph.com/subgraphs/name/aragon/aragon-zaragoza-rinkeby',
+    'https://api.thegraph.com/subgraphs/name/rekard0/rekard0-zaragoza-rinkeby',
+  // 'https://api.thegraph.com/subgraphs/name/aragon/aragon-zaragoza-rinkeby',
   polygon: undefined,
   mumbai:
     'https://api.thegraph.com/subgraphs/name/aragon/aragon-zaragoza-mumbai',
