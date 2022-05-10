@@ -22,8 +22,8 @@ Default.args = {
   publishLabel: 'Published by',
   publisherAddress: '0x374d444487A4602750CA00EFdaC5d22B21F130E1',
   alertMessage: 'Starts in x days y hours',
-  StateLabel: [
-    'state',
+  stateLabel: [
+    'Draft',
     'Pending',
     'Active',
     'Executed',
@@ -36,11 +36,12 @@ Default.args = {
 };
 
 export const Explore = Template.bind({});
-Default.args = {
+Explore.args = {
   type: 'explore',
   process: 'active',
   title: 'Title',
-  description: 'Description',
+  description:
+    'I think the current DAO name doesn’t match our mission and purpose, therefore we should do this, that, and whatever else.',
   voteTitle: 'Winning Option',
   voteProgress: 70,
   voteLabel: 'Yes',
@@ -51,7 +52,7 @@ Default.args = {
   publisherAddress: '0x374d444487A4602750CA00EFdaC5d22B21F130E1',
   alertMessage: 'Starts in x days y hours',
   stateLabel: [
-    'state',
+    'Draft',
     'Pending',
     'Active',
     'Executed',

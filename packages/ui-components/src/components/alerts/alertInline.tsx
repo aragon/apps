@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import {IconInfo, IconSuccess, IconWarning} from '../icons';
+import {IconInfo, IconSuccess, IconType, IconWarning} from '../icons';
 
 export type AlertInlineProps = {
   /** type and severity of alert */
@@ -9,6 +9,7 @@ export type AlertInlineProps = {
 
   /** alert copy */
   label: string;
+  icon?: React.FunctionComponentElement<IconType>;
 };
 
 const styles = {
@@ -36,10 +37,12 @@ const styles = {
 export const AlertInline: React.FC<AlertInlineProps> = ({
   mode = 'neutral',
   label,
+  icon,
 }) => {
   return (
     <Container data-testid="alertInline" mode={mode}>
-      <div>{styles[mode].icon}</div> <p>{label}</p>
+      <div>{icon || styles[mode].icon}</div>
+      <Label>{label}</Label>
     </Container>
   );
 };
@@ -48,5 +51,7 @@ type ContainerProps = {
   mode: NonNullable<AlertInlineProps['mode']>;
 };
 const Container = styled.div.attrs(({mode}: ContainerProps) => ({
-  className: `flex items-center space-x-1 text-sm font-bold ${styles[mode].color}`,
+  className: `flex items-center space-x-1 ${styles[mode].color}`,
 }))<ContainerProps>``;
+
+const Label = styled.p.attrs({className: 'font-bold text-sm'})``;

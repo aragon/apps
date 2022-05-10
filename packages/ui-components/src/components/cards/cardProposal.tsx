@@ -6,6 +6,7 @@ import {Address, shortenAddress} from '../../utils/addresses';
 import {Link} from '../link';
 import {AvatarDao} from '../avatar';
 import {IconClock} from '../icons';
+import {AlertInline} from '../alerts';
 
 export type CardProposalProps = {
   /** Proposal Title / Title of the card */
@@ -94,13 +95,25 @@ export const CardProposal: React.FC<CardProposalProps> = ({
     pending: (
       <>
         <Badge label={stateLabel[1]} />
-        {alertMessage && <InlineAlert message={alertMessage} />}
+        {alertMessage && (
+          <AlertInline
+            label={alertMessage}
+            icon={<IconClock className="text-info-500" />}
+            mode="neutral"
+          />
+        )}
       </>
     ),
     active: (
       <>
         {!isTypeExplore && <Badge label={stateLabel[2]} colorScheme={'info'} />}
-        {alertMessage && <InlineAlert message={alertMessage} />}
+        {alertMessage && (
+          <AlertInline
+            label={alertMessage}
+            icon={<IconClock className="text-info-500" />}
+            mode="neutral"
+          />
+        )}
       </>
     ),
     executed: <Badge label={stateLabel[3]} colorScheme={'success'} />,
@@ -150,24 +163,20 @@ export const CardProposal: React.FC<CardProposalProps> = ({
   );
 };
 
-// Temporary because alertInline does not contain option with clock icon and text color
-const InlineAlert: React.FC<{message: string}> = ({message}) => (
-  <span className="flex items-center text-sm font-bold text-info-700">
-    <IconClock className="mr-1 text-info-500" />
-    {message}
-  </span>
-);
-
 const Card = styled.button.attrs({
   className:
     'w-full bg-white rounded-xl p-2 space-y-3 ' +
-    'active:border active:border-ui-200' +
     'hover:border hover:border-ui-100 ' +
+    'active:border active:border-ui-200 ' +
     'focus:outline-none focus:ring-2 focus:ring-primary-500',
 })`
   &:hover {
     box-shadow: 0px 4px 8px rgba(31, 41, 51, 0.04),
       0px 0px 2px rgba(31, 41, 51, 0.06), 0px 0px 1px rgba(31, 41, 51, 0.04);
+  }
+
+  &:active {
+    box-shadow: 0px 0px 0px 2px #003bf5;
   }
 `;
 
@@ -180,7 +189,7 @@ const Title = styled.p.attrs({
 })``;
 
 const Description = styled.p.attrs({
-  className: 'text-ui-600 text-left font-normal text-base',
+  className: 'text-ui-600 text-left font-normal text-base line-clamp-2',
 })``;
 
 const Publisher = styled.span.attrs({

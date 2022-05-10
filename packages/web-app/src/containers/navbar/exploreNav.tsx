@@ -51,7 +51,7 @@ const Container = styled.header.attrs({
 
 const Menu = styled.nav.attrs({
   className: `flex mx-auto justify-between items-center
-     px-2 desktop:px-5 py-3 bg-primary-400`,
+     px-2 desktop:px-5 py-2 desktop:py-3 bg-primary-400`,
 })``;
 
 const LogoContainer = styled.img.attrs({

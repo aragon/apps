@@ -34,7 +34,7 @@ function Hero() {
 }
 
 const Container = styled.div.attrs({
-  className: 'bg-primary-400 desktop:h-55 h-56 overflow-hidden',
+  className: 'bg-primary-400 desktop:h-55 h-46 overflow-hidden',
 })``;
 
 const Wrapper = styled.div.attrs({
