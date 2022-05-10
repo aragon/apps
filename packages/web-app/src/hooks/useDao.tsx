@@ -1,19 +1,24 @@
+import {useQuery} from '@apollo/client';
+import {DAO_BY_ADDRESS} from 'queries/dao';
 import {useEffect} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
 import {NotFound} from 'utils/paths';
-import {useDaoExists} from './data/useDaoExists';
 
-export function useDao() {
+export function useDaoParam() {
   const {dao} = useParams();
   // NOTE At this point, daoParam will always be defined.
-  const {data, error, loading} = useDaoExists(dao ? dao : '');
+  const {data, error, loading} = useQuery(DAO_BY_ADDRESS, {
+    variables: {id: dao ? dao : ''},
+  });
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (error || !data) {
+    if (loading) {
+      return;
+    } else if (error || !data?.dao?.id) {
       navigate(NotFound, {replace: true, state: {incorrectDao: dao}});
     }
   }, [loading, dao]);
-  const navigate = useNavigate();
 
-  return {data, error, loading};
+  return {data: data?.dao?.id, error, loading};
 }
