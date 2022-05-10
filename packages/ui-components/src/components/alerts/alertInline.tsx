@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import {IconInfo, IconSuccess, IconType, IconWarning} from '../icons';
+import {IconInfo, IconSuccess, IconWarning} from '../icons';
 
 export type AlertInlineProps = {
   /** type and severity of alert */
@@ -9,7 +9,6 @@ export type AlertInlineProps = {
 
   /** alert copy */
   label: string;
-  icon?: React.FunctionComponentElement<IconType>;
 };
 
 const styles = {
@@ -37,11 +36,10 @@ const styles = {
 export const AlertInline: React.FC<AlertInlineProps> = ({
   mode = 'neutral',
   label,
-  icon,
 }) => {
   return (
     <Container data-testid="alertInline" mode={mode}>
-      <div>{icon || styles[mode].icon}</div> <p>{label}</p>
+      <div>{styles[mode].icon}</div> <p>{label}</p>
     </Container>
   );
 };
