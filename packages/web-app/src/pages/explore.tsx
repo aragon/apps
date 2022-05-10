@@ -22,7 +22,6 @@ const Explore: React.FC = () => {
         <Layout>
           <ContentWrapper>
             <Carousel />
-            <div className="h-20"></div>
             <div className="p-2 m-5 space-y-1 bg-primary-100">
               <p>
                 This is a temporarily added section for demonstration purposes.

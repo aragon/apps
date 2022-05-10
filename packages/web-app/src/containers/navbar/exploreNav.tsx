@@ -54,7 +54,7 @@ const ExploreNav: React.FC = () => {
 };
 
 const Container = styled.header.attrs({
-  className: 'top-0 w-full',
+  className: 'sticky top-0 w-full z-50',
 })``;
 
 const Menu = styled.nav.attrs({
