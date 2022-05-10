@@ -95,7 +95,3 @@ const StyledButton = styled(ButtonBase).attrs(
     return {className: `${className} ${inputClassName}`};
   }
 )<StyledButtonProps>``;
-
-// bgWhite
-//   ? `${isActive ? 'bg-primary-50' : 'bg-ui-0'} active:bg-primary-50`
-// : `${isActive ? 'bg-ui-0' : 'bg-ui-50'}  active:bg-ui-0`
