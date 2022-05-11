@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import {AvatarDao, IconBlock, IconCommunity} from '@aragon/ui-components';
 import {CHAIN_METADATA} from 'utils/constants';
-import {t} from 'i18next';
+import {i18n} from '../../../i18n.config';
 import useScreen from 'hooks/useScreen';
 
 export interface IDaoCardProps {
@@ -18,9 +18,9 @@ export type DaoType = 'wallet-based' | 'token-based';
 const getDaoType = (daoType?: DaoType) => {
   switch (daoType) {
     case 'token-based':
-      return t('explore.explorer.tokenBased');
+      return i18n.t('explore.explorer.tokenBased');
     case 'wallet-based':
-      return t('explore.explorer.walletBased');
+      return i18n.t('explore.explorer.walletBased');
   }
 };
 
