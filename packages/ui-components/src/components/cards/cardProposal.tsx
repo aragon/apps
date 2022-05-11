@@ -2,10 +2,11 @@ import React, {ReactNode} from 'react';
 import styled from 'styled-components';
 import {Badge} from '../badge';
 import {LinearProgress} from '../progress';
-import {ButtonText} from '../button';
-import {AlertInline} from '../alerts';
 import {Address, shortenAddress} from '../../utils/addresses';
 import {Link} from '../link';
+import {AvatarDao} from '../avatar';
+import {IconClock} from '../icons';
+import {AlertInline} from '../alerts';
 
 export type CardProposalProps = {
   /** Proposal Title / Title of the card */
@@ -21,7 +22,17 @@ export type CardProposalProps = {
    * the headers & buttons wil change to proper format also the progress
    * section only available on active state.
    * */
-  state: 'draft' | 'pending' | 'active' | 'succeeded' | 'executed' | 'defeated';
+  process:
+    | 'draft'
+    | 'pending'
+    | 'active'
+    | 'succeeded'
+    | 'executed'
+    | 'defeated';
+  /** Indicates whether the proposal is in being used in list or in its special form (see explore page) */
+  type?: 'list' | 'explore';
+  /** Url for the dao avatar */
+  daoLogo?: 'string';
   /** The title that appears at the top of the progress bar */
   voteTitle: string;
   /** Progress bar value in percentage (max: 100) */
@@ -34,24 +45,18 @@ export type CardProposalProps = {
   tokenSymbol?: string;
   /** Publish by sentence in any available languages */
   publishLabel: string;
-  /** Publisher's ethereum address **or** ENS name */
+  /** Publisher's ethereum address, ENS name **or** DAO address when type is explore */
   publisherAddress?: Address;
+  /** DAO name to display when type is explore */
+  daoName?: string;
   /** Chain ID for redirect user to the right explorer */
   chainId?: number;
-  /**
-   * Button label for different status
-   * ['pending / executed / defeated label', 'active label', 'succeeded label', 'draft label']
-   * TODO: I thought to add 4 button Label
-   * props for different states and implement
-   * condition here but i decided to use only one prop
-   * for reducing the complexity
-   */
-  buttonLabel: string[];
-  AlertMessage?: string;
+
+  alertMessage?: string;
   /**
    * ['Draft', 'Pending', 'Active', 'Executed', 'Succeeded', 'Defeated']
    */
-  StateLabel: string[];
+  stateLabel: string[];
 };
 
 export const explorers: {
@@ -63,7 +68,7 @@ export const explorers: {
 };
 
 export const CardProposal: React.FC<CardProposalProps> = ({
-  state = 'pending',
+  process = 'pending',
   title,
   description,
   voteTitle,
@@ -74,92 +79,72 @@ export const CardProposal: React.FC<CardProposalProps> = ({
   publishLabel,
   publisherAddress,
   chainId = 1,
-  buttonLabel,
-  AlertMessage,
-  StateLabel,
+  alertMessage,
+  stateLabel,
+  type = 'list',
+  daoLogo,
+  daoName,
   onClick,
 }: CardProposalProps) => {
+  const isTypeExplore = type === 'explore';
+
   const headerOptions: {
-    [key in CardProposalProps['state']]: ReactNode;
+    [key in CardProposalProps['process']]: ReactNode;
   } = {
-    draft: <Badge label={StateLabel[0]} />,
+    draft: <Badge label={stateLabel[0]} />,
     pending: (
       <>
-        <Badge label={StateLabel[1]} />
-        {AlertMessage && <AlertInline label={AlertMessage} />}
+        <Badge label={stateLabel[1]} />
+        {alertMessage && (
+          <AlertInline
+            label={alertMessage}
+            icon={<IconClock className="text-info-500" />}
+            mode="neutral"
+          />
+        )}
       </>
     ),
     active: (
       <>
-        <Badge label={StateLabel[2]} colorScheme={'info'} />
-        {AlertMessage && <AlertInline label={AlertMessage} />}
+        {!isTypeExplore && <Badge label={stateLabel[2]} colorScheme={'info'} />}
+        {alertMessage && (
+          <AlertInline
+            label={alertMessage}
+            icon={<IconClock className="text-info-500" />}
+            mode="neutral"
+          />
+        )}
       </>
     ),
-    executed: <Badge label={StateLabel[3]} colorScheme={'success'} />,
-    succeeded: <Badge label={StateLabel[4]} colorScheme={'success'} />,
-    defeated: <Badge label={StateLabel[5]} colorScheme={'critical'} />,
-  };
-
-  const SelectButtonStatus = (state: CardProposalProps['state']) => {
-    if (['pending', 'executed', 'defeated'].includes(state)) {
-      return (
-        <StyledButton
-          size="large"
-          mode="secondary"
-          label={buttonLabel[0]}
-          onClick={onClick}
-          bgWhite
-        />
-      );
-    } else if (state === 'active') {
-      return (
-        <StyledButton
-          size="large"
-          mode="primary"
-          label={buttonLabel[1]}
-          onClick={onClick}
-        />
-      );
-    } else if (state === 'succeeded') {
-      return (
-        <StyledButton
-          size="large"
-          mode="primary"
-          label={buttonLabel[2]}
-          onClick={onClick}
-        />
-      );
-    } else {
-      // Draft
-      return (
-        <StyledButton
-          size="large"
-          mode="secondary"
-          label={buttonLabel[3]}
-          onClick={onClick}
-          bgWhite
-        />
-      );
-    }
+    executed: <Badge label={stateLabel[3]} colorScheme={'success'} />,
+    succeeded: <Badge label={stateLabel[4]} colorScheme={'success'} />,
+    defeated: <Badge label={stateLabel[5]} colorScheme={'critical'} />,
   };
 
   return (
-    <Card data-testid="cardProposal">
-      <Header>{headerOptions[state]}</Header>
+    <Card data-testid="cardProposal" onClick={onClick}>
+      <Header>{headerOptions[process]}</Header>
       <TextContent>
         <Title>{title}</Title>
         <Description>{description}</Description>
         <Publisher>
-          {publishLabel}{' '}
+          {isTypeExplore ? (
+            <AvatarDao daoName={daoName!} size="small" src={daoLogo} />
+          ) : (
+            <PublisherLabel>{publishLabel}</PublisherLabel>
+          )}
+
           <Link
             external
-            label={shortenAddress(publisherAddress || '')}
             href={`${explorers[chainId]}${publisherAddress}`}
+            label={shortenAddress(
+              (isTypeExplore ? daoName : publisherAddress) || ''
+            )}
             className="text-sm"
           />
         </Publisher>
       </TextContent>
-      {state === 'active' && (
+      {process === 'active' && (
         <LoadingContent>
           <ProgressInfoWrapper>
             <ProgressTitle>{voteTitle}</ProgressTitle>
@@ -174,37 +159,49 @@ export const CardProposal: React.FC<CardProposalProps> = ({
           </ProgressInfoWrapper>
         </LoadingContent>
       )}
-      <Actions>{SelectButtonStatus(state)}</Actions>
     </Card>
   );
 };
 
-const Card = styled.div.attrs({
-  className: 'flex justify-between flex-col bg-white rounded-xl p-3 space-y-3',
-})``;
+const Card = styled.button.attrs({
+  className:
+    'w-full bg-white rounded-xl p-2 space-y-3 ' +
+    'hover:border hover:border-ui-100 ' +
+    'active:border active:border-ui-200 ' +
+    'focus:outline-none focus:ring-2 focus:ring-primary-500',
+})`
+  &:hover {
+    box-shadow: 0px 4px 8px rgba(31, 41, 51, 0.04),
+      0px 0px 2px rgba(31, 41, 51, 0.06), 0px 0px 1px rgba(31, 41, 51, 0.04);
+  }
+
+  &:active {
+    box-shadow: 0px 0px 0px 2px #003bf5;
+  }
+`;
 
 const Header = styled.div.attrs({
   className: 'flex justify-between',
 })``;
 
-const Title = styled.h2.attrs({
-  className: 'text-ui-800 font-bold text-xl',
+const Title = styled.p.attrs({
+  className: 'text-ui-800 text-left font-bold text-xl',
 })``;
 
 const Description = styled.p.attrs({
-  className: 'text-ui-600 font-normal text-base',
+  className: 'text-ui-600 text-left font-normal text-base line-clamp-2',
 })``;
 
 const Publisher = styled.span.attrs({
-  className: 'text-ui-500 text-sm',
+  className: 'flex space-x-1 text-ui-500 text-sm',
 })``;
 
 const TextContent = styled.div.attrs({
-  className: 'flex flex-col space-y-1.5',
+  className: 'space-y-1.5',
 })``;
 
 const LoadingContent = styled.div.attrs({
-  className: 'flex flex-col space-y-2',
+  className: 'space-y-2 p-2 bg-ui-50 rounded-xl',
 })``;
 
 const ProgressInfoWrapper = styled.div.attrs({
@@ -227,10 +224,4 @@ const Percentage = styled.span.attrs({
   className: 'text-primary-500 font-bold text-base',
 })``;
 
-const Actions = styled.div.attrs({
-  className: 'flex',
-})``;
-
-const StyledButton = styled(ButtonText).attrs({
-  className: 'tablet:w-auto w-full',
-})``;
+const PublisherLabel = styled.p.attrs({className: '-mr-0.5'})``;

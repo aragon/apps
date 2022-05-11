@@ -96,7 +96,11 @@ export const InputImageSingle: React.FC<InputImageSingleProps> = ({
     [maxDimension, minDimension, onChange, onError, onlySquare]
   );
 
-  const {getRootProps, getInputProps, isDragActive} = useDropzone({
+  const {
+    getRootProps,
+    getInputProps,
+    isDragActive: isdragactive,
+  } = useDropzone({
     onDrop,
     ...(maxFileSize && {maxSize: maxFileSize}),
     accept: 'image/jpg, image/jpeg, image/png, image/gif, image/svg',
@@ -125,25 +129,25 @@ export const InputImageSingle: React.FC<InputImageSingleProps> = ({
     </ImageContainer>
   ) : (
     <DefaultContainer
-      {...{isDragActive}}
+      {...{isdragactive}}
       data-testid="input-image"
       {...getRootProps()}
     >
-      <StyledIconAdd {...{isDragActive}} />
+      <StyledIconAdd {...{isdragactive}} />
       <input {...getInputProps()} />
     </DefaultContainer>
   );
 };
 
 type DefaultContainerProps = {
-  isDragActive: boolean;
+  isdragactive: boolean;
 };
 
 const DefaultContainer = styled.div.attrs(
-  ({isDragActive}: DefaultContainerProps) => ({
+  ({isdragactive}: DefaultContainerProps) => ({
     className: `flex items-center justify-center bg-ui-0
     h-8 w-8 border-dashed ${
-      isDragActive ? 'border-primary-500' : 'border-ui-100'
+      isdragactive ? 'border-primary-500' : 'border-ui-100'
     } border-2 rounded-xl cursor-pointer`,
   })
 )<DefaultContainerProps>``;
@@ -169,7 +173,7 @@ const StyledButton = styled(ButtonIcon).attrs({
 `;
 
 const StyledIconAdd = styled(IconAdd).attrs(
-  ({isDragActive}: DefaultContainerProps) => ({
-    className: `${isDragActive ? 'text-primary-500' : 'text-ui-600'}`,
+  ({isdragactive}: DefaultContainerProps) => ({
+    className: `${isdragactive ? 'text-primary-500' : 'text-ui-600'}`,
   })
 )<DefaultContainerProps>``;

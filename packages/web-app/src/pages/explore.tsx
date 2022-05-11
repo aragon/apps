@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import {generatePath, useNavigate} from 'react-router-dom';
-import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import {ActionListItem, IconExpand} from '@aragon/ui-components';
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
 
 import Footer from 'containers/exploreFooter';
 import ExploreNav from 'containers/navbar/exploreNav';
@@ -11,6 +11,7 @@ import {Finance} from 'utils/paths';
 import Carousel from 'containers/carousel';
 import {Layout} from '../app';
 import {TemporarySection} from 'components/temporary';
+import ActiveProposalsExplore from 'containers/activeProposalsExplore';
 
 const existingDaos = [
   '0x07de9a02a1c7e09bae5b15b7270e5b1ba2029bfd',
@@ -29,6 +30,7 @@ const Explore: React.FC = () => {
           <ContentWrapper>
             <Carousel />
             <div className="h-20" />
+            <ActiveProposalsExplore />
             <TemporarySection purpose="It allows you to navigate to a mock dao to test daos URLs.">
               {existingDaos.map(dao => (
                 <ActionListItem

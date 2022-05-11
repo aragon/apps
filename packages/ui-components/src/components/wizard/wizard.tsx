@@ -3,12 +3,12 @@ import styled from 'styled-components';
 import {LinearProgress} from '../progress';
 
 export type WizardProps = {
-  processName: string;
-  currentStep: number;
-  totalSteps: number;
   title: string;
   description: string;
   includeStepper?: boolean;
+  processName?: string;
+  currentStep?: number;
+  totalSteps?: number;
   nav: React.ReactNode;
 };
 

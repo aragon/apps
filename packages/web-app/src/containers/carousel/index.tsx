@@ -77,7 +77,7 @@ const DesktopCTA = styled.div.attrs({
 })``;
 
 const MobileCTA = styled.div.attrs({
-  className: 'relative -mt-15',
+  className: 'relative -mt-15 mb-5 -mx-2 tablet:-mx-3 desktop:mx-0',
 })``;
 
 const ActiveIndicator = styled.li.attrs({

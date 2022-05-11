@@ -119,7 +119,6 @@
       "distributionLink": "See all {{walletCount}} Addresses",
       "minimumParticipation": "{{walletCount}} Wallets"
     },
-    "newSettings": "Propose new settings",
     "author": "Author",
     "sec": "sec",
     "ago": "ago",
@@ -478,7 +477,9 @@
       "title": "EXPLORE THE DAO WORLD",
       "subtitle1": "Welcome to the Aragon Explore Portal.",
       "subtitle2": "Take a look to the ecosystem,find inspiration and learn."
-    }
+    },
+    "activeProposals": "Active Proposals",
+    "showMore": "Show More"
   },
   "privacyPolicy": {
     "title": "Privacy policy",
@@ -522,5 +523,14 @@
       "description": "Build something something on open-source infrastructure with governance plugins.",
       "actionLabel": "Coming soon"
     }
+  },
+  "settings": {
+    "newSettings": "Propose new settings",
+    "editDaoSettings": "Edit DAO Settings",
+    "editSubtitle": "To edit the DAO settings, fill the new data and then you have to propose this to the DAO community. If it gets approved, the new settings will get applied.",
+    "resetChanges": "Reset Changes",
+    "edit": "Edit Settings",
+    "new": "New Settings",
+    "proposeSettingsInfo": "To make changes to the settings of this DAO, a vote must be taken via the community."
   }
 }

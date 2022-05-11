@@ -106,6 +106,7 @@ module.exports = {
         30: '240px',
         35: '280px',
         40: '320px',
+        46: '368px',
         50: '400px',
         55: '440px',
         56: '448px',
@@ -187,5 +188,8 @@ module.exports = {
     },
     fluidType: ['responsive'],
   },
-  plugins: [require('tailwindcss-fluid-type')],
+  plugins: [
+    require('tailwindcss-fluid-type'),
+    require('@tailwindcss/line-clamp'),
+  ],
 };

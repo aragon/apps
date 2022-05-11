@@ -26,6 +26,7 @@ const FinancePage = lazy(() => import('pages/finance'));
 const GovernancePage = lazy(() => import('pages/governance'));
 const CommunityPage = lazy(() => import('pages/community'));
 const SettingsPage = lazy(() => import('pages/settings'));
+const EditSettingsPage = lazy(() => import('pages/editSettings'));
 
 const TokensPage = lazy(() => import('pages/tokens'));
 const TransfersPage = lazy(() => import('pages/transfers'));
@@ -76,6 +77,7 @@ function App() {
               />
               <Route path="community" element={<CommunityPage />} />
               <Route path="settings" element={<SettingsPage />} />
+              <Route path="settings/edit" element={<EditSettingsPage />} />
             </Route>
           </Route>
           <Route path={NotFound} element={<NotFoundPage />} />

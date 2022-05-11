@@ -37,7 +37,7 @@ const ProposalList: React.FC<ProposalListProps> = ({proposals}) => {
               onClick={() => {
                 navigate('proposals/' + proposal.id);
               }}
-              state={proposal.type}
+              process={proposal.type}
               chainId={chainId}
               voteTitle={t('governance.proposals.voteTitle') as string}
               // Rakesh: Vote results seem to be aggregated in the subgraph. So after confirming that the
@@ -51,7 +51,7 @@ const ProposalList: React.FC<ProposalListProps> = ({proposals}) => {
               // })}
               publishLabel={t('governance.proposals.publishedBy') as string}
               publisherAddress={proposal.creator}
-              StateLabel={[
+              stateLabel={[
                 t('governance.proposals.states.draft'),
                 t('governance.proposals.states.pending'),
                 t('governance.proposals.states.active'),
@@ -60,12 +60,6 @@ const ProposalList: React.FC<ProposalListProps> = ({proposals}) => {
                 t('governance.proposals.states.defeated'),
               ]}
               {...(AlertMessage && {AlertMessage})}
-              buttonLabel={[
-                t('governance.proposals.buttons.read'),
-                t('governance.proposals.buttons.vote'),
-                t('governance.proposals.buttons.execute'),
-                t('governance.proposals.buttons.edit'),
-              ]}
               key={proposal.id}
             />
           );
