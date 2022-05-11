@@ -18,7 +18,9 @@ const Community: React.FC = () => {
       showButton={false}
       buttonLabel={'sdf'}
     >
-      <></>
+      <>
+        <p>{dao}</p>
+      </>
     </PageWrapper>
   );
 };

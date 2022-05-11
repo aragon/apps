@@ -18,7 +18,7 @@ import {useDaoParam} from 'hooks/useDao';
 import {Loading} from 'components/temporary';
 
 const Settings: React.FC = () => {
-  const {data: dao, loading} = useDaoParam();
+  const {loading} = useDaoParam();
   const {t} = useTranslation();
   const {open} = useGlobalModalContext();
   const {isMobile} = useScreen();

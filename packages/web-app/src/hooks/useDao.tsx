@@ -18,7 +18,7 @@ export function useDaoParam() {
     } else if (error || !data?.dao?.id) {
       navigate(NotFound, {replace: true, state: {incorrectDao: dao}});
     }
-  }, [loading, dao]);
+  }, [loading, dao]); // eslint-disable-line
 
   return {data: data?.dao?.id, error, loading};
 }
