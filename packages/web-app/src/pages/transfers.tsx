@@ -15,7 +15,7 @@ import {useGlobalModalContext} from 'context/globalModals';
 import {TransferSectionWrapper} from 'components/wrappers';
 import {TransferTypes} from 'utils/constants';
 import {Loading} from 'components/temporary';
-import {useDaoParam} from 'hooks/useDao';
+import {useDaoParam} from 'hooks/useDaoParam';
 import TransferMenu from 'containers/transferMenu';
 
 const Transfers: React.FC = () => {

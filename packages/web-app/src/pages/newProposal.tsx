@@ -20,7 +20,7 @@ import SetupVotingForm, {
   isValid as setupVotingIsValid,
 } from 'containers/setupVotingForm';
 import {useNetwork} from 'context/network';
-import {useDaoParam} from 'hooks/useDao';
+import {useDaoParam} from 'hooks/useDaoParam';
 import {Loading} from 'components/temporary';
 
 const NewProposal: React.FC = () => {

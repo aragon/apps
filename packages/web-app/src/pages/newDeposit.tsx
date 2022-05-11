@@ -16,7 +16,7 @@ import {useWalletTokens} from 'hooks/useWalletTokens';
 import {FullScreenStepper, Step} from 'components/fullScreenStepper';
 import {generatePath} from 'react-router-dom';
 import {useNetwork} from 'context/network';
-import {useDaoParam} from 'hooks/useDao';
+import {useDaoParam} from 'hooks/useDaoParam';
 import {Loading} from 'components/temporary';
 
 type DepositFormData = TokenFormData & {

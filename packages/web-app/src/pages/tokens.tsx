@@ -10,7 +10,7 @@ import {filterTokens} from 'utils/tokens';
 import type {VaultToken} from 'utils/types';
 import {useGlobalModalContext} from 'context/globalModals';
 import {Loading} from 'components/temporary';
-import {useDaoParam} from 'hooks/useDao';
+import {useDaoParam} from 'hooks/useDaoParam';
 import TransferMenu from 'containers/transferMenu';
 
 const Tokens: React.FC = () => {

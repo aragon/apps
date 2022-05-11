@@ -32,7 +32,7 @@ import {
   erc20VotingProposalVariables,
 } from 'queries/__generated__/erc20VotingProposal';
 import {NotFound} from 'utils/paths';
-import {useDaoParam} from 'hooks/useDao';
+import {useDaoParam} from 'hooks/useDaoParam';
 import {Loading} from 'components/temporary';
 
 /* MOCK DATA ================================================================ */

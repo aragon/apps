@@ -26,7 +26,7 @@ import SetupVotingForm, {
 } from 'containers/setupVotingForm';
 import {generatePath} from 'react-router-dom';
 import {useNetwork} from 'context/network';
-import {useDaoParam} from 'hooks/useDao';
+import {useDaoParam} from 'hooks/useDaoParam';
 import {Loading} from 'components/temporary';
 
 export type TokenFormData = {

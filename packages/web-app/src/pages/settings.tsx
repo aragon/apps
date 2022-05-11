@@ -15,7 +15,7 @@ import {PageWrapper} from 'components/wrappers';
 import {DescriptionListContainer, Dl, Dt, Dd} from 'components/descriptionList';
 import {useGlobalModalContext} from 'context/globalModals';
 import useScreen from 'hooks/useScreen';
-import {useDaoParam} from 'hooks/useDao';
+import {useDaoParam} from 'hooks/useDaoParam';
 import {Loading} from 'components/temporary';
 import {EditSettings} from 'utils/paths';
 import {useNetwork} from 'context/network';

@@ -22,7 +22,7 @@ import {
   erc20VotingProposals,
   erc20VotingProposals_erc20VotingProposals,
 } from 'queries/__generated__/erc20VotingProposals';
-import {useDaoParam} from 'hooks/useDao';
+import {useDaoParam} from 'hooks/useDaoParam';
 import {Loading} from 'components/temporary';
 
 const Governance: React.FC = () => {

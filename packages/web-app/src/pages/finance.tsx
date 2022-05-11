@@ -16,7 +16,7 @@ import TransactionDetail from 'containers/transactionDetail';
 import {useGlobalModalContext} from 'context/globalModals';
 import TransferMenu from 'containers/transferMenu';
 import styled from 'styled-components';
-import {useDaoParam} from 'hooks/useDao';
+import {useDaoParam} from 'hooks/useDaoParam';
 import {TemporarySection} from 'components/temporary';
 import {Loading} from 'components/temporary/loading';
 
