@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
-import { Avatar, IconBlock, IconCommunity } from '@aragon/ui-components';
-import { CHAIN_METADATA } from 'utils/constants';
-import { t } from 'i18next';
+import {AvatarDao, IconBlock, IconCommunity} from '@aragon/ui-components';
+import {CHAIN_METADATA} from 'utils/constants';
+import {t} from 'i18next';
 import useScreen from 'hooks/useScreen';
 
 export interface IDaoCardProps {
@@ -26,12 +26,12 @@ const getDaoType = (daoType?: DaoType) => {
 
 // this is needed for line-clamp
 type DescriptionProps = {
-  isDesktop?: boolean
-}
+  isDesktop?: boolean;
+};
 
 export const DaoCard = (props: IDaoCardProps) => {
   const [networkName, setNetworkName] = useState('');
-  const { isDesktop } = useScreen();
+  const {isDesktop} = useScreen();
 
   useEffect(() => {
     let networks: keyof typeof CHAIN_METADATA;
@@ -47,7 +47,7 @@ export const DaoCard = (props: IDaoCardProps) => {
     <Container data-testid="daoCard">
       <DaoDataWrapper>
         <HeaderContainer>
-          <Avatar mode="circle" size="large" src={props.logo || ''} />
+          <AvatarDao daoName={props.name} src={props.logo} />
           <Title>{props.name}</Title>
         </HeaderContainer>
         <Description isDesktop={isDesktop}>{props.description}</Description>
@@ -98,11 +98,11 @@ const Description = styled.p.attrs({
   className: `
   font-medium text-ui-600 text-sm desktop:text-base flex text-left
   `,
-}) <DescriptionProps>`
-overflow: hidden;
-display: -webkit-box;
--webkit-box-orient: vertical;
--webkit-line-clamp:${props => props.isDesktop ? 2 : 3};
+})<DescriptionProps>`
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: ${props => (props.isDesktop ? 2 : 3)};
 `;
 
 const DaoMetadataWrapper = styled.div.attrs({
