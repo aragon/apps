@@ -6,7 +6,7 @@ import {ActionListItem, IconExpand} from '@aragon/ui-components';
 import Footer from 'containers/exploreFooter';
 import ExploreNav from 'containers/navbar/exploreNav';
 import Hero from 'containers/hero';
-import {Finance} from 'utils/paths';
+import { Finance } from 'utils/paths';
 import Carousel from 'containers/carousel';
 import {Layout} from '../app';
 import {useWallet} from 'hooks/useWallet';
@@ -59,9 +59,10 @@ const Explore: React.FC = () => {
             </div>
           </ContentWrapper>
 
-          <DaoWrapper>
-            <DaoExplorer />
-          </DaoWrapper>
+            <DaoWrapper>
+              <DaoExplorer />
+            </DaoWrapper>
+          </SectionWrapper>
         </Layout>
         <div className="h-96"></div>
         <Footer />
@@ -72,6 +73,9 @@ const Explore: React.FC = () => {
 
 const Container = styled.div.attrs({
   className: 'mx-auto',
+})``;
+const SectionWrapper = styled.div.attrs({
+  className: 'col-span-full space-y-5 desktop:space-y-9',
 })``;
 
 const DaoWrapper = styled.div.attrs({

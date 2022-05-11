@@ -1,15 +1,16 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import {Avatar, IconBlock, IconCommunity} from '@aragon/ui-components';
-import {CHAIN_METADATA} from 'utils/constants';
-import {t} from 'i18next';
+import { Avatar, IconBlock, IconCommunity } from '@aragon/ui-components';
+import { CHAIN_METADATA } from 'utils/constants';
+import { t } from 'i18next';
+import useScreen from 'hooks/useScreen';
 
 export interface IDaoCardProps {
-  name?: string;
-  logo: string;
-  description?: string;
-  chainId?: number;
-  daoType?: DaoType;
+  name: string;
+  logo?: string;
+  description: string;
+  chainId: number;
+  daoType: DaoType;
 }
 
 export type DaoType = 'wallet-based' | 'token-based';
@@ -23,8 +24,14 @@ const getDaoType = (daoType?: DaoType) => {
   }
 };
 
+// this is needed for line-clamp
+type DescriptionProps = {
+  isDesktop?: boolean
+}
+
 export const DaoCard = (props: IDaoCardProps) => {
   const [networkName, setNetworkName] = useState('');
+  const { isDesktop } = useScreen();
 
   useEffect(() => {
     let networks: keyof typeof CHAIN_METADATA;
@@ -40,10 +47,10 @@ export const DaoCard = (props: IDaoCardProps) => {
     <Container data-testid="daoCard">
       <DaoDataWrapper>
         <HeaderContainer>
-          <Avatar mode="circle" size="large" src={props.logo} />
+          <Avatar mode="circle" size="large" src={props.logo || ''} />
           <Title>{props.name}</Title>
         </HeaderContainer>
-        <Description>{props.description}</Description>
+        <Description isDesktop={isDesktop}>{props.description}</Description>
       </DaoDataWrapper>
       <DaoMetadataWrapper>
         <IconWrapper>
@@ -84,11 +91,19 @@ const Title = styled.p.attrs({
   className: 'font-bold text-ui-800 text-base desktop:text-xl',
 })``;
 
+// The line desktop breakpoint does not work with
+// the tailwind line clamp plugin so the same effect
+// is achieved using styled components
 const Description = styled.p.attrs({
   className: `
-  font-medium text-ui-600 text-sm desktop:text-base flex line-clamp-2 text-left
+  font-medium text-ui-600 text-sm desktop:text-base flex text-left
   `,
-})``;
+}) <DescriptionProps>`
+overflow: hidden;
+display: -webkit-box;
+-webkit-box-orient: vertical;
+-webkit-line-clamp:${props => props.isDesktop ? 2 : 3};
+`;
 
 const DaoMetadataWrapper = styled.div.attrs({
   className: 'flex flex-row space-x-3',

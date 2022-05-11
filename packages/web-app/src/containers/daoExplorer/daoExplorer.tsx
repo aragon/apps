@@ -59,51 +59,60 @@ export const DaoExplorer = () => {
   };
 
   return (
-    <Container>
-      <MainContainer>
-        <HeaderWrapper>
-          <Title>{t('explore.explorer.title')}</Title>
-          <ButtonGroup
-            defaultValue={filter}
-            onChange={handleFliterChange}
-            bgWhite={false}
-          >
-            {isConnected ? (
-              <Option label={t('explore.explorer.myDaos')} value="my-daos" />
-            ) : (
-              <></>
-            )}
-            <Option label={t('explore.explorer.popular')} value="popular" />
-            <Option label={t('explore.explorer.newest')} value="newest" />
-          </ButtonGroup>
-        </HeaderWrapper>
-        <CardsWrapper>
-          {daos.map((dao, index) => (
-            <DaoCard
-              name={dao.name}
-              logo={dao.logo}
-              description={dao.description}
-              chainId={dao.chainId}
-              daoType={dao.daoType}
-              key={index}
+      <Container>
+        <MainContainer>
+          <HeaderWrapper>
+            <Title>{t('explore.explorer.title')}</Title>
+            <ButtonGroupContainer>
+              <ButtonGroup
+                defaultValue={filter}
+                onChange={handleFliterChange}
+                bgWhite={false}
+              >
+                {isConnected ? (
+                  <Option
+                    label={t('explore.explorer.myDaos')}
+                    value="my-daos"
+                  />
+                ) : (
+                  <></>
+                )}
+                <Option label={t('explore.explorer.popular')} value="popular" />
+                <Option label={t('explore.explorer.newest')} value="newest" />
+              </ButtonGroup>
+            </ButtonGroupContainer>
+          </HeaderWrapper>
+          <CardsWrapper>
+            {daos.map((dao, index) => (
+              <DaoCard
+                name={dao.name}
+                logo={dao.logo}
+                description={dao.description}
+                chainId={dao.chainId}
+                daoType={dao.daoType}
+                key={index}
+              />
+            ))}
+          </CardsWrapper>
+        </MainContainer>
+        {filter !== 'my-daos' && (
+          <div>
+            <ButtonText
+              label={t('explore.explorer.showMore')}
+              iconRight={<IconChevronDown />}
+              bgWhite
+              mode="ghost"
+              onClick={handleShowMoreClick}
             />
-          ))}
-        </CardsWrapper>
-      </MainContainer>
-      {filter !== 'my-daos' && (
-        <div>
-          <ButtonText
-            label={t('explore.explorer.showMore')}
-            iconRight={<IconChevronDown />}
-            bgWhite
-            mode="ghost"
-            onClick={handleShowMoreClick}
-          />
-        </div>
-      )}
-    </Container>
+          </div>
+        )}
+      </Container>
   );
 };
+
+const ButtonGroupContainer = styled.div.attrs({
+  className: 'flex',
+})``;
 
 const MainContainer = styled.div.attrs({
   className: 'flex flex-col space-y-2 desktop:space-y-3',
