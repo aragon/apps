@@ -28,8 +28,7 @@ const Explore: React.FC = () => {
         <Layout>
           <ContentWrapper>
             <Carousel />
-            <div className="h-20"></div>
-
+            <div className="h-20" />
             <TemporarySection purpose="It allows you to navigate to a mock dao to test daos URLs.">
               {existingDaos.map(dao => (
                 <ActionListItem

@@ -51,6 +51,7 @@ const Tokens: React.FC = () => {
         />
         <TokenList tokens={filteredTokens} />
       </div>
+      <TransferMenu />
     </PageWrapper>
   );
 };

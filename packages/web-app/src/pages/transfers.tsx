@@ -187,6 +187,7 @@ const Transfers: React.FC = () => {
           )}
         </div>
       </PageWrapper>
+      <TransferMenu />
       <TransactionDetail
         isOpen={showTransactionDetail}
         onClose={() => setShowTransactionDetail(false)}
