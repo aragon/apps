@@ -11,6 +11,7 @@ import type {VaultToken} from 'utils/types';
 import {useGlobalModalContext} from 'context/globalModals';
 import {Loading} from 'components/temporary';
 import {useDaoParam} from 'hooks/useDao';
+import TransferMenu from 'containers/transferMenu';
 
 const Tokens: React.FC = () => {
   const {data: dao, loading} = useDaoParam();

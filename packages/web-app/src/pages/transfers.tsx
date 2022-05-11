@@ -16,6 +16,7 @@ import {TransferSectionWrapper} from 'components/wrappers';
 import {TransferTypes} from 'utils/constants';
 import {Loading} from 'components/temporary';
 import {useDaoParam} from 'hooks/useDao';
+import TransferMenu from 'containers/transferMenu';
 
 const Transfers: React.FC = () => {
   const {data: dao, loading} = useDaoParam();
