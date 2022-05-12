@@ -106,17 +106,11 @@ const NotFoundWrapper: React.FC = () => {
 const DaoLayout: React.FC = () => (
   <>
     <Navbar />
-    <Background>
-      <Layout>
-        <Outlet />
-      </Layout>
-    </Background>
+    <Layout>
+      <Outlet />
+    </Layout>
   </>
 );
-
-const Background = styled.div.attrs({
-  className: 'flex flex-col mb-14 desktop:mb-10 bg-ui-50',
-})``;
 
 export const Layout = styled.main.attrs({
   className:
