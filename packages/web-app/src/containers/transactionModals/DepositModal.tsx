@@ -159,10 +159,6 @@ const WizardContainer = styled.div.attrs({
   className: 'flex justify-between mb-1 text-sm',
 })``;
 
-const ButtonContainer = styled.div.attrs({
-  className: 'px-3 pb-3 rounded-b-xl',
-})``;
-
 const VStack = styled.div.attrs({
   className: 'space-y-0.25',
 })``;
