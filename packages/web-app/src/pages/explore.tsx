@@ -11,6 +11,7 @@ import {Finance} from 'utils/paths';
 import Carousel from 'containers/carousel';
 import {Layout} from '../app';
 import {TemporarySection} from 'components/temporary';
+import {DaoExplorer} from 'containers/daoExplorer';
 import ActiveProposalsExplore from 'containers/activeProposalsExplore';
 
 const existingDaos = [
@@ -29,8 +30,9 @@ const Explore: React.FC = () => {
         <Layout>
           <ContentWrapper>
             <Carousel />
-            <div className="h-20" />
+            <DaoExplorer />
             <ActiveProposalsExplore />
+            <div className="h-20" />
             <TemporarySection purpose="It allows you to navigate to a mock dao to test daos URLs.">
               {existingDaos.map(dao => (
                 <ActionListItem
@@ -60,7 +62,6 @@ const Explore: React.FC = () => {
             </TemporarySection>
           </ContentWrapper>
         </Layout>
-        <div className="h-96"></div>
         <Footer />
       </Container>
     </>
@@ -72,7 +73,8 @@ const Container = styled.div.attrs({
 })``;
 
 const ContentWrapper = styled.div.attrs({
-  className: 'col-span-full desktop:col-start-2 desktop:col-end-12',
+  className:
+    'col-span-full desktop:col-start-2 desktop:col-end-12 space-y-5 desktop:space-y-9 mb-5 desktop:mb-10',
 })``;
 
 export default Explore;

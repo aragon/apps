@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, {useMemo, useCallback} from 'react';
 import {Carousel as ReactResponsiveCarousel} from 'react-responsive-carousel';
 import styled from 'styled-components';
 import {useNavigate} from 'react-router-dom';
@@ -7,10 +7,36 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import CTACard from 'components/ctaCard';
 import {CTACards} from 'components/ctaCard/data';
 import useScreen from 'hooks/useScreen';
+import {useWallet} from 'hooks/useWallet';
 
 const Carousel: React.FC = () => {
   const {isDesktop} = useScreen();
   const navigate = useNavigate();
+  const {methods, isConnected} = useWallet();
+
+  // TODO
+  // this prevents the user from entering the creation
+  // flow without a wallet, but this should be updated
+  // when the rest of CTAs are enabled
+  const handleCTAClick = useCallback(
+    (path: string) => {
+      if (isConnected) {
+        navigate(path);
+        return;
+      }
+      methods
+        .selectWallet()
+        .then(() => {
+          navigate(path);
+        })
+        .catch((err: Error) => {
+          // To be implemented: maybe add an error message when
+          // the error is different from closing the window
+          console.error(err);
+        });
+    },
+    [isConnected, methods, navigate]
+  );
 
   const ctaList = useMemo(
     () =>
@@ -19,10 +45,10 @@ const Carousel: React.FC = () => {
           key={card.title}
           {...card}
           className="flex-1"
-          onClick={navigate}
+          onClick={handleCTAClick}
         />
       )),
-    [navigate]
+    [handleCTAClick]
   );
 
   if (isDesktop) {
