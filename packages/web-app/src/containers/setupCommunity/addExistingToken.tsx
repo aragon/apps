@@ -13,18 +13,15 @@ import {chains} from 'use-wallet';
 import {ChainInformation} from 'use-wallet/dist/cjs/types';
 
 import {useProviders} from 'context/providers';
-import {useNetwork} from 'context/network';
 import {formatUnits} from 'utils/library';
 import {getTokenInfo} from 'utils/tokens';
 import {validateTokenAddress} from 'utils/validators';
-import {CHAIN_METADATA} from 'utils/constants';
 
 const DEFAULT_BLOCK_EXPLORER = 'https://etherscan.io/';
 
 const AddExistingToken: React.FC = () => {
   const {t} = useTranslation();
-  const {network} = useNetwork();
-  const {infura: provider} = useProviders();
+  const {getCustomProvider} = useProviders();
   const {control, setValue, trigger} = useFormContext();
 
   const [tokenAddress, blockchain, tokenName, tokenSymbol, tokenTotalSupply] =
@@ -38,7 +35,11 @@ const AddExistingToken: React.FC = () => {
       ],
     });
 
-  const chainId = CHAIN_METADATA[network].id;
+  const provider = useMemo(
+    () => getCustomProvider(blockchain.id),
+    [blockchain.id, getCustomProvider]
+  );
+
   const explorer = useMemo(() => {
     if (blockchain.id) {
       // TODO move necessary information from useWallet's ChainInformation into
@@ -54,10 +55,10 @@ const AddExistingToken: React.FC = () => {
 
   // Trigger address validation on network change
   useEffect(() => {
-    if (blockchain.id && tokenAddress !== '' && !tokenSymbol) {
+    if (blockchain.id && tokenAddress !== '') {
       trigger('tokenAddress');
     }
-  }, [blockchain.id, chainId, tokenAddress, tokenSymbol, trigger]);
+  }, [blockchain.id, tokenAddress, trigger]);
 
   /*************************************************
    *            Functions and Callbacks            *
@@ -131,23 +132,26 @@ const AddExistingToken: React.FC = () => {
             </>
           )}
         />
-        {tokenName && (
+        {tokenName && tokenAddress && (
           <TokenInfoContainer>
+            {console.log(tokenName)}
             <InfoContainer>
               <Label label={t('labels.tokenName')} />
-              <TextInput disabled value={tokenName} />
+              <TextInput disabled value={tokenName || ''} />
             </InfoContainer>
             <InfoContainer>
               <Label label={t('labels.tokenSymbol')} />
-              <TextInput disabled value={tokenSymbol} />
+              <TextInput disabled value={tokenSymbol || ''} />
             </InfoContainer>
             <InfoContainer>
               <Label label={t('labels.supply')} />
               <TextInput
                 disabled
-                value={new Intl.NumberFormat('en-US', {
-                  maximumFractionDigits: 4,
-                }).format(tokenTotalSupply)}
+                value={
+                  new Intl.NumberFormat('en-US', {
+                    maximumFractionDigits: 4,
+                  }).format(tokenTotalSupply) || ''
+                }
               />
             </InfoContainer>
           </TokenInfoContainer>
