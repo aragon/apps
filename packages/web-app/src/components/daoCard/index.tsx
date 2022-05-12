@@ -3,8 +3,7 @@ import styled from 'styled-components';
 import {AvatarDao, IconBlock, IconCommunity} from '@aragon/ui-components';
 import {CHAIN_METADATA} from 'utils/constants';
 import useScreen from 'hooks/useScreen';
-import { useTranslation } from 'react-i18next';
-import { useNetwork } from 'context/network';
+import {useTranslation} from 'react-i18next';
 
 export interface IDaoCardProps {
   name: string;
@@ -17,7 +16,7 @@ export interface IDaoCardProps {
 export type DaoType = 'wallet-based' | 'token-based';
 
 const useGetDaoType = (daoType?: DaoType) => {
-  const {t} = useTranslation()
+  const {t} = useTranslation();
   switch (daoType) {
     case 'token-based':
       return t('explore.explorer.tokenBased');
@@ -34,7 +33,7 @@ type DescriptionProps = {
 export const DaoCard = (props: IDaoCardProps) => {
   const [networkName, setNetworkName] = useState('');
   const {isDesktop} = useScreen();
-  const daoType = useGetDaoType(props.daoType)
+  const daoType = useGetDaoType(props.daoType);
 
   useEffect(() => {
     let networks: keyof typeof CHAIN_METADATA;
