@@ -8,18 +8,21 @@ import {
   IconSwitch,
   IconTurnOff,
 } from '@aragon/ui-components';
-import {useGlobalModalContext} from 'context/globalModals';
+import { useGlobalModalContext } from 'context/globalModals';
 import styled from 'styled-components';
-import {useWallet} from 'hooks/useWallet';
+import { useWallet } from 'hooks/useWallet';
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
-import {shortenAddress} from '@aragon/ui-components/src/utils/addresses';
-import {handleClipboardActions} from 'utils/library';
+import { shortenAddress } from '@aragon/ui-components/src/utils/addresses';
+import { handleClipboardActions } from 'utils/library';
 import useScreen from 'hooks/useScreen';
+import { CHAIN_METADATA } from 'utils/constants';
+import { useTranslation } from 'react-i18next';
 
 export const WalletMenu = () => {
-  const {close, isWalletOpen} = useGlobalModalContext();
-  const {address, ensName, ensAvatarUrl, methods} = useWallet();
-  const {isDesktop} = useScreen();
+  const { close, isWalletOpen } = useGlobalModalContext();
+  const { address, ensName, ensAvatarUrl, methods, chainId } = useWallet();
+  const { isDesktop } = useScreen();
+  const { t } = useTranslation();
 
   const handleDisconnect = () => {
     methods
@@ -31,6 +34,10 @@ export const WalletMenu = () => {
         console.error(e);
       });
   };
+  const handleViewTransactions = () => {
+    const baseUrl = Object.entries(CHAIN_METADATA).filter(chain => chain[1].id === chainId)[0][1].explorer
+    window.open(baseUrl + '/address/' + address, "_blank")
+  }
 
   return (
     <ModalBottomSheetSwitcher
@@ -67,14 +74,14 @@ export const WalletMenu = () => {
           size="large"
           mode="ghost"
           iconLeft={<IconSwitch />}
-          label="View Transactions"
-          onClick={() => alert('not implemented')}
+          label={t('labels.viewTransactions')}
+          onClick={handleViewTransactions}
         />
         <StyledButtonText
           size="large"
           mode="ghost"
           iconLeft={<IconTurnOff />}
-          label="Log Out"
+          label={t('labels.logOut')}
           onClick={handleDisconnect}
         />
       </ModalBody>
