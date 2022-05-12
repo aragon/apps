@@ -35,6 +35,11 @@ export const WalletMenu = () => {
       });
   };
   const handleViewTransactions = () => {
+    // TODO
+    // this redirects to the explorer the user selected in his
+    // wallet but does not take into account the network in the
+    // url, or the fact that the network of the wallet is different
+    // from the one on the url, so this must be reviewed-
     const baseUrl = Object.entries(CHAIN_METADATA).filter(
       chain => chain[1].id === chainId
     )[0][1].explorer;
