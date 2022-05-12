@@ -63,7 +63,7 @@ const Explore: React.FC = () => {
 };
 
 const Container = styled.div.attrs({
-  className: 'mx-auto',
+  className: 'mx-auto relative h-max ultraWide:h-screen',
 })``;
 
 const ContentWrapper = styled.div.attrs({

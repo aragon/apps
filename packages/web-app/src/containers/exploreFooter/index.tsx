@@ -43,7 +43,7 @@ const Footer: React.FC = () => {
 
 const Container = styled.div.attrs({
   className:
-    'bottom-0 col-span-full bg-primary-400 overflow-hidden desktop:h-11 h-35',
+    'bottom-0 col-span-full bg-primary-400 overflow-hidden desktop:h-11 h-35 absolute w-full',
 })``;
 
 const ActionsContainer = styled.div.attrs({

@@ -16,6 +16,7 @@ import {useWalletTokens} from 'hooks/useWalletTokens';
 import {FullScreenStepper, Step} from 'components/fullScreenStepper';
 import {generatePath, useParams} from 'react-router-dom';
 import {useNetwork} from 'context/network';
+import {useGlobalModalContext} from 'context/globalModals';
 
 type DepositFormData = TokenFormData & {
   // Deposit data
@@ -43,6 +44,7 @@ const NewDeposit: React.FC = () => {
   const {dao} = useParams();
   const {address} = useWallet();
   const {data: walletTokens} = useWalletTokens();
+  const {open} = useGlobalModalContext();
   const formMethods = useForm<DepositFormData>({
     defaultValues,
     mode: 'onChange',
@@ -114,6 +116,7 @@ const NewDeposit: React.FC = () => {
           wizardTitle={t('newDeposit.reviewTransfer')}
           wizardDescription={t('newDeposit.reviewTransferSubtitle')}
           nextButtonLabel={t('labels.submitDeposit')}
+          onNextButtonClicked={() => open('deposit')}
         >
           <ReviewDeposit />
         </Step>
