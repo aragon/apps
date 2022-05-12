@@ -12,7 +12,7 @@ import styled from 'styled-components';
 import {chains} from 'use-wallet';
 import {ChainInformation} from 'use-wallet/dist/cjs/types';
 
-import {useProviders} from 'context/providers';
+import {useSpecificProvider} from 'context/providers';
 import {formatUnits} from 'utils/library';
 import {getTokenInfo} from 'utils/tokens';
 import {validateTokenAddress} from 'utils/validators';
@@ -21,7 +21,6 @@ const DEFAULT_BLOCK_EXPLORER = 'https://etherscan.io/';
 
 const AddExistingToken: React.FC = () => {
   const {t} = useTranslation();
-  const {getCustomProvider} = useProviders();
   const {control, setValue, trigger} = useFormContext();
 
   const [tokenAddress, blockchain, tokenName, tokenSymbol, tokenTotalSupply] =
@@ -35,11 +34,7 @@ const AddExistingToken: React.FC = () => {
       ],
     });
 
-  const provider = useMemo(
-    () => getCustomProvider(blockchain.id),
-    [blockchain.id, getCustomProvider]
-  );
-
+  const provider = useSpecificProvider(blockchain.id);
   const explorer = useMemo(() => {
     if (blockchain.id) {
       // TODO move necessary information from useWallet's ChainInformation into
@@ -134,7 +129,6 @@ const AddExistingToken: React.FC = () => {
         />
         {tokenName && tokenAddress && (
           <TokenInfoContainer>
-            {console.log(tokenName)}
             <InfoContainer>
               <Label label={t('labels.tokenName')} />
               <TextInput disabled value={tokenName || ''} />
@@ -147,11 +141,10 @@ const AddExistingToken: React.FC = () => {
               <Label label={t('labels.supply')} />
               <TextInput
                 disabled
-                value={
-                  new Intl.NumberFormat('en-US', {
-                    maximumFractionDigits: 4,
-                  }).format(tokenTotalSupply) || ''
-                }
+                defaultValue=""
+                value={new Intl.NumberFormat('en-US', {
+                  maximumFractionDigits: 4,
+                }).format(tokenTotalSupply)}
               />
             </InfoContainer>
           </TokenInfoContainer>
