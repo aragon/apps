@@ -33,7 +33,7 @@ const ConfigureActions: React.FC = () => {
             label={t('newProposal.configureActions.yesOption')}
             helpText={t('newProposal.configureActions.yesOptionSubtitle')}
           />
-          <div className="flex flex-col items-center p-6 text-center rounded-xl bg-ui-0">
+          <div className="flex flex-col items-center p-6 text-center bg-ui-0 rounded-xl">
             <h1 className="font-bold text-ui-800">
               {t('newProposal.configureActions.addFirstActionTitle')}
             </h1>
