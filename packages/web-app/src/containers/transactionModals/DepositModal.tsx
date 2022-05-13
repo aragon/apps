@@ -11,13 +11,7 @@ import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import {useGlobalModalContext} from 'context/globalModals';
-
-export enum TransactionState {
-  WAITING = 'WAITING',
-  LOADING = 'LOADING',
-  SUCCESS = 'SUCCESS',
-  ERROR = 'ERROR',
-}
+import {TransactionState} from 'utils/constants/misc';
 
 type TransactionModalProps = {
   state?: TransactionState;
@@ -39,8 +33,8 @@ const DepositModal: React.FC<TransactionModalProps> = ({
   const {t} = useTranslation();
 
   const label = {
-    [TransactionState.WAITING]: 'Sign Deposit',
-    [TransactionState.LOADING]: 'Sign Deposit',
+    [TransactionState.WAITING]: t('TransactionModal.signDeposit'),
+    [TransactionState.LOADING]: t('TransactionModal.signDeposit'),
     [TransactionState.SUCCESS]: t('TransactionModal.dismiss'),
     [TransactionState.ERROR]: t('TransactionModal.tryAgain'),
   };
