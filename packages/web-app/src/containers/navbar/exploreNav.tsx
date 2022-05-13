@@ -7,7 +7,7 @@ import {useWallet} from 'hooks/useWallet';
 import Logo from 'public/logo.svg';
 import useScreen from 'hooks/useScreen';
 import {useGlobalModalContext} from 'context/globalModals';
-import {Container} from 'components/layout';
+import {Container, GridLayout} from 'components/layout';
 
 const ExploreNav: React.FC = () => {
   const {t} = useTranslation();
@@ -30,37 +30,55 @@ const ExploreNav: React.FC = () => {
   return (
     <Container data-testid="navbar">
       <Menu>
-        <LogoContainer src={Logo} />
-        <ActionsWrapper>
-          {isDesktop ? (
-            <SearchInput
-              placeholder={t('placeHolders.searchTokens')}
-              value=""
-            />
-          ) : (
-            <SearchIcon />
-          )}
-          <ButtonWallet
-            src={ensAvatarUrl || address}
-            onClick={handleWalletButtonClick}
-            isConnected={isConnected}
-            label={
-              isConnected ? ensName || address : t('navButtons.connectWallet')
-            }
-          />
-        </ActionsWrapper>
+        <GridLayout>
+          <LeftContent>
+            <LogoContainer src={Logo} />
+          </LeftContent>
+          <RightContent>
+            <ActionsWrapper>
+              {isDesktop ? (
+                <SearchInput
+                  placeholder={t('placeHolders.searchTokens')}
+                  value=""
+                />
+              ) : (
+                <SearchIcon />
+              )}
+              <ButtonWallet
+                src={ensAvatarUrl || address}
+                onClick={handleWalletButtonClick}
+                isConnected={isConnected}
+                label={
+                  isConnected
+                    ? ensName || address
+                    : t('navButtons.connectWallet')
+                }
+              />
+            </ActionsWrapper>
+          </RightContent>
+        </GridLayout>
       </Menu>
     </Container>
   );
 };
 
 const Menu = styled.nav.attrs({
-  className: `flex mx-auto justify-between items-center
-     px-2 desktop:px-5 py-2 desktop:py-3 bg-primary-400`,
+  className: `py-2 desktop:py-3`,
+})`
+  background: linear-gradient(180deg, #3164fa 0%, rgba(49, 100, 250, 0) 100%);
+`;
+
+const LeftContent = styled.div.attrs({
+  className: 'col-span-2 flex items-center',
 })``;
 
 const LogoContainer = styled.img.attrs({
   className: 'h-4',
+})``;
+
+const RightContent = styled.div.attrs({
+  className:
+    'col-start-9 col-span-4 flex flex-row-reverse justify-between items-center',
 })``;
 
 const ActionsWrapper = styled.div.attrs({
