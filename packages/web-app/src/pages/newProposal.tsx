@@ -3,7 +3,7 @@ import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
 import React, {useEffect} from 'react';
 import {useForm, FormProvider, useFormState} from 'react-hook-form';
-import {generatePath, useParams} from 'react-router-dom';
+import {generatePath} from 'react-router-dom';
 
 import {useWallet} from 'hooks/useWallet';
 import {Governance} from 'utils/paths';
@@ -20,13 +20,15 @@ import SetupVotingForm, {
   isValid as setupVotingIsValid,
 } from 'containers/setupVotingForm';
 import {useNetwork} from 'context/network';
+import {useDaoParam} from 'hooks/useDaoParam';
+import {Loading} from 'components/temporary';
 
 const NewProposal: React.FC = () => {
+  const {data: dao, loading} = useDaoParam();
+
   const {t} = useTranslation();
   const {address} = useWallet();
-  const {dao} = useParams();
   const {network} = useNetwork();
-
   const formMethods = useForm({
     mode: 'onChange',
   });
@@ -47,6 +49,11 @@ const NewProposal: React.FC = () => {
   /*************************************************
    *                    Render                     *
    *************************************************/
+
+  if (loading) {
+    return <Loading />;
+  }
+
   return (
     <FormProvider {...formMethods}>
       <ActionsProvider>

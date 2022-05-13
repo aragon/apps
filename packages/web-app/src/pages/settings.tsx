@@ -15,15 +15,22 @@ import {PageWrapper} from 'components/wrappers';
 import {DescriptionListContainer, Dl, Dt, Dd} from 'components/descriptionList';
 import {useGlobalModalContext} from 'context/globalModals';
 import useScreen from 'hooks/useScreen';
+import {useDaoParam} from 'hooks/useDaoParam';
+import {Loading} from 'components/temporary';
 import {EditSettings} from 'utils/paths';
 import {useNetwork} from 'context/network';
 
 const Settings: React.FC = () => {
+  const {loading} = useDaoParam();
   const {t} = useTranslation();
   const {open} = useGlobalModalContext();
   const {isMobile} = useScreen();
   const {network} = useNetwork();
   const {dao} = useParams();
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <PageWrapper

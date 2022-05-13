@@ -15,11 +15,14 @@ import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 import {shortenAddress} from '@aragon/ui-components/src/utils/addresses';
 import {handleClipboardActions} from 'utils/library';
 import useScreen from 'hooks/useScreen';
+import {CHAIN_METADATA} from 'utils/constants';
+import {useTranslation} from 'react-i18next';
 
 export const WalletMenu = () => {
   const {close, isWalletOpen} = useGlobalModalContext();
-  const {address, ensName, ensAvatarUrl, methods} = useWallet();
+  const {address, ensName, ensAvatarUrl, methods, chainId} = useWallet();
   const {isDesktop} = useScreen();
+  const {t} = useTranslation();
 
   const handleDisconnect = () => {
     methods
@@ -30,6 +33,17 @@ export const WalletMenu = () => {
       .catch((e: Error) => {
         console.error(e);
       });
+  };
+  const handleViewTransactions = () => {
+    // TODO
+    // this redirects to the explorer the user selected in his
+    // wallet but does not take into account the network in the
+    // url, or the fact that the network of the wallet is different
+    // from the one on the url, so this must be reviewed-
+    const baseUrl = Object.entries(CHAIN_METADATA).filter(
+      chain => chain[1].id === chainId
+    )[0][1].explorer;
+    window.open(baseUrl + '/address/' + address, '_blank');
   };
 
   return (
@@ -67,14 +81,14 @@ export const WalletMenu = () => {
           size="large"
           mode="ghost"
           iconLeft={<IconSwitch />}
-          label="View Transactions"
-          onClick={() => alert('not implemented')}
+          label={t('labels.viewTransactions')}
+          onClick={handleViewTransactions}
         />
         <StyledButtonText
           size="large"
           mode="ghost"
           iconLeft={<IconTurnOff />}
-          label="Log Out"
+          label={t('labels.logOut')}
           onClick={handleDisconnect}
         />
       </ModalBody>

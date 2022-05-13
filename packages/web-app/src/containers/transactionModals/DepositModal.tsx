@@ -56,6 +56,15 @@ const DepositModal: React.FC<TransactionModalProps> = ({
       title={'Sign Deposit'}
     >
       <GasCostTableContainer>
+        <DepositAmountContainer>
+          <VStack>
+            <Label>{t('labels.deposit')}</Label>
+          </VStack>
+          <VStack>
+            <StrongText>{'0.0015 ETH'}</StrongText>
+            <p className="text-sm text-right text-ui-500">{'$6.00'}</p>
+          </VStack>
+        </DepositAmountContainer>
         <GasCostEthContainer>
           <VStack>
             <Label>{t('TransactionModal.estimatedFees')}</Label>
@@ -138,6 +147,12 @@ const GasCostTableContainer = styled.div.attrs({
 const GasCostEthContainer = styled.div.attrs({
   className: 'flex justify-between py-1.5 px-2',
 })``;
+
+const DepositAmountContainer = styled.div.attrs({
+  className: 'flex justify-between py-1.5 px-2 border-ui-100',
+})`
+  border-bottom-width: 2px;
+`;
 
 const GasCostUSDContainer = styled.div.attrs({
   className: 'flex justify-between py-1.5 px-2 rounded-b-xl bg-ui-100',

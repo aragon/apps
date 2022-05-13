@@ -143,3 +143,11 @@ export const DAO_BY_NAME = gql`
     }
   }
 `;
+
+export const DAO_BY_ADDRESS = gql`
+  query DAO($id: ID) {
+    dao(id: $id) {
+      id
+    }
+  }
+`;

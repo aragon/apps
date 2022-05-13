@@ -34,6 +34,7 @@ export type ChainData = {
   name: string;
   domain: NetworkDomain;
   testnet: boolean;
+  explorer: string;
   logo: string;
 };
 
@@ -44,6 +45,7 @@ export const CHAIN_METADATA: ChainList = {
     name: 'Arbitrum One',
     domain: 'L2 Blockchain',
     logo: 'https://bridge.arbitrum.io/logo.png',
+    explorer: 'https://arbiscan.io',
     testnet: false,
   },
   ethereum: {
@@ -51,6 +53,7 @@ export const CHAIN_METADATA: ChainList = {
     name: 'Ethereum',
     domain: 'L1 Blockchain',
     logo: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png?1595348880',
+    explorer: 'https://etherscan.io/',
     testnet: false,
   },
   polygon: {
@@ -58,6 +61,7 @@ export const CHAIN_METADATA: ChainList = {
     name: 'Polygon',
     domain: 'L2 Blockchain',
     logo: 'https://assets.coingecko.com/coins/images/4713/large/matic-token-icon.png?1624446912',
+    explorer: 'https://polygonscan.com',
     testnet: false,
   },
   'arbitrum-test': {
@@ -65,6 +69,7 @@ export const CHAIN_METADATA: ChainList = {
     name: 'Arbitrum Rinkeby',
     domain: 'L2 Blockchain',
     logo: 'https://bridge.arbitrum.io/logo.png',
+    explorer: 'https://testnet.arbiscan.io/',
     testnet: true,
   },
   rinkeby: {
@@ -72,6 +77,7 @@ export const CHAIN_METADATA: ChainList = {
     name: 'Rinkeby',
     domain: 'L1 Blockchain',
     logo: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png?1595348880',
+    explorer: 'https://rinkeby.etherscan.io/',
     testnet: true,
   },
   mumbai: {
@@ -79,6 +85,7 @@ export const CHAIN_METADATA: ChainList = {
     name: 'Mumbai',
     domain: 'L2 Blockchain',
     logo: 'https://assets.coingecko.com/coins/images/4713/large/matic-token-icon.png?1624446912',
+    explorer: 'https://mumbai.polygonscan.com/',
     testnet: true,
   },
 };

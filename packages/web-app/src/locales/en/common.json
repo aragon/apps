@@ -27,6 +27,8 @@
     "connectWallet": "Login"
   },
   "labels": {
+    "viewTransactions": "View Transactions",
+    "logOut": "Log Out",
     "seeAll": "See all",
     "seeAllTokens": "See All Tokens",
     "seeAllTransfers": "See All Transfers",
@@ -477,6 +479,15 @@
       "title": "EXPLORE THE DAO WORLD",
       "subtitle1": "Welcome to the Aragon Explore Portal.",
       "subtitle2": "Take a look to the ecosystem,find inspiration and learn."
+    },
+    "explorer": {
+      "title": "Explore DAOs",
+      "myDaos": "My DAOs",
+      "popular": "Popular",
+      "newest": "Newest",
+      "walletBased": "Wallet Based",
+      "showMore": "Show More",
+      "tokenBased": "Token Based"
     },
     "activeProposals": "Active Proposals",
     "showMore": "Show More"

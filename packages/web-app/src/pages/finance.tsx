@@ -8,7 +8,6 @@ import {
   TransferSectionWrapper,
 } from 'components/wrappers';
 import TokenList from 'components/tokenList';
-import {TEST_DAO} from 'utils/constants';
 import {Transfer} from 'utils/types';
 import {sortTokens} from 'utils/tokens';
 import TransferList from 'components/transferList';
@@ -17,12 +16,17 @@ import TransactionDetail from 'containers/transactionDetail';
 import {useGlobalModalContext} from 'context/globalModals';
 import TransferMenu from 'containers/transferMenu';
 import styled from 'styled-components';
+import {useDaoParam} from 'hooks/useDaoParam';
+import {TemporarySection} from 'components/temporary';
+import {Loading} from 'components/temporary/loading';
 
 const Finance: React.FC = () => {
   const {t} = useTranslation();
   const {open} = useGlobalModalContext();
+  const {data: daoId, loading} = useDaoParam();
+
   const {tokens, totalAssetChange, totalAssetValue, transfers} =
-    useDaoVault(TEST_DAO);
+    useDaoVault(daoId);
 
   // Transaction detail
   const [selectedTransfer, setSelectedTransfer] = useState<Transfer>(
@@ -37,10 +41,15 @@ const Finance: React.FC = () => {
   /*************************************************
    *             Callbacks and Handlers            *
    *************************************************/
+
   const handleTransferClicked = useCallback((transfer: Transfer) => {
     setSelectedTransfer(transfer);
     setShowTransactionDetail(true);
   }, []);
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <>
@@ -74,6 +83,13 @@ const Finance: React.FC = () => {
             />
           </ListContainer>
         </TransferSectionWrapper>
+        <TemporarySection purpose="It whether the dao parameter was properly parsed and validated.">
+          {daoId ? (
+            <p>DAO address: {daoId}</p>
+          ) : (
+            <p>{"Something's not right"}</p>
+          )}
+        </TemporarySection>
       </PageWrapper>
       <TransactionDetail
         isOpen={showTransactionDetail}

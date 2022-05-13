@@ -14,9 +14,11 @@ import {BaseTokenInfo} from 'utils/types';
 import {TokenFormData} from './newWithdraw';
 import {useWalletTokens} from 'hooks/useWalletTokens';
 import {FullScreenStepper, Step} from 'components/fullScreenStepper';
-import {generatePath, useParams} from 'react-router-dom';
+import {generatePath} from 'react-router-dom';
 import {useNetwork} from 'context/network';
 import {useGlobalModalContext} from 'context/globalModals';
+import {useDaoParam} from 'hooks/useDaoParam';
+import {Loading} from 'components/temporary';
 
 type DepositFormData = TokenFormData & {
   // Deposit data
@@ -41,7 +43,8 @@ const defaultValues = {
 const NewDeposit: React.FC = () => {
   const {t} = useTranslation();
   const {network} = useNetwork();
-  const {dao} = useParams();
+  const {data: dao, loading} = useDaoParam();
+
   const {address} = useWallet();
   const {data: walletTokens} = useWalletTokens();
   const {open} = useGlobalModalContext();
@@ -49,10 +52,6 @@ const NewDeposit: React.FC = () => {
     defaultValues,
     mode: 'onChange',
   });
-
-  /*************************************************
-   *                    Hooks                      *
-   *************************************************/
 
   useEffect(() => {
     // add form metadata
@@ -98,6 +97,11 @@ const NewDeposit: React.FC = () => {
   /*************************************************
    *                    Render                     *
    *************************************************/
+
+  if (loading) {
+    return <Loading />;
+  }
+
   return (
     <FormProvider {...formMethods}>
       <FullScreenStepper
