@@ -24,53 +24,45 @@ const Explore: React.FC = () => {
 
   return (
     <>
-      <Container>
-        <ExploreNav />
-        <Hero />
-        <GridLayout>
-          <ContentWrapper>
-            <Carousel />
-            <DaoExplorer />
-            <ActiveProposalsExplore />
-            <div className="h-20" />
-            <TemporarySection purpose="It allows you to navigate to a mock dao to test daos URLs.">
-              {existingDaos.map(dao => (
-                <ActionListItem
-                  key={dao}
-                  title={'Dao: ' + dao}
-                  subtitle={'Rinkeby Testnet'}
-                  icon={<IconExpand />}
-                  background={'white'}
-                  onClick={() =>
-                    navigate(
-                      generatePath(Finance, {network: 'rinkeby', dao: dao})
-                    )
-                  }
-                />
-              ))}
+      <Hero />
+      <GridLayout>
+        <ContentWrapper>
+          <Carousel />
+          <DaoExplorer />
+          <ActiveProposalsExplore />
+          <div className="h-20" />
+          <TemporarySection purpose="It allows you to navigate to a mock dao to test daos URLs.">
+            {existingDaos.map(dao => (
               <ActionListItem
-                title={'Non-existing dao: 0x1234'}
-                subtitle={'Rinkeby testnet'}
+                key={dao}
+                title={'Dao: ' + dao}
+                subtitle={'Rinkeby Testnet'}
                 icon={<IconExpand />}
                 background={'white'}
                 onClick={() =>
                   navigate(
-                    generatePath(Finance, {network: 'rinkeby', dao: '0x1234'})
+                    generatePath(Finance, {network: 'rinkeby', dao: dao})
                   )
                 }
               />
-            </TemporarySection>
-          </ContentWrapper>
-        </GridLayout>
-        <Footer />
-      </Container>
+            ))}
+            <ActionListItem
+              title={'Non-existing dao: 0x1234'}
+              subtitle={'Rinkeby testnet'}
+              icon={<IconExpand />}
+              background={'white'}
+              onClick={() =>
+                navigate(
+                  generatePath(Finance, {network: 'rinkeby', dao: '0x1234'})
+                )
+              }
+            />
+          </TemporarySection>
+        </ContentWrapper>
+      </GridLayout>
     </>
   );
 };
-
-const Container = styled.div.attrs({
-  className: 'mx-auto',
-})``;
 
 const ContentWrapper = styled.div.attrs({
   className:
