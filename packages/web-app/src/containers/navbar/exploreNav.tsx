@@ -7,6 +7,7 @@ import {useWallet} from 'hooks/useWallet';
 import Logo from 'public/logo.svg';
 import useScreen from 'hooks/useScreen';
 import {useGlobalModalContext} from 'context/globalModals';
+import {Container} from 'components/layout';
 
 const ExploreNav: React.FC = () => {
   const {t} = useTranslation();
@@ -52,10 +53,6 @@ const ExploreNav: React.FC = () => {
     </Container>
   );
 };
-
-const Container = styled.header.attrs({
-  className: 'sticky top-0 w-full z-50',
-})``;
 
 const Menu = styled.nav.attrs({
   className: `flex mx-auto justify-between items-center

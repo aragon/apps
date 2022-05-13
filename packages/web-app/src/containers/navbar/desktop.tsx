@@ -12,6 +12,7 @@ import {useReactiveVar} from '@apollo/client';
 import {NavlinksDropdown} from './breadcrumbDropdown';
 import {useNetwork} from 'context/network';
 import {useMappedBreadcrumbs} from 'hooks/useMappedBreadcrumbs';
+import {Container} from 'components/layout';
 
 const MIN_ROUTE_DEPTH_FOR_BREADCRUMBS = 2;
 
@@ -110,10 +111,6 @@ const DesktopNav: React.FC<DesktopNavProp> = props => {
 };
 
 export default DesktopNav;
-
-const Container = styled.header.attrs({
-  className: 'sticky top-0 w-full',
-})``;
 
 const Menu = styled.nav.attrs({
   className: `flex mx-auto justify-between items-center max-w-screen-wide
