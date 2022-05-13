@@ -4,8 +4,6 @@ import {generatePath, useNavigate} from 'react-router-dom';
 import {ActionListItem, IconExpand} from '@aragon/ui-components';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 
-import Footer from 'containers/exploreFooter';
-import ExploreNav from 'containers/navbar/exploreNav';
 import Hero from 'containers/hero';
 import {Finance} from 'utils/paths';
 import Carousel from 'containers/carousel';
