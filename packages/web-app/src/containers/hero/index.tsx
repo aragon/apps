@@ -4,13 +4,13 @@ import Logo from 'public/coloredLogo.svg';
 import Green from 'public/circleGreenGradient.svg';
 import Purple from 'public/purpleGradient.svg';
 import {useTranslation} from 'react-i18next';
-import {Layout} from '../../app';
+import {GridLayout} from 'components/layout';
 
 function Hero() {
   const {t} = useTranslation();
   return (
     <Container>
-      <Layout>
+      <GridLayout>
         <Wrapper>
           <ContentWrapper>
             <Title>{t('explore.hero.title')}</Title>
@@ -28,7 +28,7 @@ function Hero() {
             </GradientWrapper>
           </GradientContainer>
         </Wrapper>
-      </Layout>
+      </GridLayout>
     </Container>
   );
 }

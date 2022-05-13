@@ -9,10 +9,10 @@ import ExploreNav from 'containers/navbar/exploreNav';
 import Hero from 'containers/hero';
 import {Finance} from 'utils/paths';
 import Carousel from 'containers/carousel';
-import {Layout} from '../app';
 import {TemporarySection} from 'components/temporary';
 import {DaoExplorer} from 'containers/daoExplorer';
 import ActiveProposalsExplore from 'containers/activeProposalsExplore';
+import {GridLayout} from 'components/layout';
 
 const existingDaos = [
   '0x07de9a02a1c7e09bae5b15b7270e5b1ba2029bfd',
@@ -27,7 +27,7 @@ const Explore: React.FC = () => {
       <Container>
         <ExploreNav />
         <Hero />
-        <Layout>
+        <GridLayout>
           <ContentWrapper>
             <Carousel />
             <DaoExplorer />
@@ -61,7 +61,7 @@ const Explore: React.FC = () => {
               />
             </TemporarySection>
           </ContentWrapper>
-        </Layout>
+        </GridLayout>
         <Footer />
       </Container>
     </>
