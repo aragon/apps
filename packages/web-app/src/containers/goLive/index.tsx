@@ -15,6 +15,8 @@ import Governance from './governance';
 import goLive from 'public/goLive.svg';
 import {Landing} from 'utils/paths';
 import {useCreateDaoContext} from 'context/createDao';
+import {useWallet} from 'hooks/useWallet';
+import {useGlobalModalContext} from 'context/globalModals';
 
 export const GoLiveHeader: React.FC = () => {
   const {t} = useTranslation();
@@ -63,9 +65,16 @@ export const GoLiveFooter: React.FC = () => {
   const {reviewCheck} = watch();
   const {t} = useTranslation();
   const {handlePublishDao} = useCreateDaoContext();
+  const {isOnWrongNetwork} = useWallet();
+  const {open} = useGlobalModalContext();
 
   const IsButtonDisabled = () =>
     !Object.values(reviewCheck).every(v => v === true);
+
+  const validateNetwork = () => {
+    if (isOnWrongNetwork) open('network');
+    else handlePublishDao();
+  };
 
   return (
     <div className="flex justify-center pt-3">
@@ -73,7 +82,7 @@ export const GoLiveFooter: React.FC = () => {
         size="large"
         iconRight={<IconChevronRight />}
         label={t('createDAO.review.button')}
-        onClick={handlePublishDao}
+        onClick={validateNetwork}
         disabled={IsButtonDisabled()}
       />
     </div>

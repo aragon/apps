@@ -4,6 +4,8 @@ import {BigNumber, providers as EthersProviders} from 'ethers';
 
 import {i18n} from '../../i18n.config';
 import {isERC20Token} from './tokens';
+import {useWallet} from 'hooks/useWallet';
+import {useGlobalModalContext} from 'context/globalModals';
 
 /**
  * Validate given token contract address

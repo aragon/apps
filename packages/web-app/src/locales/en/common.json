@@ -233,7 +233,12 @@
   },
   "alert": {
     "durationAlert": "We recommend a minimum duration of 1 day if it does not have to be a quick financial decision.",
-    "wrongWalletNetwork": "Wrong Wallet Network"
+    "wrongWalletNetwork": "Wrong Wallet Network",
+    "wrongNetwork": {
+      "title": "Wrong Network",
+      "description": "The action can’t be executed because you are in the wrong network. Change to the Ethereum Mainnet on your wallet and try again.",
+      "buttonLabel": "Switch to {{network}}"
+    }
   },
   "warnings": {
     "amountGtDaoToken": "Withdraw amount is greater than the current token balance"
