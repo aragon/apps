@@ -5,8 +5,12 @@ import IconLogo from 'public/iconLogo.svg';
 import Green from 'public/greenGradient.svg';
 import Purple from 'public/purpleGradient.svg';
 import {EXPLORE_NAV_LINKS, PRIVACY_NAV_LINKS} from 'utils/constants';
+import {GridLayout} from 'components/layout';
+import useScreen from 'hooks/useScreen';
 
 const Footer: React.FC = () => {
+  const {isDesktop} = useScreen();
+
   const ExploreNavLinks = EXPLORE_NAV_LINKS.map(item => (
     <li key={item.label}>
       <NavItem>{item.label}</NavItem>
@@ -20,40 +24,76 @@ const Footer: React.FC = () => {
   ));
 
   return (
-    <Container data-testid="footer">
-      <GradientContainer>
-        <GradientWrapper>
-          <GradientGreen src={Green} />
-          <GradientPurple src={Purple} />
-        </GradientWrapper>
-      </GradientContainer>
-      <ActionsContainer>
-        <ActionItemsWrapper>
-          <LogoContainer src={IconLogo} />
-          <StyledNavList>{ExploreNavLinks}</StyledNavList>
-        </ActionItemsWrapper>
-        <ActionItemsWrapper>
-          <StyledNavList>{PrivacyNavLinks}</StyledNavList>
-          <Copyright>&copy;{`  ${new Date().getFullYear()}  `}Aragon</Copyright>
-        </ActionItemsWrapper>
-      </ActionsContainer>
-    </Container>
+    <Section data-testid="footer">
+      <GridLayout>
+        <FullSpan>
+          <div className="relative">
+            <GradientGreen src={Green} />
+            <GradientPurple src={Purple} />
+          </div>
+          <ActionContainer>
+            {isDesktop ? (
+              <>
+                <FlexDiv>
+                  <LogoContainer src={IconLogo} />
+                  <StyledNavList>{ExploreNavLinks}</StyledNavList>
+                </FlexDiv>
+                <FlexDiv>
+                  <StyledNavList>{PrivacyNavLinks}</StyledNavList>
+                  <Copyright>
+                    &copy;{`  ${new Date().getFullYear()}  `}Aragon
+                  </Copyright>
+                </FlexDiv>
+              </>
+            ) : (
+              <>
+                <LogoContainer src={IconLogo} />
+                <StyledNavList>{ExploreNavLinks}</StyledNavList>
+                <StyledNavList>{PrivacyNavLinks}</StyledNavList>
+                <Copyright>
+                  &copy;{`  ${new Date().getFullYear()}  `}Aragon
+                </Copyright>
+              </>
+            )}
+          </ActionContainer>
+        </FullSpan>
+      </GridLayout>
+    </Section>
   );
 };
 
-const Container = styled.div.attrs({
-  className:
-    'bottom-0 col-span-full bg-primary-400 overflow-hidden desktop:h-11 h-35',
+const FullSpan = styled.div.attrs({
+  className: 'col-span-full',
 })``;
 
-const ActionsContainer = styled.div.attrs({
-  className:
-    'flex desktop:flex-row flex-col space-y-4 desktop:space-y-0 h-full desktop:justify-between justify-center items-center px-5 w-full desktop:py-0 relative',
+const Section = styled.section.attrs({
+  className: 'bottom-0 w-full bg-primary-400 overflow-hidden',
 })``;
 
-const ActionItemsWrapper = styled.div.attrs({
+const ActionContainer = styled.div.attrs({
   className:
-    'flex desktop:flex-row flex-col items-center justify-center desktop:space-x-4 space-y-4 desktop:space-y-0',
+    'relative flex flex-col desktop:flex-row desktop:justify-between items-center space-y-4 desktop:space-y-0 pt-5 desktop:pt-3 pb-8 desktop:pb-3',
+})``;
+
+const FlexDiv = styled.div.attrs({
+  className: 'flex space-x-4 items-center',
+})``;
+
+const LogoContainer = styled.img.attrs({
+  className: 'h-5 w-5',
+})``;
+
+const StyledNavList = styled.ul.attrs({
+  className: 'flex space-x-4',
+})``;
+
+const Copyright = styled.span.attrs({
+  className: 'text-ui-0 font-normal',
+})``;
+
+// Used button instead of links because not sure the navigation is internal or not!
+const NavItem = styled.button.attrs({
+  className: 'text-ui-0',
 })``;
 
 const GradientGreen = styled.img.attrs({
@@ -62,31 +102,6 @@ const GradientGreen = styled.img.attrs({
 
 const GradientPurple = styled.img.attrs({
   className: 'desktop:h-40 h-30 absolute -right-5 desktop:-top-11 top-16',
-})``;
-
-const GradientContainer = styled.div.attrs({
-  className: 'flex justify-between desktop:flex-row flex-col',
-})``;
-
-const GradientWrapper = styled.div.attrs({
-  className: 'relative w-full h-full',
-})``;
-
-const LogoContainer = styled.img.attrs({
-  className: 'h-5',
-})``;
-
-const StyledNavList = styled.ul.attrs({
-  className: 'flex space-x-4 items-center justify-center',
-})``;
-
-// Used button instead of links because not sure the navigation is internal or not!
-const NavItem = styled.button.attrs({
-  className: 'text-ui-0',
-})``;
-
-const Copyright = styled.span.attrs({
-  className: 'text-ui-0 font-normal',
 })``;
 
 export default Footer;
