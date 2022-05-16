@@ -49,10 +49,9 @@ const defaultValues = {
   tokenAddress: '',
   tokenSymbol: '',
   tokenTotalSupply: 0,
-  links: [{label: '', href: ''}],
+  links: [{label: '', link: ''}],
   wallets: [{address: constants.AddressZero, amount: '0'}],
   membership: 'token',
-  whitelistWallets: [],
 };
 
 const CreateDAO: React.FC = () => {
@@ -91,7 +90,7 @@ const CreateDAO: React.FC = () => {
     // required fields not dirty
     // if wallet based dao
     if (membership === 'wallet') {
-      if (errors.whitelistWallets || whitelistWallets.length === 0) {
+      if (errors.whitelistWallets || whitelistWallets?.length === 0) {
         return false;
       }
       return true;
@@ -121,7 +120,7 @@ const CreateDAO: React.FC = () => {
     errors.tokenName,
     errors.tokenSymbol,
     errors.tokenAddress,
-    whitelistWallets.length,
+    whitelistWallets?.length,
     isCustomToken,
     dirtyFields.tokenName,
     dirtyFields.wallets,

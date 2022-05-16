@@ -19,7 +19,7 @@ export const WhitelistWallets = () => {
 
   const {control, trigger} = useFormContext();
   const whitelistWallets = useWatch({name: 'whitelistWallets', control});
-  const {fields, update, replace, append, remove, prepend} = useFieldArray({
+  const {fields, update, replace, append, remove} = useFieldArray({
     control,
     name: 'whitelistWallets',
   });
@@ -32,13 +32,10 @@ export const WhitelistWallets = () => {
   });
 
   useEffect(() => {
-    if (address && whitelistWallets[0]?.address !== address) prepend({address});
-
-    // disabling the following because eslint plugin is incorrect in forcing
-    // whitelistWallets as a dependency. The useEffect will be ran twice if
-    // there was no address
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address, prepend, whitelistWallets[0]?.address]);
+    if (address && !whitelistWallets) {
+      append({address});
+    }
+  }, [address, append, whitelistWallets]);
 
   // add empty wallet
   const handleAdd = () => {
