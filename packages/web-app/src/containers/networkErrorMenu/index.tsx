@@ -5,8 +5,6 @@ import {
   ButtonText,
   IconClose,
   IconCopy,
-  IconSwitch,
-  IconTurnOff,
 } from '@aragon/ui-components';
 import {useGlobalModalContext} from 'context/globalModals';
 import styled from 'styled-components';

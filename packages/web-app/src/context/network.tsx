@@ -33,6 +33,10 @@ type NetworkProviderProps = {
   children: React.ReactNode;
 };
 
+type ErrorType = {
+  code: number;
+};
+
 /**
  * Returns the network on which the app operates.
  *
@@ -73,8 +77,8 @@ export function NetworkProvider({children}: NetworkProviderProps) {
           method: 'wallet_switchEthereumChain',
           params: [{chainId: toHex(CHAIN_METADATA[networkState].id)}], // chainId must be in hexadecimal numbers
         });
-      } catch (error: any) {
-        if (error.code === 4902) {
+      } catch (error) {
+        if ((error as ErrorType).code === 4902) {
           try {
             await window.ethereum.request({
               method: 'wallet_addEthereumChain',
