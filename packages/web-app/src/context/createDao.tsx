@@ -159,7 +159,7 @@ const CreateDaoProvider: React.FC<Props> = ({children}) => {
         )
         .map(wallet => ({
           address: wallet.address,
-          balance: BigInt(wallet.amount),
+          balance: BigInt(Number(wallet.amount) * Math.pow(10, 18)),
         })),
     };
   }, [getDaoConfig, getValues, getVotingConfig]);

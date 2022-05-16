@@ -136,6 +136,7 @@ module.exports = {
       lg: '1280px',
       desktop: '1280px',
       wide: '1680px',
+      ultraWide: '3840px',
     },
     fontFamily: {
       sans: ['Manrope'],

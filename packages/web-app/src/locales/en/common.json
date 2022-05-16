@@ -27,6 +27,8 @@
     "connectWallet": "Login"
   },
   "labels": {
+    "viewTransactions": "View Transactions",
+    "logOut": "Log Out",
     "seeAll": "See all",
     "seeAllTokens": "See All Tokens",
     "seeAllTransfers": "See All Transfers",

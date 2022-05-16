@@ -26,9 +26,6 @@
 </head>
 
 <body>
-  <script>
-    window.global = window;
-  </script>
   <div id="root"></div>
   <script type="module" src="/src/index.tsx"></script>
   <script>
@@ -63,7 +60,8 @@
           })(method);
         }
       }
-    })();
+    }
+    )();
   </script>
   <script async src="https://cdn.rudderlabs.com/v1.1/rudder-analytics.min.js"></script>
 </body>
