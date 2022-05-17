@@ -91,9 +91,8 @@ const CreateDaoProvider: React.FC<Props> = ({children}) => {
       return;
     }
 
-    await createDao();
-
     // proceed with creation if transaction is waiting or was not successfully executed (retry);
+    await createDao();
   };
 
   // Handler for modal close; don't close modal if transaction is still running
