@@ -44,7 +44,7 @@ type StyledBackdropProps = {
 
 const StyledBackdrop = styled.div.attrs(({visible}: StyledBackdropProps) => {
   const className: string = visible
-    ? 'visible opacity-100 z-40'
+    ? 'visible opacity-100 z-20'
     : 'invisible opacity-0';
   const style: CSSProperties = {
     position: 'fixed',
