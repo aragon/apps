@@ -67,7 +67,7 @@ const FullSpan = styled.div.attrs({
 })``;
 
 const Section = styled.section.attrs({
-  className: 'bottom-0 w-full bg-primary-400 overflow-hidden',
+  className: 'w-full bg-primary-400 overflow-hidden',
 })``;
 
 const ActionContainer = styled.div.attrs({
