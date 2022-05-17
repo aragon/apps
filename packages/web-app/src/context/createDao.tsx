@@ -21,6 +21,8 @@ import {getSecondsFromDHM} from 'utils/date';
 import {CreateDaoFormData} from 'pages/createDAO';
 import {useNavigate} from 'react-router-dom';
 import {Landing} from 'utils/paths';
+import {useWallet} from 'hooks/useWallet';
+import {useGlobalModalContext} from './globalModals';
 
 type DAOCreationSettings = ICreateDaoERC20Voting | ICreateDaoWhitelistVoting;
 
@@ -37,6 +39,8 @@ const CreateDaoProvider: React.FC<Props> = ({children}) => {
   const [showModal, setShowModal] = useState(false);
   const [daoCreationData, setDaoCreationData] = useState<DAOCreationSettings>();
   const navigate = useNavigate();
+  const {isOnWrongNetwork} = useWallet();
+  const {open} = useGlobalModalContext();
   const [creationProcessState, setCreationProcessState] =
     useState<TransactionState>();
 
@@ -80,8 +84,16 @@ const CreateDaoProvider: React.FC<Props> = ({children}) => {
       return;
     }
 
-    // proceed with creation if transaction is waiting or was not successfully executed (retry)
+    // if the wallet was in a wrong network user will see the wrong network warning
+    if (isOnWrongNetwork) {
+      open('network');
+      handleCloseModal();
+      return;
+    }
+
     await createDao();
+
+    // proceed with creation if transaction is waiting or was not successfully executed (retry);
   };
 
   // Handler for modal close; don't close modal if transaction is still running

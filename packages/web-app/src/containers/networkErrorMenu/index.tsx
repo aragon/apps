@@ -16,10 +16,12 @@ import useScreen from 'hooks/useScreen';
 import {useTranslation} from 'react-i18next';
 import WrongNetwork from 'public/wrongNetwork.svg';
 import {useNetwork} from 'context/network';
+import {useSwitchNetwork} from 'hooks/useSwitchNetwork';
 
 const NetworkErrorMenu = () => {
   const {isNetworkOpen, close} = useGlobalModalContext();
-  const {network, switchWalletNetwork} = useNetwork();
+  const {network} = useNetwork();
+  const {switchWalletNetwork} = useSwitchNetwork();
   const {address, ensName, ensAvatarUrl, provider} = useWallet();
   const {isDesktop} = useScreen();
   const {t} = useTranslation();

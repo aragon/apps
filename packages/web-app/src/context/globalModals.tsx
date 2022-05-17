@@ -22,7 +22,7 @@ type GlobalModalsContextType = {
   close: (arg?: MenuTypes) => void;
 };
 
-type MenuTypes =
+export type MenuTypes =
   | 'token'
   | 'utc'
   | 'addAction'
