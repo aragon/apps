@@ -13,6 +13,8 @@ import {Layout} from '../app';
 import {TemporarySection} from 'components/temporary';
 import {DaoExplorer} from 'containers/daoExplorer';
 import ActiveProposalsExplore from 'containers/activeProposalsExplore';
+import useScreen from 'hooks/useScreen';
+import {shortenAddress} from '@aragon/ui-components/src/utils/addresses';
 
 const existingDaos = [
   '0x07de9a02a1c7e09bae5b15b7270e5b1ba2029bfd',
@@ -21,6 +23,9 @@ const existingDaos = [
 
 const Explore: React.FC = () => {
   const navigate = useNavigate();
+
+  // Temporary; for QA-purposes
+  const {isMobile} = useScreen();
 
   return (
     <>
@@ -32,34 +37,36 @@ const Explore: React.FC = () => {
             <Carousel />
             <DaoExplorer />
             <ActiveProposalsExplore />
-            <div className="h-20" />
-            <TemporarySection purpose="It allows you to navigate to a mock dao to test daos URLs.">
-              {existingDaos.map(dao => (
+
+            <div className="pb-30 -mx-4">
+              <TemporarySection purpose="It allows you to navigate to a mock dao to test daos URLs.">
+                {existingDaos.map(dao => (
+                  <ActionListItem
+                    key={dao}
+                    title={`DAO: ${isMobile ? dao.slice(0, 15) + '...' : dao}`}
+                    subtitle={'Rinkeby Testnet'}
+                    icon={<IconExpand />}
+                    background={'white'}
+                    onClick={() =>
+                      navigate(
+                        generatePath(Finance, {network: 'rinkeby', dao: dao})
+                      )
+                    }
+                  />
+                ))}
                 <ActionListItem
-                  key={dao}
-                  title={'Dao: ' + dao}
-                  subtitle={'Rinkeby Testnet'}
+                  title={'Non-existing dao: 0x1234'}
+                  subtitle={'Rinkeby testnet'}
                   icon={<IconExpand />}
                   background={'white'}
                   onClick={() =>
                     navigate(
-                      generatePath(Finance, {network: 'rinkeby', dao: dao})
+                      generatePath(Finance, {network: 'rinkeby', dao: '0x1234'})
                     )
                   }
                 />
-              ))}
-              <ActionListItem
-                title={'Non-existing dao: 0x1234'}
-                subtitle={'Rinkeby testnet'}
-                icon={<IconExpand />}
-                background={'white'}
-                onClick={() =>
-                  navigate(
-                    generatePath(Finance, {network: 'rinkeby', dao: '0x1234'})
-                  )
-                }
-              />
-            </TemporarySection>
+              </TemporarySection>
+            </div>
           </ContentWrapper>
         </Layout>
         <Footer />
