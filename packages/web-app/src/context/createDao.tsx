@@ -10,7 +10,7 @@ import React, {
   ReactNode,
   useCallback,
 } from 'react';
-import {isAddress} from 'ethers/lib/utils';
+import {isAddress, parseUnits} from 'ethers/lib/utils';
 import {constants} from 'ethers';
 import {useFormContext, useWatch} from 'react-hook-form';
 
@@ -159,7 +159,7 @@ const CreateDaoProvider: React.FC<Props> = ({children}) => {
         )
         .map(wallet => ({
           address: wallet.address,
-          balance: BigInt(Number(wallet.amount) * Math.pow(10, 18)),
+          balance: BigInt(parseUnits(wallet.amount, 18).toBigInt()),
         })),
     };
   }, [getDaoConfig, getValues, getVotingConfig]);
