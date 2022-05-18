@@ -14,7 +14,6 @@ import {TemporarySection} from 'components/temporary';
 import {DaoExplorer} from 'containers/daoExplorer';
 import ActiveProposalsExplore from 'containers/activeProposalsExplore';
 import useScreen from 'hooks/useScreen';
-import {shortenAddress} from '@aragon/ui-components/src/utils/addresses';
 
 const existingDaos = [
   '0x07de9a02a1c7e09bae5b15b7270e5b1ba2029bfd',
