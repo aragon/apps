@@ -84,6 +84,8 @@ function App() {
               <Route path="community" element={<CommunityPage />} />
               <Route path="settings" element={<SettingsPage />} />
               <Route path="settings/edit" element={<EditSettingsPage />} />
+              {/* Redirects the user to the dashboard page by default if no dao-specific page is specified. */}
+              <Route index element={<Navigate to={'dashboard'} replace />} />
             </Route>
           </Route>
           <Route path={NotFound} element={<NotFoundPage />} />
