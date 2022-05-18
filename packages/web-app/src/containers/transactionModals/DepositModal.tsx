@@ -14,8 +14,11 @@ import {useGlobalModalContext} from 'context/globalModals';
 import {TransactionState} from 'utils/constants/misc';
 
 type TransactionModalProps = {
-  state?: TransactionState;
-  callback?: () => void;
+  state: TransactionState;
+  callback: () => void;
+  isOpen: boolean;
+  onClose: () => void;
+  closeOnDrag: boolean;
 };
 
 const icons = {
@@ -27,6 +30,10 @@ const icons = {
 
 const DepositModal: React.FC<TransactionModalProps> = ({
   state = TransactionState.WAITING,
+  callback,
+  isOpen,
+  onClose,
+  closeOnDrag,
 }) => {
   const {isDepositOpen, close} = useGlobalModalContext();
   const {currentStep, next} = useStepper(2);
@@ -42,12 +49,24 @@ const DepositModal: React.FC<TransactionModalProps> = ({
   const handleApproveClick = () => {
     next();
   };
+  const handleButtonClick = () => {
+    switch (state) {
+      case TransactionState.SUCCESS:
+        onClose();
+        break;
+      case TransactionState.LOADING:
+        break;
+      default:
+        callback();
+    }
+  };
 
   return (
     <ModalBottomSheetSwitcher
+      {...{isOpen, onClose, closeOnDrag}}
       isOpen={isDepositOpen}
       onClose={() => close('deposit')}
-      title={'Sign Deposit'}
+      title={t('TransactionModal.signDeposit')}
     >
       <GasCostTableContainer>
         <DepositAmountContainer>
@@ -98,7 +117,7 @@ const DepositModal: React.FC<TransactionModalProps> = ({
           <ButtonText
             className="mt-3 w-full"
             label={t('TransactionModal.approveToken')}
-            iconLeft={icons[state]}
+            iconLeft={currentStep === 1 ? icons[state] : undefined}
             onClick={handleApproveClick}
             disabled={currentStep !== 1}
           />
@@ -106,7 +125,7 @@ const DepositModal: React.FC<TransactionModalProps> = ({
             className="mt-3 w-full"
             label={label[state]}
             iconLeft={icons[state]}
-            // onClick={callback}
+            onClick={handleButtonClick}
             disabled={currentStep !== 2}
           />
         </HStack>

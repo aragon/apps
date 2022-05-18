@@ -19,12 +19,14 @@ import {useNetwork} from 'context/network';
 import {useGlobalModalContext} from 'context/globalModals';
 import {useDaoParam} from 'hooks/useDaoParam';
 import {Loading} from 'components/temporary';
+import {DepositProvider} from 'context/deposit';
 
-type DepositFormData = TokenFormData & {
+export type DepositFormData = TokenFormData & {
   // Deposit data
   to: Address;
   from: Address;
   amount: string;
+  reference: string;
 
   // Form metadata
   isCustomToken: boolean;
@@ -104,31 +106,33 @@ const NewDeposit: React.FC = () => {
 
   return (
     <FormProvider {...formMethods}>
-      <FullScreenStepper
-        navLabel={t('allTransfer.newTransfer')}
-        returnPath={generatePath(Finance, {network, dao})}
-        wizardProcessName={t('newDeposit.depositAssets')}
-      >
-        <Step
-          wizardTitle={t('newDeposit.configureDeposit')}
-          wizardDescription={t('newDeposit.configureDepositSubtitle')}
-          isNextButtonDisabled={!formMethods.formState.isValid}
+      <DepositProvider>
+        <FullScreenStepper
+          navLabel={t('allTransfer.newTransfer')}
+          returnPath={generatePath(Finance, {network, dao})}
+          wizardProcessName={t('newDeposit.depositAssets')}
         >
-          <DepositForm />
-        </Step>
-        <Step
-          wizardTitle={t('newDeposit.reviewTransfer')}
-          wizardDescription={t('newDeposit.reviewTransferSubtitle')}
-          nextButtonLabel={t('labels.submitDeposit')}
-          onNextButtonClicked={() => open('deposit')}
-        >
-          <ReviewDeposit />
-        </Step>
-      </FullScreenStepper>
-      <TokenMenu
-        onTokenSelect={handleTokenSelect}
-        tokenBalances={walletTokens}
-      />
+          <Step
+            wizardTitle={t('newDeposit.configureDeposit')}
+            wizardDescription={t('newDeposit.configureDepositSubtitle')}
+            isNextButtonDisabled={!formMethods.formState.isValid}
+          >
+            <DepositForm />
+          </Step>
+          <Step
+            wizardTitle={t('newDeposit.reviewTransfer')}
+            wizardDescription={t('newDeposit.reviewTransferSubtitle')}
+            nextButtonLabel={t('labels.submitDeposit')}
+            onNextButtonClicked={() => open('deposit')}
+          >
+            <ReviewDeposit />
+          </Step>
+        </FullScreenStepper>
+        <TokenMenu
+          onTokenSelect={handleTokenSelect}
+          tokenBalances={walletTokens}
+        />
+      </DepositProvider>
     </FormProvider>
   );
 };
