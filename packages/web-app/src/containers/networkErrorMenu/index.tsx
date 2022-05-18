@@ -13,10 +13,11 @@ import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 import {shortenAddress} from '@aragon/ui-components/src/utils/addresses';
 import {handleClipboardActions} from 'utils/library';
 import useScreen from 'hooks/useScreen';
-import {useTranslation} from 'react-i18next';
+import {useTranslation, Trans} from 'react-i18next';
 import WrongNetwork from 'public/wrongNetwork.svg';
 import {useNetwork} from 'context/network';
 import {useSwitchNetwork} from 'hooks/useSwitchNetwork';
+import {CHAIN_METADATA} from 'utils/constants';
 
 const NetworkErrorMenu = () => {
   const {isNetworkOpen, close} = useGlobalModalContext();
@@ -61,13 +62,21 @@ const NetworkErrorMenu = () => {
         <WarningContainer>
           <WarningTitle>{t('alert.wrongNetwork.title')}</WarningTitle>
           <WarningDescription>
-            {t('alert.wrongNetwork.description')}
+            {/** The text inside the <Trans> component is only used as a fallback if no translation is found, but the <strong> tag will replace the <1> placeholder. */}
+            <Trans
+              i18nKey={'alert.wrongNetwork.description'}
+              values={{network: CHAIN_METADATA[network].name}}
+            >
+              The action can’t be executed because you are in the wrong network.
+              Change to the <strong>{network}</strong> on your wallet and try
+              again.
+            </Trans>
           </WarningDescription>
         </WarningContainer>
         {provider?.connection.url === 'metamask' && (
           <ButtonText
             label={t('alert.wrongNetwork.buttonLabel', {
-              network: network,
+              network: CHAIN_METADATA[network].name,
             })}
             onClick={() => {
               switchWalletNetwork();

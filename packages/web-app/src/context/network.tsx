@@ -7,12 +7,7 @@ import React, {
 } from 'react';
 import {useMatch, useNavigate} from 'react-router-dom';
 
-import {
-  CHAIN_METADATA,
-  isSupportedNetwork,
-  SupportedNetworks,
-} from 'utils/constants';
-import {toHex} from 'utils/library';
+import {isSupportedNetwork, SupportedNetworks} from 'utils/constants';
 import {NotFound} from 'utils/paths';
 
 /* CONTEXT PROVIDER ========================================================= */
@@ -20,23 +15,16 @@ import {NotFound} from 'utils/paths';
 type NetworkContext = {
   network: SupportedNetworks;
   setNetwork: (network: SupportedNetworks) => void;
-  switchWalletNetwork: () => Promise<void>;
 };
 
 const NetworkContext = createContext<NetworkContext>({
   network: 'ethereum',
   setNetwork: () => {},
-  switchWalletNetwork: async () => {},
 });
 
 type NetworkProviderProps = {
   children: React.ReactNode;
 };
-
-type ErrorType = {
-  code: number;
-};
-
 /**
  * Returns the network on which the app operates.
  *
@@ -68,43 +56,6 @@ export function NetworkProvider({children}: NetworkProviderProps) {
     [isNetworkFlexible]
   );
 
-  const switchNetwork = async () => {
-    // Check if MetaMask is installed
-    if (window.ethereum) {
-      try {
-        // check if the chain to connect to is installed
-        await window.ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{chainId: toHex(CHAIN_METADATA[networkState].id)}], // chainId must be in hexadecimal numbers
-        });
-      } catch (error) {
-        if ((error as ErrorType).code === 4902) {
-          try {
-            await window.ethereum.request({
-              method: 'wallet_addEthereumChain',
-              params: [
-                {
-                  chainName: CHAIN_METADATA[networkState].name,
-                  chainId: toHex(CHAIN_METADATA[networkState].id),
-                  rpcUrls: CHAIN_METADATA[networkState].rpc,
-                  nativeCurrency: CHAIN_METADATA[networkState].nativeCurrency,
-                },
-              ],
-            });
-          } catch (addError) {
-            console.error(addError);
-          }
-        }
-        console.error(error);
-      }
-    } else {
-      // if no window.ethereum then MetaMask is not installed
-      alert(
-        'MetaMask is not installed. Please consider installing it: https://metamask.io/download.html'
-      );
-    }
-  };
-
   useEffect(() => {
     const networkParam = urlNetworkMatch?.params?.network;
     const isNotFound = urlNotFoundMatch !== null;
@@ -125,7 +76,6 @@ export function NetworkProvider({children}: NetworkProviderProps) {
       value={{
         network: networkState,
         setNetwork: changeNetwork,
-        switchWalletNetwork: switchNetwork,
       }}
     >
       {children}
