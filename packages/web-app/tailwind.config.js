@@ -111,6 +111,7 @@ module.exports = {
         55: '440px',
         56: '448px',
         63: '504px',
+        67: '536px',
         70: '560px',
         71: '568px',
         190: '1520px',
@@ -135,7 +136,6 @@ module.exports = {
       lg: '1280px',
       desktop: '1280px',
       wide: '1680px',
-      ultraWide: '3840px',
     },
     fontFamily: {
       sans: ['Manrope'],

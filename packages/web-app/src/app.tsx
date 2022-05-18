@@ -1,4 +1,3 @@
-import styled from 'styled-components';
 import React, {useEffect, lazy, Suspense} from 'react';
 
 // FIXME: Change route to ApmRoute once package has been updated to be
@@ -17,6 +16,9 @@ import {NotFound} from 'utils/paths';
 import DaoSelectMenu from 'containers/navbar/daoSelectMenu';
 import {Loading} from 'components/temporary/loading';
 import CreateDAO from 'pages/createDAO';
+import {GridLayout} from 'components/layout';
+import ExploreNav from 'containers/navbar/exploreNav';
+import Footer from 'containers/exploreFooter';
 import DepositModal from 'containers/transactionModals/DepositModal';
 
 const ExplorePage = lazy(() => import('pages/explore'));
@@ -52,12 +54,14 @@ function App() {
       {/* TODO: replace with loading indicator */}
       <Suspense fallback={<Loading />}>
         <Routes>
-          <Route path="/" element={<ExplorePage />} />
-          <Route element={<DaoLayout />}>
+          <Route element={<ExploreWrapper />}>
+            <Route path="/" element={<ExplorePage />} />
+          </Route>
+          <Route element={<DaoWrapper />}>
             <Route path="/create" element={<CreateDAO />} />
           </Route>
           <Route path=":network/:dao">
-            <Route element={<DaoLayout />}>
+            <Route element={<DaoWrapper />}>
               <Route path="dashboard" element={<DashboardPage />} />
               <Route path="finance" element={<FinancePage />} />
               <Route path="finance/new-deposit" element={<NewDepositPage />} />
@@ -98,33 +102,21 @@ const NotFoundWrapper: React.FC = () => {
   return <Navigate to={NotFound} state={{incorrectPath: pathname}} replace />;
 };
 
-// TODO the layout/background structure for the application will be
-// refactored even further in a separate PR. This will also take care of
-// the navbar width/position issue.
-
-// Components that are rendered via the Route element prop need to be expressed
-// called via the Outlet component. Calling them as children does not work. This
-// why simply passing Layout won't work.
-const DaoLayout: React.FC = () => (
+const ExploreWrapper: React.FC = () => (
   <>
-    <Navbar />
-    <Background>
-      <Layout>
-        <Outlet />
-      </Layout>
-    </Background>
+    <ExploreNav />
+    <Outlet />
+    <Footer />
   </>
 );
 
-const Background = styled.div.attrs({
-  className: 'flex flex-col mb-14 desktop:mb-10 bg-ui-50',
-})``;
-
-export const Layout = styled.main.attrs({
-  className:
-    'grid grid-cols-4 tablet:grid-cols-8 ' +
-    'desktop:grid-cols-12 gap-x-2 desktop:gap-x-3 ' +
-    'wide:gap-x-4 mx-2 tablet:mx-3 desktop:mx-5 wide:mx-auto wide:w-190',
-})``;
+const DaoWrapper: React.FC = () => (
+  <>
+    <Navbar />
+    <GridLayout>
+      <Outlet />
+    </GridLayout>
+  </>
+);
 
 export default App;

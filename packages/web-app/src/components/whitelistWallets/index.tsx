@@ -19,7 +19,7 @@ export const WhitelistWallets = () => {
 
   const {control, trigger} = useFormContext();
   const whitelistWallets = useWatch({name: 'whitelistWallets', control});
-  const {fields, update, replace, append, remove, prepend} = useFieldArray({
+  const {fields, update, replace, append, remove} = useFieldArray({
     control,
     name: 'whitelistWallets',
   });
@@ -32,8 +32,10 @@ export const WhitelistWallets = () => {
   });
 
   useEffect(() => {
-    prepend({address});
-  }, [address, prepend]);
+    if (address && !whitelistWallets) {
+      append({address});
+    }
+  }, [address, append, whitelistWallets]);
 
   // add empty wallet
   const handleAdd = () => {

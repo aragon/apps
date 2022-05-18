@@ -4,13 +4,13 @@ import Logo from 'public/coloredLogo.svg';
 import Green from 'public/circleGreenGradient.svg';
 import Purple from 'public/purpleGradient.svg';
 import {useTranslation} from 'react-i18next';
-import {Layout} from '../../app';
+import {GridLayout} from 'components/layout';
 
 function Hero() {
   const {t} = useTranslation();
   return (
     <Container>
-      <Layout>
+      <GridLayout>
         <Wrapper>
           <ContentWrapper>
             <Title>{t('explore.hero.title')}</Title>
@@ -28,13 +28,19 @@ function Hero() {
             </GradientWrapper>
           </GradientContainer>
         </Wrapper>
-      </Layout>
+      </GridLayout>
     </Container>
   );
 }
 
+// NOTE: "h-56 -mt-10 pt-10" is the "simplest" way to achieve a sticky header
+// with a gradient AND a primary 400 background. What it does it is extends the
+// hero by a height of 12, moves it up using the negative margin and compensates
+// by lowering the content using the padding-top. Same with factor 12 on
+// desktop.
 const Container = styled.div.attrs({
-  className: 'bg-primary-400 desktop:h-55 h-46 overflow-hidden',
+  className:
+    'bg-primary-400 h-56 -mt-10 pt-10  desktop:h-67 desktop:pt-12 desktop:-mt-12 overflow-hidden',
 })``;
 
 const Wrapper = styled.div.attrs({
