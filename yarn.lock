@@ -179,15 +179,16 @@
     "@web3-react/types" "^6.0.7"
     tiny-warning "^1.0.3"
 
-"@aragon/sdk-client@0.0.5-alpha":
-  version "0.0.5-alpha"
-  resolved "https://registry.yarnpkg.com/@aragon/sdk-client/-/sdk-client-0.0.5-alpha.tgz#f9d5fa002ba1e6489b3c11ada7d2793e011a2399"
-  integrity sha512-sX8hqYWy3Jqo9GVYz1EGoeWJOUPL0kHambK3yRxTfe1mQDqiBmN782EFAIYfB/QD2HRaty+3cjZylYH3PpqdRw==
+"@aragon/sdk-client@0.0.11-alpha":
+  version "0.0.11-alpha"
+  resolved "https://registry.yarnpkg.com/@aragon/sdk-client/-/sdk-client-0.0.11-alpha.tgz#4b711de3839e38ddd8bcc56759d101b86304dec8"
+  integrity sha512-MHOp0Nc9tOTp07CggdiPFCzePyYK/nKk3EWGNvwhP3wSBY2NTful9RSV3AgTDVYKUvBzSNgEQRqMDnWes7xcxA==
   dependencies:
     "@aragon/core-contracts-ethers" "^0.0.1-alpha"
     "@aragon/sdk-common" "^0.0.1-alpha"
     "@ethersproject/abstract-signer" "^5.5.0"
     "@ethersproject/bignumber" "^5.6.0"
+    "@ethersproject/constants" "^5.6.0"
     "@ethersproject/contracts" "^5.5.0"
     "@ethersproject/providers" "^5.5.0"
     "@ethersproject/wallet" "^5.6.0"
