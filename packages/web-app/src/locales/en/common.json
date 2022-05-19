@@ -291,7 +291,7 @@
     "publishDao": "Publish Dao",
     "publishDaoButtonLabel": "Publish DAO Now",
     "signDeposit": "Sign Deposit",
-    "successLabel": "Transaction successful signed",
+    "successLabel": "Transaction successfully executed",
     "synced": "Synced {{time}} sec ago",
     "totalCost": "Total Cost",
     "tryAgain": "Try Again"
