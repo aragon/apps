@@ -13,8 +13,8 @@ import ActiveProposalsExplore from 'containers/activeProposalsExplore';
 import {GridLayout} from 'components/layout';
 
 const existingDaos = [
-  '0x07de9a02a1c7e09bae5b15b7270e5b1ba2029bfd',
-  '0xf1ce79a45615ce1d32af6422ed77b9b7ffc35c88',
+  '0x74db053cac4e803096e912251cf3e847ae92b8ba',
+  '0xa125220cce787500d3fc8bff83a959a3a84fe4f4',
 ];
 
 const Explore: React.FC = () => {
