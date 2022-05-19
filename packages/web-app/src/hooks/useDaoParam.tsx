@@ -27,6 +27,13 @@ export function useDaoParam() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // undefined mainnet clients cause problem here. This bypasses the dao param
+    // validation on mainnets and immediately redirects to notfound (which makes
+    // sense since there can not yet be daos on mainnets). Remove this if
+    // statement once those clients are implemented.
+    if (!client[network])
+      navigate(NotFound, {replace: true, state: {incorrectDao: dao}});
+
     if (loading) {
       return;
     } else if (error || !data?.dao?.id) {
