@@ -10,6 +10,7 @@ import {
   ValueInput,
 } from '@aragon/ui-components';
 import styled from 'styled-components';
+import {BigNumber} from 'ethers';
 import React, {useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Controller, useFormContext} from 'react-hook-form';
@@ -20,7 +21,7 @@ import {
 } from 'utils/library';
 import {useWallet} from 'hooks/useWallet';
 import {validateAddress} from 'utils/validators';
-import {BigNumber} from 'ethers';
+import {MAX_TOKEN_AMOUNT} from 'utils/constants';
 
 type WalletRowProps = {
   index: number;
@@ -32,12 +33,6 @@ export type WalletField = {
   address: string;
   amount: string;
 };
-
-// largest decimal that can be represented in 224 bits
-// before adding the 18 decimals
-const MAX_TOKEN_AMOUNT = BigNumber.from(
-  '26959946667150639794667015087019630673637144422540'
-);
 
 const WalletRow: React.FC<WalletRowProps> = ({index, onDelete}) => {
   const {t} = useTranslation();
