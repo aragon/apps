@@ -25,6 +25,21 @@ export function isSupportedNetwork(
   return SUPPORTED_NETWORKS.some(n => n === network);
 }
 
+/**
+ * Get the network name with given chain id
+ * @param chainId Chain id
+ * @returns the name of the supported network or undefined if network is unsupported
+ */
+export function getSupportedNetworkByChainId(
+  chainId: number
+): SupportedNetworks | undefined {
+  if (isSupportedChainId(chainId)) {
+    return Object.entries(CHAIN_METADATA).find(
+      entry => entry[1].id === chainId
+    )?.[0] as SupportedNetworks;
+  }
+}
+
 export type NetworkDomain = 'L1 Blockchain' | 'L2 Blockchain';
 
 /* CHAIN DATA =============================================================== */
