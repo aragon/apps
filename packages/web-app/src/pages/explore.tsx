@@ -42,12 +42,12 @@ const Explore: React.FC = () => {
                 icon={<IconExpand />}
                 background={'white'}
                 onClick={() => {
-                  const p = generatePath(Finance, {
-                    network: 'rinkeby',
-                    dao: dao,
-                  });
-                  console.log('[LOGGING] p ' + p);
-                  navigate(p);
+                  navigate(
+                    generatePath(Finance, {
+                      network: 'rinkeby',
+                      dao: dao,
+                    })
+                  );
                 }}
               />
             ))}
