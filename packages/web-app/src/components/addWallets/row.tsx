@@ -117,7 +117,8 @@ const WalletRow: React.FC<WalletRowProps> = ({index, onDelete}) => {
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 onChange(e.target.value);
               }}
-              disabled={index === 0}
+              // Uncomment when minting to DAO Treasury is supported
+              // disabled={index === 0}
               adornmentText={value ? t('labels.copy') : t('labels.paste')}
               onAdornmentClick={() => handleClipboardActions(value, onChange)}
             />
@@ -175,42 +176,41 @@ const WalletRow: React.FC<WalletRowProps> = ({index, onDelete}) => {
       </PercentageInputDisplayWrapper>
 
       <DropdownMenuWrapper>
-        {index !== 0 && (
-          <Dropdown
-            align="start"
-            trigger={
-              <ButtonIcon
-                mode="ghost"
-                size="large"
-                bgWhite
-                icon={<IconMenuVertical />}
-                data-testid="trigger"
-              />
-            }
-            sideOffset={8}
-            listItems={[
-              {
-                component: (
-                  <ListItemAction
-                    title={t('labels.removeWallet')}
-                    {...(typeof onDelete !== 'function' && {mode: 'disabled'})}
-                    bgWhite
-                  />
-                ),
-                callback: () => {
-                  if (typeof onDelete === 'function') {
-                    const [totalSupply, amount] = getValues([
-                      'tokenTotalSupply',
-                      `wallets.${index}.amount`,
-                    ]);
-                    setValue('tokenTotalSupply', totalSupply - amount);
-                    onDelete(index);
-                  }
-                },
+        {/* Disable index 0 when minting to DAO Treasury is supported */}
+        <Dropdown
+          align="start"
+          trigger={
+            <ButtonIcon
+              mode="ghost"
+              size="large"
+              bgWhite
+              icon={<IconMenuVertical />}
+              data-testid="trigger"
+            />
+          }
+          sideOffset={8}
+          listItems={[
+            {
+              component: (
+                <ListItemAction
+                  title={t('labels.removeWallet')}
+                  {...(typeof onDelete !== 'function' && {mode: 'disabled'})}
+                  bgWhite
+                />
+              ),
+              callback: () => {
+                if (typeof onDelete === 'function') {
+                  const [totalSupply, amount] = getValues([
+                    'tokenTotalSupply',
+                    `wallets.${index}.amount`,
+                  ]);
+                  setValue('tokenTotalSupply', totalSupply - amount);
+                  onDelete(index);
+                }
               },
-            ]}
-          />
-        )}
+            },
+          ]}
+        />
       </DropdownMenuWrapper>
     </Container>
   );

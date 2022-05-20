@@ -34,14 +34,14 @@ const ConfigureCommunity: React.FC = () => {
         ((100 *
           Math.ceil(
             ((minimumParticipation || defaultMinimumParticipation) *
-              whitelistWallets.length) /
+              whitelistWallets?.length) /
               100
           )) /
-          whitelistWallets.length) *
+          whitelistWallets?.length) *
           100
       ) / 100
     );
-  }, [minimumParticipation, whitelistWallets.length]);
+  }, [minimumParticipation, whitelistWallets?.length]);
 
   return (
     <>
@@ -126,7 +126,7 @@ const ConfigureCommunity: React.FC = () => {
                       {
                         percentage: minimumParticipationPercent,
                         walletCount: Math.ceil(
-                          (value * whitelistWallets.length) / 100
+                          (value * whitelistWallets?.length) / 100
                         ),
                       }
                     )}

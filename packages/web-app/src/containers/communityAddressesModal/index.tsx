@@ -37,7 +37,7 @@ const CommunityAddressesModal: React.FC<CommunityAddressesModalProps> = ({
 
   const filteredAddressList = useMemo(() => {
     return (tokenMembership ? wallets : whitelistWallets)
-      .filter(filterValidator)
+      ?.filter(filterValidator)
       .map(({address, amount}: {address: string; amount: string}) => ({
         wallet: getUserFriendlyWalletLabel(
           address,
@@ -75,7 +75,7 @@ const CommunityAddressesModal: React.FC<CommunityAddressesModalProps> = ({
         />
       </ModalHeader>
       <Container>
-        {filteredAddressList.length !== 0 ? (
+        {filteredAddressList && filteredAddressList.length !== 0 ? (
           <VotersTable
             voters={filteredAddressList.slice(0, page * 5)}
             {...(tokenMembership && {showAmount: true})}
