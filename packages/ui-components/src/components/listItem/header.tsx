@@ -50,11 +50,13 @@ export const ListItemHeader: React.FC<ListItemHeaderProps> = ({
 };
 
 const HorizontalContainer = styled.div.attrs({
-  className: 'bg-ui-0 rounded-xl hidden tablet:flex p-3 items-center space-x-3',
+  className:
+    'border border-ui-100 bg-ui-0 rounded-xl hidden tablet:flex p-3 items-center space-x-3',
 })``;
 
 const VerticalContainer = styled.div.attrs({
-  className: 'p-2 tablet:p-3 bg-ui-0 rounded-xl space-y-2 tablet:space-y-3',
+  className:
+    'border border-ui-100 p-2 tablet:p-3 bg-ui-0 rounded-xl space-y-2 tablet:space-y-3',
 })``;
 
 const IconWrapper = styled.div.attrs({
