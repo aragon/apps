@@ -77,6 +77,8 @@ const ContentWrapper = styled.div.attrs(
   })
 )<ContentWrapperProps>``;
 
-const Value = styled.p.attrs({className: 'text-2xl text-ui-800 text-bold'})``;
+const Value = styled.p.attrs({
+  className: 'text-2xl text-ui-800 text-bold truncate',
+})``;
 
-const Label = styled.p.attrs({className: 'text-ui-500'})``;
+const Label = styled.p.attrs({className: 'text-ui-500 truncate'})``;
