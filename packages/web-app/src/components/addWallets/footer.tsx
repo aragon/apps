@@ -13,14 +13,17 @@ const AddWalletsFooter: React.FC<WalletsFooterProps> = ({totalAddresses}) => {
   const {getValues} = useFormContext();
   const totalSupply = getValues('tokenTotalSupply');
 
+  const label =
+    totalAddresses === 1
+      ? `${1} ${t('labels.whitelistWallets.address')}`
+      : t('labels.whitelistWallets.addresses', {
+          count: totalAddresses,
+        });
+
   return (
     <Container>
       <FooterItem1>
-        <Label
-          label={t('labels.whitelistWallets.addresses', {
-            count: totalAddresses - 1,
-          })}
-        />
+        <Label label={label} />
       </FooterItem1>
       <FooterItem1>
         <StyledLabel>{totalSupply}</StyledLabel>
