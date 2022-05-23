@@ -109,7 +109,6 @@ const AddWallets: React.FC = () => {
               ),
               callback: () => {
                 remove();
-                append([{address: constants.AddressZero, amount: '0'}]);
                 resetField('tokenTotalSupply');
               },
             },
