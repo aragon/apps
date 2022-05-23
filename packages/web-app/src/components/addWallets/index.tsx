@@ -14,7 +14,6 @@ import Row from './row';
 import Header from './header';
 import Footer from './footer';
 import {useWallet} from 'hooks/useWallet';
-import {constants} from 'ethers';
 
 const AddWallets: React.FC = () => {
   const {t} = useTranslation();
