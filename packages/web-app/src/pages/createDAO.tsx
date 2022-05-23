@@ -48,7 +48,7 @@ const defaultValues = {
   tokenAddress: '',
   tokenSymbol: '',
   tokenTotalSupply: 0,
-  links: [{label: '', link: ''}],
+  links: [{label: '', href: ''}],
 
   // Uncomment when DAO Treasury minting is supported
   // wallets: [{address: constants.AddressZero, amount: '0'}],
