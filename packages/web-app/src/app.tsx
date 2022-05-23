@@ -5,7 +5,7 @@ import React, {useEffect, lazy, Suspense} from 'react';
 import {Navigate, Routes, Route, useLocation, Outlet} from 'react-router-dom';
 
 import Navbar from 'containers/navbar';
-import {WalletMenu} from 'containers/navbar/walletMenu';
+import {WalletMenu} from 'containers/walletMenu';
 import {trackPage} from 'services/analytics';
 import '../i18n.config';
 

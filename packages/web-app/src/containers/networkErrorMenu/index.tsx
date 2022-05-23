@@ -14,7 +14,7 @@ import {shortenAddress} from '@aragon/ui-components/src/utils/addresses';
 import {handleClipboardActions} from 'utils/library';
 import useScreen from 'hooks/useScreen';
 import {useTranslation, Trans} from 'react-i18next';
-import WrongNetwork from 'public/wrongNetwork.svg';
+import WalletIcon from 'public/wallet.svg';
 import {useNetwork} from 'context/network';
 import {useSwitchNetwork} from 'hooks/useSwitchNetwork';
 import {CHAIN_METADATA} from 'utils/constants';
@@ -58,7 +58,7 @@ const NetworkErrorMenu = () => {
         )}
       </ModalHeader>
       <ModalBody>
-        <StyledImage src={WrongNetwork} />
+        <StyledImage src={WalletIcon} />
         <WarningContainer>
           <WarningTitle>{t('alert.wrongNetwork.title')}</WarningTitle>
           <WarningDescription>
