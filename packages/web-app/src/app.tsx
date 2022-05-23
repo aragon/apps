@@ -117,9 +117,11 @@ const ExploreWrapper: React.FC = () => (
 const DaoWrapper: React.FC = () => (
   <>
     <Navbar />
-    <GridLayout>
-      <Outlet />
-    </GridLayout>
+    <div className="pb-10">
+      <GridLayout>
+        <Outlet />
+      </GridLayout>
+    </div>
   </>
 );
 

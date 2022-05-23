@@ -49,12 +49,7 @@ export const WalletMenu = () => {
     window.open(baseUrl + '/address/' + address, '_blank');
   };
 
-  // if (isConnected)
-  // return (
-  //   <>
-  //     <LoginWallet />
-  //   </>
-  // );
+  if (!isConnected) return <LoginWallet />;
 
   return (
     <ModalBottomSheetSwitcher

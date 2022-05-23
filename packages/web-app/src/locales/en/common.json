@@ -239,6 +239,12 @@
       "title": "Wrong Network",
       "description": "The action can’t be executed because you are in the wrong network. Change to the <1>{{network}}</1> on your wallet and try again.",
       "buttonLabel": "Switch to {{network}}"
+    },
+    "loginRequired": {
+      "headerTitle": "Login to continue",
+      "title": "Wallet connection",
+      "description": "To continue with this action, a wallet must be connected.",
+      "buttonLabel": "Login Now"
     }
   },
   "warnings": {
