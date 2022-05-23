@@ -15,7 +15,7 @@ import {
   WarningTitle,
 } from 'containers/networkErrorMenu';
 
-export const LoginWallet = () => {
+export const LoginRequired = () => {
   const {close, isWalletOpen} = useGlobalModalContext();
   const {t} = useTranslation();
   const {isDesktop} = useScreen();

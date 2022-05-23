@@ -18,7 +18,7 @@ import {shortenAddress} from '@aragon/ui-components/src/utils/addresses';
 import {handleClipboardActions} from 'utils/library';
 import useScreen from 'hooks/useScreen';
 import {CHAIN_METADATA} from 'utils/constants';
-import {LoginWallet} from './loginWallet';
+import {LoginRequired} from './LoginRequired';
 
 export const WalletMenu = () => {
   const {close, isWalletOpen} = useGlobalModalContext();
@@ -49,7 +49,7 @@ export const WalletMenu = () => {
     window.open(baseUrl + '/address/' + address, '_blank');
   };
 
-  if (!isConnected) return <LoginWallet />;
+  if (!isConnected) return <LoginRequired />;
 
   return (
     <ModalBottomSheetSwitcher
