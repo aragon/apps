@@ -20,8 +20,8 @@ export const usePollGasFee = (
   estimationFunction: () => Promise<IGasFeeEstimation | undefined>
 ) => {
   const {network} = useNetwork();
-  const [maxFee, setMaxFee] = useState<BigInt>(0n);
-  const [averageFee, setAverageFee] = useState<BigInt>(0n);
+  const [maxFee, setMaxFee] = useState<BigInt>(BigInt(0));
+  const [averageFee, setAverageFee] = useState<BigInt>(BigInt(0));
   const [tokenPrice, setTokenPrice] = useState<number>(0);
 
   // estimate gas for DAO creation
@@ -34,8 +34,8 @@ export const usePollGasFee = (
         ]);
 
         setTokenPrice(results[1] || 0);
-        setMaxFee(results[0]?.max || 0n);
-        setAverageFee(results[0]?.max || 0n);
+        setMaxFee(results[0]?.max || BigInt(0));
+        setAverageFee(results[0]?.max || BigInt(0));
       } catch (error) {
         console.log('Error fetching gas fees and price', error);
       }
