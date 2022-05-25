@@ -11,32 +11,38 @@ type TokenInfo = {
 };
 
 export type ListItemAddressProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+  /**
+   * String representing EITHER a wallet address OR an ens name.
+   */
   src: string;
+  /**
+   * Optional token information. Consists of a token amount, symbol and share.
+   */
   tokenInfo?: TokenInfo;
 };
 
 export const ListItemAddress: FC<ListItemAddressProps> = ({src, tokenInfo}) => {
   return (
     <Container data-testid="listItem-address">
-      <div className="flex space-x-2">
+      <RightContent>
         <AvatarWallet src={src} />
         <p className="font-bold">{shortenAddress(src)}</p>
-      </div>
+      </RightContent>
 
-      <div className="flex space-x-2 items-center text-sm">
+      <LeftContent>
         {tokenInfo && (
-          <p>
+          <p className="text-ui-500">
             {tokenInfo.amount} {tokenInfo.symbol} ({tokenInfo.percentage}%)
           </p>
         )}
         <IconLinkExternal />
-      </div>
+      </LeftContent>
     </Container>
   );
 };
 
 const Container = styled.button.attrs(() => {
-  const baseLayoutClasses = 'flex items-center justify-between w-full';
+  const baseLayoutClasses = 'flex justify-between w-full';
   const baseStyleClasses = 'bg-ui-0 p-2 tablet:p-3 rounded-xl';
   let className:
     | string
@@ -49,4 +55,9 @@ const Container = styled.button.attrs(() => {
   className += ` text-ui-600 ${activeClasses} ${focusClasses} ${hoverClasses}`;
 
   return {className};
+})``;
+
+const RightContent = styled.div.attrs({className: 'flex space-x-2'})``;
+const LeftContent = styled.div.attrs({
+  className: 'flex space-x-2 items-center text-sm',
 })``;
