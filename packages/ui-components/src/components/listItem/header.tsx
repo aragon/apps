@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import styled from 'styled-components';
 import {ButtonText} from '../button';
 
@@ -22,62 +22,56 @@ export const ListItemHeader: React.FC<ListItemHeaderProps> = ({
   orientation = 'vertical',
   ...props
 }) => {
-  if (orientation === 'vertical') {
-    return (
-      <VerticalContainer data-testid="listItem-header">
-        <Frame>
-          <IconWrapper>{props.icon}</IconWrapper>
-          <ButtonText label={props.buttonText} onClick={props.onClick} />
-        </Frame>
-        <ContentWrapper orientation={orientation}>
-          <Value>{props.value}</Value>
-          <Label>{props.label}</Label>
-        </ContentWrapper>
-      </VerticalContainer>
-    );
-  }
+  const horizontal = useMemo(() => orientation === 'horizontal', [orientation]);
 
   return (
-    <HorizontalContainer data-testid="listItem-header">
+    <Container horizontal={horizontal} data-testid="listItem-header">
       <IconWrapper>{props.icon}</IconWrapper>
-      <ContentWrapper orientation={orientation}>
+
+      <ButtonWrapper horizontal={horizontal}>
+        <ButtonText label={props.buttonText} onClick={props.onClick} />
+      </ButtonWrapper>
+
+      <Break horizontal={horizontal} />
+      <ContentWrapper horizontal={horizontal}>
         <Value>{props.value}</Value>
         <Label>{props.label}</Label>
       </ContentWrapper>
-      <ButtonText label={props.buttonText} onClick={props.onClick} />
-    </HorizontalContainer>
+    </Container>
   );
 };
 
-const HorizontalContainer = styled.div.attrs({
-  className:
-    'border border-ui-100 bg-ui-0 rounded-xl hidden tablet:flex p-3 items-center space-x-3',
-})``;
+type VariableAlignment = {
+  horizontal: boolean;
+};
 
-const VerticalContainer = styled.div.attrs({
+const Container = styled.div.attrs(({horizontal}: VariableAlignment) => ({
   className:
-    'border border-ui-100 p-2 tablet:p-3 bg-ui-0 rounded-xl space-y-2 tablet:space-y-3',
-})``;
+    'flex flex-wrap gap-1 tablet:gap-1.5 justify-between items-center ' +
+    'p-2 tablet:p-3 bg-ui-0 rounded-xl border border-ui-100 ' +
+    `${horizontal ? 'tablet:flex-nowrap :' : ''}`,
+}))<VariableAlignment>``;
 
 const IconWrapper = styled.div.attrs({
   className:
-    'grid place-content-center w-5 h-5 text-primary-500 bg-primary-50 rounded-xl',
+    'order-1 grid place-content-center w-5 h-5 text-primary-500 bg-primary-50 rounded-xl',
 })``;
 
-const Frame = styled.div.attrs({className: 'flex justify-between'})``;
+const ButtonWrapper = styled.div.attrs(({horizontal}: VariableAlignment) => ({
+  className: `order-2 ${horizontal ? 'tablet:order-3' : ''}`,
+}))<VariableAlignment>``;
 
-type ContentWrapperProps = {
-  orientation: NonNullable<ListItemHeaderProps['orientation']>;
-};
-const ContentWrapper = styled.div.attrs(
-  ({orientation}: ContentWrapperProps) => ({
-    className: `${
-      orientation === 'vertical'
-        ? 'space-y-0.25'
-        : 'flex flex-1 items-baseline space-x-2'
-    }`,
-  })
-)<ContentWrapperProps>``;
+const Break = styled.hr.attrs(({horizontal}: VariableAlignment) => ({
+  className: `order-3 w-full border-0 ${
+    horizontal ? 'tablet:hidden tablet:order-4' : ''
+  }`,
+}))<VariableAlignment>``;
+
+const ContentWrapper = styled.div.attrs(({horizontal}: VariableAlignment) => ({
+  className: `order-4 min-w-0 ${
+    horizontal ? 'tablet:flex flex-1 tablet:order-2 items-baseline gap-x-1' : ''
+  }`,
+}))<VariableAlignment>``;
 
 const Value = styled.p.attrs({
   className: 'text-2xl text-ui-800 text-bold truncate',
