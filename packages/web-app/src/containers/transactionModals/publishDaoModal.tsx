@@ -8,9 +8,7 @@ import {
 import styled from 'styled-components';
 import {formatEther} from 'ethers/lib/utils';
 import {useTranslation} from 'react-i18next';
-import {IGasFeeEstimation} from '@aragon/sdk-client/dist/internal/interfaces/dao';
 
-import {usePollGasFee} from 'hooks/usePollGasfee';
 import {TransactionState} from 'utils/constants';
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 
@@ -20,7 +18,9 @@ type PublishDaoModalProps = {
   isOpen: boolean;
   onClose: () => void;
   closeOnDrag: boolean;
-  estimationFunction: () => Promise<IGasFeeEstimation | undefined>;
+  maxFee: BigInt;
+  averageFee: BigInt;
+  tokenPrice: number;
 };
 
 const icons = {
@@ -36,10 +36,11 @@ const PublishDaoModal: React.FC<PublishDaoModalProps> = ({
   isOpen,
   onClose,
   closeOnDrag,
-  estimationFunction,
+  maxFee,
+  averageFee,
+  tokenPrice,
 }) => {
   const {t} = useTranslation();
-  const {tokenPrice, maxFee, averageFee} = usePollGasFee(estimationFunction);
 
   const label = {
     [TransactionState.WAITING]: t('TransactionModal.publishDaoButtonLabel'),

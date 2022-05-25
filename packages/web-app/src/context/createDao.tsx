@@ -9,6 +9,7 @@ import React, {
   useState,
   ReactNode,
   useCallback,
+  useMemo,
 } from 'react';
 import {constants} from 'ethers';
 import {parseUnits} from 'ethers/lib/utils';
@@ -24,6 +25,7 @@ import {Landing} from 'utils/paths';
 import {useWallet} from 'hooks/useWallet';
 import {useGlobalModalContext} from './globalModals';
 import {useClient} from 'hooks/useClient';
+import {usePollGasFee} from 'hooks/usePollGasfee';
 
 type DAOCreationSettings = ICreateDaoERC20Voting | ICreateDaoWhitelistVoting;
 
@@ -52,6 +54,27 @@ const CreateDaoProvider: React.FC<Props> = ({children}) => {
 
   const {createErc20, createWhitelist} = useDao();
   const {erc20, whitelist} = useClient();
+
+  const shouldPoll = useMemo(
+    () =>
+      daoCreationData !== undefined &&
+      creationProcessState === TransactionState.WAITING,
+    [creationProcessState, daoCreationData]
+  );
+
+  // estimate creation fees
+  const estimateCreationFees = useCallback(async () => {
+    return membership === 'token'
+      ? erc20?.estimate.create(daoCreationData as ICreateDaoERC20Voting)
+      : whitelist?.estimate.create(
+          daoCreationData as ICreateDaoWhitelistVoting
+        );
+  }, [daoCreationData, erc20?.estimate, membership, whitelist?.estimate]);
+
+  const {tokenPrice, maxFee, averageFee} = usePollGasFee(
+    estimateCreationFees,
+    shouldPoll
+  );
 
   /*************************************************
    *                   Handlers                    *
@@ -184,15 +207,6 @@ const CreateDaoProvider: React.FC<Props> = ({children}) => {
       };
     }, [getDaoConfig, getValues, getVotingConfig]);
 
-  // estimate creation fees
-  const estimateCreationFees = useCallback(async () => {
-    return membership === 'token'
-      ? erc20?.estimate.create(daoCreationData as ICreateDaoERC20Voting)
-      : whitelist?.estimate.create(
-          daoCreationData as ICreateDaoWhitelistVoting
-        );
-  }, [daoCreationData, erc20?.estimate, membership, whitelist?.estimate]);
-
   // run dao creation transaction
   const createDao = useCallback(async () => {
     setCreationProcessState(TransactionState.LOADING);
@@ -227,7 +241,9 @@ const CreateDaoProvider: React.FC<Props> = ({children}) => {
         onClose={handleCloseModal}
         callback={handleExecuteCreation}
         closeOnDrag={creationProcessState !== TransactionState.LOADING}
-        estimationFunction={estimateCreationFees}
+        maxFee={maxFee}
+        averageFee={averageFee}
+        tokenPrice={tokenPrice}
       />
     </CreateDaoContext.Provider>
   );

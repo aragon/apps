@@ -17,7 +17,8 @@ import {fetchTokenPrice} from 'services/prices';
  * native token price in USD
  */
 export const usePollGasFee = (
-  estimationFunction: () => Promise<IGasFeeEstimation | undefined>
+  estimationFunction: () => Promise<IGasFeeEstimation | undefined>,
+  shouldPoll = true
 ) => {
   const {network} = useNetwork();
   const [maxFee, setMaxFee] = useState<BigInt>(BigInt(0));
@@ -41,8 +42,8 @@ export const usePollGasFee = (
       }
     }
 
-    getFeesAndPrice();
-  }, [averageFee, estimationFunction, maxFee, network, tokenPrice]);
+    if (shouldPoll) getFeesAndPrice();
+  }, [averageFee, estimationFunction, maxFee, network, shouldPoll, tokenPrice]);
 
   return {tokenPrice, maxFee, averageFee};
 };
