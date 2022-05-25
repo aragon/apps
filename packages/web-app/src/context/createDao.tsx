@@ -28,8 +28,8 @@ import {useClient} from 'hooks/useClient';
 type DAOCreationSettings = ICreateDaoERC20Voting | ICreateDaoWhitelistVoting;
 
 type CreateDaoContextType = {
-  /** Prepares the creation data and awaiting user confirmation to start process */
-  handlePublishDao: () => Promise<void>;
+  /** Prepares the creation data and awaits user confirmation to start process */
+  handlePublishDao: () => void;
 };
 
 type Props = Record<'children', ReactNode>;
@@ -56,7 +56,7 @@ const CreateDaoProvider: React.FC<Props> = ({children}) => {
   /*************************************************
    *                   Handlers                    *
    *************************************************/
-  const handlePublishDao = async () => {
+  const handlePublishDao = () => {
     switch (membership) {
       case 'token':
         setDaoCreationData(getERC20VotingDaoSettings());
