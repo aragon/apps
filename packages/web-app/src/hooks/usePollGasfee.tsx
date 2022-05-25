@@ -1,50 +1,48 @@
-import {useMemo} from 'react';
-import {BigNumberish, ethers} from 'ethers';
+import {constants} from 'ethers';
+import {useEffect, useState} from 'react';
+import {IGasFeeEstimation} from '@aragon/sdk-client/dist/internal/interfaces/dao';
 
-import DAOFactoryABI from 'abis/DAOFactory.json';
-import {useProviders} from 'context/providers';
+import {useNetwork} from 'context/network';
+import {fetchTokenPrice} from 'services/prices';
 
 /**
- * This hook created as placeholder for calculating gasFee for current action
- * @returns Gas fees for certain Actions
+ * This hook returns the gas estimation for a particular transaction and
+ * the price of the native token in USD
+ *
+ * NOTE: Due to what is assumed to be temporary design changes, this hook
+ * does not yet poll for the gas fees on interval
+ *
+ * @param estimationFunction function that estimates gas fee
+ * @returns the average and maximum gas fee estimations as well as the
+ * native token price in USD
  */
+export const usePollGasFee = (
+  estimationFunction: () => Promise<IGasFeeEstimation | undefined>
+) => {
+  const {network} = useNetwork();
+  const [maxFee, setMaxFee] = useState<BigInt>(0n);
+  const [averageFee, setAverageFee] = useState<BigInt>(0n);
+  const [tokenPrice, setTokenPrice] = useState<number>(0);
 
-const usePollGasFee = () => {
-  const {infura: provider} = useProviders();
+  // estimate gas for DAO creation
+  useEffect(() => {
+    async function getFeesAndPrice() {
+      try {
+        const results = await Promise.all([
+          estimationFunction(),
+          fetchTokenPrice(constants.AddressZero, network),
+        ]);
 
-  const finalFee = useMemo(async () => {
-    const daoDummyName = "Rakesh's Syndicate";
-    const daoDummyMetadata = '0x00000000000000000000000000';
-    const zeroAddress = ethers.constants.AddressZero;
-    const dummyVoteSettings: [BigNumberish, BigNumberish, BigNumberish] = [
-      1, 2, 3,
-    ];
-    const contract = new ethers.Contract(
-      '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0',
-      DAOFactoryABI,
-      provider
-    );
+        setTokenPrice(results[1] || 0);
+        setMaxFee(results[0]?.max || 0n);
+        setAverageFee(results[0]?.max || 0n);
+      } catch (error) {
+        console.log('Error fetching gas fees and price', error);
+      }
+    }
 
-    return await contract.estimateGas.newDAO(
-      {
-        name: daoDummyName,
-        metadata: daoDummyMetadata,
-      },
-      {
-        addr: zeroAddress,
-        name: 'TokenName',
-        symbol: 'TokenSymbol',
-      },
-      {
-        receivers: ['0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266'],
-        amounts: [100],
-      },
-      dummyVoteSettings,
-      zeroAddress
-    );
-  }, [provider]);
+    getFeesAndPrice();
+  }, [averageFee, estimationFunction, maxFee, network, tokenPrice]);
 
-  return finalFee;
+  return {tokenPrice, maxFee, averageFee};
 };
-
-export default usePollGasFee;

@@ -1,14 +1,18 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {
   AlertInline,
   ButtonText,
   IconReload,
   Spinner,
 } from '@aragon/ui-components';
-import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 import styled from 'styled-components';
+import {formatEther} from 'ethers/lib/utils';
 import {useTranslation} from 'react-i18next';
+import {IGasFeeEstimation} from '@aragon/sdk-client/dist/internal/interfaces/dao';
+
+import {usePollGasFee} from 'hooks/usePollGasfee';
 import {TransactionState} from 'utils/constants';
+import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 
 type PublishDaoModalProps = {
   state: TransactionState;
@@ -16,6 +20,7 @@ type PublishDaoModalProps = {
   isOpen: boolean;
   onClose: () => void;
   closeOnDrag: boolean;
+  estimationFunction: () => Promise<IGasFeeEstimation | undefined>;
 };
 
 const icons = {
@@ -31,8 +36,10 @@ const PublishDaoModal: React.FC<PublishDaoModalProps> = ({
   isOpen,
   onClose,
   closeOnDrag,
+  estimationFunction,
 }) => {
   const {t} = useTranslation();
+  const {tokenPrice, maxFee, averageFee} = usePollGasFee(estimationFunction);
 
   const label = {
     [TransactionState.WAITING]: t('TransactionModal.publishDaoButtonLabel'),
@@ -41,9 +48,14 @@ const PublishDaoModal: React.FC<PublishDaoModalProps> = ({
     [TransactionState.ERROR]: t('TransactionModal.tryAgain'),
   };
 
-  /**
-   * All data's can fetch and shown here
-   */
+  const totalCost = useMemo(
+    () =>
+      new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+      }).format(Number(formatEther(averageFee.toString())) * tokenPrice),
+    [averageFee, tokenPrice]
+  );
 
   return (
     <ModalBottomSheetSwitcher
@@ -55,20 +67,26 @@ const PublishDaoModal: React.FC<PublishDaoModalProps> = ({
           <VStack>
             <Label>{t('TransactionModal.estimatedFees')}</Label>
             <p className="text-sm text-ui-500">
-              {`${t('TransactionModal.synced', {time: 30})}`}
+              {t('TransactionModal.maxFee')}
             </p>
           </VStack>
           <VStack>
-            <StrongText>{'0.001ETH'}</StrongText>
-            <p className="text-sm text-right text-ui-500">{'127gwei'}</p>
+            <StrongText>{`${formatEther(
+              averageFee.toString()
+            )} ETH`}</StrongText>
+            <p className="text-sm text-right text-ui-500">{`${formatEther(
+              maxFee.toString()
+            )} ETH`}</p>
           </VStack>
         </GasCostEthContainer>
 
         <GasTotalCostEthContainer>
           <Label>{t('TransactionModal.totalCost')}</Label>
           <VStack>
-            <StrongText>{'0.001ETH'}</StrongText>
-            <p className="text-sm text-right text-ui-500">{'$33'}</p>
+            <StrongText>{`${formatEther(
+              averageFee.toString()
+            )} ETH`}</StrongText>
+            <p className="text-sm text-right text-ui-500">{totalCost}</p>
           </VStack>
         </GasTotalCostEthContainer>
       </GasCostTableContainer>

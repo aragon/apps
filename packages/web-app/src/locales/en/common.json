@@ -297,6 +297,7 @@
     "dismiss": "Dismiss",
     "errorLabel": "Error while confirming transaction",
     "estimatedFees": "Estimated Gas Fees",
+    "maxFee": "Max Fee",
     "publishDao": "Publish Dao",
     "publishDaoButtonLabel": "Publish DAO Now",
     "signDeposit": "Sign Deposit",
