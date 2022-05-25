@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import {ButtonText} from '../button';
 
@@ -22,7 +22,7 @@ export const ListItemHeader: React.FC<ListItemHeaderProps> = ({
   orientation = 'vertical',
   ...props
 }) => {
-  const horizontal = useMemo(() => orientation === 'horizontal', [orientation]);
+  const horizontal = orientation === 'horizontal';
 
   return (
     <Container horizontal={horizontal} data-testid="listItem-header">
