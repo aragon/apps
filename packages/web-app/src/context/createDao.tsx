@@ -10,8 +10,9 @@ import React, {
   ReactNode,
   useCallback,
 } from 'react';
-import {parseUnits} from 'ethers/lib/utils';
 import {constants} from 'ethers';
+import {parseUnits} from 'ethers/lib/utils';
+import {useNavigate} from 'react-router-dom';
 import {useFormContext, useWatch} from 'react-hook-form';
 
 import {useDao} from 'hooks/useCachedDao';
@@ -19,16 +20,16 @@ import PublishDaoModal from 'containers/transactionModals/publishDaoModal';
 import {TransactionState} from 'utils/constants';
 import {getSecondsFromDHM} from 'utils/date';
 import {CreateDaoFormData} from 'pages/createDAO';
-import {useNavigate} from 'react-router-dom';
 import {Landing} from 'utils/paths';
 import {useWallet} from 'hooks/useWallet';
 import {useGlobalModalContext} from './globalModals';
+import {useClient} from 'hooks/useClient';
 
 type DAOCreationSettings = ICreateDaoERC20Voting | ICreateDaoWhitelistVoting;
 
 type CreateDaoContextType = {
   /** Prepares the creation data and awaiting user confirmation to start process */
-  handlePublishDao: () => void;
+  handlePublishDao: () => Promise<void>;
 };
 
 type Props = Record<'children', ReactNode>;
@@ -36,11 +37,12 @@ type Props = Record<'children', ReactNode>;
 const CreateDaoContext = createContext<CreateDaoContextType | null>(null);
 
 const CreateDaoProvider: React.FC<Props> = ({children}) => {
-  const [showModal, setShowModal] = useState(false);
-  const [daoCreationData, setDaoCreationData] = useState<DAOCreationSettings>();
+  const {open} = useGlobalModalContext();
   const navigate = useNavigate();
   const {isOnWrongNetwork} = useWallet();
-  const {open} = useGlobalModalContext();
+  const [showModal, setShowModal] = useState(false);
+
+  const [daoCreationData, setDaoCreationData] = useState<DAOCreationSettings>();
   const [creationProcessState, setCreationProcessState] =
     useState<TransactionState>();
 
@@ -49,11 +51,12 @@ const CreateDaoProvider: React.FC<Props> = ({children}) => {
   const [membership] = useWatch({name: ['membership'], control});
 
   const {createErc20, createWhitelist} = useDao();
+  const {erc20, whitelist} = useClient();
 
   /*************************************************
    *                   Handlers                    *
    *************************************************/
-  const handlePublishDao = () => {
+  const handlePublishDao = async () => {
     switch (membership) {
       case 'token':
         setDaoCreationData(getERC20VotingDaoSettings());
@@ -181,6 +184,15 @@ const CreateDaoProvider: React.FC<Props> = ({children}) => {
       };
     }, [getDaoConfig, getValues, getVotingConfig]);
 
+  // estimate creation fees
+  const estimateCreationFees = useCallback(async () => {
+    return membership === 'token'
+      ? erc20?.estimate.create(daoCreationData as ICreateDaoERC20Voting)
+      : whitelist?.estimate.create(
+          daoCreationData as ICreateDaoWhitelistVoting
+        );
+  }, [daoCreationData, erc20?.estimate, membership, whitelist?.estimate]);
+
   // run dao creation transaction
   const createDao = useCallback(async () => {
     setCreationProcessState(TransactionState.LOADING);
@@ -215,6 +227,7 @@ const CreateDaoProvider: React.FC<Props> = ({children}) => {
         onClose={handleCloseModal}
         callback={handleExecuteCreation}
         closeOnDrag={creationProcessState !== TransactionState.LOADING}
+        estimationFunction={estimateCreationFees}
       />
     </CreateDaoContext.Provider>
   );

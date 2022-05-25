@@ -129,7 +129,11 @@ const CreateDAO: React.FC = () => {
     // required fields not dirty
     // if wallet based dao
     if (membership === 'wallet') {
-      if (errors.whitelistWallets || whitelistWallets?.length === 0) {
+      if (
+        !whitelistWallets ||
+        errors.whitelistWallets ||
+        whitelistWallets?.length === 0
+      ) {
         return false;
       }
       return true;
@@ -159,7 +163,7 @@ const CreateDAO: React.FC = () => {
     errors.tokenName,
     errors.tokenSymbol,
     errors.tokenAddress,
-    whitelistWallets?.length,
+    whitelistWallets,
     isCustomToken,
     dirtyFields.tokenName,
     dirtyFields.wallets,
