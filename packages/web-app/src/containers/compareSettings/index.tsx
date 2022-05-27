@@ -5,12 +5,18 @@ import {
   ListItemLink,
   Option,
 } from '@aragon/ui-components';
+import {generatePath, useNavigate, useParams} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
 import {DescriptionListContainer, Dl, Dt, Dd} from 'components/descriptionList';
+import {EditSettings} from 'utils/paths';
+import {useNetwork} from 'context/network';
 
 const CompareSettings: React.FC = () => {
   const [selectedButton, setSelectedButton] = useState('new');
   const {t} = useTranslation();
+  const navigate = useNavigate();
+  const {dao} = useParams();
+  const {network} = useNetwork();
 
   return (
     <div className="space-y-2">
@@ -25,7 +31,11 @@ const CompareSettings: React.FC = () => {
         </ButtonGroup>
       </div>
 
-      <DescriptionListContainer title={t('labels.review.daoMetadata')}>
+      <DescriptionListContainer
+        title={t('labels.review.daoMetadata')}
+        onEditClick={() => navigate(generatePath(EditSettings, {network, dao}))}
+        editLabel={t('settings.edit')}
+      >
         <Dl>
           <Dt>{t('labels.logo')}</Dt>
           <Dd>
@@ -54,7 +64,11 @@ const CompareSettings: React.FC = () => {
         </Dl>
       </DescriptionListContainer>
 
-      <DescriptionListContainer title={t('labels.review.governance')}>
+      <DescriptionListContainer
+        title={t('labels.review.governance')}
+        onEditClick={() => navigate(generatePath(EditSettings, {network, dao}))}
+        editLabel={t('settings.edit')}
+      >
         <Dl>
           <Dt>{t('labels.minimumApproval')}</Dt>
           <Dd>15% (150 TKN)</Dd>

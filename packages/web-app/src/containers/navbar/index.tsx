@@ -11,7 +11,7 @@ import {
   NewProposal,
   NewWithDraw,
   ProposeNewSettings,
-  Settings,
+  EditSettings,
 } from 'utils/paths';
 import {i18n} from '../../../i18n.config';
 import MobileNav from './mobile';
@@ -47,7 +47,7 @@ const processes: StringIndexed = {
   },
   [ProposeNewSettings]: {
     processLabel: i18n.t('settings.proposeSettings'),
-    returnURL: Settings,
+    returnURL: EditSettings,
   },
 };
 

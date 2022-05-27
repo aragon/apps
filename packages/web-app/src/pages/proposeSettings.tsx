@@ -9,7 +9,7 @@ import {FullScreenStepper, Step} from 'components/fullScreenStepper';
 import DefineProposal from 'containers/defineProposal';
 import SetupVotingForm from 'containers/setupVotingForm';
 import {useNetwork} from 'context/network';
-import {Settings} from 'utils/paths';
+import {EditSettings} from 'utils/paths';
 import CompareSettings from 'containers/compareSettings';
 
 const ProposeSettings: React.FC = () => {
@@ -27,7 +27,7 @@ const ProposeSettings: React.FC = () => {
         <FullScreenStepper
           wizardProcessName={t('newProposal.title')}
           navLabel={t('navLinks.settings')}
-          returnPath={generatePath(Settings, {network, dao})}
+          returnPath={generatePath(EditSettings, {network, dao})}
         >
           <Step
             wizardTitle={t('settings.proposeSettings')}
