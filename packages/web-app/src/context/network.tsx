@@ -39,7 +39,7 @@ type NetworkProviderProps = {
  *
  */
 export function NetworkProvider({children}: NetworkProviderProps) {
-  const urlNetworkMatch = useMatch(':network/*');
+  const urlNetworkMatch = useMatch('daos/:network/*');
   const urlNotFoundMatch = useMatch('not-found');
   const urlCreateMatch = useMatch('create');
   const navigate = useNavigate();

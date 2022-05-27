@@ -61,13 +61,13 @@ function App() {
           <Route element={<DaoWrapper />}>
             <Route path="/create" element={<CreateDAO />} />
           </Route>
-          <Route path=":network/:dao">
+          <Route path="/daos/:network/:dao">
             <Route element={<DaoWrapper />}>
               <Route path="dashboard" element={<DashboardPage />} />
               <Route path="finance" element={<FinancePage />} />
               <Route path="finance/new-deposit" element={<NewDepositPage />} />
               <Route
-                path="finance/new-withdraw"
+                path="finance/new-withdrawal"
                 element={<NewWithdrawPage />}
               />
               <Route path="finance/tokens" element={<TokensPage />} />

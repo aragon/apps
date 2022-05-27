@@ -1,7 +1,7 @@
 import React, {useEffect, useMemo} from 'react';
 import {withTransaction} from '@elastic/apm-rum-react';
 import {useTranslation} from 'react-i18next';
-import {FormProvider, useForm, useFormState} from 'react-hook-form';
+import {FormProvider, useForm, useFormState, useWatch} from 'react-hook-form';
 
 import {FullScreenStepper, Step} from 'components/fullScreenStepper';
 import {OverviewDAOFooter, OverviewDAOStep} from 'containers/daoOverview';
@@ -13,7 +13,6 @@ import GoLive, {GoLiveHeader, GoLiveFooter} from 'containers/goLive';
 import {WalletField} from '../components/addWallets/row';
 import {Landing} from 'utils/paths';
 import {CreateDaoProvider} from 'context/createDao';
-import {constants} from 'ethers';
 import {CHAIN_METADATA, getSupportedNetworkByChainId} from 'utils/constants';
 import {useNetwork} from 'context/network';
 import {useWallet} from 'hooks/useWallet';
@@ -57,8 +56,10 @@ const defaultValues = {
   tokenAddress: '',
   tokenSymbol: '',
   tokenTotalSupply: 0,
-  links: [{label: '', link: ''}],
-  wallets: [{address: constants.AddressZero, amount: '0'}],
+  links: [{label: '', href: ''}],
+
+  // Uncomment when DAO Treasury minting is supported
+  // wallets: [{address: constants.AddressZero, amount: '0'}],
   membership: 'token',
 };
 
@@ -72,12 +73,15 @@ const CreateDAO: React.FC = () => {
   });
   const {errors, dirtyFields} = useFormState({control: formMethods.control});
   const [whitelistWallets, isCustomToken, tokenTotalSupply, membership] =
-    formMethods.getValues([
-      'whitelistWallets',
-      'isCustomToken',
-      'tokenTotalSupply',
-      'membership',
-    ]);
+    useWatch({
+      control: formMethods.control,
+      name: [
+        'whitelistWallets',
+        'isCustomToken',
+        'tokenTotalSupply',
+        'membership',
+      ],
+    });
 
   // Note: The wallet network determines the expected network when entering
   // the flow so that the process is more convenient for already logged in

@@ -7,15 +7,24 @@ import {PageWrapper} from 'components/wrappers';
 import Logo from 'public/coloredLogo.svg';
 import {Landing} from 'utils/paths';
 
+type NotFoundState = {
+  incorrectPath?: string;
+  incorrectDao?: string;
+};
+
 const NotFound: React.FC = () => {
   const {state} = useLocation();
   const navigate = useNavigate();
 
+  const typedState = state as NotFoundState;
+
   let message = 'The requested page could not be found';
-  if (state?.incorrectPath)
-    message = 'No page could be found for the path: ' + state.incorrectPath;
-  if (state?.incorrectDao)
-    message = 'No DAO could be found for the address: ' + state.incorrectDao;
+  if (typedState?.incorrectPath)
+    message =
+      'No page could be found for the path: ' + typedState.incorrectPath;
+  if (typedState?.incorrectDao)
+    message =
+      'No DAO could be found for the address: ' + typedState.incorrectDao;
 
   return (
     <PageWrapper

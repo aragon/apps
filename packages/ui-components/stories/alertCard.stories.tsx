@@ -13,5 +13,5 @@ export const Default = Template.bind({});
 Default.args = {
   mode: 'info',
   title: 'This is a title',
-  helpText: 'This is a help text'
+  helpText: 'This is a help text',
 };

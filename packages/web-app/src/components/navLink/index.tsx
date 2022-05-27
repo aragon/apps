@@ -38,13 +38,13 @@ const NavLink = ({caller, data, onItemClick}: NavLinkProps) => {
   const {isDesktop} = useScreen();
   const navigate = useNavigate();
   const {network} = useNetwork();
-  const daoMatch = useMatch(':network/:dao/*');
+  const daoMatch = useMatch('daos/:network/:dao/*');
 
   // This logic is used to determine whether this NavLink is active or not.
   // I.e., whether the Navlink is the current page (or a subpage of it). It
   // should no longer be necessary after refactoring, as the NavItem and
   // ListItem can then be wrapped in a component that handles this logic.
-  const basePath = pathname.split('/').slice(0, 4).join('/');
+  const basePath = pathname.split('/').slice(0, 5).join('/');
   const matches = matchRoutes([{path: data.path}], basePath) !== null;
 
   const handleOnClick = () => {

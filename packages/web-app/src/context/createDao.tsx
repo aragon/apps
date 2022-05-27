@@ -10,7 +10,7 @@ import React, {
   ReactNode,
   useCallback,
 } from 'react';
-import {isAddress} from 'ethers/lib/utils';
+import {parseUnits} from 'ethers/lib/utils';
 import {constants} from 'ethers';
 import {useFormContext, useWatch} from 'react-hook-form';
 
@@ -160,18 +160,10 @@ const CreateDaoProvider: React.FC<Props> = ({children}) => {
       },
 
       // mint configuration
-      mintConfig: values.wallets
-        .filter(
-          wallet =>
-            isAddress(wallet.address) &&
-            // Temporarily removing dao treasury; not yet supported
-            // TODO: add DAO treasury once contracts have been refactored
-            wallet.address !== constants.AddressZero
-        )
-        .map(wallet => ({
-          address: wallet.address,
-          balance: BigInt(Number(wallet.amount) * Math.pow(10, 18)),
-        })),
+      mintConfig: values.wallets.map(wallet => ({
+        address: wallet.address,
+        balance: BigInt(parseUnits(wallet.amount, 18).toBigInt()),
+      })),
     };
   }, [getDaoConfig, getValues, getVotingConfig]);
 
