@@ -5,28 +5,28 @@ import {CardDao} from '@aragon/ui-components';
 import NavLinks from 'components/navLinks';
 import BottomSheet from 'components/bottomSheet';
 import {useGlobalModalContext} from 'context/globalModals';
+import {usePrivacyContext} from 'context/privacyContext';
 
-type MobileNavMenuProps = {
-  isOpen: boolean;
-  onClose: () => void;
-};
-
-const MobileNavMenu: React.FC<MobileNavMenuProps> = props => {
-  const {open} = useGlobalModalContext();
+const MobileNavMenu: React.FC = () => {
+  const {open, close, isMobileMenuOpen} = useGlobalModalContext();
+  const {handleWithFunctionalPreferenceMenu} = usePrivacyContext();
 
   return (
-    <BottomSheet isOpen={props.isOpen} onClose={props.onClose}>
+    <BottomSheet isOpen={isMobileMenuOpen} onClose={() => close('mobileMenu')}>
       <div className="tablet:w-50">
         <CardWrapper className="rounded-xl">
           <CardDao
             daoAddress="dao-name.dao.eth"
             daoName="DAO Name"
-            onClick={() => open('selectDao')}
+            onClick={() => {
+              close('mobileMenu');
+              handleWithFunctionalPreferenceMenu(() => open('selectDao'));
+            }}
             src=""
           />
         </CardWrapper>
         <div className="py-3 px-2 space-y-3">
-          <NavLinks onItemClick={props.onClose} />
+          <NavLinks onItemClick={() => close('mobileMenu')} />
         </div>
       </div>
     </BottomSheet>
