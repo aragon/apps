@@ -7,12 +7,13 @@ import {
 } from '@aragon/ui-components';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
-import React, {useState} from 'react';
+import React from 'react';
 
 import useScreen from 'hooks/useScreen';
 import MobileMenu from './mobileMenu';
 import {useWallet} from 'hooks/useWallet';
 import NetworkIndicator from './networkIndicator';
+import {useGlobalModalContext} from 'context/globalModals';
 
 type MobileNavProps = {
   isProcess?: boolean;
@@ -23,7 +24,7 @@ type MobileNavProps = {
 const MobileNav: React.FC<MobileNavProps> = props => {
   const {t} = useTranslation();
   const {isMobile} = useScreen();
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const {open} = useGlobalModalContext();
   const {isConnected, address, ensName, ensAvatarUrl} = useWallet();
 
   if (props.isProcess)
@@ -43,7 +44,7 @@ const MobileNav: React.FC<MobileNavProps> = props => {
                 mode="secondary"
                 size="large"
                 icon={<IconMenu />}
-                onClick={() => setIsOpen(true)}
+                onClick={() => open('mobileMenu')}
               />
             ) : (
               <ButtonText
@@ -51,7 +52,7 @@ const MobileNav: React.FC<MobileNavProps> = props => {
                 mode="secondary"
                 label={t('menu')}
                 iconLeft={<IconMenu />}
-                onClick={() => setIsOpen(true)}
+                onClick={() => open('mobileMenu')}
               />
             )}
           </FlexOne>
@@ -74,7 +75,7 @@ const MobileNav: React.FC<MobileNavProps> = props => {
         </Menu>
         <NetworkIndicator />
       </Container>
-      <MobileMenu isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      <MobileMenu />
     </>
   );
 };
