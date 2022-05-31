@@ -20,16 +20,18 @@ export const Label: React.FC<LabelProps> = ({
   return (
     <VStack data-testid="label">
       <LabelLine>
-        {renderHtml?
-          <Heading dangerouslySetInnerHTML={{__html: label}} />:
+        {renderHtml ? (
+          <Heading dangerouslySetInnerHTML={{__html: label}} />
+        ) : (
           <Heading>{label}</Heading>
-        }
+        )}
         {isOptional && <Badge label={badgeLabel || 'Optional'} />}
       </LabelLine>
-        {renderHtml && helpText?
-          <HelpText dangerouslySetInnerHTML={{__html: helpText}} />:
-          <HelpText>{helpText}</HelpText>
-        }
+      {renderHtml && helpText ? (
+        <HelpText dangerouslySetInnerHTML={{__html: helpText}} />
+      ) : (
+        <HelpText>{helpText}</HelpText>
+      )}
     </VStack>
   );
 };

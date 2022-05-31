@@ -14,15 +14,14 @@ import Row from './row';
 import Header from './header';
 import Footer from './footer';
 import {useWallet} from 'hooks/useWallet';
-import {constants} from 'ethers';
 
 const AddWallets: React.FC = () => {
   const {t} = useTranslation();
   const {address} = useWallet();
 
   const {control, setValue, resetField, trigger} = useFormContext();
-  const watchFieldArray = useWatch({name: 'wallets', control: control});
-  const {fields, append, remove, insert} = useFieldArray({
+  const wallets = useWatch({name: 'wallets', control: control});
+  const {fields, append, remove} = useFieldArray({
     name: 'wallets',
     control,
   });
@@ -30,19 +29,17 @@ const AddWallets: React.FC = () => {
   const controlledFields = fields.map((field, index) => {
     return {
       ...field,
-      ...(watchFieldArray && {...watchFieldArray[index]}),
+      ...(wallets && {...wallets[index]}),
     };
   });
 
   useEffect(() => {
-    if (
-      address &&
-      watchFieldArray[1]?.address !== address &&
-      controlledFields[1]?.address !== address
-    ) {
-      insert(1, {address: address, amount: '0'});
+    if (address && !wallets) {
+      // uncomment when minting to treasury is ready
+      // insert(1, {address: address, amount: '0'});
+      append({address, amount: '0'});
     }
-  }, [address, controlledFields, insert, watchFieldArray]);
+  }, [address, append, wallets]);
 
   const resetDistribution = () => {
     controlledFields.forEach((_, index) => {
@@ -68,7 +65,9 @@ const AddWallets: React.FC = () => {
             <Row
               key={field.id}
               index={index}
-              {...(index !== 0 ? {onDelete: () => remove(index)} : {})}
+              // Replace when minting to treasury is supported
+              // {...(index !== 0 ? {onDelete: () => remove(index)} : {})}
+              onDelete={() => remove(index)}
             />
           );
         })}
@@ -109,7 +108,6 @@ const AddWallets: React.FC = () => {
               ),
               callback: () => {
                 remove();
-                append([{address: constants.AddressZero, amount: '0'}]);
                 resetField('tokenTotalSupply');
               },
             },

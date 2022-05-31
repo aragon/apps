@@ -17,6 +17,8 @@ import DefineMetadata from 'containers/defineMetadata';
 import ConfigureCommunity from 'containers/configureCommunity';
 import {useMappedBreadcrumbs} from 'hooks/useMappedBreadcrumbs';
 import useScreen from 'hooks/useScreen';
+import {useDaoParam} from 'hooks/useDaoParam';
+import {Loading} from 'components/temporary';
 
 const defaultValues = {
   links: [{label: '', href: ''}],
@@ -32,11 +34,16 @@ const EditSettings: React.FC = () => {
   const {t} = useTranslation();
   const navigate = useNavigate();
   const {isMobile} = useScreen();
+  const {loading} = useDaoParam();
   const {breadcrumbs, icon} = useMappedBreadcrumbs();
   const formMethods = useForm({
     mode: 'onChange',
     defaultValues,
   });
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <FormProvider {...formMethods}>

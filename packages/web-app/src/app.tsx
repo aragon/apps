@@ -19,6 +19,7 @@ import CreateDAO from 'pages/createDAO';
 import {GridLayout} from 'components/layout';
 import ExploreNav from 'containers/navbar/exploreNav';
 import Footer from 'containers/exploreFooter';
+import NetworkErrorMenu from 'containers/networkErrorMenu';
 
 const ExplorePage = lazy(() => import('pages/explore'));
 const NotFoundPage = lazy(() => import('pages/notFound'));
@@ -59,13 +60,13 @@ function App() {
           <Route element={<DaoWrapper />}>
             <Route path="/create" element={<CreateDAO />} />
           </Route>
-          <Route path=":network/:dao">
+          <Route path="/daos/:network/:dao">
             <Route element={<DaoWrapper />}>
               <Route path="dashboard" element={<DashboardPage />} />
               <Route path="finance" element={<FinancePage />} />
               <Route path="finance/new-deposit" element={<NewDepositPage />} />
               <Route
-                path="finance/new-withdraw"
+                path="finance/new-withdrawal"
                 element={<NewWithdrawPage />}
               />
               <Route path="finance/tokens" element={<TokensPage />} />
@@ -82,6 +83,8 @@ function App() {
               <Route path="community" element={<CommunityPage />} />
               <Route path="settings" element={<SettingsPage />} />
               <Route path="settings/edit" element={<EditSettingsPage />} />
+              {/* Redirects the user to the dashboard page by default if no dao-specific page is specified. */}
+              <Route index element={<Navigate to={'dashboard'} replace />} />
             </Route>
           </Route>
           <Route path={NotFound} element={<NotFoundPage />} />
@@ -90,6 +93,7 @@ function App() {
       </Suspense>
       <DaoSelectMenu />
       <WalletMenu />
+      <NetworkErrorMenu />
     </>
   );
 }

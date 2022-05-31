@@ -13,7 +13,7 @@ import {NetworkProvider} from 'context/network';
 import {UseSignerProvider} from 'use-signer';
 import {IProviderOptions} from 'web3modal';
 import WalletConnectProvider from '@walletconnect/web3-provider/dist/umd/index.min.js';
-import {client} from 'context/apolloClient';
+import {client, rinkebyClient} from 'context/apolloClient';
 import 'tailwindcss/tailwind.css';
 import {UseCacheProvider} from 'hooks/useCache';
 import {UseClientProvider} from 'hooks/useClient';
@@ -44,7 +44,9 @@ ReactDOM.render(
                         <GlobalModalsProvider>
                           {/* By default, rinkeby client is chosen, each useQuery needs to pass the network client it needs as argument
                       For REST queries using apollo, there's no need to pass a different client to useQuery  */}
-                          <ApolloProvider client={client['rinkeby']}>
+                          <ApolloProvider
+                            client={client['rinkeby'] || rinkebyClient} //TODO remove fallback when all clients are defined
+                          >
                             <App />
                           </ApolloProvider>
                         </GlobalModalsProvider>

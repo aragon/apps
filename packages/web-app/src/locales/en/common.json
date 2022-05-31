@@ -15,7 +15,7 @@
     "learn": "Learn",
     "build": "Build",
     "help": "Help",
-    "terms": "Terms of Service",
+    "terms": "Terms of Servitce",
     "privacy": "Privacy",
     "settings": "Settings"
   },
@@ -27,6 +27,7 @@
     "connectWallet": "Login"
   },
   "labels": {
+    "approvalThreshold": "Approval Threshold",
     "viewTransactions": "View Transactions",
     "logOut": "Log Out",
     "seeAll": "See all",
@@ -75,10 +76,10 @@
     "label": "Label",
     "logo": "Logo",
     "optional": "Optional",
-    "minimumApproval": "Minimum approval",
-    "minimumParticipation": "Minimum participation",
-    "minimumSupport": "Minimum support",
-    "minimumDuration": "Minimum duration",
+    "minimumApproval": "Minimum Approval",
+    "minimumParticipation": "Minimum Participation",
+    "minimumSupport": "Minimum Support",
+    "minimumDuration": "Minimum Duration",
     "support": "Support",
     "duration": "Duration",
     "membership": "Who is eligible to participate in your DAO?",
@@ -198,6 +199,7 @@
     "imageTooLarge": "Please provide an image of max {{maxFileSize}}MB in size",
     "invalidAddress": "Invalid address",
     "lteZero": "The amount must be greater than zero",
+    "ltAmount": "The amount must be less than {{amount}}",
     "notERC20Token": "Token address is not ERC20 compliant",
     "noTokenSelected": "A token must be selected",
     "duplicateAddress": "Address must not be reused",
@@ -233,7 +235,12 @@
   },
   "alert": {
     "durationAlert": "We recommend a minimum duration of 1 day if it does not have to be a quick financial decision.",
-    "wrongWalletNetwork": "Wrong Wallet Network"
+    "wrongWalletNetwork": "Wrong Wallet Network",
+    "wrongNetwork": {
+      "title": "Wrong Network",
+      "description": "The action can’t be executed because you are in the wrong network. Change to the <1>{{network}}</1> on your wallet and try again.",
+      "buttonLabel": "Switch to {{network}}"
+    }
   },
   "warnings": {
     "amountGtDaoToken": "Withdraw amount is greater than the current token balance"
@@ -286,7 +293,7 @@
     "publishDao": "Publish Dao",
     "publishDaoButtonLabel": "Publish DAO Now",
     "signDeposit": "Sign Deposit",
-    "successLabel": "Transaction successful signed",
+    "successLabel": "Transaction successfully executed",
     "synced": "Synced {{time}} sec ago",
     "totalCost": "Total Cost",
     "tryAgain": "Try Again"
@@ -405,12 +412,12 @@
     },
     "step4": {
       "label": "Step 4",
-      "title": "Configure Governance",
-      "description": "How are decisions made in the DAO? How long may a proposal be open for voting?",
-      "minimumApprovalSubtitle": "Minimum Approval is the percentage of the total token supply that is required to vote “Yes” on a proposal before it can be approved.",
+      "title": "Rules for Deciding",
+      "description": "These are the rules that set how voting works in your DAO. How many people have to participate? What percent counts as winning? How long may a proposal be open for voting? Learn more about best practices on governance.",
+      "minimumApprovalSubtitle": "Support is the percentage of tokens or addresses that are required to vote “Yes” for a proposal to be approved, calculated based on total tokens or addresses that voted.",
       "minimumParticipationSubtitle": "Participation is the percentage of the token supply or addresses in the authorized list that vote on a proposal (either yes or no). The minimum is how many have to vote for the result to be valid.",
       "supportSubtitle": "Support is the relative percentage of tokens or wallets that are required to vote “Yes” for a proposal to be approved.",
-      "durationSubtitle": "Vote Duration is the length of time that the vote will be open for participation. The duration applies to each proposal in the DAO. However, the proposers can extend the time if necessary, but not shorten it!",
+      "durationSubtitle": "Duration is the length of time that a proposal will be open for participation. The duration applies to each proposal in the DAO. Proposal creators can extend the time if necessary, but not shorten it!",
       "days": "Days",
       "hours": "Hours",
       "minutes": "Minutes",

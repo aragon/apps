@@ -9,14 +9,13 @@ import TokenMenu from 'containers/tokenMenu';
 import {useWallet} from 'hooks/useWallet';
 import DepositForm from 'containers/depositForm';
 import {formatUnits} from 'utils/library';
-import ReviewDeposit from 'containers/reviewDeposit';
+import ReviewDeposit, {CustomFooter} from 'containers/reviewDeposit';
 import {BaseTokenInfo} from 'utils/types';
 import {TokenFormData} from './newWithdraw';
 import {useWalletTokens} from 'hooks/useWalletTokens';
 import {FullScreenStepper, Step} from 'components/fullScreenStepper';
 import {generatePath} from 'react-router-dom';
 import {useNetwork} from 'context/network';
-import {useGlobalModalContext} from 'context/globalModals';
 import {useDaoParam} from 'hooks/useDaoParam';
 import {Loading} from 'components/temporary';
 import {DepositProvider, useDepositDao} from 'context/deposit';
@@ -49,7 +48,6 @@ const NewDeposit: React.FC = () => {
 
   const {address} = useWallet();
   const {data: walletTokens} = useWalletTokens();
-  const {handleOpenModal} = useDepositDao();
 
   const formMethods = useForm<DepositFormData>({
     defaultValues,
@@ -124,7 +122,7 @@ const NewDeposit: React.FC = () => {
             wizardTitle={t('newDeposit.reviewTransfer')}
             wizardDescription={t('newDeposit.reviewTransferSubtitle')}
             nextButtonLabel={t('labels.submitDeposit')}
-            onNextButtonClicked={handleOpenModal}
+            customFooter={<CustomFooter />}
           >
             <ReviewDeposit />
           </Step>

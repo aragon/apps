@@ -1,7 +1,7 @@
-import React, {useMemo} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {withTransaction} from '@elastic/apm-rum-react';
 import {useTranslation} from 'react-i18next';
-import {FormProvider, useForm, useFormState} from 'react-hook-form';
+import {FormProvider, useForm, useFormState, useWatch} from 'react-hook-form';
 
 import {FullScreenStepper, Step} from 'components/fullScreenStepper';
 import {OverviewDAOFooter, OverviewDAOStep} from 'containers/daoOverview';
@@ -13,7 +13,9 @@ import GoLive, {GoLiveHeader, GoLiveFooter} from 'containers/goLive';
 import {WalletField} from '../components/addWallets/row';
 import {Landing} from 'utils/paths';
 import {CreateDaoProvider} from 'context/createDao';
-import {constants} from 'ethers';
+import {CHAIN_METADATA, getSupportedNetworkByChainId} from 'utils/constants';
+import {useNetwork} from 'context/network';
+import {useWallet} from 'hooks/useWallet';
 
 export type WhitelistWallet = {
   id: string;
@@ -21,6 +23,11 @@ export type WhitelistWallet = {
 };
 
 export type CreateDaoFormData = {
+  blockchain: {
+    id: number;
+    label: string;
+    network: string;
+  };
   daoLogo: string;
   daoName: string;
   daoSummary: string;
@@ -50,25 +57,56 @@ const defaultValues = {
   tokenSymbol: '',
   tokenTotalSupply: 0,
   links: [{label: '', href: ''}],
-  wallets: [{address: constants.AddressZero, amount: '0'}],
+
+  // Uncomment when DAO Treasury minting is supported
+  // wallets: [{address: constants.AddressZero, amount: '0'}],
   membership: 'token',
-  whitelistWallets: [],
 };
 
 const CreateDAO: React.FC = () => {
   const {t} = useTranslation();
+  const {chainId} = useWallet();
+  const {setNetwork} = useNetwork();
   const formMethods = useForm<CreateDaoFormData>({
     mode: 'onChange',
     defaultValues,
   });
   const {errors, dirtyFields} = useFormState({control: formMethods.control});
   const [whitelistWallets, isCustomToken, tokenTotalSupply, membership] =
-    formMethods.getValues([
-      'whitelistWallets',
-      'isCustomToken',
-      'tokenTotalSupply',
-      'membership',
-    ]);
+    useWatch({
+      control: formMethods.control,
+      name: [
+        'whitelistWallets',
+        'isCustomToken',
+        'tokenTotalSupply',
+        'membership',
+      ],
+    });
+
+  // Note: The wallet network determines the expected network when entering
+  // the flow so that the process is more convenient for already logged in
+  // users and so that the process doesn't start with a warning. Afterwards,
+  // the select blockchain form dictates the expected network
+  useEffect(() => {
+    // get the default expected network using the connected wallet, use ethereum
+    // mainnet in case user accesses the flow without wallet connection. Ideally,
+    // this should not happen
+    const defaultNetwork = getSupportedNetworkByChainId(chainId) || 'ethereum';
+
+    // update the network context
+    setNetwork(defaultNetwork);
+
+    // set the default value in the form
+    formMethods.setValue('blockchain', {
+      id: CHAIN_METADATA[defaultNetwork].id,
+      label: CHAIN_METADATA[defaultNetwork].name,
+      network: CHAIN_METADATA[defaultNetwork].testnet ? 'test' : 'main',
+    });
+
+    // intentionally disabling this next line so that changing the
+    // wallet network doesn't cause effect to run
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   /*************************************************
    *             Step Validation States            *
@@ -91,7 +129,7 @@ const CreateDAO: React.FC = () => {
     // required fields not dirty
     // if wallet based dao
     if (membership === 'wallet') {
-      if (errors.whitelistWallets || whitelistWallets.length === 0) {
+      if (errors.whitelistWallets || whitelistWallets?.length === 0) {
         return false;
       }
       return true;
@@ -121,7 +159,7 @@ const CreateDAO: React.FC = () => {
     errors.tokenName,
     errors.tokenSymbol,
     errors.tokenAddress,
-    whitelistWallets.length,
+    whitelistWallets?.length,
     isCustomToken,
     dirtyFields.tokenName,
     dirtyFields.wallets,

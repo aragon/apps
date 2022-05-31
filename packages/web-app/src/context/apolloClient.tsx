@@ -1,7 +1,13 @@
-import {ApolloClient, HttpLink, InMemoryCache, makeVar} from '@apollo/client';
+import {
+  ApolloClient,
+  HttpLink,
+  InMemoryCache,
+  makeVar,
+  NormalizedCacheObject,
+} from '@apollo/client';
 import {RestLink} from 'apollo-link-rest';
 import {CachePersistor, LocalStorageWrapper} from 'apollo3-cache-persist';
-import {BASE_URL, SUBGRAPH_API_URL} from 'utils/constants';
+import {BASE_URL, SUBGRAPH_API_URL, SupportedNetworks} from 'utils/constants';
 import {PRIVACY_KEY} from './privacyContext';
 
 const restLink = new RestLink({
@@ -69,7 +75,7 @@ if (value && JSON.parse(value).functional) {
   restoreApolloCache();
 }
 
-const rinkebyClient = new ApolloClient({
+export const rinkebyClient = new ApolloClient({
   cache,
   link: restLink.concat(new HttpLink({uri: SUBGRAPH_API_URL['rinkeby']})),
 });
@@ -84,13 +90,17 @@ const arbitrumTestClient = new ApolloClient({
   link: restLink.concat(new HttpLink({uri: SUBGRAPH_API_URL['arbitrum-test']})),
 });
 
-const client = {
-  main: undefined,
+// TODO: remove undefined when all clients are defined
+const client: Record<
+  SupportedNetworks,
+  ApolloClient<NormalizedCacheObject> | undefined
+> = {
+  ethereum: undefined,
   rinkeby: rinkebyClient,
   polygon: undefined,
   mumbai: mumbaiClient,
   arbitrum: undefined,
-  arbitrumTest: arbitrumTestClient,
+  'arbitrum-test': arbitrumTestClient,
 };
 
 type favoriteDAO = {

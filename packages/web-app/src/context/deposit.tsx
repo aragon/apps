@@ -43,7 +43,7 @@ const DepositProvider = ({children}: {children: ReactNode}) => {
     // of DAO, so the type of DAO is needed, once the new
     // contrats are released there will only be one client
     // and this parameter should be removed
-    deposit(depositData, 'token-based')
+    deposit(depositData)
       .then(() => {
         setDepositState(TransactionState.SUCCESS);
       })

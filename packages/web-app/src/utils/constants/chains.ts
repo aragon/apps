@@ -25,6 +25,21 @@ export function isSupportedNetwork(
   return SUPPORTED_NETWORKS.some(n => n === network);
 }
 
+/**
+ * Get the network name with given chain id
+ * @param chainId Chain id
+ * @returns the name of the supported network or undefined if network is unsupported
+ */
+export function getSupportedNetworkByChainId(
+  chainId: number
+): SupportedNetworks | undefined {
+  if (isSupportedChainId(chainId)) {
+    return Object.entries(CHAIN_METADATA).find(
+      entry => entry[1].id === chainId
+    )?.[0] as SupportedNetworks;
+  }
+}
+
 export type NetworkDomain = 'L1 Blockchain' | 'L2 Blockchain';
 
 /* CHAIN DATA =============================================================== */
@@ -36,6 +51,12 @@ export type ChainData = {
   testnet: boolean;
   explorer: string;
   logo: string;
+  rpc: string[];
+  nativeCurrency: {
+    name: string;
+    symbol: string;
+    decimals: number;
+  };
 };
 
 export type ChainList = Record<SupportedNetworks, ChainData>;
@@ -47,6 +68,12 @@ export const CHAIN_METADATA: ChainList = {
     logo: 'https://bridge.arbitrum.io/logo.png',
     explorer: 'https://arbiscan.io',
     testnet: false,
+    rpc: ['https://arb1.arbitrum.io/rpc', 'wss://arb1.arbitrum.io/ws'],
+    nativeCurrency: {
+      name: 'Ether',
+      symbol: 'ETH',
+      decimals: 18,
+    },
   },
   ethereum: {
     id: 1,
@@ -55,6 +82,12 @@ export const CHAIN_METADATA: ChainList = {
     logo: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png?1595348880',
     explorer: 'https://etherscan.io/',
     testnet: false,
+    rpc: ['https://api.mycryptoapi.com/eth', 'https://cloudflare-eth.com'],
+    nativeCurrency: {
+      name: 'Ether',
+      symbol: 'ETH',
+      decimals: 18,
+    },
   },
   polygon: {
     id: 137,
@@ -63,6 +96,12 @@ export const CHAIN_METADATA: ChainList = {
     logo: 'https://assets.coingecko.com/coins/images/4713/large/matic-token-icon.png?1624446912',
     explorer: 'https://polygonscan.com',
     testnet: false,
+    rpc: ['https://polygon-rpc.com/', 'https://rpc-mainnet.matic.network'],
+    nativeCurrency: {
+      name: 'MATIC',
+      symbol: 'MATIC',
+      decimals: 18,
+    },
   },
   'arbitrum-test': {
     id: 421611,
@@ -71,6 +110,12 @@ export const CHAIN_METADATA: ChainList = {
     logo: 'https://bridge.arbitrum.io/logo.png',
     explorer: 'https://testnet.arbiscan.io/',
     testnet: true,
+    rpc: ['https://rinkeby.arbitrum.io/rpc', 'wss://rinkeby.arbitrum.io/ws'],
+    nativeCurrency: {
+      name: 'Ether',
+      symbol: 'ETH',
+      decimals: 18,
+    },
   },
   rinkeby: {
     id: 4,
@@ -79,6 +124,15 @@ export const CHAIN_METADATA: ChainList = {
     logo: 'https://assets.coingecko.com/coins/images/279/large/ethereum.png?1595348880',
     explorer: 'https://rinkeby.etherscan.io/',
     testnet: true,
+    rpc: [
+      'https://rinkeby.infura.io/v3/${INFURA_API_KEY}',
+      'wss://rinkeby.infura.io/ws/v3/${INFURA_API_KEY}',
+    ],
+    nativeCurrency: {
+      name: 'Rinkeby Ether',
+      symbol: 'RIN',
+      decimals: 18,
+    },
   },
   mumbai: {
     id: 80001,
@@ -87,5 +141,15 @@ export const CHAIN_METADATA: ChainList = {
     logo: 'https://assets.coingecko.com/coins/images/4713/large/matic-token-icon.png?1624446912',
     explorer: 'https://mumbai.polygonscan.com/',
     testnet: true,
+    rpc: [
+      'https://matic-mumbai.chainstacklabs.com',
+      'https://rpc-mumbai.maticvigil.com',
+      'https://matic-testnet-archive-rpc.bwarelabs.com',
+    ],
+    nativeCurrency: {
+      name: 'MATIC',
+      symbol: 'MATIC',
+      decimals: 18,
+    },
   },
 };

@@ -34,14 +34,14 @@ const ConfigureCommunity: React.FC = () => {
         ((100 *
           Math.ceil(
             ((minimumParticipation || defaultMinimumParticipation) *
-              whitelistWallets.length) /
+              whitelistWallets?.length) /
               100
           )) /
-          whitelistWallets.length) *
+          whitelistWallets?.length) *
           100
       ) / 100
     );
-  }, [minimumParticipation, whitelistWallets.length]);
+  }, [minimumParticipation, whitelistWallets?.length]);
 
   return (
     <>
@@ -49,7 +49,7 @@ const ConfigureCommunity: React.FC = () => {
       {membership === 'token' && (
         <FormItem>
           <Label
-            label={t('labels.minimumApproval')}
+            label={t('labels.minimumParticipation')}
             helpText={t('createDAO.step4.minimumApprovalSubtitle')}
           />
           <Controller
@@ -126,7 +126,7 @@ const ConfigureCommunity: React.FC = () => {
                       {
                         percentage: minimumParticipationPercent,
                         walletCount: Math.ceil(
-                          (value * whitelistWallets.length) / 100
+                          (value * whitelistWallets?.length) / 100
                         ),
                       }
                     )}
@@ -145,8 +145,8 @@ const ConfigureCommunity: React.FC = () => {
       {/* Support */}
       <FormItem>
         <Label
-          label={t('labels.support')}
-          helpText={t('createDAO.step4.supportSubtitle')}
+          label={t('labels.approvalThreshold')}
+          helpText={t('createDAO.step4.minimumApprovalSubtitle')}
         />
 
         <Controller
@@ -182,7 +182,7 @@ const ConfigureCommunity: React.FC = () => {
       {/* Duration */}
       <FormItem>
         <Label
-          label={t('labels.duration')}
+          label={t('labels.minimumDuration')}
           helpText={t('createDAO.step4.durationSubtitle')}
         />
         <DurationContainer>
