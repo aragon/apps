@@ -1,5 +1,5 @@
 import {useFinance} from 'hooks/useFinance';
-import React, {createContext, ReactNode, useState} from 'react';
+import React, {createContext, ReactNode, useContext, useState} from 'react';
 import DepositModal from 'containers/transactionModals/DepositModal';
 import {IDeposit} from '@aragon/sdk-client';
 import {useFormContext} from 'react-hook-form';
@@ -10,12 +10,12 @@ import {generatePath, useMatch, useNavigate} from 'react-router-dom';
 import {useNetwork} from './network';
 
 interface IDepositContextType {
-  handleSignDeposit: () => void;
+  handleOpenModal: () => void;
 }
 
 const DepositContext = createContext<IDepositContextType | null>(null);
 
-export const DepositProvider = ({children}: {children: ReactNode}) => {
+const DepositProvider = ({children}: {children: ReactNode}) => {
   const {deposit} = useFinance();
   const {getValues} = useFormContext<DepositFormData>();
   const [depositState, setDepositState] = useState<TransactionState>();
@@ -66,8 +66,12 @@ export const DepositProvider = ({children}: {children: ReactNode}) => {
     }
   };
 
+  const handleOpenModal = () => {
+    setShowModal(true);
+  };
+
   return (
-    <DepositContext.Provider value={{handleSignDeposit}}>
+    <DepositContext.Provider value={{handleOpenModal}}>
       {children}
       <DepositModal
         callback={handleSignDeposit}
@@ -79,3 +83,9 @@ export const DepositProvider = ({children}: {children: ReactNode}) => {
     </DepositContext.Provider>
   );
 };
+
+function useDepositDao(): IDepositContextType {
+  return useContext(DepositContext) as IDepositContextType;
+}
+
+export {useDepositDao, DepositProvider};

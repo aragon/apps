@@ -19,7 +19,7 @@ import {useNetwork} from 'context/network';
 import {useGlobalModalContext} from 'context/globalModals';
 import {useDaoParam} from 'hooks/useDaoParam';
 import {Loading} from 'components/temporary';
-import {DepositProvider} from 'context/deposit';
+import {DepositProvider, useDepositDao} from 'context/deposit';
 
 export type DepositFormData = TokenFormData & {
   // Deposit data
@@ -49,7 +49,8 @@ const NewDeposit: React.FC = () => {
 
   const {address} = useWallet();
   const {data: walletTokens} = useWalletTokens();
-  const {open} = useGlobalModalContext();
+  const {handleOpenModal} = useDepositDao();
+
   const formMethods = useForm<DepositFormData>({
     defaultValues,
     mode: 'onChange',
@@ -123,7 +124,7 @@ const NewDeposit: React.FC = () => {
             wizardTitle={t('newDeposit.reviewTransfer')}
             wizardDescription={t('newDeposit.reviewTransferSubtitle')}
             nextButtonLabel={t('labels.submitDeposit')}
-            onNextButtonClicked={() => open('deposit')}
+            onNextButtonClicked={handleOpenModal}
           >
             <ReviewDeposit />
           </Step>

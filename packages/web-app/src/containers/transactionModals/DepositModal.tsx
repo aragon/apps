@@ -10,7 +10,6 @@ import {useStepper} from 'hooks/useStepper';
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
-import {useGlobalModalContext} from 'context/globalModals';
 import {TransactionState} from 'utils/constants/misc';
 
 type TransactionModalProps = {
@@ -35,7 +34,6 @@ const DepositModal: React.FC<TransactionModalProps> = ({
   onClose,
   closeOnDrag,
 }) => {
-  const {isDepositOpen, close} = useGlobalModalContext();
   const {currentStep, next} = useStepper(2);
   const {t} = useTranslation();
 
@@ -64,8 +62,6 @@ const DepositModal: React.FC<TransactionModalProps> = ({
   return (
     <ModalBottomSheetSwitcher
       {...{isOpen, onClose, closeOnDrag}}
-      isOpen={isDepositOpen}
-      onClose={() => close('deposit')}
       title={t('TransactionModal.signDeposit')}
     >
       <GasCostTableContainer>
