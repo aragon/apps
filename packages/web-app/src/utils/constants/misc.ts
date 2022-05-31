@@ -94,6 +94,4 @@ export const enum TransferTypes {
 
 // largest decimal that can be represented in 224 bits
 // before adding the 18 decimals
-export const MAX_TOKEN_AMOUNT = BigNumber.from(
-  '26959946667150639794667015087019630673637144422540'
-);
+export const MAX_TOKEN_AMOUNT = BigNumber.from(2.69599466671506 * 10 ** 49);
