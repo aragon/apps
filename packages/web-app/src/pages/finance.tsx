@@ -12,7 +12,6 @@ import {Loading} from 'components/temporary/loading';
 import TokenList from 'components/tokenList';
 import {sortTokens} from 'utils/tokens';
 import TransferList from 'components/transferList';
-import TransferMenu from 'containers/transferMenu';
 import {useDaoVault} from 'hooks/useDaoVault';
 import {useDaoParam} from 'hooks/useDaoParam';
 import {TemporarySection} from 'components/temporary';
@@ -76,7 +75,6 @@ const Finance: React.FC = () => {
           )}
         </TemporarySection>
       </PageWrapper>
-      <TransferMenu />
     </>
   );
 };
