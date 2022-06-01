@@ -5,13 +5,15 @@ import {
   ButtonWallet,
   IconMenu,
 } from '@aragon/ui-components';
+import React from 'react';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
-import React from 'react';
+import {useReactiveVar} from '@apollo/client';
 
 import useScreen from 'hooks/useScreen';
 import MobileMenu from './mobileMenu';
 import {useWallet} from 'hooks/useWallet';
+import {selectedDAO} from 'context/apolloClient';
 import NetworkIndicator from './networkIndicator';
 import {useGlobalModalContext} from 'context/globalModals';
 
@@ -25,7 +27,11 @@ const MobileNav: React.FC<MobileNavProps> = props => {
   const {t} = useTranslation();
   const {isMobile} = useScreen();
   const {open} = useGlobalModalContext();
+  const selectedDao = useReactiveVar(selectedDAO);
   const {isConnected, address, ensName, ensAvatarUrl} = useWallet();
+
+  // TEMPORARY
+  const daoName = selectedDao.daoName || 'DAO Name';
 
   if (props.isProcess)
     return (
@@ -58,8 +64,8 @@ const MobileNav: React.FC<MobileNavProps> = props => {
           </FlexOne>
           <FlexOne className="justify-center">
             <DaoContainer>
-              <AvatarDao daoName="DAO Name" onClick={props.onDaoSelect} />
-              <DaoName>DAO Name</DaoName>
+              <AvatarDao daoName={daoName} onClick={props.onDaoSelect} />
+              <DaoName>{daoName}</DaoName>
             </DaoContainer>
           </FlexOne>
           <FlexOne className="justify-end">
@@ -75,7 +81,12 @@ const MobileNav: React.FC<MobileNavProps> = props => {
         </Menu>
         <NetworkIndicator />
       </Container>
-      <MobileMenu />
+      <MobileMenu
+        daoName={daoName}
+        daoAddress={
+          selectedDao.daoAddress || '0x0ee165029b09d91a54687041adbc705f6376c67f'
+        }
+      />
     </>
   );
 };

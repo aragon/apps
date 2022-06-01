@@ -6,8 +6,10 @@ import NavLinks from 'components/navLinks';
 import BottomSheet from 'components/bottomSheet';
 import {useGlobalModalContext} from 'context/globalModals';
 import {usePrivacyContext} from 'context/privacyContext';
+import {Address} from '@aragon/ui-components/dist/utils/addresses';
 
-const MobileNavMenu: React.FC = () => {
+type Props = {daoName: string; daoAddress: Address};
+const MobileNavMenu: React.FC<Props> = ({daoName, daoAddress}) => {
   const {open, close, isMobileMenuOpen} = useGlobalModalContext();
   const {handleWithFunctionalPreferenceMenu} = usePrivacyContext();
 
@@ -16,8 +18,8 @@ const MobileNavMenu: React.FC = () => {
       <div className="tablet:w-50">
         <CardWrapper className="rounded-xl">
           <CardDao
-            daoAddress="dao-name.dao.eth"
-            daoName="DAO Name"
+            daoAddress={daoAddress}
+            daoName={daoName}
             onClick={() => {
               close('mobileMenu');
               handleWithFunctionalPreferenceMenu(() => open('selectDao'));
