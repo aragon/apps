@@ -165,7 +165,7 @@ export const CardProposal: React.FC<CardProposalProps> = ({
 
 const Card = styled.button.attrs({
   className:
-    'w-full bg-white rounded-xl p-2 space-y-3 ' +
+    'w-full bg-white rounded-xl p-2 space-y-3 box-border ' +
     'hover:border hover:border-ui-100 ' +
     'active:border active:border-ui-200 ' +
     'focus:outline-none focus:ring-2 focus:ring-primary-500',
@@ -173,10 +173,6 @@ const Card = styled.button.attrs({
   &:hover {
     box-shadow: 0px 4px 8px rgba(31, 41, 51, 0.04),
       0px 0px 2px rgba(31, 41, 51, 0.06), 0px 0px 1px rgba(31, 41, 51, 0.04);
-  }
-
-  &:active {
-    box-shadow: 0px 0px 0px 2px #003bf5;
   }
 `;
 

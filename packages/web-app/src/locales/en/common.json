@@ -556,5 +556,8 @@
     "edit": "Edit Settings",
     "new": "New Settings",
     "proposeSettingsInfo": "To make changes to the settings of this DAO, a vote must be taken via the community."
+  },
+  "dashboard": {
+    "proposalsTitle": "Proposals created"
   }
 }

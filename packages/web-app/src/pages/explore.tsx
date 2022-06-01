@@ -5,7 +5,7 @@ import {ActionListItem, IconExpand} from '@aragon/ui-components';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 
 import Hero from 'containers/hero';
-import {Finance} from 'utils/paths';
+import {Dashboard} from 'utils/paths';
 import Carousel from 'containers/carousel';
 import {TemporarySection} from 'components/temporary';
 import {DaoExplorer} from 'containers/daoExplorer';
@@ -43,7 +43,7 @@ const Explore: React.FC = () => {
                 background={'white'}
                 onClick={() => {
                   navigate(
-                    generatePath(Finance, {
+                    generatePath(Dashboard, {
                       network: 'rinkeby',
                       dao: dao,
                     })
@@ -58,7 +58,7 @@ const Explore: React.FC = () => {
               background={'white'}
               onClick={() =>
                 navigate(
-                  generatePath(Finance, {network: 'rinkeby', dao: '0x1234'})
+                  generatePath(Dashboard, {network: 'rinkeby', dao: '0x1234'})
                 )
               }
             />

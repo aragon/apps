@@ -7,6 +7,7 @@ import {
 } from '@aragon/ui-components';
 import React from 'react';
 import styled from 'styled-components';
+import {useNavigate} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
 
 import {useReactiveVar} from '@apollo/client';
@@ -17,6 +18,7 @@ import {favoriteDAOs, selectedDAO} from 'context/apolloClient';
 // NOTE: the state setting is temporary until backend integration
 const DaoSelectMenu: React.FC = () => {
   const {t} = useTranslation();
+  const navigate = useNavigate();
   const selectedDao = useReactiveVar(selectedDAO);
   const favoriteDaos = useReactiveVar(favoriteDAOs);
   const {isSelectDaoOpen, close} = useGlobalModalContext();
@@ -61,7 +63,10 @@ const DaoSelectMenu: React.FC = () => {
           label={t('daoSwitcher.subtitle')}
           iconLeft={<IconLinkExternal />}
           className="w-full"
-          onClick={() => close('selectDao')}
+          onClick={() => {
+            navigate('/');
+            close('selectDao');
+          }}
         />
       </ModalContentContainer>
     </ModalBottomSheetSwitcher>
