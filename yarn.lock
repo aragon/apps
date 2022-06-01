@@ -163,10 +163,10 @@
   dependencies:
     "@apollographql/graphql-language-service-types" "^2.0.0"
 
-"@aragon/core-contracts-ethers@^0.2.1-alpha":
-  version "0.2.1-alpha"
-  resolved "https://registry.yarnpkg.com/@aragon/core-contracts-ethers/-/core-contracts-ethers-0.2.1-alpha.tgz#5a75663edb8e7901148eee443c8858941d406484"
-  integrity sha512-Nb5XHoniTwjM8CLhAoTjQf6YR+pyMoZ01dRLkQgzu6fIGr0qqSPq2v779uEnrDCBB/EPL8HRQD5nN0GAdp14Gw==
+"@aragon/core-contracts-ethers@^0.0.1-alpha":
+  version "0.0.1-alpha"
+  resolved "https://registry.yarnpkg.com/@aragon/core-contracts-ethers/-/core-contracts-ethers-0.0.1-alpha.tgz#20484aa4b8805282b6d35d23923e250c3f09e45b"
+  integrity sha512-3xwzJfir43OK3WkqkW4yTPx1unaWpKvGc7AT0LkZ4QIZKLTYgt1C63z9GxsNMhG5f817wP44GIt4W7gSBdzbgg==
   dependencies:
     ethers "^5.6.2"
 
@@ -184,7 +184,7 @@
   resolved "https://registry.yarnpkg.com/@aragon/sdk-client/-/sdk-client-0.0.11-alpha.tgz#4b711de3839e38ddd8bcc56759d101b86304dec8"
   integrity sha512-MHOp0Nc9tOTp07CggdiPFCzePyYK/nKk3EWGNvwhP3wSBY2NTful9RSV3AgTDVYKUvBzSNgEQRqMDnWes7xcxA==
   dependencies:
-    "@aragon/core-contracts-ethers" "^0.2.1-alpha"
+    "@aragon/core-contracts-ethers" "^0.0.1-alpha"
     "@aragon/sdk-common" "^0.0.1-alpha"
     "@ethersproject/abstract-signer" "^5.5.0"
     "@ethersproject/bignumber" "^5.6.0"

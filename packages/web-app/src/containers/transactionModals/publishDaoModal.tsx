@@ -58,6 +58,11 @@ const PublishDaoModal: React.FC<PublishDaoModalProps> = ({
     [averageFee, tokenPrice]
   );
 
+  const formattedAverage = `${formatEther(averageFee.toString()).slice(
+    0,
+    14
+  )} ETH`;
+
   return (
     <ModalBottomSheetSwitcher
       {...{isOpen, onClose, closeOnDrag}}
@@ -72,21 +77,17 @@ const PublishDaoModal: React.FC<PublishDaoModalProps> = ({
             </p>
           </VStack>
           <VStack>
-            <StrongText>{`${formatEther(
-              averageFee.toString()
-            )} ETH`}</StrongText>
+            <StrongText>{formattedAverage}</StrongText>
             <p className="text-sm text-right text-ui-500">{`${formatEther(
               maxFee.toString()
-            )} ETH`}</p>
+            ).slice(0, 10)} ETH`}</p>
           </VStack>
         </GasCostEthContainer>
 
         <GasTotalCostEthContainer>
           <Label>{t('TransactionModal.totalCost')}</Label>
           <VStack>
-            <StrongText>{`${formatEther(
-              averageFee.toString()
-            )} ETH`}</StrongText>
+            <StrongText>{formattedAverage}</StrongText>
             <p className="text-sm text-right text-ui-500">{totalCost}</p>
           </VStack>
         </GasTotalCostEthContainer>
