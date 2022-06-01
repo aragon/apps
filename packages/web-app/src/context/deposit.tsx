@@ -55,6 +55,7 @@ const DepositProvider = ({children}: {children: ReactNode}) => {
       await client.dao.deposit(depositData);
       setDepositState(TransactionState.SUCCESS);
     } catch (error) {
+      console.error(error);
       setDepositState(TransactionState.ERROR);
     }
   };
