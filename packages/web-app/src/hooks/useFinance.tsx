@@ -2,33 +2,27 @@ import {useClient} from './useClient';
 import {IDeposit} from '@aragon/sdk-client';
 
 interface IUseFinanceResponse {
-  deposit: (deposit: IDeposit, daoType: DaoType) => Promise<void>;
+  deposit: (depositData: IDeposit) => Promise<void>;
 }
 
-type DaoType = 'wallet-based' | 'token-based';
-
 export const useFinance = (): IUseFinanceResponse => {
-  const {erc20: erc20Client, whitelist: whitelistClient} = useClient();
+  const {erc20: client} = useClient();
 
-  const deposit = (deposit: IDeposit, daoType: DaoType) => {
-    console.log('clients', erc20Client.dao);
-    if (!erc20Client || !whitelistClient) {
-      return Promise.reject(
-        new Error('SDK client is not initialized correctly')
-      );
+  // hard coding erc20 dao client for now, anticipating future merge.
+  // doesn't seem to matter, deposit implementation is the same for both clients.
+  const deposit = async (depositData: IDeposit) => {
+    if (!client) {
+      throw new Error('SDK client is not initialized correctly');
     }
-    let client;
-    if (daoType === 'wallet-based') {
-      client = whitelistClient;
-    } else {
-      client = erc20Client;
+
+    console.log('depositData', depositData);
+
+    try {
+      await client.dao.deposit(depositData);
+    } catch (e) {
+      console.error(e);
     }
-    return client.dao
-      .deposit(deposit)
-      .then(() => Promise.resolve())
-      .catch(e => Promise.reject(e));
   };
-  return {
-    deposit,
-  };
+
+  return {deposit};
 };

@@ -18,7 +18,7 @@ import {generatePath} from 'react-router-dom';
 import {useNetwork} from 'context/network';
 import {useDaoParam} from 'hooks/useDaoParam';
 import {Loading} from 'components/temporary';
-import {DepositProvider, useDepositDao} from 'context/deposit';
+import {DepositProvider} from 'context/deposit';
 
 export type DepositFormData = TokenFormData & {
   // Deposit data
@@ -56,10 +56,11 @@ const NewDeposit: React.FC = () => {
 
   useEffect(() => {
     // add form metadata
-    if (address) {
+    if (address && dao) {
       formMethods.setValue('from', address);
+      formMethods.setValue('to', dao);
     }
-  }, [address, formMethods]);
+  }, [address, dao, formMethods]);
 
   /*************************************************
    *             Callbacks and Handlers            *

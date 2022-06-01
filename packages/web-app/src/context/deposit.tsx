@@ -6,7 +6,7 @@ import {useFormContext} from 'react-hook-form';
 import {DepositFormData} from 'pages/newDeposit';
 import {TransactionState} from 'utils/constants';
 import {Finance} from 'utils/paths';
-import {generatePath, useMatch, useNavigate} from 'react-router-dom';
+import {generatePath, useNavigate, useParams} from 'react-router-dom';
 import {useNetwork} from './network';
 
 interface IDepositContextType {
@@ -20,41 +20,42 @@ const DepositProvider = ({children}: {children: ReactNode}) => {
   const {getValues} = useFormContext<DepositFormData>();
   const [depositState, setDepositState] = useState<TransactionState>();
   const [showModal, setShowModal] = useState<boolean>(false);
+  const {dao} = useParams();
   const navigate = useNavigate();
-  const daoMatch = useMatch(':network/:dao/*');
   const {network} = useNetwork();
 
-  const handleSignDeposit = () => {
+  const handleSignDeposit = async () => {
     setDepositState(TransactionState.LOADING);
+
     const {amount, tokenAddress, to, reference} = getValues();
-    const dao = to || daoMatch?.params?.dao;
-    if (!dao) {
+
+    if (!to) {
       setDepositState(TransactionState.ERROR);
       return;
     }
+
     const depositData: IDeposit = {
-      daoAddress: dao,
+      daoAddress: to,
       amount: BigInt(Number(amount) * Math.pow(10, 18)),
       token: tokenAddress,
       reference: reference,
     };
+
     // TODO
     // Right now there is to clients depending on the type
     // of DAO, so the type of DAO is needed, once the new
-    // contrats are released there will only be one client
+    // contracts are released there will only be one client
     // and this parameter should be removed
-    deposit(depositData, 'token-based')
-      .then(() => {
-        setDepositState(TransactionState.SUCCESS);
-      })
-      .catch(() => {
-        setDepositState(TransactionState.ERROR);
-      });
+    try {
+      await deposit(depositData);
+      setDepositState(TransactionState.SUCCESS);
+    } catch (error) {
+      setDepositState(TransactionState.ERROR);
+    }
   };
 
   // Handler for modal close; don't close modal if transaction is still running
   const handleCloseModal = () => {
-    const dao = daoMatch?.params?.dao;
     switch (depositState) {
       case TransactionState.LOADING:
         break;
