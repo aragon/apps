@@ -40,7 +40,7 @@ const DepositForm: React.FC = () => {
   const [daoAddress, tokenAddress, isCustomToken, tokenBalance, tokenSymbol] =
     useWatch({
       name: [
-        'daoAddress',
+        'to',
         'tokenAddress',
         'isCustomToken',
         'tokenBalance',

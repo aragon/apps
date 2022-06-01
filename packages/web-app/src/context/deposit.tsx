@@ -1,13 +1,14 @@
-import {useFinance} from 'hooks/useFinance';
-import React, {createContext, ReactNode, useContext, useState} from 'react';
-import DepositModal from 'containers/transactionModals/DepositModal';
 import {IDeposit} from '@aragon/sdk-client';
 import {useFormContext} from 'react-hook-form';
+import {generatePath, useNavigate, useParams} from 'react-router-dom';
+import React, {createContext, ReactNode, useContext, useState} from 'react';
+
+import {Finance} from 'utils/paths';
+import {useClient} from 'hooks/useClient';
+import {useNetwork} from './network';
+import DepositModal from 'containers/transactionModals/DepositModal';
 import {DepositFormData} from 'pages/newDeposit';
 import {TransactionState} from 'utils/constants';
-import {Finance} from 'utils/paths';
-import {generatePath, useNavigate, useParams} from 'react-router-dom';
-import {useNetwork} from './network';
 
 interface IDepositContextType {
   handleOpenModal: () => void;
@@ -16,13 +17,13 @@ interface IDepositContextType {
 const DepositContext = createContext<IDepositContextType | null>(null);
 
 const DepositProvider = ({children}: {children: ReactNode}) => {
-  const {deposit} = useFinance();
   const {getValues} = useFormContext<DepositFormData>();
   const [depositState, setDepositState] = useState<TransactionState>();
   const [showModal, setShowModal] = useState<boolean>(false);
   const {dao} = useParams();
   const navigate = useNavigate();
   const {network} = useNetwork();
+  const {erc20: client} = useClient();
 
   const handleSignDeposit = async () => {
     setDepositState(TransactionState.LOADING);
@@ -46,8 +47,12 @@ const DepositProvider = ({children}: {children: ReactNode}) => {
     // of DAO, so the type of DAO is needed, once the new
     // contracts are released there will only be one client
     // and this parameter should be removed
+    if (!client) {
+      throw new Error('SDK client is not initialized correctly');
+    }
+
     try {
-      await deposit(depositData);
+      await client.dao.deposit(depositData);
       setDepositState(TransactionState.SUCCESS);
     } catch (error) {
       setDepositState(TransactionState.ERROR);

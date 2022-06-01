@@ -56,6 +56,9 @@ const NewDeposit: React.FC = () => {
 
   useEffect(() => {
     // add form metadata
+
+    console.log('dao', dao);
+
     if (address && dao) {
       formMethods.setValue('from', address);
       formMethods.setValue('to', dao);
