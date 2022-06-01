@@ -100,6 +100,7 @@
     "all": "All",
     "myWallet": "My Wallet",
     "daoTreasury": "DAO Treasury",
+    "treasuryValue": "Treasury Value",
     "whitelistWallets": {
       "address": "Address",
       "addresses": "{{count}} Addresses",
