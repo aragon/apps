@@ -13,18 +13,17 @@ import {AvatarDao} from '../avatar';
 import {Link} from '../link';
 import {ButtonIcon, ButtonText} from '../button';
 
-export type DaoType = 'wallet-based' | 'token-based';
-
 export type HeaderDaoProps = {
   daoName: string;
   daoAvatar?: string;
   description: string;
-  created_at: boolean;
+  created_at: string;
   daoChain: string;
-  daoType: DaoType;
-  discordLink?: string;
-  websiteLink?: string;
-  forumLink?: string;
+  daoType: string;
+  links: {
+    label: string;
+    href: string;
+  }[];
 };
 
 export const HeaderDao: React.FC<HeaderDaoProps> = ({
@@ -34,6 +33,7 @@ export const HeaderDao: React.FC<HeaderDaoProps> = ({
   created_at,
   daoChain,
   daoType,
+  links,
 }) => {
   return (
     <Card data-testid="header-dao">
@@ -78,9 +78,16 @@ export const HeaderDao: React.FC<HeaderDaoProps> = ({
         </NetworkDetailsContainer>
         <ActionWrapper>
           <LinksWrapper>
-            <Link label={'Website'} />
-            <Link label={'Discord'} />
-            <Link label={'Forum'} />
+            {links
+              .slice(0, 3)
+              .map(
+                (
+                  {label, href}: {label: string; href: string},
+                  index: number
+                ) => (
+                  <Link {...{label, href}} external key={index} />
+                )
+              )}
           </LinksWrapper>
           <ActionContainer>
             <ButtonIcon

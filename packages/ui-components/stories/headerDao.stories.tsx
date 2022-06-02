@@ -9,15 +9,26 @@ export default {
 
 const Template: Story<HeaderDaoProps> = args => <HeaderDao {...args} />;
 
-export const Default = Template.bind({});
-Default.args = {
+export const Dao = Template.bind({});
+Dao.args = {
   daoName: 'DaoName',
   description:
     'We are a community that loves trees and the planet. We track where forestation is increasing (or shrinking), fund people who are growing and protecting trees...',
   created_at: 'March 2022',
   daoChain: 'Arbitrum',
-  daoType: 'wallet-based',
-  discordLink: 'google.com',
-  websiteLink: 'google.com',
-  forumLink: 'google.com',
+  daoType: 'Wallet Based',
+  links: [
+    {
+      label: 'Website',
+      href: 'google.com',
+    },
+    {
+      label: 'Discord',
+      href: 'google.com',
+    },
+    {
+      label: 'Forum',
+      href: 'google.com',
+    },
+  ],
 };
