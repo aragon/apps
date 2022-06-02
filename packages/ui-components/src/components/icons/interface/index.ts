@@ -37,3 +37,4 @@ export {IconMenuVertical} from './icon_menu_vertical';
 export {IconExpand} from './icon_expand';
 export {IconStorage} from './icon_storage';
 export {IconReload} from './icon_reload';
+export {IconFlag} from './icon_flag';
