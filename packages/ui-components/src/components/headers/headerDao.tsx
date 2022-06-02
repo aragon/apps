@@ -102,7 +102,8 @@ export const HeaderDao: React.FC<HeaderDaoProps> = ({
 };
 
 const Card = styled.div.attrs({
-  className: 'w-full bg-white rounded-xl p-6 border border-ui-100 space-y-3',
+  className:
+    'w-full bg-white rounded-xl p-3 desktop:p-6 border border-ui-100 space-y-3',
 })`
   box-shadow: 0px 4px 8px rgba(31, 41, 51, 0.04),
     0px 0px 2px rgba(31, 41, 51, 0.06), 0px 0px 1px rgba(31, 41, 51, 0.04);
@@ -117,7 +118,7 @@ const Content = styled.div.attrs({
 })``;
 
 const AvatarContainer = styled.div.attrs({
-  className: 'flex justify-end col-span-2',
+  className: 'tablet:flex hidden justify-end col-span-2',
 })``;
 
 const Title = styled.h1.attrs({
@@ -134,7 +135,7 @@ const Description = styled.p.attrs({
 `;
 
 const DetailsWrapper = styled.div.attrs({
-  className: 'flex items-center justify-between',
+  className: 'flex items-center justify-between flex-col tablet:flex-row',
 })``;
 
 const NetworkDetailsContainer = styled.div.attrs({
@@ -146,19 +147,20 @@ const NetworkDetails = styled.div.attrs({
 })``;
 
 const DetailsText = styled.span.attrs({
-  className: 'text-ui-600',
+  className: 'text-ui-600 text-sm',
 })``;
 
 const LinksWrapper = styled.div.attrs({
-  className: 'space-x-3',
+  className: 'space-x-3 hidden desktop:flex',
 })``;
 
 const ActionContainer = styled.div.attrs({
-  className: 'flex space-x-1.5',
+  className: 'flex space-x-1.5 w-full justify-between',
 })``;
 
 const ActionWrapper = styled.div.attrs({
-  className: 'flex items-center space-x-3',
+  className:
+    'flex items-center tablet:space-x-3 justify-between tablet:justify-start w-full tablet:w-max space-y-3 tablet:space-y-0',
 })``;
 
 const StyledIconFavoriteSelected = styled(IconFavoriteSelected).attrs({
