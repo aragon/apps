@@ -31,7 +31,7 @@ export type MenuTypes =
   | 'addresses'
   | 'wallet'
   | 'network'
-  | 'mobileMenu';
+  | 'mobileMenu'
   | 'network';
 
 type Props = Record<'children', ReactNode>;
