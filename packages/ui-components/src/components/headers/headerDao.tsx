@@ -22,10 +22,10 @@ export type HeaderDaoProps = {
   created_at: string;
   daoChain: string;
   daoType: string;
-  links: {
+  links: Array<{
     label: string;
     href: string;
-  }[];
+  }>;
 };
 
 export const HeaderDao: React.FC<HeaderDaoProps> = ({
@@ -57,7 +57,7 @@ export const HeaderDao: React.FC<HeaderDaoProps> = ({
         </Content>
         <AvatarContainer>
           <AvatarDao
-            {...{daoName}}
+            daoName={daoName || ''}
             {...(daoAvatar && {src: daoAvatar})}
             size="hero"
           />
@@ -81,10 +81,10 @@ export const HeaderDao: React.FC<HeaderDaoProps> = ({
         <ActionWrapper>
           <LinksWrapper>
             {links
-              .slice(0, 3)
-              .map(
+              ?.slice(0, 3)
+              ?.map(
                 (
-                  {label, href}: {label: string; href: string},
+                  {label, href}: HeaderDaoProps['links'][number],
                   index: number
                 ) => (
                   <Link {...{label, href}} external key={index} />
@@ -108,9 +108,9 @@ export const HeaderDao: React.FC<HeaderDaoProps> = ({
                 />
               }
               sideOffset={8}
-              listItems={links.map(
+              listItems={links?.map(
                 (
-                  {label, href}: {label: string; href: string},
+                  {label, href}: HeaderDaoProps['links'][number],
                   index: number
                 ) => ({
                   component: (
