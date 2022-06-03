@@ -69,7 +69,7 @@ const Finance: React.FC = () => {
         </TransferSectionWrapper>
         <TemporarySection purpose="It whether the dao parameter was properly parsed and validated.">
           {daoId ? (
-            <p>DAO address: {daoId}</p>
+            <p>{`DAO address: ${daoId.slice(0, 15) + '...'}`}</p>
           ) : (
             <p>{"Something's not right"}</p>
           )}

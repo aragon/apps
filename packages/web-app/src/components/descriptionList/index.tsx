@@ -6,6 +6,7 @@ import styled from 'styled-components';
 export type DescriptionListProps = {
   title: string;
   onEditClick?: () => void;
+  editLabel?: string;
   onChecked?: () => void;
 };
 
@@ -13,18 +14,28 @@ export const DescriptionListContainer: React.FC<DescriptionListProps> = ({
   title,
   children,
   onEditClick,
+  editLabel,
   onChecked,
 }) => {
   const {t} = useTranslation();
 
   return (
     <Container>
-      <TitleText>{title}</TitleText>
+      <HStack>
+        <TitleText>{title}</TitleText>
+        {onEditClick && (
+          <ButtonText
+            label={editLabel || t('labels.edit')}
+            mode="ghost"
+            onClick={onEditClick}
+          />
+        )}
+      </HStack>
       <DlContainer>{children}</DlContainer>
       {onEditClick && onChecked && (
         <HStack>
           <ButtonText
-            label={t('labels.edit')}
+            label={editLabel || t('labels.edit')}
             mode="ghost"
             onClick={onEditClick}
           />
