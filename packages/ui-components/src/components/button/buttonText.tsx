@@ -75,14 +75,12 @@ const StyledButton = styled(ButtonBase).attrs(
         break;
 
       case 'ghost':
-        className = `text-ui-600 ${paddingStyles[size]} ${
+        className = `${
           bgWhite
-            ? 'bg-ui-0 active:bg-primary-50 disabled:bg-ui-0'
-            : 'bg-ui-50 active:bg-ui-0 disabled:bg-ui-50'
-        } ${
-          isActive
-            ? `text-primary-500 ${bgWhite ? 'bg-primary-50' : 'bg-ui-0'}`
-            : 'text-ui-300'
+            ? `${isActive ? 'bg-primary-50' : 'bg-ui-0'} active:bg-primary-50`
+            : `${isActive ? 'bg-ui-0' : 'bg-ui-50'}  active:bg-ui-0`
+        } ${isActive ? 'text-primary-500' : 'text-ui-600'} ${
+          paddingStyles[size]
         } hover:text-primary-500 active:text-primary-500 disabled:text-ui-300`;
         break;
 
