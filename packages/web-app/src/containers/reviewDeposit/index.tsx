@@ -1,4 +1,11 @@
-import {CardText, CardToken, CardTransfer} from '@aragon/ui-components';
+import {
+  ButtonText,
+  CardText,
+  CardToken,
+  CardTransfer,
+  IconChevronLeft,
+  IconChevronRight,
+} from '@aragon/ui-components';
 import React, {useEffect, useState} from 'react';
 import {useFormContext} from 'react-hook-form';
 import {useTranslation} from 'react-i18next';
@@ -6,6 +13,9 @@ import {useTranslation} from 'react-i18next';
 import {useProviders} from 'context/providers';
 import {fetchTokenPrice} from 'services/prices';
 import {useNetwork} from 'context/network';
+import {useFormStep} from 'components/fullScreenStepper';
+import {useDepositDao} from 'context/deposit';
+import styled from 'styled-components';
 
 const ReviewDeposit: React.FC = () => {
   const {t} = useTranslation();
@@ -55,13 +65,43 @@ const ReviewDeposit: React.FC = () => {
         tokenImageUrl={values.tokenImgUrl}
         treasuryShare={price}
       />
-      <CardText
-        type="label"
-        title={t('labels.reference')}
-        content={values.reference || ''}
-      />
+      {values.reference && (
+        <CardText
+          type="label"
+          title={t('labels.reference')}
+          content={values.reference}
+        />
+      )}
     </div>
   );
 };
 
 export default ReviewDeposit;
+
+export const CustomFooter = () => {
+  const {prev} = useFormStep();
+  const {t} = useTranslation();
+  const {handleOpenModal} = useDepositDao();
+
+  return (
+    <FormFooter>
+      <ButtonText
+        mode="secondary"
+        size="large"
+        label={t('labels.back')}
+        onClick={() => prev()}
+        iconLeft={<IconChevronLeft />}
+      />
+      <ButtonText
+        label={t('labels.submitDeposit')}
+        size="large"
+        onClick={() => handleOpenModal()}
+        iconRight={<IconChevronRight />}
+      />
+    </FormFooter>
+  );
+};
+
+const FormFooter = styled.div.attrs({
+  className: 'flex justify-between desktop:pt-3',
+})``;

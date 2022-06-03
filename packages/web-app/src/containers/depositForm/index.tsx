@@ -13,19 +13,19 @@ import {
   useWatch,
 } from 'react-hook-form';
 import styled from 'styled-components';
+import {utils} from 'ethers';
 import {useTranslation} from 'react-i18next';
-import {constants, utils} from 'ethers';
-import React, {useCallback, useEffect} from 'react';
 import {useApolloClient} from '@apollo/client';
+import React, {useCallback, useEffect} from 'react';
 
 import {useWallet} from 'hooks/useWallet';
-import {useGlobalModalContext} from 'context/globalModals';
+import {useNetwork} from 'context/network';
 import {useProviders} from 'context/providers';
 import {fetchTokenData} from 'services/prices';
+import {useGlobalModalContext} from 'context/globalModals';
 import {handleClipboardActions} from 'utils/library';
 import {fetchBalance, getTokenInfo, isETH} from 'utils/tokens';
 import {validateTokenAddress, validateTokenAmount} from 'utils/validators';
-import {useNetwork} from 'context/network';
 
 const DepositForm: React.FC = () => {
   const client = useApolloClient();
@@ -37,9 +37,16 @@ const DepositForm: React.FC = () => {
   const {control, resetField, setValue, setFocus, trigger, getValues} =
     useFormContext();
   const {errors, dirtyFields} = useFormState({control});
-  const [tokenAddress, isCustomToken, tokenBalance, tokenSymbol] = useWatch({
-    name: ['tokenAddress', 'isCustomToken', 'tokenBalance', 'tokenSymbol'],
-  });
+  const [daoAddress, tokenAddress, isCustomToken, tokenBalance, tokenSymbol] =
+    useWatch({
+      name: [
+        'to',
+        'tokenAddress',
+        'isCustomToken',
+        'tokenBalance',
+        'tokenSymbol',
+      ],
+    });
 
   /*************************************************
    *                    Hooks                      *
@@ -178,8 +185,8 @@ const DepositForm: React.FC = () => {
 
         {/* TODO: Proper DAO address */}
         <ButtonWallet
-          label="patito.dao.eth"
-          src={constants.AddressZero}
+          label={daoAddress}
+          src={daoAddress}
           isConnected
           disabled
         />

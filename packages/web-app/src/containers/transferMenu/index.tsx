@@ -13,7 +13,7 @@ import {useNetwork} from 'context/network';
 type Action = 'deposit' | 'withdraw';
 
 const TransferMenu: React.FC = () => {
-  const {isTransferOpen, close} = useGlobalModalContext();
+  const {isTransferOpen, close, open} = useGlobalModalContext();
   const {t} = useTranslation();
   const {network} = useNetwork();
   const {dao} = useParams();
@@ -22,9 +22,7 @@ const TransferMenu: React.FC = () => {
 
   const handleClick = (action: Action) => {
     if (!isConnected) {
-      // TODO: change alert to proper error reporting mechanism,
-      // Move to proper placing
-      alert('Please connect your wallet');
+      open('wallet');
     } else if (action === 'deposit') {
       navigate(generatePath(NewDeposit, {network: network, dao: dao}));
     } else {

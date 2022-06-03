@@ -9,22 +9,23 @@ import TokenMenu from 'containers/tokenMenu';
 import {useWallet} from 'hooks/useWallet';
 import DepositForm from 'containers/depositForm';
 import {formatUnits} from 'utils/library';
-import ReviewDeposit from 'containers/reviewDeposit';
+import ReviewDeposit, {CustomFooter} from 'containers/reviewDeposit';
 import {BaseTokenInfo} from 'utils/types';
 import {TokenFormData} from './newWithdraw';
 import {useWalletTokens} from 'hooks/useWalletTokens';
 import {FullScreenStepper, Step} from 'components/fullScreenStepper';
 import {generatePath} from 'react-router-dom';
 import {useNetwork} from 'context/network';
-import {useGlobalModalContext} from 'context/globalModals';
 import {useDaoParam} from 'hooks/useDaoParam';
 import {Loading} from 'components/temporary';
+import {DepositProvider} from 'context/deposit';
 
-type DepositFormData = TokenFormData & {
+export type DepositFormData = TokenFormData & {
   // Deposit data
   to: Address;
   from: Address;
   amount: string;
+  reference: string;
 
   // Form metadata
   isCustomToken: boolean;
@@ -47,7 +48,7 @@ const NewDeposit: React.FC = () => {
 
   const {address} = useWallet();
   const {data: walletTokens} = useWalletTokens();
-  const {open} = useGlobalModalContext();
+
   const formMethods = useForm<DepositFormData>({
     defaultValues,
     mode: 'onChange',
@@ -55,10 +56,11 @@ const NewDeposit: React.FC = () => {
 
   useEffect(() => {
     // add form metadata
-    if (address) {
+    if (address && dao) {
       formMethods.setValue('from', address);
+      formMethods.setValue('to', dao);
     }
-  }, [address, formMethods]);
+  }, [address, dao, formMethods]);
 
   /*************************************************
    *             Callbacks and Handlers            *
@@ -104,31 +106,33 @@ const NewDeposit: React.FC = () => {
 
   return (
     <FormProvider {...formMethods}>
-      <FullScreenStepper
-        navLabel={t('allTransfer.newTransfer')}
-        returnPath={generatePath(Finance, {network, dao})}
-        wizardProcessName={t('newDeposit.depositAssets')}
-      >
-        <Step
-          wizardTitle={t('newDeposit.configureDeposit')}
-          wizardDescription={t('newDeposit.configureDepositSubtitle')}
-          isNextButtonDisabled={!formMethods.formState.isValid}
+      <DepositProvider>
+        <FullScreenStepper
+          navLabel={t('allTransfer.newTransfer')}
+          returnPath={generatePath(Finance, {network, dao})}
+          wizardProcessName={t('newDeposit.depositAssets')}
         >
-          <DepositForm />
-        </Step>
-        <Step
-          wizardTitle={t('newDeposit.reviewTransfer')}
-          wizardDescription={t('newDeposit.reviewTransferSubtitle')}
-          nextButtonLabel={t('labels.submitDeposit')}
-          onNextButtonClicked={() => open('deposit')}
-        >
-          <ReviewDeposit />
-        </Step>
-      </FullScreenStepper>
-      <TokenMenu
-        onTokenSelect={handleTokenSelect}
-        tokenBalances={walletTokens}
-      />
+          <Step
+            wizardTitle={t('newDeposit.configureDeposit')}
+            wizardDescription={t('newDeposit.configureDepositSubtitle')}
+            isNextButtonDisabled={!formMethods.formState.isValid}
+          >
+            <DepositForm />
+          </Step>
+          <Step
+            wizardTitle={t('newDeposit.reviewTransfer')}
+            wizardDescription={t('newDeposit.reviewTransferSubtitle')}
+            nextButtonLabel={t('labels.submitDeposit')}
+            customFooter={<CustomFooter />}
+          >
+            <ReviewDeposit />
+          </Step>
+        </FullScreenStepper>
+        <TokenMenu
+          onTokenSelect={handleTokenSelect}
+          tokenBalances={walletTokens}
+        />
+      </DepositProvider>
     </FormProvider>
   );
 };

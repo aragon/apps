@@ -15,7 +15,7 @@
     "learn": "Learn",
     "build": "Build",
     "help": "Help",
-    "terms": "Terms of Service",
+    "terms": "Terms of Servitce",
     "privacy": "Privacy",
     "settings": "Settings"
   },
@@ -240,6 +240,12 @@
       "title": "Wrong Network",
       "description": "The action can’t be executed because you are in the wrong network. Change to the <1>{{network}}</1> on your wallet and try again.",
       "buttonLabel": "Switch to {{network}}"
+    },
+    "loginRequired": {
+      "headerTitle": "Login to continue",
+      "title": "Wallet connection",
+      "description": "To continue with this action, a wallet must be connected.",
+      "buttonLabel": "Login Now"
     }
   },
   "warnings": {
@@ -288,7 +294,7 @@
     "approveToken": "Approve token",
     "depositTitle": "Sign Deposit",
     "dismiss": "Dismiss",
-    "errorLabel": "Error while confirmation",
+    "errorLabel": "Error while confirming transaction",
     "estimatedFees": "Estimated Gas Fees",
     "publishDao": "Publish Dao",
     "publishDaoButtonLabel": "Publish DAO Now",
@@ -550,5 +556,8 @@
     "edit": "Edit Settings",
     "new": "New Settings",
     "proposeSettingsInfo": "To make changes to the settings of this DAO, a vote must be taken via the community."
+  },
+  "dashboard": {
+    "proposalsTitle": "Proposals created"
   }
 }

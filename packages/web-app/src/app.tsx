@@ -5,7 +5,7 @@ import React, {useEffect, lazy, Suspense} from 'react';
 import {Navigate, Routes, Route, useLocation, Outlet} from 'react-router-dom';
 
 import Navbar from 'containers/navbar';
-import {WalletMenu} from 'containers/navbar/walletMenu';
+import {WalletMenu} from 'containers/walletMenu';
 import {trackPage} from 'services/analytics';
 import '../i18n.config';
 
@@ -19,7 +19,6 @@ import CreateDAO from 'pages/createDAO';
 import {GridLayout} from 'components/layout';
 import ExploreNav from 'containers/navbar/exploreNav';
 import Footer from 'containers/exploreFooter';
-import DepositModal from 'containers/transactionModals/DepositModal';
 import NetworkErrorMenu from 'containers/networkErrorMenu';
 
 const ExplorePage = lazy(() => import('pages/explore'));
@@ -95,7 +94,6 @@ function App() {
       <DaoSelectMenu />
       <WalletMenu />
       <NetworkErrorMenu />
-      <DepositModal />
     </>
   );
 }
@@ -117,9 +115,11 @@ const ExploreWrapper: React.FC = () => (
 const DaoWrapper: React.FC = () => (
   <>
     <Navbar />
-    <GridLayout>
-      <Outlet />
-    </GridLayout>
+    <div className="pb-10">
+      <GridLayout>
+        <Outlet />
+      </GridLayout>
+    </div>
   </>
 );
 
