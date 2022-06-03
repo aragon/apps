@@ -12,6 +12,8 @@ import {
 import {AvatarDao} from '../avatar';
 import {Link} from '../link';
 import {ButtonIcon, ButtonText} from '../button';
+import {Dropdown} from '../dropdown';
+import {ListItemLink} from '../listItem';
 
 export type HeaderDaoProps = {
   daoName: string;
@@ -95,11 +97,32 @@ export const HeaderDao: React.FC<HeaderDaoProps> = ({
               mode="ghost"
               size="large"
             />
-            <ButtonText
-              iconRight={<IconChevronDown />}
-              label={'All Links'}
-              mode="ghost"
-              size="large"
+            <Dropdown
+              align="start"
+              trigger={
+                <ButtonText
+                  iconRight={<IconChevronDown />}
+                  label={'All Links'}
+                  mode="ghost"
+                  size="large"
+                />
+              }
+              sideOffset={8}
+              listItems={links.map(
+                (
+                  {label, href}: {label: string; href: string},
+                  index: number
+                ) => ({
+                  component: (
+                    <div className="p-1 mb-1.5">
+                      <ListItemLink {...{label, href}} key={index} />
+                    </div>
+                  ),
+                  callback: () => {
+                    window.open(href, '_blank');
+                  },
+                })
+              )}
             />
           </ActionContainer>
         </ActionWrapper>
