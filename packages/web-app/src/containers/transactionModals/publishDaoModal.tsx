@@ -58,9 +58,12 @@ const PublishDaoModal: React.FC<PublishDaoModalProps> = ({
     [averageFee, tokenPrice]
   );
 
-  const formattedAverage = `${formatEther(averageFee.toString()).slice(
-    0,
-    14
+  const formattedAverage = `${Number(
+    formatEther(averageFee.toString())
+  ).toFixed(8)} ETH`;
+
+  const formattedMax = `${Number(formatEther(maxFee.toString())).toFixed(
+    8
   )} ETH`;
 
   return (
@@ -78,9 +81,7 @@ const PublishDaoModal: React.FC<PublishDaoModalProps> = ({
           </VStack>
           <VStack>
             <StrongText>{formattedAverage}</StrongText>
-            <p className="text-sm text-right text-ui-500">{`${formatEther(
-              maxFee.toString()
-            ).slice(0, 10)} ETH`}</p>
+            <p className="text-sm text-right text-ui-500">{formattedMax}</p>
           </VStack>
         </GasCostEthContainer>
 
