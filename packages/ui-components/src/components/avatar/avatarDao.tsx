@@ -24,7 +24,7 @@ export const AvatarDao: React.FC<AvatarDaoProps> = ({
   }, [daoName]);
 
   return error || !src ? (
-    <FallBackAvatar onClick={onClick} size={size} {...{props}}>
+    <FallBackAvatar onClick={onClick} size={size} {...props}>
       <DaoInitials>{daoInitials}</DaoInitials>
     </FallBackAvatar>
   ) : (
@@ -34,7 +34,7 @@ export const AvatarDao: React.FC<AvatarDaoProps> = ({
       alt="dao avatar"
       onClick={onClick}
       onError={() => setError(true)}
-      {...{props}}
+      {...props}
     />
   );
 };
@@ -51,7 +51,7 @@ const sizes = {
 };
 
 const Avatar = styled.img.attrs(({size}: AvatarPropsType) => ({
-  className: `${size !== 'unset' && sizes[size]} rounded-full`,
+  className: `${size !== 'unset' && sizes[size]} rounded-full` as string,
 }))<AvatarPropsType>``;
 
 const FallBackAvatar = styled.div.attrs(({size}: AvatarPropsType) => ({
