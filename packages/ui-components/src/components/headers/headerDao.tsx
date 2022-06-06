@@ -48,14 +48,24 @@ export const HeaderDao: React.FC<HeaderDaoProps> = ({
 }) => {
   const [fullDescription, setFullDescription] = useState<boolean>(false);
 
+  async function handleClipboardActions() {
+    await navigator.clipboard.writeText(
+      `app.aragon.org/dao/${daoName?.toLowerCase()}`
+    );
+
+    // TODO: change to proper mechanism
+    alert('Copied');
+  }
+
   return (
     <Card data-testid="header-dao">
       <ContentWrapper>
         <Content>
           <Title>{daoName}</Title>
           <Link
-            label={`app.aragon.org/dao/${daoName}`}
+            label={`app.aragon.org/dao/${daoName?.toLowerCase()}`}
             iconRight={<IconCopy />}
+            onClick={handleClipboardActions}
           />
           <div>
             <Description {...{fullDescription}}>{description}</Description>
