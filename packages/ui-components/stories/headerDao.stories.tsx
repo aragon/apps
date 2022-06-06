@@ -20,15 +20,15 @@ Dao.args = {
   links: [
     {
       label: 'Website',
-      href: 'google.com',
+      href: 'https://google.com',
     },
     {
       label: 'Discord',
-      href: 'google.com',
+      href: 'https://google.com',
     },
     {
       label: 'Forum',
-      href: 'google.com',
+      href: 'https://google.com',
     },
   ],
 };

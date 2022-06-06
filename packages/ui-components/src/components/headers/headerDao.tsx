@@ -88,11 +88,6 @@ export const HeaderDao: React.FC<HeaderDaoProps> = ({
               )}
           </LinksWrapper>
           <ActionContainer>
-            <ButtonIcon
-              icon={<StyledIconFavoriteSelected />}
-              mode="ghost"
-              size="large"
-            />
             <Dropdown
               align="start"
               trigger={
@@ -112,7 +107,7 @@ export const HeaderDao: React.FC<HeaderDaoProps> = ({
                 ) => ({
                   component: (
                     <div className="p-1 mb-1.5">
-                      <ListItemLink {...{label, href}} key={index} />
+                      <ListItemLink {...{label, href}} key={index} external />
                     </div>
                   ),
                   callback: () => {
@@ -120,6 +115,11 @@ export const HeaderDao: React.FC<HeaderDaoProps> = ({
                   },
                 })
               )}
+            />
+            <ButtonIcon
+              icon={<StyledIconFavoriteSelected />}
+              mode="ghost"
+              size="large"
             />
           </ActionContainer>
         </ActionWrapper>
