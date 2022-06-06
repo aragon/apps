@@ -48,11 +48,7 @@ export const HeaderDao: React.FC<HeaderDaoProps> = ({
           />
           <Description>
             {description}
-            <Link
-              label={'ReadMore'}
-              className="mx-1 text-base"
-              iconRight={<IconChevronDown />}
-            />
+            <Link label={'Read more ↓'} className="mx-1 text-base" />
           </Description>
         </Content>
         <AvatarContainer>
@@ -108,6 +104,7 @@ export const HeaderDao: React.FC<HeaderDaoProps> = ({
                 />
               }
               sideOffset={8}
+              className="max-w-xs"
               listItems={links?.map(
                 (
                   {label, href}: HeaderDaoProps['links'][number],
@@ -133,14 +130,14 @@ export const HeaderDao: React.FC<HeaderDaoProps> = ({
 
 const Card = styled.div.attrs({
   className:
-    'w-full bg-white rounded-xl p-3 desktop:p-6 border border-ui-100 space-y-3',
+    'w-full bg-white rounded-xl p-2 tablet:p-3 desktop:p-6 border border-ui-100 space-y-3',
 })`
   box-shadow: 0px 4px 8px rgba(31, 41, 51, 0.04),
     0px 0px 2px rgba(31, 41, 51, 0.06), 0px 0px 1px rgba(31, 41, 51, 0.04);
 `;
 
 const ContentWrapper = styled.div.attrs({
-  className: 'flex items-center justify-between grid grid-cols-12',
+  className: 'flex justify-between grid grid-cols-12',
 })``;
 
 const Content = styled.div.attrs({
@@ -148,7 +145,7 @@ const Content = styled.div.attrs({
 })``;
 
 const AvatarContainer = styled.div.attrs({
-  className: 'tablet:flex hidden justify-end col-span-2',
+  className: 'tablet:flex hidden justify-end col-span-2 desktop:items-center',
 })``;
 
 const Title = styled.h1.attrs({
