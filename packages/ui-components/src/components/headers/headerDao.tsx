@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import React from 'react';
+import React, {useState} from 'react';
 
 import {
   IconBlock,
@@ -26,6 +26,14 @@ export type HeaderDaoProps = {
     label: string;
     href: string;
   }>;
+  translation?: {
+    readMore: string;
+    readLess: string;
+  };
+};
+
+type DescriptionProps = {
+  fullDescription?: boolean;
 };
 
 export const HeaderDao: React.FC<HeaderDaoProps> = ({
@@ -36,7 +44,10 @@ export const HeaderDao: React.FC<HeaderDaoProps> = ({
   daoChain,
   daoType,
   links,
+  translation,
 }) => {
+  const [fullDescription, setFullDescription] = useState<boolean>(false);
+
   return (
     <Card data-testid="header-dao">
       <ContentWrapper>
@@ -46,10 +57,18 @@ export const HeaderDao: React.FC<HeaderDaoProps> = ({
             label={`app.aragon.org/dao/${daoName}`}
             iconRight={<IconCopy />}
           />
-          <Description>
-            {description}
-            <Link label={'Read more ↓'} className="mx-1 text-base" />
-          </Description>
+          <div>
+            <Description {...{fullDescription}}>{description}</Description>
+            <Link
+              label={
+                fullDescription
+                  ? `${translation?.readLess || 'Read less'} ↑`
+                  : `${translation?.readMore || 'Read more'} ↓`
+              }
+              className="text-base"
+              onClick={() => setFullDescription(prevState => !prevState)}
+            />
+          </div>
         </Content>
         <AvatarContainer>
           <AvatarDao
@@ -154,11 +173,11 @@ const Title = styled.h1.attrs({
 
 const Description = styled.p.attrs({
   className: 'font-medium text-ui-600 text-base',
-})`
+})<DescriptionProps>`
   overflow: hidden;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: ${props => (props.fullDescription ? 'unset' : 2)};
 `;
 
 const DetailsWrapper = styled.div.attrs({
