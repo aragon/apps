@@ -1,18 +1,19 @@
-import React, {useMemo, useState} from 'react';
+import React, {HTMLAttributes, useMemo, useState} from 'react';
 import styled from 'styled-components';
 
-export type AvatarDaoProps = {
+export interface AvatarDaoProps extends HTMLAttributes<HTMLElement> {
   daoName: string;
   src?: string;
-  size?: 'small' | 'medium' | 'big' | 'hero';
+  size?: 'small' | 'medium' | 'big' | 'hero' | 'unset';
   onClick?: () => void;
-};
+}
 
 export const AvatarDao: React.FC<AvatarDaoProps> = ({
   daoName,
   src,
   size = 'medium',
   onClick,
+  ...props
 }) => {
   const [error, setError] = useState(false);
 
@@ -23,7 +24,7 @@ export const AvatarDao: React.FC<AvatarDaoProps> = ({
   }, [daoName]);
 
   return error || !src ? (
-    <FallBackAvatar onClick={onClick} size={size}>
+    <FallBackAvatar onClick={onClick} size={size} {...{props}}>
       <DaoInitials>{daoInitials}</DaoInitials>
     </FallBackAvatar>
   ) : (
@@ -33,11 +34,14 @@ export const AvatarDao: React.FC<AvatarDaoProps> = ({
       alt="dao avatar"
       onClick={onClick}
       onError={() => setError(true)}
+      {...{props}}
     />
   );
 };
 
-type SizeType = {size: NonNullable<AvatarDaoProps['size']>};
+type AvatarPropsType = {
+  size: NonNullable<AvatarDaoProps['size']>;
+};
 
 const sizes = {
   small: 'w-3 h-3 text-xs',
@@ -46,15 +50,17 @@ const sizes = {
   hero: 'w-14 h-14 text-xl',
 };
 
-const Avatar = styled.img.attrs(({size}: SizeType) => ({
-  className: `${sizes[size]} rounded-full`,
-}))<SizeType>``;
+const Avatar = styled.img.attrs(({size}: AvatarPropsType) => ({
+  className: `${size !== 'unset' && sizes[size]} rounded-full`,
+}))<AvatarPropsType>``;
 
-const FallBackAvatar = styled.div.attrs(({size}: SizeType) => ({
+const FallBackAvatar = styled.div.attrs(({size}: AvatarPropsType) => ({
   className:
     'flex items-center justify-center font-bold text-ui-0 bg-gradient-to-r' +
-    ` from-primary-500 to-primary-800 ${sizes[size]} rounded-full border`,
-}))<SizeType>``;
+    ` from-primary-500 to-primary-800 ${
+      size !== 'unset' && sizes[size]
+    } rounded-full border`,
+}))<AvatarPropsType>``;
 
 const DaoInitials = styled.p.attrs({
   className: 'w-4 h-4 flex items-center justify-center',
