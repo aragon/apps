@@ -130,9 +130,6 @@ export const HeaderDao: React.FC<HeaderDaoProps> = ({
                       <ListItemLink {...{label, href}} key={index} external />
                     </div>
                   ),
-                  callback: () => {
-                    window.open(href, '_blank');
-                  },
                 })
               )}
             />
