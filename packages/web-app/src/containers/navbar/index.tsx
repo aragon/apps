@@ -10,6 +10,8 @@ import {
   NewDeposit,
   NewProposal,
   NewWithDraw,
+  ProposeNewSettings,
+  EditSettings,
 } from 'utils/paths';
 import {i18n} from '../../../i18n.config';
 import MobileNav from './mobile';
@@ -26,6 +28,7 @@ const processPaths = [
   {path: NewWithDraw},
   {path: CreateDAO},
   {path: NewProposal},
+  {path: ProposeNewSettings},
 ];
 
 const processes: StringIndexed = {
@@ -41,6 +44,10 @@ const processes: StringIndexed = {
   [NewProposal]: {
     processLabel: i18n.t('newProposal.title'),
     returnURL: Governance,
+  },
+  [ProposeNewSettings]: {
+    processLabel: i18n.t('settings.proposeSettings'),
+    returnURL: EditSettings,
   },
 };
 

@@ -7,16 +7,14 @@ import {
   IconLinkExternal,
   ListItemAction,
 } from '@aragon/ui-components';
+import React from 'react';
 import styled from 'styled-components';
-import React, {useMemo} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import {chains} from 'use-wallet';
 import {Transfer} from 'utils/types';
-import {useWallet} from 'hooks/useWallet';
-import {TransferTypes} from 'utils/constants';
-import {ChainInformation} from 'use-wallet/dist/cjs/types';
+import {useNetwork} from 'context/network';
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
+import {CHAIN_METADATA, TransferTypes} from 'utils/constants';
 
 type TransactionDetailProps = {
   transfer: Transfer;
@@ -30,13 +28,10 @@ const TransactionDetail: React.FC<TransactionDetailProps> = ({
   onClose,
 }) => {
   const {t} = useTranslation();
-  const {chainId} = useWallet();
+  const {network} = useNetwork();
 
-  const transactionUrl = useMemo(() => {
-    return `${
-      (chains.getChainInformation(chainId || 1) as ChainInformation).explorerUrl
-    }/tx/${transfer.transaction}`;
-  }, [chainId, transfer.transaction]);
+  const transactionUrl = `
+    ${CHAIN_METADATA[network].explorer}tx/${transfer.transaction}`;
 
   return (
     <ModalBottomSheetSwitcher isOpen={isOpen} onClose={onClose}>

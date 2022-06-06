@@ -15,6 +15,7 @@ export const Label = Template.bind({});
 Label.args = {
   label: 'Button with label',
   onClick: () => alert('clicked'),
+  disabled: false,
 };
 
 export const WithIcon = Template.bind({});

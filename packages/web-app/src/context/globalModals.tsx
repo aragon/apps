@@ -17,6 +17,7 @@ type GlobalModalsContextType = {
   isAddressesOpen: boolean;
   isWalletOpen: boolean;
   isNetworkOpen: boolean;
+  isMobileMenuOpen: boolean;
   open: (arg?: MenuTypes) => void;
   close: (arg?: MenuTypes) => void;
 };
@@ -29,6 +30,8 @@ export type MenuTypes =
   | 'default'
   | 'addresses'
   | 'wallet'
+  | 'network'
+  | 'mobileMenu'
   | 'network';
 
 type Props = Record<'children', ReactNode>;
@@ -54,6 +57,8 @@ const GlobalModalsProvider: React.FC<Props> = ({children}) => {
     useState<GlobalModalsContextType['isWalletOpen']>(false);
   const [isNetworkOpen, setNetworkOpen] =
     useState<GlobalModalsContextType['isNetworkOpen']>(false);
+  const [isMobileMenuOpen, setMobileMenuOpen] =
+    useState<GlobalModalsContextType['isMobileMenuOpen']>(false);
 
   const open = (type?: MenuTypes) => {
     switch (type) {
@@ -77,6 +82,9 @@ const GlobalModalsProvider: React.FC<Props> = ({children}) => {
         break;
       case 'network':
         setNetworkOpen(true);
+        break;
+      case 'mobileMenu':
+        setMobileMenuOpen(true);
         break;
       default:
         setIsTransferOpen(true);
@@ -107,6 +115,9 @@ const GlobalModalsProvider: React.FC<Props> = ({children}) => {
       case 'network':
         setNetworkOpen(false);
         break;
+      case 'mobileMenu':
+        setMobileMenuOpen(false);
+        break;
       default:
         setIsTransferOpen(false);
         break;
@@ -132,6 +143,7 @@ const GlobalModalsProvider: React.FC<Props> = ({children}) => {
       isAddressesOpen,
       isWalletOpen,
       isNetworkOpen,
+      isMobileMenuOpen,
       open,
       close,
     }),
@@ -144,6 +156,7 @@ const GlobalModalsProvider: React.FC<Props> = ({children}) => {
       isAddressesOpen,
       isWalletOpen,
       isNetworkOpen,
+      isMobileMenuOpen,
     ]
   );
 

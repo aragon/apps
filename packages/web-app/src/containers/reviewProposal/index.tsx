@@ -97,7 +97,7 @@ const ReviewProposal: React.FC = () => {
 
           {/* TODO: generalize types so that proper execution card can be rendered */}
           {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-          {values.actions.map((action: any, index: number) => (
+          {values.actions?.map((action: any, index: number) => (
             <CardExecution
               key={index}
               title={t('governance.executionCard.title')}

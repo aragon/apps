@@ -20,6 +20,7 @@ import {GridLayout} from 'components/layout';
 import ExploreNav from 'containers/navbar/exploreNav';
 import Footer from 'containers/exploreFooter';
 import NetworkErrorMenu from 'containers/networkErrorMenu';
+import TransferMenu from 'containers/transferMenu';
 
 const ExplorePage = lazy(() => import('pages/explore'));
 const NotFoundPage = lazy(() => import('pages/notFound'));
@@ -30,6 +31,7 @@ const GovernancePage = lazy(() => import('pages/governance'));
 const CommunityPage = lazy(() => import('pages/community'));
 const SettingsPage = lazy(() => import('pages/settings'));
 const EditSettingsPage = lazy(() => import('pages/editSettings'));
+const ProposeSettingsPage = lazy(() => import('pages/proposeSettings'));
 
 const TokensPage = lazy(() => import('pages/tokens'));
 const TransfersPage = lazy(() => import('pages/transfers'));
@@ -83,6 +85,10 @@ function App() {
               <Route path="community" element={<CommunityPage />} />
               <Route path="settings" element={<SettingsPage />} />
               <Route path="settings/edit" element={<EditSettingsPage />} />
+              <Route
+                path="settings/new-proposal"
+                element={<ProposeSettingsPage />}
+              />
               {/* Redirects the user to the dashboard page by default if no dao-specific page is specified. */}
               <Route index element={<Navigate to={'dashboard'} replace />} />
             </Route>
@@ -118,6 +124,7 @@ const DaoWrapper: React.FC = () => (
     <div className="pb-10">
       <GridLayout>
         <Outlet />
+        <TransferMenu />
       </GridLayout>
     </div>
   </>

@@ -30,9 +30,6 @@ Default.args = {
     'Succeeded',
     'Defeated',
   ],
-  onClick: () => {
-    alert('Pressing this button would allow to change DAO.');
-  },
 };
 
 export const Explore = Template.bind({});

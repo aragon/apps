@@ -100,6 +100,7 @@
     "all": "All",
     "myWallet": "My Wallet",
     "daoTreasury": "DAO Treasury",
+    "treasuryValue": "Treasury Value",
     "whitelistWallets": {
       "address": "Address",
       "addresses": "{{count}} Addresses",
@@ -549,12 +550,17 @@
     }
   },
   "settings": {
-    "newSettings": "Propose new settings",
+    "proposeSettings": "Propose new settings",
+    "proposeSettingsSubtitle": "Confirm the new settings that will be presented to the community in your proposal.",
     "editDaoSettings": "Edit DAO Settings",
     "editSubtitle": "To edit the DAO settings, fill the new data and then you have to propose this to the DAO community. If it gets approved, the new settings will get applied.",
     "resetChanges": "Reset Changes",
     "edit": "Edit Settings",
-    "new": "New Settings",
+    "newSettings": "New Settings",
+    "oldSettings": "Old Settings",
     "proposeSettingsInfo": "To make changes to the settings of this DAO, a vote must be taken via the community."
+  },
+  "dashboard": {
+    "proposalsTitle": "Proposals created"
   }
 }
