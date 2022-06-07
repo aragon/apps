@@ -43,7 +43,7 @@ export const ListItemAddress: FC<ListItemAddressProps> = ({src, tokenInfo}) => {
 
 const Container = styled.button.attrs(() => {
   const baseLayoutClasses =
-    'flex justify-between w-full border-2 border-transparent ';
+    'flex items-center justify-between w-full border-2 border-transparent ';
   const baseStyleClasses = 'bg-ui-0 p-2 tablet:p-3 rounded-xl';
   let className:
     | string
