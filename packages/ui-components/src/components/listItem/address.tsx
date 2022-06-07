@@ -49,7 +49,7 @@ const Container = styled.button.attrs(() => {
     | undefined = `${baseLayoutClasses} ${baseStyleClasses}`;
 
   const focusClasses = 'focus:outline-none focus:ring-2 focus:ring-primary-500';
-  const hoverClasses = 'hover:text-primary-500';
+  const hoverClasses = 'hover:text-primary-500 hover:shadow-100';
   const activeClasses = 'active:outline-none active:ring-0';
 
   className += ` text-ui-600 ${activeClasses} ${focusClasses} ${hoverClasses}`;
