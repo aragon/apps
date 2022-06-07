@@ -48,7 +48,7 @@ export const UseClientProvider = ({children}: {children: ReactNode}) => {
         // Remove when the SDK no longer needs the addresses of the contract
         daoFactoryAddress:
           (import.meta.env.VITE_REACT_APP_SDK_DAO_FACTORY_ADDRESS as string) ||
-          '0xa0b2B729DE73cd22406d3D5A31816985c04A7cdD',
+          '0x2290E6dF695C5272cE942015c90aAe24bFB94960',
         signer: signer,
       });
       setErc20Client(new ClientDaoERC20Voting(context));
