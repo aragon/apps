@@ -42,17 +42,20 @@ export const ListItemAddress: FC<ListItemAddressProps> = ({src, tokenInfo}) => {
 };
 
 const Container = styled.button.attrs(() => {
-  const baseLayoutClasses = 'flex justify-between w-full';
+  const baseLayoutClasses =
+    'flex justify-between w-full border-2 border-transparent ';
   const baseStyleClasses = 'bg-ui-0 p-2 tablet:p-3 rounded-xl';
   let className:
     | string
     | undefined = `${baseLayoutClasses} ${baseStyleClasses}`;
 
+  const focusVisibleClasses =
+    'focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-transparent';
   const focusClasses = 'focus:outline-none focus:ring-2 focus:ring-primary-500';
   const hoverClasses = 'hover:text-primary-500 hover:shadow-100';
-  const activeClasses = 'active:outline-none active:ring-0';
+  const activeClasses = 'active:outline-none active:border-ui-200';
 
-  className += ` text-ui-600 ${activeClasses} ${focusClasses} ${hoverClasses}`;
+  className += ` text-ui-600 ${focusVisibleClasses} ${focusClasses} ${activeClasses} ${hoverClasses}`;
 
   return {className};
 })``;
