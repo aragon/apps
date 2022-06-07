@@ -24,19 +24,19 @@ export type ListItemAddressProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 export const ListItemAddress: FC<ListItemAddressProps> = ({src, tokenInfo}) => {
   return (
     <Container data-testid="listItem-address">
-      <RightContent>
+      <LeftContent>
         <AvatarWallet src={src} />
         <p className="font-bold">{shortenAddress(src)}</p>
-      </RightContent>
+      </LeftContent>
 
-      <LeftContent>
+      <RightContent>
         {tokenInfo && (
           <p className="text-ui-500">
             {tokenInfo.amount} {tokenInfo.symbol} ({tokenInfo.percentage}%)
           </p>
         )}
         <IconLinkExternal />
-      </LeftContent>
+      </RightContent>
     </Container>
   );
 };
@@ -57,7 +57,7 @@ const Container = styled.button.attrs(() => {
   return {className};
 })``;
 
-const RightContent = styled.div.attrs({className: 'flex space-x-2'})``;
-const LeftContent = styled.div.attrs({
+const LeftContent = styled.div.attrs({className: 'flex space-x-2'})``;
+const RightContent = styled.div.attrs({
   className: 'flex space-x-2 items-center text-sm',
 })``;
