@@ -1,12 +1,9 @@
 import React from 'react';
 import {Meta, Story} from '@storybook/react';
-import {
-  IlluObject,
-  IlluObjectProps,
-} from '../src/components/illustrations/illuObject';
+import {IlluObject, IlluObjectProps} from '../src/components/illustrations';
 
 export default {
-  title: 'Components/Illustration/IlluObject',
+  title: 'Components/Illustration/Object',
   component: IlluObject,
 } as Meta;
 
