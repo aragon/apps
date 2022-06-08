@@ -1,8 +1,8 @@
 import React from 'react';
 
-import {IconType} from '../../icons';
+import {IconType} from '../icons';
 
-export type Props = {
+export type IlluObjectProps = {
   object:
     | 'action'
     | 'app'
@@ -25,7 +25,7 @@ export type Props = {
     | 'wallet';
 };
 
-export const IlluObject: React.FC<Props> = ({object}) => {
-  const Module: IconType = require('./')[object];
+export const IlluObject: React.FC<IlluObjectProps> = ({object}) => {
+  const Module: IconType = require('./object')[object];
   return <Module />;
 };

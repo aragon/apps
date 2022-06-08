@@ -2,15 +2,15 @@ import React from 'react';
 import {Meta, Story} from '@storybook/react';
 import {
   IlluObject,
-  Props,
-} from '../src/components/illustrations/object/illuObject';
+  IlluObjectProps,
+} from '../src/components/illustrations/illuObject';
 
 export default {
-  title: 'Components/Illustration',
+  title: 'Components/Illustration/IlluObject',
   component: IlluObject,
 } as Meta;
 
-const Template: Story<Props> = args => <IlluObject {...args} />;
+const Template: Story<IlluObjectProps> = args => <IlluObject {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {
