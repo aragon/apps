@@ -1,13 +1,13 @@
 import React from 'react';
 import {render, screen} from '@testing-library/react';
 
-import {IlluObject} from '../src/components/illustrations/object/illuObject';
+import {Default as IlluHuman} from '../stories/illuHuman.stories';
 
-describe('IlluObject', () => {
+describe('IlluHuman', () => {
   // eslint-disable-next-line
   function setup(args: any) {
-    render(<IlluObject {...args} />);
-    return screen.getByTestId('illu-object');
+    render(<IlluHuman {...args} />);
+    return screen.getByTestId('illu-human');
   }
 
   test('should render without crashing', () => {

@@ -4,13 +4,13 @@ import styled from 'styled-components';
 import {IconType} from '../../icons';
 
 export type IlluHumanHairProps = {
-  hair:
+  hair?:
     | 'long'
     | 'afro'
     | 'bald'
     | 'bun'
     | 'cool'
-    | 'curly-bangs'
+    | 'curly_bangs'
     | 'curly'
     | 'informal'
     | 'middle'
@@ -22,12 +22,12 @@ export type IlluHumanHairProps = {
     | 'aragon'
     | 'blocks'
     | 'chart'
-    | 'computer-correct'
+    | 'computer_correct'
     | 'computer'
     | 'correct'
-    | 'double-correct'
+    | 'double_correct'
     | 'elevating'
-    | 'sending-love'
+    | 'sending_love'
     | 'voting';
   expression:
     | 'angry'
@@ -35,73 +35,82 @@ export type IlluHumanHairProps = {
     | 'crying'
     | 'decided'
     | 'excited'
-    | 'sad-left'
-    | 'sad-right'
-    | 'smile-wink'
+    | 'sad_left'
+    | 'sad_right'
+    | 'smile_wink'
     | 'smile'
     | 'surprised'
     | 'suspecting';
-  sunglass:
-    | 'big-rounded'
-    | 'big-semirounded'
-    | 'large-stylized-xl'
-    | 'large-stylized'
+  sunglass?:
+    | 'big_rounded'
+    | 'big_semirounded'
+    | 'large_stylized_xl'
+    | 'large_stylized'
     | 'pirate'
-    | 'small-intellectual'
-    | 'small-sympathetic'
-    | 'small-weird-one'
-    | 'small-weird-two'
-    | 'thuglife-rounded'
+    | 'small_intellectual'
+    | 'small_sympathetic'
+    | 'small_weird_one'
+    | 'small_weird_two'
+    | 'thuglife_rounded'
     | 'thuglife';
-  accessory:
+  accessory?:
     | 'buddha'
-    | 'earrings-circle'
-    | 'earrings-hoops'
-    | 'earrings-rhombus'
-    | 'earrings-skull'
-    | 'earrings-thunder'
+    | 'earrings_circle'
+    | 'earrings_hoops'
+    | 'earrings_rhombus'
+    | 'earrings_skull'
+    | 'earrings_thunder'
     | 'expression'
     | 'flushed'
-    | 'head-flower'
-    | 'piercings-tattoo'
+    | 'head_flower'
+    | 'piercings_tattoo'
     | 'piercings';
+  height?: number;
+  width?: number;
 };
 
 export const IlluHuman: React.FC<IlluHumanHairProps> = ({
-  body,
-  expression,
-  hair = 'long',
-  sunglass = 'big-rounded',
-  accessory = 'buddha',
+  body = 'long',
+  expression = 'aragon',
+  hair,
+  sunglass,
+  accessory,
+  height,
+  width,
 }) => {
-  const Hair: IconType = require(`./human_hairs/${hair}`)[hair];
-  const Expression: IconType = require(`./human_expressions/${expression}`)[
-    expression
-  ];
-  const Body: IconType = require(`./human_bodies/${body.replaceAll('-', '_')}`)[
-    body.replaceAll('-', '_')
-  ];
-  const Sunglass: IconType =
-    require(`./human_sunglasses`)[sunglass.replaceAll('-', '_')];
-  const Accessory: IconType =
-    require(`./human_accessories`)[accessory.replaceAll('-', '_')];
+  const Expression: IconType = require('./human_expressions')[expression];
+  const Body: IconType = require('./human_bodies')[body];
+  const Hair: IconType = hair ? require('./human_hairs')[hair] : null;
+  const Sunglass: IconType = sunglass
+    ? require('./human_sunglasses')[sunglass]
+    : null;
+  const Accessory: IconType = accessory
+    ? require('./human_accessories')[accessory]
+    : null;
+
   return (
     <Container data-testid="illu-human">
+      {hair && (
+        <Item>
+          <Hair {...{height, width}} />
+        </Item>
+      )}
       <Item>
-        <Hair />
+        <Expression {...{height, width}} />
       </Item>
       <Item>
-        <Expression />
+        <Body {...{height, width}} />
       </Item>
-      <Item>
-        <Body />
-      </Item>
-      <Item>
-        <Sunglass />
-      </Item>
-      <Item>
-        <Accessory />
-      </Item>
+      {Sunglass && (
+        <Item>
+          <Sunglass {...{height, width}} />
+        </Item>
+      )}
+      {Accessory && (
+        <Item>
+          <Accessory {...{height, width}} />
+        </Item>
+      )}
     </Container>
   );
 };

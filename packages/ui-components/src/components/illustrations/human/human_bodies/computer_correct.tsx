@@ -1,7 +1,7 @@
 import React from 'react';
 import {IconType} from '../../../icons';
 
-export const computer_correct: IconType = ({
+export const ComputerCorrect: IconType = ({
   height = 160,
   width = 160,
   ...props

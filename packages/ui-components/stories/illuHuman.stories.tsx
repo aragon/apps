@@ -11,8 +11,11 @@ const Template: Story<IlluHumanHairProps> = args => <IlluHuman {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {
-  body: 'Chart',
+  body: 'chart',
   expression: 'casual',
   hair: 'long',
-  sunglass: 'big-rounded',
+  sunglass: 'big_rounded',
+  accessory: 'earrings_circle',
+  width: 800,
+  height: 450,
 };

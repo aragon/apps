@@ -1,0 +1,11 @@
+export {Angry as angry} from './angry';
+export {Casual as casual} from './casual';
+export {Crying as crying} from './crying';
+export {Decided as decided} from './decided';
+export {Excited as excited} from './excited';
+export {SadLeft as sad_left} from './sad_left';
+export {SadRight as sad_right} from './sad_right';
+export {SmileWink as smile_wink} from './smile_wink';
+export {Smile as smile} from './smile';
+export {Surprised as surprised} from './surprised';
+export {Suspecting as suspecting} from './suspecting';

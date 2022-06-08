@@ -1,7 +1,7 @@
 import React from 'react';
 import {IconType} from '../../../icons';
 
-export const sending_love: IconType = ({
+export const SendingLove: IconType = ({
   height = 160,
   width = 160,
   ...props

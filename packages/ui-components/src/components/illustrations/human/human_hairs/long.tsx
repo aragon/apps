@@ -1,7 +1,7 @@
 import React from 'react';
 import {IconType} from '../../../icons';
 
-export const long: IconType = ({height = 160, width = 160, ...props}) => {
+export const Long: IconType = ({height = 160, width = 160, ...props}) => {
   return (
     <svg
       width={width}
