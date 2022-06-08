@@ -27,5 +27,5 @@ export type IlluObjectProps = {
 
 export const IlluObject: React.FC<IlluObjectProps> = ({object}) => {
   const Module: IconType = require('./object')[object];
-  return <Module />;
+  return <Module data-testid="illu-object" />;
 };
