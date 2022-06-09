@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import {generatePath, useNavigate} from 'react-router-dom';
-import {ActionListItem, IconExpand} from '@aragon/ui-components';
+import {ActionListItem, ButtonText, IconExpand} from '@aragon/ui-components';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 
 import Hero from 'containers/hero';
@@ -12,6 +12,8 @@ import {DaoExplorer} from 'containers/daoExplorer';
 import ActiveProposalsExplore from 'containers/activeProposalsExplore';
 import useScreen from 'hooks/useScreen';
 import {GridLayout} from 'components/layout';
+import {useGlobalModalContext} from 'context/globalModals';
+import ManageWalletsModal from 'containers/manageWalletsModal';
 
 const existingDaos = [
   '0x5aa80e80fd670393d625b70ec57b81226a274646',
@@ -23,6 +25,7 @@ const Explore: React.FC = () => {
 
   // Temporary; for QA-purposes
   const {isMobile} = useScreen();
+  const {open} = useGlobalModalContext();
 
   return (
     <>
@@ -63,6 +66,12 @@ const Explore: React.FC = () => {
               }
             />
           </TemporarySection>
+          <ButtonText
+            label="Open Manage Wallet Modal"
+            onClick={() => open('manageWallet')}
+            className="mx-auto"
+          />
+          <ManageWalletsModal />
         </ContentWrapper>
       </GridLayout>
     </>
