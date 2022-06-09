@@ -1,72 +1,72 @@
-import React, {useState, useCallback, useMemo} from 'react';
+import React, {useState, useMemo} from 'react';
 import {
-  VotersTable,
   SearchInput,
   CheckboxListItem,
   ButtonText,
+  CheckboxSimple,
 } from '@aragon/ui-components';
 import styled from 'styled-components';
-import {useFormContext} from 'react-hook-form';
 import {useTranslation} from 'react-i18next';
 
-import {useWallet} from 'hooks/useWallet';
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 import {useGlobalModalContext} from 'context/globalModals';
 import {shortenAddress} from '@aragon/ui-components/src/utils/addresses';
-import {getUserFriendlyWalletLabel} from 'utils/library';
+
+const wallets = [
+  'web3rules.eth',
+  '0x10656c07e857B7f3338EA26ECD9A0936a24c0ae3',
+  '0x13456c07e857B7f3338EA26ECD9A0936a24c0fd1',
+  'dao.eth',
+];
 
 type ManageWalletsModalProps = {
-  // tokenMembership: boolean;
+  addWalletCallback: (wallets: Array<string>) => void;
 };
 
-const ManageWalletsModal: React.FC<ManageWalletsModalProps> = () => {
-  const {address: connectedWalletAddress} = useWallet();
+const ManageWalletsModal: React.FC<ManageWalletsModalProps> = ({
+  addWalletCallback,
+}) => {
   const [searchValue, setSearchValue] = useState('');
-  const [page, setPage] = useState<number>(1);
+  const [selectedWallets, setSelectedWallets] = useState<
+    Record<string, boolean>
+  >({});
+  const [selectAll, setSelectAll] = useState(false);
   const {isManageWalletOpen, close} = useGlobalModalContext();
   const {t} = useTranslation();
-  // const {getValues} = useFormContext();
-  // const {wallets, tokenSymbol, whitelistWallets} = getValues();
 
-  // const filterValidator = useCallback(
-  //   wallet => {
-  //     if (searchValue !== '') {
-  //       const re = new RegExp(searchValue, 'i');
-  //       return wallet?.address?.match(re);
-  //     }
-  //     return true;
-  //   },
-  //   [searchValue]
-  // );
+  const filteredWallets = useMemo(() => {
+    if (searchValue !== '') {
+      const re = new RegExp(searchValue, 'i');
+      return wallets.reduce((tempSelectedWallets, wallet) => {
+        wallet.match(re) && tempSelectedWallets.push(wallet);
+        return tempSelectedWallets;
+      }, [] as Array<string>);
+    } else {
+      return wallets;
+    }
+  }, [searchValue]);
 
-  // const filteredAddressList = useMemo(() => {
-  //   return (tokenMembership ? wallets : whitelistWallets)
-  //     ?.filter(filterValidator)
-  //     .map(({address, amount}: {address: string; amount: string}) => ({
-  //       wallet: getUserFriendlyWalletLabel(
-  //         address,
-  //         connectedWalletAddress || '',
-  //         t
-  //       ),
-  //       tokenAmount: `${amount} ${tokenSymbol}`,
-  //     }));
-  // }, [
-  //   tokenMembership,
-  //   wallets,
-  //   whitelistWallets,
-  //   filterValidator,
-  //   connectedWalletAddress,
-  //   t,
-  //   tokenSymbol,
-  // ]);
+  const handleSelectAll = () => {
+    setSelectedWallets(
+      wallets.reduce((tempSelectedWallets, wallet) => {
+        tempSelectedWallets[wallet] = true;
+        return tempSelectedWallets;
+      }, {} as Record<string, boolean>)
+    );
+    setSelectAll(true);
+  };
 
-  /*************************************************
-   *                    Render                     *
-   *************************************************/
+  const handleClose = () => {
+    setSearchValue('');
+    setSelectedWallets({});
+    setSelectAll(false);
+    close('manageWallet');
+  };
+
   return (
     <ModalBottomSheetSwitcher
       isOpen={isManageWalletOpen}
-      onClose={() => close('manageWallet')}
+      onClose={handleClose}
       data-testid="manageWalletModal"
     >
       <ModalHeader>
@@ -79,30 +79,58 @@ const ManageWalletsModal: React.FC<ManageWalletsModalProps> = () => {
         />
       </ModalHeader>
       <Container>
-        {/* {filteredAddressList && filteredAddressList.length !== 0 ? (
-          <VotersTable
-            voters={filteredAddressList.slice(0, page * 5)}
-            {...(tokenMembership && {showAmount: true})}
-            {...(page * 5 < filteredAddressList.length && {
-              onLoadMore: () => setPage(prePage => prePage + 1),
-            })}
-          />
-        ) : (
-          // this view is temporary until designs arrive
-          <span>{t('AddressModal.noAddresses')}</span>
-        )} */}
-        <div className="space-y-1.5">
-          <CheckboxListItem label="web3rules.eth" multiSelect />
-          <CheckboxListItem
-            label={shortenAddress('0x10656c07e857B7f3338EA26ECD9A0936a24c0ae3')}
+        <SelectAllContainer>
+          <CheckboxSimple
+            label="Select All"
             multiSelect
+            iconLeft={false}
+            state={selectAll ? 'active' : 'default'}
+            onClick={handleSelectAll}
           />
+        </SelectAllContainer>
+
+        <div className="space-y-1.5">
+          {filteredWallets.map(wallet => (
+            <CheckboxListItem
+              key={wallet}
+              label={shortenAddress(wallet)}
+              multiSelect
+              state={selectedWallets[wallet] ? 'active' : 'default'}
+              onClick={() => {
+                const tempSelectedWallets = {...selectedWallets};
+                tempSelectedWallets[wallet]
+                  ? delete tempSelectedWallets[wallet]
+                  : (tempSelectedWallets[wallet] = true);
+                setSelectedWallets(tempSelectedWallets);
+
+                if (
+                  Object.keys(tempSelectedWallets).length !== wallets.length
+                ) {
+                  setSelectAll(false);
+                }
+              }}
+            />
+          ))}
         </div>
       </Container>
-      <div className="flex py-2 px-3 space-x-2 bg-white">
-        <ButtonText label="Add 2 Wallets" size="large" />
-        <ButtonText label="Cancel" mode="secondary" size="large" bgWhite />
-      </div>
+
+      <ButtonContainer>
+        <ButtonText
+          label={`Add ${Object.keys(selectedWallets).length} Wallets`}
+          size="large"
+          onClick={() => {
+            addWalletCallback(Object.keys(selectedWallets));
+            close('manageWallet');
+          }}
+        />
+        <ButtonText
+          label="Cancel"
+          mode="secondary"
+          size="large"
+          bgWhite
+          onClick={handleClose}
+        />
+      </ButtonContainer>
     </ModalBottomSheetSwitcher>
   );
 };
@@ -119,4 +147,12 @@ const ModalHeader = styled.div.attrs({
 
 const Container = styled.div.attrs({
   className: 'p-3 max-h-96 overflow-auto',
+})``;
+
+const SelectAllContainer = styled.div.attrs({
+  className: 'flex flex-row-reverse mb-2.5 mr-2.25',
+})``;
+
+const ButtonContainer = styled.div.attrs({
+  className: 'flex py-2 px-3 space-x-2 bg-white',
 })``;

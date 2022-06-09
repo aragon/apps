@@ -66,12 +66,15 @@ const Explore: React.FC = () => {
               }
             />
           </TemporarySection>
+          {/* Button and ManageWalletsModal are here for demo purposes only. will be removed before merging */}
           <ButtonText
             label="Open Manage Wallet Modal"
             onClick={() => open('manageWallet')}
             className="mx-auto"
           />
-          <ManageWalletsModal />
+          <ManageWalletsModal
+            addWalletCallback={wallets => console.log(wallets)}
+          />
         </ContentWrapper>
       </GridLayout>
     </>
