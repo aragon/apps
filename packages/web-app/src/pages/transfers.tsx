@@ -15,7 +15,6 @@ import {TransferSectionWrapper} from 'components/wrappers';
 import {TransferTypes} from 'utils/constants';
 import {Loading} from 'components/temporary';
 import {useDaoParam} from 'hooks/useDaoParam';
-import TransferMenu from 'containers/transferMenu';
 import {useTransactionDetailContext} from 'context/transactionDetail';
 
 const Transfers: React.FC = () => {
@@ -177,7 +176,6 @@ const Transfers: React.FC = () => {
           )}
         </div>
       </PageWrapper>
-      <TransferMenu />
     </>
   );
 };

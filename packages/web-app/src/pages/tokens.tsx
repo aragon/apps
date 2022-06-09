@@ -11,7 +11,6 @@ import type {VaultToken} from 'utils/types';
 import {useGlobalModalContext} from 'context/globalModals';
 import {Loading} from 'components/temporary';
 import {useDaoParam} from 'hooks/useDaoParam';
-import TransferMenu from 'containers/transferMenu';
 
 const Tokens: React.FC = () => {
   const {data: dao, loading} = useDaoParam();
@@ -52,7 +51,6 @@ const Tokens: React.FC = () => {
         />
         <TokenList tokens={filteredTokens} />
       </div>
-      <TransferMenu />
     </PageWrapper>
   );
 };
