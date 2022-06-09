@@ -3,7 +3,7 @@ import {render, screen} from '@testing-library/react';
 
 import {IlluObject} from '../src/components/illustrations/illuObject';
 
-describe('TextInput', () => {
+describe('IlluObject', () => {
   // eslint-disable-next-line
   function setup(args: any) {
     render(<IlluObject {...args} />);
