@@ -13,7 +13,7 @@ export {LightBulb as lightbulb} from './lightbulb';
 export {MagnifyingGlass as magnifying_glass} from './magnifyingGlass';
 export {Security as security} from './security';
 export {Settings as settings} from './settings';
-export {SmartContracts as smart_contracts} from './smartContracts';
+export {SmartContract as smart_contract} from './smartContract';
 export {Users as users} from './users';
 export {Wagmi as wagmi} from './wagmi';
 export {Wallet as wallet} from './wallet';

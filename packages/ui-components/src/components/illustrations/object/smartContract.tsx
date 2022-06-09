@@ -1,7 +1,7 @@
 import React from 'react';
 import {IconType} from '../../icons';
 
-export const SmartContracts: IconType = ({
+export const SmartContract: IconType = ({
   height = 160,
   width = 160,
   ...props
