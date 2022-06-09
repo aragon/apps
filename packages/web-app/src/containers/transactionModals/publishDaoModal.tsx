@@ -6,11 +6,12 @@ import {
   Spinner,
 } from '@aragon/ui-components';
 import styled from 'styled-components';
-import {formatEther} from 'ethers/lib/utils';
 import {useTranslation} from 'react-i18next';
 
-import {TransactionState} from 'utils/constants';
+import {CHAIN_METADATA, TransactionState} from 'utils/constants';
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
+import {useNetwork} from 'context/network';
+import {formatUnits} from 'utils/library';
 
 type PublishDaoModalProps = {
   state: TransactionState;
@@ -41,6 +42,7 @@ const PublishDaoModal: React.FC<PublishDaoModalProps> = ({
   tokenPrice,
 }) => {
   const {t} = useTranslation();
+  const {network} = useNetwork();
 
   const label = {
     [TransactionState.WAITING]: t('TransactionModal.publishDaoButtonLabel'),
@@ -49,22 +51,27 @@ const PublishDaoModal: React.FC<PublishDaoModalProps> = ({
     [TransactionState.ERROR]: t('TransactionModal.tryAgain'),
   };
 
+  const nativeCurrency = CHAIN_METADATA[network].nativeCurrency;
+
   const totalCost = useMemo(
     () =>
       new Intl.NumberFormat('en-US', {
         style: 'currency',
         currency: 'USD',
-      }).format(Number(formatEther(averageFee.toString())) * tokenPrice),
-    [averageFee, tokenPrice]
+      }).format(
+        Number(formatUnits(averageFee.toString(), nativeCurrency.decimals)) *
+          tokenPrice
+      ),
+    [averageFee, nativeCurrency.decimals, tokenPrice]
   );
 
   const formattedAverage = `${Number(
-    formatEther(averageFee.toString())
-  ).toFixed(8)} ETH`;
+    formatUnits(averageFee.toString(), nativeCurrency.decimals)
+  ).toFixed(8)} ${nativeCurrency.symbol}`;
 
-  const formattedMax = `${Number(formatEther(maxFee.toString())).toFixed(
-    8
-  )} ETH`;
+  const formattedMax = `${Number(
+    formatUnits(maxFee.toString(), nativeCurrency.decimals)
+  ).toFixed(8)} ${nativeCurrency.symbol}`;
 
   return (
     <ModalBottomSheetSwitcher

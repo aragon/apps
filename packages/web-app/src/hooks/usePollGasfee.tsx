@@ -1,5 +1,5 @@
 import {constants} from 'ethers';
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {IGasFeeEstimation} from '@aragon/sdk-client/dist/internal/interfaces/dao';
 
 import {useNetwork} from 'context/network';
@@ -13,14 +13,16 @@ import {fetchTokenPrice} from 'services/prices';
  * does not yet poll for the gas fees on interval
  *
  * @param estimationFunction function that estimates gas fee
- * @returns the average and maximum gas fee estimations as well as the
- * native token price in USD
+ * @returns the average and maximum gas fee estimations, native token price
+ * in USD, an error object if an error occurred while estimating,
+ * and a function to stop the interval polling
  */
 export const usePollGasFee = (
   estimationFunction: () => Promise<IGasFeeEstimation | undefined>,
   shouldPoll = true
 ) => {
   const {network} = useNetwork();
+  const [error, setError] = useState<Error | undefined>(undefined);
   const [maxFee, setMaxFee] = useState<BigInt>(BigInt(0));
   const [averageFee, setAverageFee] = useState<BigInt>(BigInt(0));
   const [tokenPrice, setTokenPrice] = useState<number>(0);
@@ -37,13 +39,20 @@ export const usePollGasFee = (
         setTokenPrice(results[1] || 0);
         setMaxFee(results[0]?.max || BigInt(0));
         setAverageFee(results[0]?.max || BigInt(0));
-      } catch (error) {
-        console.log('Error fetching gas fees and price', error);
+      } catch (err) {
+        setError(err as Error);
+        console.log('Error fetching gas fees and price', err);
       }
     }
 
     if (shouldPoll) getFeesAndPrice();
   }, [averageFee, estimationFunction, maxFee, network, shouldPoll, tokenPrice]);
 
-  return {tokenPrice, maxFee, averageFee};
+  // stop polling in anticipation for polling at interval
+  const stopPolling = useCallback(() => {
+    setMaxFee(BigInt(0));
+    setAverageFee(BigInt(0));
+    setTokenPrice(0);
+  }, []);
+  return {error, tokenPrice, maxFee, averageFee, stopPolling};
 };

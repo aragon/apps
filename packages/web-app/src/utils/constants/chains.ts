@@ -130,7 +130,7 @@ export const CHAIN_METADATA: ChainList = {
     ],
     nativeCurrency: {
       name: 'Rinkeby Ether',
-      symbol: 'RIN',
+      symbol: 'ETH',
       decimals: 18,
     },
   },

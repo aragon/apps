@@ -6,10 +6,10 @@ import {
   ASSET_PLATFORMS,
   BASE_URL,
   DEFAULT_CURRENCY,
+  NATIVE_TOKEN_ID,
   SupportedNetworks,
   TimeFilter,
 } from 'utils/constants';
-import {isETH} from 'utils/tokens';
 import {TOKEN_DATA_QUERY} from 'queries/coingecko/tokenData';
 
 export type TokenPrices = {
@@ -100,7 +100,7 @@ async function fetchTokenData(
 
   // build url based on whether token is native token
   const url = isNativeToken
-    ? '/coins/ethereum'
+    ? `/coins/${getNativeTokenId(platformId, network)}`
     : `/coins/${platformId}/contract/${address}`;
 
   const {data, error} = await client.query({
@@ -132,16 +132,20 @@ async function fetchTokenPrice(
   address: Address,
   network: SupportedNetworks
 ): Promise<number | undefined> {
+  // check if token address is address zero, ie, native token of platform
+  const isNativeToken = address === constants.AddressZero;
+
   // network unsupported, or testnet
   const platformId = ASSET_PLATFORMS[network];
-  const isEther = isETH(address);
-
-  if (!platformId && !isEther) return;
+  if (!platformId && !isNativeToken) return;
 
   // build url based on whether token is ethereum
   const endPoint = `/simple/token_price/${platformId}?vs_currencies=usd&contract_addresses=`;
-  const url = isEther
-    ? `${BASE_URL}/simple/price?ids=ethereum&vs_currencies=usd`
+  const url = isNativeToken
+    ? `${BASE_URL}/simple/price?ids=${getNativeTokenId(
+        platformId,
+        network
+      )}&vs_currencies=usd`
     : `${BASE_URL}${endPoint}${address}`;
 
   try {
@@ -154,4 +158,23 @@ async function fetchTokenPrice(
   }
 }
 
+/**
+ * Get native token id for a given platform and network
+ *
+ * Note: Currently, we are allowing the native token of test networks
+ * to be priced.
+ * @param platformId platform id
+ * @param network network name
+ * @returns native token id
+ */
+function getNativeTokenId(
+  platformId: string | null,
+  network: SupportedNetworks
+): string {
+  if (platformId === ASSET_PLATFORMS.polygon || network === 'mumbai') {
+    return NATIVE_TOKEN_ID.polygon;
+  }
+
+  return NATIVE_TOKEN_ID.default;
+}
 export {fetchTokenMarketData, fetchTokenData, fetchTokenPrice};

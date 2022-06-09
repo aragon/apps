@@ -71,7 +71,7 @@ const CreateDaoProvider: React.FC<Props> = ({children}) => {
         );
   }, [daoCreationData, erc20?.estimate, membership, whitelist?.estimate]);
 
-  const {tokenPrice, maxFee, averageFee} = usePollGasFee(
+  const {tokenPrice, maxFee, averageFee, stopPolling} = usePollGasFee(
     estimateCreationFees,
     shouldPoll
   );
@@ -129,8 +129,10 @@ const CreateDaoProvider: React.FC<Props> = ({children}) => {
       case TransactionState.SUCCESS:
         navigate(Landing);
         break;
-      default:
+      default: {
         setShowModal(false);
+        stopPolling();
+      }
     }
   };
 
