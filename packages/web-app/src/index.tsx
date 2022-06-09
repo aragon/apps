@@ -18,6 +18,7 @@ import 'tailwindcss/tailwind.css';
 import {UseCacheProvider} from 'hooks/useCache';
 import {UseClientProvider} from 'hooks/useClient';
 import {PrivacyContextProvider} from 'context/privacyContext';
+import {TransactionDetailProvider} from 'context/transactionDetail';
 
 const providerOptions: IProviderOptions = {
   walletconnect: {
@@ -40,17 +41,19 @@ ReactDOM.render(
                 <UseClientProvider>
                   <UseCacheProvider>
                     <ProvidersProvider>
-                      <WalletMenuProvider>
-                        <GlobalModalsProvider>
-                          {/* By default, rinkeby client is chosen, each useQuery needs to pass the network client it needs as argument
+                      <TransactionDetailProvider>
+                        <WalletMenuProvider>
+                          <GlobalModalsProvider>
+                            {/* By default, rinkeby client is chosen, each useQuery needs to pass the network client it needs as argument
                       For REST queries using apollo, there's no need to pass a different client to useQuery  */}
-                          <ApolloProvider
-                            client={client['rinkeby'] || rinkebyClient} //TODO remove fallback when all clients are defined
-                          >
-                            <App />
-                          </ApolloProvider>
-                        </GlobalModalsProvider>
-                      </WalletMenuProvider>
+                            <ApolloProvider
+                              client={client['rinkeby'] || rinkebyClient} //TODO remove fallback when all clients are defined
+                            >
+                              <App />
+                            </ApolloProvider>
+                          </GlobalModalsProvider>
+                        </WalletMenuProvider>
+                      </TransactionDetailProvider>
                     </ProvidersProvider>
                   </UseCacheProvider>
                 </UseClientProvider>

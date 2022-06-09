@@ -9,7 +9,6 @@ import React, {useCallback, useMemo, useState} from 'react';
 import {Transfer} from 'utils/types';
 import TransferList from 'components/transferList';
 import {PageWrapper} from 'components/wrappers';
-import TransactionDetail from 'containers/transactionDetail';
 import useCategorizedTransfers from 'hooks/useCategorizedTransfers';
 import {useGlobalModalContext} from 'context/globalModals';
 import {TransferSectionWrapper} from 'components/wrappers';
@@ -17,33 +16,23 @@ import {TransferTypes} from 'utils/constants';
 import {Loading} from 'components/temporary';
 import {useDaoParam} from 'hooks/useDaoParam';
 import TransferMenu from 'containers/transferMenu';
+import {useTransactionDetailContext} from 'context/transactionDetail';
 
 const Transfers: React.FC = () => {
-  const {data: dao, loading} = useDaoParam();
-  const {t, i18n} = useTranslation();
   const {open} = useGlobalModalContext();
+  const {t, i18n} = useTranslation();
+  const {data: dao, loading} = useDaoParam();
+  const {handleTransferClicked} = useTransactionDetailContext();
 
   const {data: categorizedTransfers, totalTransfers} =
     useCategorizedTransfers(dao);
 
-  // Transaction detail
-  const [selectedTransfer, setSelectedTransfer] = useState<Transfer>(
-    {} as Transfer
-  );
-  const [showTransactionDetail, setShowTransactionDetail] =
-    useState<boolean>(false);
   const [filterValue, setFilterValue] = useState('');
   const [searchValue, setSearchValue] = useState('');
 
   /*************************************************
    *             Callbacks and Handlers            *
    *************************************************/
-
-  const handleTransferClicked = useCallback((transfer: Transfer) => {
-    setSelectedTransfer(transfer);
-    setShowTransactionDetail(true);
-  }, []);
-
   const handleButtonGroupChange = (selected: string) => {
     const val = selected === 'all' ? '' : selected;
     setFilterValue(val);
@@ -189,11 +178,6 @@ const Transfers: React.FC = () => {
         </div>
       </PageWrapper>
       <TransferMenu />
-      <TransactionDetail
-        isOpen={showTransactionDetail}
-        onClose={() => setShowTransactionDetail(false)}
-        transfer={selectedTransfer}
-      />
     </>
   );
 };

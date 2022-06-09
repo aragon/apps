@@ -114,11 +114,6 @@ const SelectChainForm: React.FC = () => {
             name="blockchain"
             rules={{required: true}}
             control={control}
-            defaultValue={{
-              id: CHAIN_METADATA['ethereum'].id,
-              label: CHAIN_METADATA['ethereum'].name,
-              network: 'main',
-            }}
             render={({field}) => (
               <ListItemBlockchain
                 onClick={() => {

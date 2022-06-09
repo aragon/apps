@@ -17,7 +17,7 @@ type GlobalModalsContextType = {
   isAddressesOpen: boolean;
   isWalletOpen: boolean;
   isNetworkOpen: boolean;
-  isDepositOpen: boolean;
+  isMobileMenuOpen: boolean;
   open: (arg?: MenuTypes) => void;
   close: (arg?: MenuTypes) => void;
 };
@@ -31,7 +31,8 @@ export type MenuTypes =
   | 'addresses'
   | 'wallet'
   | 'network'
-  | 'deposit';
+  | 'mobileMenu'
+  | 'network';
 
 type Props = Record<'children', ReactNode>;
 
@@ -56,10 +57,8 @@ const GlobalModalsProvider: React.FC<Props> = ({children}) => {
     useState<GlobalModalsContextType['isWalletOpen']>(false);
   const [isNetworkOpen, setNetworkOpen] =
     useState<GlobalModalsContextType['isNetworkOpen']>(false);
-
-  /**Temporary added here, will remove once deposit context created*/
-  const [isDepositOpen, setDepositOpen] =
-    useState<GlobalModalsContextType['isDepositOpen']>(false);
+  const [isMobileMenuOpen, setMobileMenuOpen] =
+    useState<GlobalModalsContextType['isMobileMenuOpen']>(false);
 
   const open = (type?: MenuTypes) => {
     switch (type) {
@@ -84,8 +83,8 @@ const GlobalModalsProvider: React.FC<Props> = ({children}) => {
       case 'network':
         setNetworkOpen(true);
         break;
-      case 'deposit':
-        setDepositOpen(true);
+      case 'mobileMenu':
+        setMobileMenuOpen(true);
         break;
       default:
         setIsTransferOpen(true);
@@ -116,8 +115,8 @@ const GlobalModalsProvider: React.FC<Props> = ({children}) => {
       case 'network':
         setNetworkOpen(false);
         break;
-      case 'deposit':
-        setDepositOpen(false);
+      case 'mobileMenu':
+        setMobileMenuOpen(false);
         break;
       default:
         setIsTransferOpen(false);
@@ -144,7 +143,7 @@ const GlobalModalsProvider: React.FC<Props> = ({children}) => {
       isAddressesOpen,
       isWalletOpen,
       isNetworkOpen,
-      isDepositOpen,
+      isMobileMenuOpen,
       open,
       close,
     }),
@@ -157,7 +156,7 @@ const GlobalModalsProvider: React.FC<Props> = ({children}) => {
       isAddressesOpen,
       isWalletOpen,
       isNetworkOpen,
-      isDepositOpen,
+      isMobileMenuOpen,
     ]
   );
 

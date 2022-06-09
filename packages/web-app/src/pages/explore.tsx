@@ -5,7 +5,7 @@ import {ActionListItem, IconExpand} from '@aragon/ui-components';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 
 import Hero from 'containers/hero';
-import {Finance} from 'utils/paths';
+import {Dashboard} from 'utils/paths';
 import Carousel from 'containers/carousel';
 import {TemporarySection} from 'components/temporary';
 import {DaoExplorer} from 'containers/daoExplorer';
@@ -14,8 +14,8 @@ import useScreen from 'hooks/useScreen';
 import {GridLayout} from 'components/layout';
 
 const existingDaos = [
-  '0x74db053cac4e803096e912251cf3e847ae92b8ba',
-  '0xa125220cce787500d3fc8bff83a959a3a84fe4f4',
+  '0x5aa80e80fd670393d625b70ec57b81226a274646',
+  '0xa2e993c4fd68fda9e28405cb9d8411a09117a47c',
 ];
 
 const Explore: React.FC = () => {
@@ -43,7 +43,7 @@ const Explore: React.FC = () => {
                 background={'white'}
                 onClick={() => {
                   navigate(
-                    generatePath(Finance, {
+                    generatePath(Dashboard, {
                       network: 'rinkeby',
                       dao: dao,
                     })
@@ -58,7 +58,7 @@ const Explore: React.FC = () => {
               background={'white'}
               onClick={() =>
                 navigate(
-                  generatePath(Finance, {network: 'rinkeby', dao: '0x1234'})
+                  generatePath(Dashboard, {network: 'rinkeby', dao: '0x1234'})
                 )
               }
             />

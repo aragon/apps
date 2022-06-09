@@ -19,7 +19,7 @@ export type ListItemProps = {
    * The function that will be called when this list item is selected (via
    * keyboard, mouse, etc).
    */
-  callback: (event: Event) => void;
+  callback?: (event: Event) => void;
 };
 
 export type CustomDropdownContentProps = Omit<

@@ -39,7 +39,7 @@ jobs:
       - name: Install node
         uses: actions/setup-node@v1
         with:
-          node-version: 14
+          node-version: 16
       - name: Build ui-components
         run: |
           cd ../ui-components
@@ -58,12 +58,12 @@ jobs:
           VITE_REACT_APP_DEPLOY_VERSION: ${{ github.sha }}
           VITE_REACT_APP_DEPLOY_ENVIRONMENT: ${{ needs.set-environment.outputs.environment }}
           VITE_REACT_APP_ANALYTICS_KEY: ${{ secrets.VITE_REACT_APP_ANALYTICS_KEY }}
-          VITE_REACT_APP_RPC: "mainnet.eth.aragon.network"
+          VITE_REACT_APP_RPC: 'mainnet.eth.aragon.network'
           # TODO
           # Remove when the SDK no longer needs the addresses of the contract
-          VITE_REACT_APP_SDK_DAO_FACTORY_ADDRESS: "0xa0b2B729DE73cd22406d3D5A31816985c04A7cdD"
+          VITE_REACT_APP_SDK_DAO_FACTORY_ADDRESS: '0x2290E6dF695C5272cE942015c90aAe24bFB94960'
           # "address1,address2,address3,...,addressN"
-          VITE_REACT_APP_SDK_WEB3_PROVIDERS: "https://eth-rinkeby.alchemyapi.io/v2/bgIqe2NxazpzsjfmVmhj3aS3j_HZ9mpr"
+          VITE_REACT_APP_SDK_WEB3_PROVIDERS: 'https://eth-rinkeby.alchemyapi.io/v2/bgIqe2NxazpzsjfmVmhj3aS3j_HZ9mpr'
           NODE_OPTIONS: '--max-old-space-size=6656'
       - name: Activate rinkeby's fleek
         env:

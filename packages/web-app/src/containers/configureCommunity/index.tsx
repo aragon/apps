@@ -49,8 +49,8 @@ const ConfigureCommunity: React.FC = () => {
       {membership === 'token' && (
         <FormItem>
           <Label
-            label={t('labels.minimumApproval')}
-            helpText={t('createDAO.step4.minimumApprovalSubtitle')}
+            label={t('labels.minimumParticipation')}
+            helpText={t('createDAO.step4.minimumParticipationSubtitle')}
           />
           <Controller
             name="minimumApproval"
@@ -145,8 +145,8 @@ const ConfigureCommunity: React.FC = () => {
       {/* Support */}
       <FormItem>
         <Label
-          label={t('labels.support')}
-          helpText={t('createDAO.step4.supportSubtitle')}
+          label={t('labels.approvalThreshold')}
+          helpText={t('createDAO.step4.minimumApprovalSubtitle')}
         />
 
         <Controller
@@ -182,7 +182,7 @@ const ConfigureCommunity: React.FC = () => {
       {/* Duration */}
       <FormItem>
         <Label
-          label={t('labels.duration')}
+          label={t('labels.minimumDuration')}
           helpText={t('createDAO.step4.durationSubtitle')}
         />
         <DurationContainer>

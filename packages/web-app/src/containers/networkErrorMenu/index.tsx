@@ -14,7 +14,7 @@ import {shortenAddress} from '@aragon/ui-components/src/utils/addresses';
 import {handleClipboardActions} from 'utils/library';
 import useScreen from 'hooks/useScreen';
 import {useTranslation, Trans} from 'react-i18next';
-import WrongNetwork from 'public/wrongNetwork.svg';
+import WalletIcon from 'public/wallet.svg';
 import {useNetwork} from 'context/network';
 import {useSwitchNetwork} from 'hooks/useSwitchNetwork';
 import {CHAIN_METADATA} from 'utils/constants';
@@ -58,7 +58,7 @@ const NetworkErrorMenu = () => {
         )}
       </ModalHeader>
       <ModalBody>
-        <StyledImage src={WrongNetwork} />
+        <StyledImage src={WalletIcon} />
         <WarningContainer>
           <WarningTitle>{t('alert.wrongNetwork.title')}</WarningTitle>
           <WarningDescription>
@@ -99,7 +99,7 @@ const ModalHeader = styled.div.attrs({
     0px 0px 2px rgba(31, 41, 51, 0.06), 0px 0px 1px rgba(31, 41, 51, 0.04);
 `;
 
-const Title = styled.div.attrs({
+export const Title = styled.div.attrs({
   className: 'flex-1 font-bold text-ui-800',
 })``;
 
@@ -115,19 +115,19 @@ const AddressContainer = styled.div.attrs({
   className: 'flex flex-col',
 })``;
 
-const ModalBody = styled.div.attrs({
+export const ModalBody = styled.div.attrs({
   className: 'flex flex-col px-3 pb-3',
 })``;
 
-const StyledImage = styled.img.attrs({
+export const StyledImage = styled.img.attrs({
   className: 'h-20',
 })``;
 
-const WarningContainer = styled.div.attrs({
+export const WarningContainer = styled.div.attrs({
   className: 'flex flex-col justify-center items-center space-y-1.5 mb-3',
 })``;
 
-const WarningTitle = styled.h2.attrs({
+export const WarningTitle = styled.h2.attrs({
   className: 'text-xl font-bold text-ui-800',
 })``;
 

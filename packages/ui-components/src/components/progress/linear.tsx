@@ -5,9 +5,7 @@ import styled from 'styled-components';
 export const LinearProgress: React.FC<
   Omit<React.ProgressHTMLAttributes<HTMLProgressElement>, 'className'>
 > = ({max, value, ...props}) => {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-  // @ts-ignore
-  const val = value / max;
+  const val = (value as number) / (max as number);
   return <Progress max={1} value={val} {...props} />;
 };
 

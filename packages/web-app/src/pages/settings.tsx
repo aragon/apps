@@ -9,7 +9,12 @@ import {
   ListItemLink,
 } from '@aragon/ui-components';
 import {useTranslation} from 'react-i18next';
-import {generatePath, useParams, Link as RouterLink} from 'react-router-dom';
+import {
+  generatePath,
+  useParams,
+  Link as RouterLink,
+  useNavigate,
+} from 'react-router-dom';
 
 import {PageWrapper} from 'components/wrappers';
 import {DescriptionListContainer, Dl, Dt, Dd} from 'components/descriptionList';
@@ -27,6 +32,7 @@ const Settings: React.FC = () => {
   const {isMobile} = useScreen();
   const {network} = useNetwork();
   const {dao} = useParams();
+  const navigate = useNavigate();
 
   if (loading) {
     return <Loading />;
@@ -35,9 +41,10 @@ const Settings: React.FC = () => {
   return (
     <PageWrapper
       title={t('labels.daoSettings')}
-      buttonLabel={t('settings.newSettings')}
+      buttonLabel={t('settings.proposeSettings')}
       showButton={isMobile}
       buttonIcon={<IconGovernance />}
+      onClick={() => navigate(generatePath(EditSettings, {network, dao}))}
     >
       <div className="mt-3 desktop:mt-8 space-y-5">
         <DescriptionListContainer title={t('labels.review.blockchain')}>
@@ -134,7 +141,7 @@ const Settings: React.FC = () => {
 
         <RouterLink to={generatePath(EditSettings, {network, dao})}>
           <ButtonText
-            label={t('settings.newSettings')}
+            label={t('settings.proposeSettings')}
             className="mx-auto mt-5 w-full tablet:w-max"
             size="large"
             iconLeft={<IconGovernance />}

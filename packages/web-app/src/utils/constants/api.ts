@@ -2,12 +2,10 @@ import {SupportedNetworks} from './chains';
 
 type SubgraphNetworkUrl = Record<SupportedNetworks, string | undefined>;
 
-// TODO: Replace with proper subgraph URL after future proof tasks have been performed
 export const SUBGRAPH_API_URL: SubgraphNetworkUrl = {
   ethereum: undefined,
   rinkeby:
-    'https://api.thegraph.com/subgraphs/name/rekard0/rekard0-zaragoza-rinkeby',
-  // 'https://api.thegraph.com/subgraphs/name/aragon/aragon-zaragoza-rinkeby',
+    'https://api.thegraph.com/subgraphs/name/aragon/aragon-zaragoza-rinkeby',
   polygon: undefined,
   mumbai:
     'https://api.thegraph.com/subgraphs/name/aragon/aragon-zaragoza-mumbai',
@@ -32,4 +30,4 @@ export const ASSET_PLATFORMS: Record<SupportedNetworks, string | null> = {
 };
 
 // to be removed
-export const TEST_DAO = '0xf1ce79a45615ce1d32af6422ed77b9b7ffc35c88';
+export const TEST_DAO = '0xa2e993c4fd68fda9e28405cb9d8411a09117a47c';

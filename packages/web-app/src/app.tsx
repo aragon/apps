@@ -5,7 +5,7 @@ import React, {useEffect, lazy, Suspense} from 'react';
 import {Navigate, Routes, Route, useLocation, Outlet} from 'react-router-dom';
 
 import Navbar from 'containers/navbar';
-import {WalletMenu} from 'containers/navbar/walletMenu';
+import {WalletMenu} from 'containers/walletMenu';
 import {trackPage} from 'services/analytics';
 import '../i18n.config';
 
@@ -19,8 +19,8 @@ import CreateDAO from 'pages/createDAO';
 import {GridLayout} from 'components/layout';
 import ExploreNav from 'containers/navbar/exploreNav';
 import Footer from 'containers/exploreFooter';
-import DepositModal from 'containers/transactionModals/DepositModal';
 import NetworkErrorMenu from 'containers/networkErrorMenu';
+import TransferMenu from 'containers/transferMenu';
 
 const ExplorePage = lazy(() => import('pages/explore'));
 const NotFoundPage = lazy(() => import('pages/notFound'));
@@ -31,6 +31,7 @@ const GovernancePage = lazy(() => import('pages/governance'));
 const CommunityPage = lazy(() => import('pages/community'));
 const SettingsPage = lazy(() => import('pages/settings'));
 const EditSettingsPage = lazy(() => import('pages/editSettings'));
+const ProposeSettingsPage = lazy(() => import('pages/proposeSettings'));
 
 const TokensPage = lazy(() => import('pages/tokens'));
 const TransfersPage = lazy(() => import('pages/transfers'));
@@ -84,6 +85,10 @@ function App() {
               <Route path="community" element={<CommunityPage />} />
               <Route path="settings" element={<SettingsPage />} />
               <Route path="settings/edit" element={<EditSettingsPage />} />
+              <Route
+                path="settings/new-proposal"
+                element={<ProposeSettingsPage />}
+              />
               {/* Redirects the user to the dashboard page by default if no dao-specific page is specified. */}
               <Route index element={<Navigate to={'dashboard'} replace />} />
             </Route>
@@ -95,7 +100,6 @@ function App() {
       <DaoSelectMenu />
       <WalletMenu />
       <NetworkErrorMenu />
-      <DepositModal />
     </>
   );
 }
@@ -117,9 +121,12 @@ const ExploreWrapper: React.FC = () => (
 const DaoWrapper: React.FC = () => (
   <>
     <Navbar />
-    <GridLayout>
-      <Outlet />
-    </GridLayout>
+    <div className="pb-10">
+      <GridLayout>
+        <Outlet />
+        <TransferMenu />
+      </GridLayout>
+    </div>
   </>
 );
 
