@@ -1,6 +1,6 @@
 import {InfuraProvider, Web3Provider} from '@ethersproject/providers';
 import React, {createContext, useContext, useEffect, useState} from 'react';
-import {useWallet} from 'use-wallet';
+import {useWallet} from 'hooks/useWallet';
 
 import {INFURA_PROJECT_ID_ARB, SupportedChainID} from 'utils/constants';
 import {Nullable} from 'utils/types';
@@ -31,10 +31,8 @@ type ProviderProviderProps = {
  * therefore be null if no wallet is connected.
  */
 export function ProvidersProvider({children}: ProviderProviderProps) {
-  const {chainId, ethereum} = useWallet();
-  const [web3Provider, setWeb3Provider] = useState(
-    ethereum ? new Web3Provider(ethereum) : null
-  );
+  const {chainId, provider} = useWallet();
+  const [web3Provider, setWeb3Provider] = useState(provider || null);
 
   const [infuraProvider, setInfuraProvider] = useState(
     new InfuraProvider(NW_ARB, INFURA_PROJECT_ID_ARB)
@@ -45,8 +43,8 @@ export function ProvidersProvider({children}: ProviderProviderProps) {
   }, [chainId]);
 
   useEffect(() => {
-    setWeb3Provider(ethereum ? new Web3Provider(ethereum) : null);
-  }, [ethereum, chainId]);
+    setWeb3Provider(provider || null);
+  }, [chainId, provider]);
 
   return (
     <ProviderContext.Provider
