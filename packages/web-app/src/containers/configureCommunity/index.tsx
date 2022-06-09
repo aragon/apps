@@ -50,7 +50,7 @@ const ConfigureCommunity: React.FC = () => {
         <FormItem>
           <Label
             label={t('labels.minimumParticipation')}
-            helpText={t('createDAO.step4.minimumApprovalSubtitle')}
+            helpText={t('createDAO.step4.minimumParticipationSubtitle')}
           />
           <Controller
             name="minimumApproval"
