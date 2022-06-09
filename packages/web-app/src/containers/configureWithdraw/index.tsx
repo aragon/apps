@@ -22,7 +22,6 @@ import {
   validateTokenAddress,
   validateTokenAmount,
 } from 'utils/validators';
-import {TEST_DAO} from 'utils/constants';
 import {useWallet} from 'hooks/useWallet';
 import {useProviders} from 'context/providers';
 import {fetchTokenData} from 'services/prices';
@@ -32,6 +31,7 @@ import {fetchBalance, getTokenInfo, isETH} from 'utils/tokens';
 import {WithdrawAction} from 'pages/newWithdraw';
 import {isAddress} from 'ethers/lib/utils';
 import {useNetwork} from 'context/network';
+import {useDaoParam} from 'hooks/useDaoParam';
 
 type ConfigureWithdrawFormProps = {
   index?: number;
@@ -48,6 +48,7 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
   const {network} = useNetwork();
   const {address} = useWallet();
   const {infura: provider} = useProviders();
+  const {data: daoAddress} = useDaoParam();
 
   const {control, getValues, trigger, resetField, setFocus, setValue} =
     useFormContext();
@@ -70,9 +71,9 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
     if (isCustomToken) setFocus(`actions.${index}.tokenAddress`);
 
     if (from === '') {
-      setValue(`actions.${index}.from`, TEST_DAO);
+      setValue(`actions.${index}.from`, daoAddress);
     }
-  }, [address, from, index, isCustomToken, setFocus, setValue]);
+  }, [address, daoAddress, from, index, isCustomToken, setFocus, setValue]);
 
   // Fetch custom token information
   useEffect(() => {
@@ -87,11 +88,10 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
 
       try {
         // fetch token balance and token metadata
-        // TODO: replace TEST_DAO with DAO address
         const allTokenInfoPromise = Promise.all([
           isETH(tokenAddress)
-            ? provider.getBalance(TEST_DAO)
-            : fetchBalance(tokenAddress, TEST_DAO, provider),
+            ? provider.getBalance(daoAddress)
+            : fetchBalance(tokenAddress, daoAddress, provider),
           fetchTokenData(tokenAddress, client, network),
         ]);
 
@@ -134,6 +134,7 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
     trigger,
     client,
     network,
+    daoAddress,
   ]);
 
   /*************************************************
