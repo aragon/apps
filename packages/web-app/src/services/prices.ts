@@ -100,7 +100,7 @@ async function fetchTokenData(
 
   // build url based on whether token is native token
   const url = isNativeToken
-    ? `/coins/${getNativeTokenId(platformId, network)}`
+    ? `/coins/${getNativeTokenId(network)}`
     : `/coins/${platformId}/contract/${address}`;
 
   const {data, error} = await client.query({
@@ -143,7 +143,6 @@ async function fetchTokenPrice(
   const endPoint = `/simple/token_price/${platformId}?vs_currencies=usd&contract_addresses=`;
   const url = isNativeToken
     ? `${BASE_URL}/simple/price?ids=${getNativeTokenId(
-        platformId,
         network
       )}&vs_currencies=usd`
     : `${BASE_URL}${endPoint}${address}`;
@@ -167,11 +166,8 @@ async function fetchTokenPrice(
  * @param network network name
  * @returns native token id
  */
-function getNativeTokenId(
-  platformId: string | null,
-  network: SupportedNetworks
-): string {
-  if (platformId === ASSET_PLATFORMS.polygon || network === 'mumbai') {
+function getNativeTokenId(network: SupportedNetworks): string {
+  if (network === 'polygon' || network === 'mumbai') {
     return NATIVE_TOKEN_ID.polygon;
   }
 
