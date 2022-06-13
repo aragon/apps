@@ -19,8 +19,8 @@ type PublishDaoModalProps = {
   isOpen: boolean;
   onClose: () => void;
   closeOnDrag: boolean;
-  maxFee: BigInt;
-  averageFee: BigInt;
+  maxFee: BigInt | undefined;
+  averageFee: BigInt | undefined;
   tokenPrice: number;
 };
 
@@ -53,25 +53,34 @@ const PublishDaoModal: React.FC<PublishDaoModalProps> = ({
 
   const nativeCurrency = CHAIN_METADATA[network].nativeCurrency;
 
-  const totalCost = useMemo(
+  // TODO: temporarily returning error when unable to estimate fees
+  // for chain on which contract not deployed
+  const [totalCost, formattedAverage] = useMemo(
     () =>
-      new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-      }).format(
-        Number(formatUnits(averageFee.toString(), nativeCurrency.decimals)) *
-          tokenPrice
-      ),
-    [averageFee, nativeCurrency.decimals, tokenPrice]
+      averageFee === undefined
+        ? ['Error calculating costs', 'Error estimating fees']
+        : [
+            new Intl.NumberFormat('en-US', {
+              style: 'currency',
+              currency: 'USD',
+            }).format(
+              Number(
+                formatUnits(averageFee.toString(), nativeCurrency.decimals)
+              ) * tokenPrice
+            ),
+            `${Number(
+              formatUnits(averageFee.toString(), nativeCurrency.decimals)
+            ).toFixed(8)} ${nativeCurrency.symbol}`,
+          ],
+    [averageFee, nativeCurrency.decimals, nativeCurrency.symbol, tokenPrice]
   );
 
-  const formattedAverage = `${Number(
-    formatUnits(averageFee.toString(), nativeCurrency.decimals)
-  ).toFixed(8)} ${nativeCurrency.symbol}`;
-
-  const formattedMax = `${Number(
-    formatUnits(maxFee.toString(), nativeCurrency.decimals)
-  ).toFixed(8)} ${nativeCurrency.symbol}`;
+  const formattedMax =
+    maxFee === undefined
+      ? undefined
+      : `${Number(
+          formatUnits(maxFee.toString(), nativeCurrency.decimals)
+        ).toFixed(8)} ${nativeCurrency.symbol}`;
 
   return (
     <ModalBottomSheetSwitcher

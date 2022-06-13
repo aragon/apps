@@ -37,20 +37,17 @@ export const UseClientProvider = ({children}: {children: ReactNode}) => {
     if (signer) {
       const web3Providers = import.meta.env
         .VITE_REACT_APP_SDK_WEB3_PROVIDERS as string;
+
       const context = new SdkContext({
-        network: chainId,
+        network: 'rinkeby', // TODO: remove temporarily hardcoded network
+        signer,
         web3Providers: web3Providers
           ? web3Providers.split(',')
           : [
               'https://eth-rinkeby.alchemyapi.io/v2/bgIqe2NxazpzsjfmVmhj3aS3j_HZ9mpr',
             ],
-        // TODO
-        // Remove when the SDK no longer needs the addresses of the contract
-        daoFactoryAddress:
-          (import.meta.env.VITE_REACT_APP_SDK_DAO_FACTORY_ADDRESS as string) ||
-          '0x2290E6dF695C5272cE942015c90aAe24bFB94960',
-        signer: signer,
       });
+
       setErc20Client(new ClientDaoERC20Voting(context));
       setWhitelistClient(new ClientDaoWhitelistVoting(context));
     }
@@ -60,6 +57,7 @@ export const UseClientProvider = ({children}: {children: ReactNode}) => {
     erc20: erc20Client,
     whitelist: whitelistClient,
   };
+
   return (
     <UseClientContext.Provider value={value}>
       {children}
