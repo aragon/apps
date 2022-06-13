@@ -27,8 +27,9 @@ export const useClient = () => {
   }
   return client;
 };
+
 export const UseClientProvider = ({children}: {children: ReactNode}) => {
-  const {chainId, signer} = useWallet();
+  const {signer} = useWallet();
   const [erc20Client, setErc20Client] = useState<ClientDaoERC20Voting>();
   const [whitelistClient, setWhitelistClient] =
     useState<ClientDaoWhitelistVoting>();
@@ -51,7 +52,7 @@ export const UseClientProvider = ({children}: {children: ReactNode}) => {
       setErc20Client(new ClientDaoERC20Voting(context));
       setWhitelistClient(new ClientDaoWhitelistVoting(context));
     }
-  }, [signer, chainId]);
+  }, [signer]);
 
   const value: ClientContext = {
     erc20: erc20Client,
