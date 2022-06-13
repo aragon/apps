@@ -14,7 +14,6 @@ import {sortTokens} from 'utils/tokens';
 import TransferList from 'components/transferList';
 import {useDaoVault} from 'hooks/useDaoVault';
 import {useDaoParam} from 'hooks/useDaoParam';
-import {TemporarySection} from 'components/temporary';
 import {useGlobalModalContext} from 'context/globalModals';
 import {useTransactionDetailContext} from 'context/transactionDetail';
 
@@ -67,13 +66,6 @@ const Finance: React.FC = () => {
             />
           </ListContainer>
         </TransferSectionWrapper>
-        <TemporarySection purpose="It whether the dao parameter was properly parsed and validated.">
-          {daoId ? (
-            <p>{`DAO address: ${daoId.slice(0, 15) + '...'}`}</p>
-          ) : (
-            <p>{"Something's not right"}</p>
-          )}
-        </TemporarySection>
       </PageWrapper>
     </>
   );
