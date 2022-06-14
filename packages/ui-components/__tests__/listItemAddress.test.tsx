@@ -7,7 +7,7 @@ describe('ListItemAddress', () => {
   // eslint-disable-next-line
   function setup(args: any) {
     render(<Wallet {...args} />);
-    return screen.getByTestId('listItem-action');
+    return screen.getByTestId('listItem-address');
   }
 
   test('should render without crashing', () => {
