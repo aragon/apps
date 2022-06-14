@@ -32,7 +32,6 @@ type ProviderProviderProps = {
  */
 export function ProvidersProvider({children}: ProviderProviderProps) {
   const {chainId, provider} = useWallet();
-  const [web3Provider, setWeb3Provider] = useState(provider || null);
 
   const [infuraProvider, setInfuraProvider] = useState(
     new InfuraProvider(NW_ARB, INFURA_PROJECT_ID_ARB)
@@ -42,13 +41,9 @@ export function ProvidersProvider({children}: ProviderProviderProps) {
     setInfuraProvider(getInfuraProvider(chainId as SupportedChainID));
   }, [chainId]);
 
-  useEffect(() => {
-    setWeb3Provider(provider || null);
-  }, [chainId, provider]);
-
   return (
     <ProviderContext.Provider
-      value={{infura: infuraProvider, web3: web3Provider}}
+      value={{infura: infuraProvider, web3: provider || null}}
     >
       {children}
     </ProviderContext.Provider>
