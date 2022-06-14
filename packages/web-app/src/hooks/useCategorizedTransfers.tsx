@@ -27,7 +27,9 @@ export default function useCategorizedTransfers(
   totalTransfers: string;
 } {
   const {data: daoTransfers} = useDaoTransfers(daoAddress);
-  const {data: transfers, total} = usePollTransfersPrices(daoTransfers);
+  const {
+    data: {transfers, totalTransfersValue},
+  } = usePollTransfersPrices(daoTransfers);
 
   // const sections = getDateSections(); // Sections will dynamically set based
   // on today date
@@ -65,5 +67,9 @@ export default function useCategorizedTransfers(
     });
   }, [transfers, setCategorizedTransfers]);
 
-  return {data: categorizedTransfers, totalTransfers: total, isLoading: false};
+  return {
+    data: categorizedTransfers,
+    totalTransfers: totalTransfersValue,
+    isLoading: false,
+  };
 }
