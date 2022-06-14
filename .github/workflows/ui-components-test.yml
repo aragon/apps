@@ -1,0 +1,31 @@
+name: UI-Components Test
+
+on:
+  workflow_call:
+  push:
+    paths:
+      - 'packages/ui-components/**'
+      - '.github/workflows/ui-components-*.yml'
+
+defaults:
+  run:
+    working-directory: packages/ui-components
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Build and test ui-components
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+      - name: Install dependencies
+        run: yarn install --pure-lockfile
+      - name: Build
+        run: yarn build
+      - name: Lint
+        run: yarn lint
+      - name: Test
+        run: yarn test
