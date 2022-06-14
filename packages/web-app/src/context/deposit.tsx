@@ -1,14 +1,23 @@
 import {IDeposit} from '@aragon/sdk-client';
 import {useFormContext} from 'react-hook-form';
 import {generatePath, useNavigate, useParams} from 'react-router-dom';
-import React, {createContext, ReactNode, useContext, useState} from 'react';
+import React, {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 
 import {Finance} from 'utils/paths';
 import {useClient} from 'hooks/useClient';
+import {useWallet} from 'hooks/useWallet';
 import {useNetwork} from './network';
 import DepositModal from 'containers/transactionModals/DepositModal';
 import {DepositFormData} from 'pages/newDeposit';
 import {TransactionState} from 'utils/constants';
+import {useGlobalModalContext} from './globalModals';
 
 interface IDepositContextType {
   handleOpenModal: () => void;
@@ -17,14 +26,41 @@ interface IDepositContextType {
 const DepositContext = createContext<IDepositContextType | null>(null);
 
 const DepositProvider = ({children}: {children: ReactNode}) => {
-  const {getValues} = useFormContext<DepositFormData>();
-  const [depositState, setDepositState] = useState<TransactionState>();
-  const [showModal, setShowModal] = useState<boolean>(false);
   const {dao} = useParams();
   const navigate = useNavigate();
   const {network} = useNetwork();
+  const {getValues} = useFormContext<DepositFormData>();
+  const [depositState, setDepositState] = useState<TransactionState>();
   const {erc20: client} = useClient();
+  const {isOnWrongNetwork} = useWallet();
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const {open, close, isNetworkOpen} = useGlobalModalContext();
 
+  /*************************************************
+   *             Helpers and Handlers              *
+   *************************************************/
+  const handleOpenModal = useCallback(() => {
+    setDepositState(TransactionState.WAITING);
+    setShowModal(true);
+  }, []);
+
+  // Handler for deposit modal close
+  // don't close modal if transaction is still running
+  const handleCloseModal = useCallback(() => {
+    switch (depositState) {
+      case TransactionState.LOADING:
+        break;
+      case TransactionState.SUCCESS:
+        navigate(generatePath(Finance, {network, dao}), {
+          state: {refetch: true},
+        });
+        break;
+      default:
+        setShowModal(false);
+    }
+  }, [dao, depositState, navigate, network]);
+
+  // Sign and run deposit
   const handleSignDeposit = async () => {
     setDepositState(TransactionState.LOADING);
 
@@ -60,25 +96,42 @@ const DepositProvider = ({children}: {children: ReactNode}) => {
     }
   };
 
-  // Handler for modal close; don't close modal if transaction is still running
-  const handleCloseModal = () => {
-    switch (depositState) {
-      case TransactionState.LOADING:
-        break;
-      case TransactionState.SUCCESS:
-        navigate(generatePath(Finance, {network, dao}), {
-          state: {refetch: true},
-        });
-        break;
-      default:
-        setShowModal(false);
+  /*************************************************
+   *               Lifecycle hooks                 *
+   *************************************************/
+  useEffect(() => {
+    // resolve network mismatch when transaction is
+    // ready to execute or loading. Why user would change
+    // network while loading is anyone's guess really.
+    // Also, should probably extract into a hook for other flows
+    if (
+      isOnWrongNetwork &&
+      (depositState === TransactionState.WAITING ||
+        depositState === TransactionState.LOADING)
+    ) {
+      open('network');
+      handleCloseModal();
+      return;
     }
-  };
 
-  const handleOpenModal = () => {
-    setShowModal(true);
-  };
+    // close switch network modal and continue with flow
+    if (!isOnWrongNetwork && isNetworkOpen) {
+      close('network');
+      handleOpenModal();
+    }
+  }, [
+    close,
+    depositState,
+    handleCloseModal,
+    handleOpenModal,
+    isNetworkOpen,
+    isOnWrongNetwork,
+    open,
+  ]);
 
+  /*************************************************
+   *                   Render                      *
+   *************************************************/
   return (
     <DepositContext.Provider value={{handleOpenModal}}>
       {children}
