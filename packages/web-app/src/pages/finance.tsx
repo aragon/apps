@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
@@ -16,14 +16,27 @@ import {useDaoVault} from 'hooks/useDaoVault';
 import {useDaoParam} from 'hooks/useDaoParam';
 import {useGlobalModalContext} from 'context/globalModals';
 import {useTransactionDetailContext} from 'context/transactionDetail';
+import {useLocation} from 'react-router-dom';
 
 const Finance: React.FC = () => {
   const {t} = useTranslation();
   const {open} = useGlobalModalContext();
+  const {state} = useLocation();
   const {data: daoId, loading} = useDaoParam();
   const {handleTransferClicked} = useTransactionDetailContext();
-  const {tokens, totalAssetChange, totalAssetValue, transfers} =
+  const {tokens, totalAssetChange, totalAssetValue, transfers, refetch} =
     useDaoVault(daoId);
+
+  // delaying a second refresh for five seconds
+  // because subgraph doesn't immediately pick up
+  // transfer sometimes
+  useEffect(() => {
+    if (state?.refetch) {
+      setTimeout(() => {
+        refetch();
+      }, 5000);
+    }
+  }, [refetch, state?.refetch]);
 
   sortTokens(tokens, 'treasurySharePercentage');
 
