@@ -223,10 +223,17 @@ export function abbreviateTokenAmount(amount: string): string {
   }
 
   if (decimals) {
-    const decimalNumber = '0.' + decimals;
-    return `${(
-      Number.parseInt(integers) + Number.parseFloat(decimalNumber)
-    ).toFixed(2)}${symbol && ' ' + symbol}`;
+    const fraction = '0.' + decimals;
+    const fractionNumber = Number.parseFloat(fraction);
+    const intNumber = Number.parseInt(integers);
+    const totalNumber = intNumber + fractionNumber;
+
+    if (totalNumber < 0.01) {
+      return ` < 0.01${symbol && ' ' + symbol}`;
+    }
+
+    console.log('[LOGGING] totalNumber ' + totalNumber);
+    return `${totalNumber.toFixed(2)}${symbol && ' ' + symbol}`;
   }
 
   return `${Number.parseInt(integers)}${symbol && ' ' + symbol}`;
