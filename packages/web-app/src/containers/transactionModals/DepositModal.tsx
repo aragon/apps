@@ -6,7 +6,6 @@ import {
   LinearProgress,
   Spinner,
 } from '@aragon/ui-components';
-import {useStepper} from 'hooks/useStepper';
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
@@ -14,10 +13,13 @@ import {TransactionState} from 'utils/constants/misc';
 
 type TransactionModalProps = {
   state: TransactionState;
-  callback: () => void;
+  handleDeposit: () => void;
+  handleApproval?: () => void;
   isOpen: boolean;
   onClose: () => void;
   closeOnDrag: boolean;
+  currentStep: number;
+  includeApproval?: boolean;
 };
 
 const icons = {
@@ -29,12 +31,14 @@ const icons = {
 
 const DepositModal: React.FC<TransactionModalProps> = ({
   state = TransactionState.WAITING,
-  callback,
+  handleDeposit,
+  handleApproval,
   isOpen,
   onClose,
   closeOnDrag,
+  currentStep,
+  includeApproval = false,
 }) => {
-  const {currentStep, next} = useStepper(2);
   const {t} = useTranslation();
 
   const label = {
@@ -45,8 +49,9 @@ const DepositModal: React.FC<TransactionModalProps> = ({
   };
 
   const handleApproveClick = () => {
-    next();
+    handleApproval?.();
   };
+
   const handleButtonClick = () => {
     switch (state) {
       case TransactionState.SUCCESS:
@@ -55,7 +60,7 @@ const DepositModal: React.FC<TransactionModalProps> = ({
       case TransactionState.LOADING:
         break;
       default:
-        callback();
+        handleDeposit();
     }
   };
 
@@ -93,34 +98,40 @@ const DepositModal: React.FC<TransactionModalProps> = ({
         </GasCostUSDContainer>
       </GasCostTableContainer>
       <ApproveTxContainer>
-        <WizardContainer>
-          <PrimaryColoredText>
-            {currentStep === 1
-              ? t('TransactionModal.approveToken')
-              : t('TransactionModal.signDeposit')}
-          </PrimaryColoredText>
-          <p className="text-ui-400">{`${t('labels.step')} ${currentStep} ${t(
-            'labels.of'
-          )} 2`}</p>
-        </WizardContainer>
+        {includeApproval && (
+          <>
+            <WizardContainer>
+              <PrimaryColoredText>
+                {currentStep === 1
+                  ? t('TransactionModal.approveToken')
+                  : t('TransactionModal.signDeposit')}
+              </PrimaryColoredText>
+              <p className="text-ui-400">{`${t(
+                'labels.step'
+              )} ${currentStep} ${t('labels.of')} 2`}</p>
+            </WizardContainer>
 
-        <LinearProgress max={2} value={currentStep} />
+            <LinearProgress max={2} value={currentStep} />
 
-        <ApproveSubtitle>
-          {t('TransactionModal.approveSubtitle')}
-        </ApproveSubtitle>
+            <ApproveSubtitle>
+              {t('TransactionModal.approveSubtitle')}
+            </ApproveSubtitle>
+          </>
+        )}
         <HStack>
+          {includeApproval && (
+            <ButtonText
+              className="mt-3 w-full"
+              label={t('TransactionModal.approveToken')}
+              iconLeft={currentStep === 1 ? icons[state] : undefined}
+              onClick={handleApproveClick}
+              disabled={currentStep !== 1}
+            />
+          )}
           <ButtonText
-            className="mt-3 w-full"
-            label={t('TransactionModal.approveToken')}
-            iconLeft={currentStep === 1 ? icons[state] : undefined}
-            onClick={handleApproveClick}
-            disabled={currentStep !== 1}
-          />
-          <ButtonText
-            className="mt-3 w-full"
+            className={includeApproval ? 'mt-3 w-full' : 'w-full'}
             label={label[state]}
-            iconLeft={icons[state]}
+            iconLeft={currentStep === 2 ? icons[state] : undefined}
             onClick={handleButtonClick}
             disabled={currentStep !== 2}
           />
@@ -176,7 +187,7 @@ const AlertInlineContainer = styled.div.attrs({
 })``;
 
 const HStack = styled.div.attrs({
-  className: 'flex space-x-2',
+  className: 'flex gap-x-2',
 })``;
 
 const WizardContainer = styled.div.attrs({
