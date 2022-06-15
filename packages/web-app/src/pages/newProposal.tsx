@@ -22,6 +22,11 @@ import SetupVotingForm, {
 import {useNetwork} from 'context/network';
 import {useDaoParam} from 'hooks/useDaoParam';
 import {Loading} from 'components/temporary';
+import {useClient} from 'hooks/useClient';
+import {ICreateProposal} from '@aragon/sdk-client';
+import {useQuery} from '@apollo/client';
+import {client} from 'context/apolloClient';
+import {DAO_BY_ADDRESS} from 'queries/dao';
 
 const NewProposal: React.FC = () => {
   const {data: dao, loading} = useDaoParam();
@@ -37,6 +42,12 @@ const NewProposal: React.FC = () => {
   });
   const [durationSwitch] = formMethods.getValues(['durationSwitch']);
 
+  const {erc20: erc20Client, whitelist: whitelistClient} = useClient();
+  const {data} = useQuery(DAO_BY_ADDRESS, {
+    variables: {id: dao},
+    client: client[network],
+  });
+
   // TODO: Sepehr, is this still necessary?
   useEffect(() => {
     if (address) {
@@ -45,6 +56,56 @@ const NewProposal: React.FC = () => {
       formMethods.setValue('type', TransferTypes.Withdraw);
     }
   }, [address, formMethods]);
+
+  const createErc20VotingProposal = async (votingAddress: string) => {
+    if (!erc20Client) {
+      return Promise.reject(
+        new Error('ERC20 SDK client is not initialized correctly')
+      );
+    }
+
+    const proposalCreationParams: ICreateProposal = {
+      metadata: '0x1234',
+      executeIfDecided: true,
+    };
+
+    return erc20Client.dao.simpleVote.createProposal(
+      votingAddress,
+      proposalCreationParams
+    );
+  };
+
+  const createWhitelistVotingProposal = async (votingAddress: string) => {
+    if (!whitelistClient) {
+      return Promise.reject(
+        new Error('ERC20 SDK client is not initialized correctly')
+      );
+    }
+
+    const proposalCreationParams: ICreateProposal = {
+      metadata: constants.AddressZero,
+    };
+
+    console.log(whitelistClient);
+    console.log(proposalCreationParams);
+    return whitelistClient.dao.whitelist.createProposal(
+      votingAddress,
+      proposalCreationParams
+    );
+  };
+
+  const handlePublishProposal = async () => {
+    const {__typename: type, id: votingAddress} = data.dao?.packages[0].pkg;
+
+    console.log(formMethods.getValues());
+    console.log(type, votingAddress);
+
+    if (type === 'WhitelistPackage') {
+      createWhitelistVotingProposal(votingAddress).then(console.log);
+    } else {
+      createErc20VotingProposal(votingAddress).then(console.log);
+    }
+  };
 
   /*************************************************
    *                    Render                     *
@@ -86,7 +147,7 @@ const NewProposal: React.FC = () => {
             wizardTitle={t('newWithdraw.reviewProposal.heading')}
             wizardDescription={t('newWithdraw.reviewProposal.description')}
             nextButtonLabel={t('labels.submitWithdraw')}
-            isNextButtonDisabled
+            onNextButtonClicked={handlePublishProposal}
             fullWidth
           >
             <ReviewProposal />
