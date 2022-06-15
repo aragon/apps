@@ -12,6 +12,7 @@ import {CHAIN_METADATA, TransactionState} from 'utils/constants';
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 import {useNetwork} from 'context/network';
 import {formatUnits} from 'utils/library';
+import {abbreviateTokenAmount} from 'utils/tokens';
 
 type PublishDaoModalProps = {
   state: TransactionState;
@@ -68,9 +69,10 @@ const PublishDaoModal: React.FC<PublishDaoModalProps> = ({
                 formatUnits(averageFee.toString(), nativeCurrency.decimals)
               ) * tokenPrice
             ),
-            `${Number(
+            `${abbreviateTokenAmount(
               formatUnits(averageFee.toString(), nativeCurrency.decimals)
-            ).toFixed(8)} ${nativeCurrency.symbol}`,
+            )}
+           ${nativeCurrency.symbol}`,
           ],
     [averageFee, nativeCurrency.decimals, nativeCurrency.symbol, tokenPrice]
   );
@@ -78,9 +80,9 @@ const PublishDaoModal: React.FC<PublishDaoModalProps> = ({
   const formattedMax =
     maxFee === undefined
       ? undefined
-      : `${Number(
+      : `${abbreviateTokenAmount(
           formatUnits(maxFee.toString(), nativeCurrency.decimals)
-        ).toFixed(8)} ${nativeCurrency.symbol}`;
+        )} ${nativeCurrency.symbol}`;
 
   return (
     <ModalBottomSheetSwitcher
