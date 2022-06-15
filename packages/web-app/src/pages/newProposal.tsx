@@ -65,8 +65,7 @@ const NewProposal: React.FC = () => {
     }
 
     const proposalCreationParams: ICreateProposal = {
-      metadata: '0x1234',
-      executeIfDecided: true,
+      metadata: constants.AddressZero,
     };
 
     return erc20Client.dao.simpleVote.createProposal(
@@ -86,8 +85,6 @@ const NewProposal: React.FC = () => {
       metadata: constants.AddressZero,
     };
 
-    console.log(whitelistClient);
-    console.log(proposalCreationParams);
     return whitelistClient.dao.whitelist.createProposal(
       votingAddress,
       proposalCreationParams
@@ -96,9 +93,6 @@ const NewProposal: React.FC = () => {
 
   const handlePublishProposal = async () => {
     const {__typename: type, id: votingAddress} = data.dao?.packages[0].pkg;
-
-    console.log(formMethods.getValues());
-    console.log(type, votingAddress);
 
     if (type === 'WhitelistPackage') {
       createWhitelistVotingProposal(votingAddress).then(console.log);
