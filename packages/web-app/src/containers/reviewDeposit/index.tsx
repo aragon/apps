@@ -16,6 +16,7 @@ import {useNetwork} from 'context/network';
 import {useFormStep} from 'components/fullScreenStepper';
 import {useDepositDao} from 'context/deposit';
 import styled from 'styled-components';
+import {abbreviateTokenAmount} from 'utils/tokens';
 
 const ReviewDeposit: React.FC = () => {
   const {t} = useTranslation();
@@ -60,7 +61,7 @@ const ReviewDeposit: React.FC = () => {
       <CardToken
         type="transfer"
         tokenName={values.tokenName}
-        tokenCount={values.amount.toString()}
+        tokenCount={abbreviateTokenAmount(values.amount.toString())}
         tokenSymbol={values.tokenSymbol}
         tokenImageUrl={values.tokenImgUrl}
         treasuryShare={price}

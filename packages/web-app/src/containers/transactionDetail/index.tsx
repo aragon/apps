@@ -15,6 +15,7 @@ import {Transfer} from 'utils/types';
 import {useNetwork} from 'context/network';
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 import {CHAIN_METADATA, TransferTypes} from 'utils/constants';
+import {abbreviateTokenAmount} from 'utils/tokens';
 
 type TransactionDetailProps = {
   transfer: Transfer;
@@ -59,7 +60,7 @@ const TransactionDetail: React.FC<TransactionDetailProps> = ({
           tokenName={transfer.tokenName}
           tokenCount={`${
             transfer.transferType === TransferTypes.Deposit ? '+' : '-'
-          } ${transfer.tokenAmount}`}
+          } ${abbreviateTokenAmount(transfer.tokenAmount)}`}
           tokenSymbol={transfer.tokenSymbol}
           tokenImageUrl={transfer.tokenImgUrl}
           treasuryShare={transfer.usdValue}
