@@ -172,7 +172,24 @@ export const isETH = (tokenAddress: string) => {
 };
 
 /**
- * Helper-method converts a string of tokens into a abbreviated version.
+ * Helper-method formats a string of token amount.
+ *
+ * The method expects the string representation of an integer or decimal number.
+ * The string must contain only digits, except for the decimal dot and an option
+ * token symbol separated from the number by a whitespace. E.g.
+ *
+ * - '111' ok
+ * - '111.1' ok
+ * - '111.1 SYM' ok
+ * - '1'111'111.1 SYM' not ok.
+ *
+ * The output, in general, is engineering notation (scientific notation wher the
+ * exponent is divisible by 3 and the coefficient is between in [1,999]). For
+ * numbers up to a trillon, the power is replaced by the letters k (10^3), M
+ * (10^6) and G (10^9).
+ *
+ * Decimals are ignored for any number >= 10 k. Below that, rounding to 2
+ * decimals is applied if necessary.
  *
  * @param amount [string] token amount. May include token symbol.
  * @returns [string] abbreviated token amount. Any decimal digits get discarded. For
@@ -184,30 +201,34 @@ export function abbreviateTokenAmount(amount: string): string {
 
   const regexp_res = amount.match(TOKEN_AMOUNT_REGEX);
   // discard failed matches
-  if (
-    !regexp_res?.length ||
-    regexp_res[0].length !== amount.length ||
-    regexp_res.length !== 4
-  )
+  if (regexp_res?.length !== 4 || regexp_res[0].length !== amount.length)
     return 'N/A';
 
-  const lead = regexp_res[1];
-  const body = regexp_res[2];
+  // retrieve capturing groups
+  const integers = regexp_res[1];
+  const decimals = regexp_res[2];
   const symbol = regexp_res[3];
 
-  // < 1000
-  if (body?.length === 0) return lead + ' ' + symbol;
-  const magnitude = body.length / 4;
-  const magnitude_letter = ['K', 'M', 'B'];
+  if (integers?.length > 4) {
+    const integerNumber = Number.parseInt(integers);
+    const magnitude = Math.floor((integers.length - 1) / 3);
+    const lead = Math.floor(integerNumber / Math.pow(10, magnitude * 3));
+    const magnitude_letter = ['k', 'M', 'G'];
 
-  let abbreviation: string;
-  if (magnitude <= 3) {
-    // < trillion. Use respective letter.
-    abbreviation = magnitude_letter[magnitude - 1];
-  } else {
-    // > trillion. Use power of tens notation.
-    abbreviation = '*10^' + magnitude * 3;
+    let abbreviation: string = `${lead}${
+      magnitude < 4
+        ? magnitude_letter[magnitude - 1]
+        : '*10^' + Math.floor(magnitude) * 3
+    }${symbol && ' ' + symbol}`;
+    return abbreviation;
   }
 
-  return lead + abbreviation + ' ' + symbol;
+  if (decimals) {
+    const decimalNumber = '0.' + decimals;
+    return `${(
+      Number.parseInt(integers) + Number.parseFloat(decimalNumber)
+    ).toFixed(2)}${symbol && ' ' + symbol}`;
+  }
+
+  return `${Number.parseInt(integers)}${symbol && ' ' + symbol}`;
 }

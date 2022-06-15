@@ -8,4 +8,4 @@ export const EMAIL_PATTERN =
   /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
 
 export const TOKEN_AMOUNT_REGEX =
-  /^(?<lead>\d+)(?<body>[,\d*]*)[.]*[\d]*\s(?<symbol>[A-Za-z]+)$/;
+  /(?<integers>[\d*]*)[.]*(?<decimals>[\d]*)\s*(?<symbol>[A-Za-z]*)/;
