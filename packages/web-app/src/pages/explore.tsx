@@ -55,6 +55,22 @@ const Explore: React.FC = () => {
               />
             ))}
             <ActionListItem
+              title={
+                'DAO with ERC20 voting package to check proposal creation: 0xcf319af7c7b564c8f742b00af5cf19b4a1e1fe41'
+              }
+              subtitle={'Rinkeby testnet'}
+              icon={<IconExpand />}
+              background={'white'}
+              onClick={() =>
+                navigate(
+                  generatePath(Dashboard, {
+                    network: 'rinkeby',
+                    dao: '0xcf319af7c7b564c8f742b00af5cf19b4a1e1fe41',
+                  })
+                )
+              }
+            />
+            <ActionListItem
               title={'Non-existing dao: 0x1234'}
               subtitle={'Rinkeby testnet'}
               icon={<IconExpand />}
