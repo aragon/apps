@@ -1,12 +1,13 @@
-import {IDeposit} from '@aragon/sdk-client';
+import {DaoDepositSteps, IDeposit} from '@aragon/sdk-client';
 import {useFormContext} from 'react-hook-form';
 import {generatePath, useNavigate, useParams} from 'react-router-dom';
 import React, {
   createContext,
   ReactNode,
   useCallback,
-  useContext,
   useEffect,
+  useContext,
+  useMemo,
   useState,
 } from 'react';
 
@@ -18,6 +19,8 @@ import DepositModal from 'containers/transactionModals/DepositModal';
 import {DepositFormData} from 'pages/newDeposit';
 import {TransactionState} from 'utils/constants';
 import {useGlobalModalContext} from './globalModals';
+import {constants} from 'ethers';
+import {useStepper} from 'hooks/useStepper';
 
 interface IDepositContextType {
   handleOpenModal: () => void;
@@ -29,23 +32,53 @@ const DepositProvider = ({children}: {children: ReactNode}) => {
   const {dao} = useParams();
   const navigate = useNavigate();
   const {network} = useNetwork();
-  const {getValues} = useFormContext<DepositFormData>();
-  const [depositState, setDepositState] = useState<TransactionState>();
-  const {erc20: client} = useClient();
   const {isOnWrongNetwork} = useWallet();
+
   const [showModal, setShowModal] = useState<boolean>(false);
   const {open, close, isNetworkOpen} = useGlobalModalContext();
+  const [includeApproval, setIncludeApproval] = useState<boolean>(true);
+
+  const {getValues} = useFormContext<DepositFormData>();
+  const [depositState, setDepositState] = useState<TransactionState>();
+  const [depositParams, setDepositParams] = useState<IDeposit>();
+
+  const {erc20: client} = useClient();
+  const {setStep: setModalStep, currentStep} = useStepper(2);
+
+  const depositIterator = useMemo(() => {
+    if (client && depositParams) return client.dao.deposit(depositParams);
+  }, [client, depositParams]);
 
   /*************************************************
    *             Helpers and Handlers              *
    *************************************************/
   const handleOpenModal = useCallback(() => {
-    setDepositState(TransactionState.WAITING);
-    setShowModal(true);
-  }, []);
+    // get deposit data from form
+    const {amount, tokenAddress, to, reference} = getValues();
 
-  // Handler for deposit modal close
-  // don't close modal if transaction is still running
+    // validate and set deposit data
+    if (!to) {
+      setDepositState(TransactionState.ERROR);
+      return;
+    }
+
+    setDepositParams({
+      daoAddress: to,
+      amount: BigInt(Number(amount) * Math.pow(10, 18)),
+      token: tokenAddress,
+      reference,
+    });
+
+    // determine whether to include approval step and show modal
+    if (tokenAddress === constants.AddressZero) {
+      setIncludeApproval(false);
+      setModalStep(2);
+    }
+
+    setShowModal(true);
+  }, [getValues, setModalStep]);
+
+  // Handler for modal close; don't close modal if transaction is still running
   const handleCloseModal = useCallback(() => {
     switch (depositState) {
       case TransactionState.LOADING:
@@ -59,42 +92,6 @@ const DepositProvider = ({children}: {children: ReactNode}) => {
         setShowModal(false);
     }
   }, [dao, depositState, navigate, network]);
-
-  // Sign and run deposit
-  const handleSignDeposit = async () => {
-    setDepositState(TransactionState.LOADING);
-
-    const {amount, tokenAddress, to, reference} = getValues();
-
-    if (!to) {
-      setDepositState(TransactionState.ERROR);
-      return;
-    }
-
-    const depositData: IDeposit = {
-      daoAddress: to,
-      amount: BigInt(Number(amount) * Math.pow(10, 18)),
-      token: tokenAddress,
-      reference: reference,
-    };
-
-    // TODO
-    // Right now there is to clients depending on the type
-    // of DAO, so the type of DAO is needed, once the new
-    // contracts are released there will only be one client
-    // and this parameter should be removed
-    if (!client) {
-      throw new Error('SDK client is not initialized correctly');
-    }
-
-    try {
-      await client.dao.deposit(depositData);
-      setDepositState(TransactionState.SUCCESS);
-    } catch (error) {
-      console.error(error);
-      setDepositState(TransactionState.ERROR);
-    }
-  };
 
   /*************************************************
    *               Lifecycle hooks                 *
@@ -129,6 +126,70 @@ const DepositProvider = ({children}: {children: ReactNode}) => {
     open,
   ]);
 
+  const handleApproval = async () => {
+    // Check if SDK initialized properly
+    if (!client) {
+      throw new Error('SDK client is not initialized correctly');
+    }
+
+    // Check if deposit function is initialized
+    if (!depositIterator) {
+      throw new Error('deposit function is not initialized correctly');
+    }
+
+    try {
+      setDepositState(TransactionState.LOADING);
+
+      // run approval steps
+      for (let step = 0; step < 3; step++) {
+        await depositIterator.next();
+      }
+
+      // update modal button and transaction state
+      setModalStep(2);
+      setDepositState(TransactionState.WAITING);
+    } catch (error) {
+      console.error(error);
+      setDepositState(TransactionState.ERROR);
+    }
+  };
+
+  const handleDeposit = async () => {
+    let transactionHash = '';
+
+    // Check if SDK initialized properly
+    if (!client) {
+      throw new Error('SDK client is not initialized correctly');
+    }
+
+    // Check if deposit function is initialized
+    if (!depositIterator) {
+      throw new Error('deposit function is not initialized correctly');
+    }
+
+    try {
+      setDepositState(TransactionState.LOADING);
+
+      if (includeApproval) {
+        for (let step = 0; step < 2; step++) {
+          transactionHash = (await depositIterator.next()).value as string;
+        }
+      } else {
+        for await (const step of depositIterator) {
+          if (step.key === DaoDepositSteps.DEPOSITING) {
+            transactionHash = step.txHash;
+          }
+        }
+      }
+
+      setDepositState(TransactionState.SUCCESS);
+      console.log(transactionHash);
+    } catch (error) {
+      console.error(error);
+      setDepositState(TransactionState.ERROR);
+    }
+  };
+
   /*************************************************
    *                   Render                      *
    *************************************************/
@@ -136,10 +197,13 @@ const DepositProvider = ({children}: {children: ReactNode}) => {
     <DepositContext.Provider value={{handleOpenModal}}>
       {children}
       <DepositModal
-        callback={handleSignDeposit}
+        currentStep={currentStep}
+        includeApproval={includeApproval}
         state={depositState || TransactionState.WAITING}
         isOpen={showModal}
         onClose={handleCloseModal}
+        handleDeposit={handleDeposit}
+        handleApproval={handleApproval}
         closeOnDrag={depositState !== TransactionState.LOADING}
       />
     </DepositContext.Provider>
