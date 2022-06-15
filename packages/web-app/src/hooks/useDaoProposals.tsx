@@ -65,7 +65,6 @@ const MOCK_PROPOSALS: MockProposal[] = [
     tokenAmount: '3.5M',
     tokenSymbol: 'DNT',
     publishLabel: 'Published by',
-    daoName: 'Lorex DAO',
     publisherAddress: '0x374d444487A4602750CA00EFdaC5d22B21F130E1',
     alertMessage: '5 days left',
     stateLabel: [
