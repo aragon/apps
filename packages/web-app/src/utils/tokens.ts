@@ -215,12 +215,11 @@ export function abbreviateTokenAmount(amount: string): string {
     const lead = Math.floor(integerNumber / Math.pow(10, magnitude * 3));
     const magnitude_letter = ['k', 'M', 'G'];
 
-    let abbreviation: string = `${lead}${
+    return `${lead}${
       magnitude < 4
         ? magnitude_letter[magnitude - 1]
         : '*10^' + Math.floor(magnitude) * 3
     }${symbol && ' ' + symbol}`;
-    return abbreviation;
   }
 
   if (decimals) {
