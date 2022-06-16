@@ -5,7 +5,7 @@ import React, {useState} from 'react';
 import {useForm, FormProvider, useFormState} from 'react-hook-form';
 import {generatePath, useNavigate} from 'react-router-dom';
 
-import {Governance, Landing} from 'utils/paths';
+import {Governance} from 'utils/paths';
 import AddActionMenu from 'containers/addActionMenu';
 import ReviewProposal from 'containers/reviewProposal';
 import {TransactionState} from 'utils/constants';
@@ -53,6 +53,7 @@ const NewProposal: React.FC = () => {
     useState<TransactionState>();
 
   // TODO: Complete gas estimation on UI once the SDK is ready
+
   // const shouldPoll = useMemo(
   //   () => creationProcessState === TransactionState.WAITING,
   //   [creationProcessState]
@@ -76,7 +77,7 @@ const NewProposal: React.FC = () => {
       case TransactionState.LOADING:
         break;
       case TransactionState.SUCCESS:
-        navigate(Landing);
+        navigate(generatePath(Governance, {network, dao}));
         break;
       default: {
         setCreationProcessState(TransactionState.WAITING);
@@ -122,7 +123,7 @@ const NewProposal: React.FC = () => {
 
   const handlePublishProposal = async () => {
     if (creationProcessState === TransactionState.SUCCESS) {
-      setShowModal(false);
+      handleCloseModal();
       return;
     }
 
