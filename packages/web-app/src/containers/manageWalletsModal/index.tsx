@@ -21,10 +21,12 @@ const wallets = [
 
 type ManageWalletsModalProps = {
   addWalletCallback: (wallets: Array<string>) => void;
+  resetOnClose?: boolean;
 };
 
 const ManageWalletsModal: React.FC<ManageWalletsModalProps> = ({
   addWalletCallback,
+  resetOnClose = false,
 }) => {
   const [searchValue, setSearchValue] = useState('');
   const [selectedWallets, setSelectedWallets] = useState<
@@ -45,6 +47,18 @@ const ManageWalletsModal: React.FC<ManageWalletsModalProps> = ({
       return wallets;
     }
   }, [searchValue]);
+
+  const handleSelectWallet = (wallet: string) => {
+    const tempSelectedWallets = {...selectedWallets};
+    tempSelectedWallets[wallet]
+      ? delete tempSelectedWallets[wallet]
+      : (tempSelectedWallets[wallet] = true);
+    setSelectedWallets(tempSelectedWallets);
+
+    if (Object.keys(tempSelectedWallets).length !== wallets.length) {
+      setSelectAll(false);
+    }
+  };
 
   const handleSelectAll = () => {
     setSelectedWallets(
@@ -96,19 +110,7 @@ const ManageWalletsModal: React.FC<ManageWalletsModalProps> = ({
               label={shortenAddress(wallet)}
               multiSelect
               state={selectedWallets[wallet] ? 'active' : 'default'}
-              onClick={() => {
-                const tempSelectedWallets = {...selectedWallets};
-                tempSelectedWallets[wallet]
-                  ? delete tempSelectedWallets[wallet]
-                  : (tempSelectedWallets[wallet] = true);
-                setSelectedWallets(tempSelectedWallets);
-
-                if (
-                  Object.keys(tempSelectedWallets).length !== wallets.length
-                ) {
-                  setSelectAll(false);
-                }
-              }}
+              onClick={() => handleSelectWallet(wallet)}
             />
           ))}
         </div>
@@ -116,15 +118,21 @@ const ManageWalletsModal: React.FC<ManageWalletsModalProps> = ({
 
       <ButtonContainer>
         <ButtonText
-          label={`Add ${Object.keys(selectedWallets).length} Wallets`}
+          label={
+            Object.keys(selectedWallets).length === 0
+              ? t('labels.selectWallets')
+              : t('labels.addNWallets', {
+                  walletCount: Object.keys(selectedWallets).length,
+                })
+          }
           size="large"
           onClick={() => {
             addWalletCallback(Object.keys(selectedWallets));
-            close('manageWallet');
+            resetOnClose ? handleClose() : close('manageWallet');
           }}
         />
         <ButtonText
-          label="Cancel"
+          label={t('labels.cancel')}
           mode="secondary"
           size="large"
           bgWhite

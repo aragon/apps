@@ -74,6 +74,7 @@ const Explore: React.FC = () => {
           />
           <ManageWalletsModal
             addWalletCallback={wallets => console.log(wallets)}
+            resetOnClose
           />
         </ContentWrapper>
       </GridLayout>

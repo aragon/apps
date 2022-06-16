@@ -129,7 +129,10 @@
     "step": "Step",
     "of": "of",
     "edit": "Edit",
-    "daoSettings": "DAO Settings"
+    "daoSettings": "DAO Settings",
+    "selectWallets": "Select Wallets",
+    "cancel": "Cancel",
+    "addNWallets": "Add {{walletCount}} Wallets"
   },
   "placeHolders": {
     "selectToken": "Select a Token ...",
