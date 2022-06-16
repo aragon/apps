@@ -1,15 +1,14 @@
 import {constants} from 'ethers';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
-import React, {useEffect} from 'react';
+import React, {useState} from 'react';
 import {useForm, FormProvider, useFormState} from 'react-hook-form';
-import {generatePath} from 'react-router-dom';
+import {generatePath, useNavigate} from 'react-router-dom';
 
-import {useWallet} from 'hooks/useWallet';
-import {Governance} from 'utils/paths';
+import {Governance, Landing} from 'utils/paths';
 import AddActionMenu from 'containers/addActionMenu';
 import ReviewProposal from 'containers/reviewProposal';
-import {TransferTypes} from 'utils/constants';
+import {TransactionState} from 'utils/constants';
 import ConfigureActions from 'containers/configureActions';
 import {ActionsProvider} from 'context/actions';
 import {FullScreenStepper, Step} from 'components/fullScreenStepper';
@@ -27,12 +26,13 @@ import {ICreateProposal} from '@aragon/sdk-client';
 import {useQuery} from '@apollo/client';
 import {client} from 'context/apolloClient';
 import {DAO_BY_ADDRESS} from 'queries/dao';
+import PublishModal from 'containers/transactionModals/publishModal';
 
 const NewProposal: React.FC = () => {
   const {data: dao, loading} = useDaoParam();
 
   const {t} = useTranslation();
-  const {address} = useWallet();
+  const navigate = useNavigate();
   const {network} = useNetwork();
   const formMethods = useForm({
     mode: 'onChange',
@@ -48,14 +48,43 @@ const NewProposal: React.FC = () => {
     client: client[network],
   });
 
-  // TODO: Sepehr, is this still necessary?
-  useEffect(() => {
-    if (address) {
-      // TODO: Change from to proper address
-      formMethods.setValue('from', constants.AddressZero);
-      formMethods.setValue('type', TransferTypes.Withdraw);
+  const [showModal, setShowModal] = useState(false);
+  const [creationProcessState, setCreationProcessState] =
+    useState<TransactionState>();
+
+  // TODO: Complete gas estimation on UI once the SDK is ready
+  // const shouldPoll = useMemo(
+  //   () => creationProcessState === TransactionState.WAITING,
+  //   [creationProcessState]
+  // );
+
+  // const estimateCreationFees = useCallback(async () => {
+  //   return membership === 'token'
+  //     ? erc20?.estimate.create(daoCreationData as ICreateDaoERC20Voting)
+  //     : whitelist?.estimate.create(
+  //         daoCreationData as ICreateDaoWhitelistVoting
+  //       );
+  // }, [daoCreationData, erc20?.estimate, membership, whitelist?.estimate]);
+
+  // const {tokenPrice, maxFee, averageFee, stopPolling} = usePollGasFee(
+  //   estimateCreationFees,
+  //   shouldPoll
+  // );
+
+  const handleCloseModal = () => {
+    switch (creationProcessState) {
+      case TransactionState.LOADING:
+        break;
+      case TransactionState.SUCCESS:
+        navigate(Landing);
+        break;
+      default: {
+        setCreationProcessState(TransactionState.WAITING);
+        setShowModal(false);
+        // stopPolling();
+      }
     }
-  }, [address, formMethods]);
+  };
 
   const createErc20VotingProposal = async (votingAddress: string) => {
     if (!erc20Client) {
@@ -92,12 +121,30 @@ const NewProposal: React.FC = () => {
   };
 
   const handlePublishProposal = async () => {
+    if (creationProcessState === TransactionState.SUCCESS) {
+      setShowModal(false);
+      return;
+    }
+
     const {__typename: type, id: votingAddress} = data.dao?.packages[0].pkg;
+    setCreationProcessState(TransactionState.LOADING);
 
     if (type === 'WhitelistPackage') {
-      createWhitelistVotingProposal(votingAddress).then(console.log);
+      try {
+        await createWhitelistVotingProposal(votingAddress);
+        setCreationProcessState(TransactionState.SUCCESS);
+      } catch (error) {
+        console.error(error);
+        setCreationProcessState(TransactionState.ERROR);
+      }
     } else {
-      createErc20VotingProposal(votingAddress).then(console.log);
+      try {
+        await createErc20VotingProposal(votingAddress);
+        setCreationProcessState(TransactionState.SUCCESS);
+      } catch (error) {
+        console.error(error);
+        setCreationProcessState(TransactionState.ERROR);
+      }
     }
   };
 
@@ -141,7 +188,7 @@ const NewProposal: React.FC = () => {
             wizardTitle={t('newWithdraw.reviewProposal.heading')}
             wizardDescription={t('newWithdraw.reviewProposal.description')}
             nextButtonLabel={t('labels.submitWithdraw')}
-            onNextButtonClicked={handlePublishProposal}
+            onNextButtonClicked={() => setShowModal(true)}
             fullWidth
           >
             <ReviewProposal />
@@ -150,6 +197,18 @@ const NewProposal: React.FC = () => {
 
         <AddActionMenu />
       </ActionsProvider>
+      <PublishModal
+        state={creationProcessState || TransactionState.WAITING}
+        isOpen={showModal}
+        onClose={handleCloseModal}
+        callback={handlePublishProposal}
+        closeOnDrag={creationProcessState !== TransactionState.LOADING}
+        maxFee={BigInt(12)}
+        averageFee={BigInt(9)}
+        tokenPrice={1172}
+        title={t('TransactionModal.createProposal')}
+        buttonLabel={t('TransactionModal.createProposalNow')}
+      />
     </FormProvider>
   );
 };

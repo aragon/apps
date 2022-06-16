@@ -310,7 +310,10 @@
     "successLabel": "Transaction successfully executed",
     "synced": "Synced {{time}} sec ago",
     "totalCost": "Total Cost",
-    "tryAgain": "Try Again"
+    "tryAgain": "Try Again",
+    "createProposal": "Create Proposal",
+    "createProposalNow": "Create Proposal Now",
+    "waiting": "Waiting for Confirmation"
   },
   "AddActionModal": {
     "title": "Add Action",
