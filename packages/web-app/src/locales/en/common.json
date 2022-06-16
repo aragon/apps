@@ -132,7 +132,8 @@
     "daoSettings": "DAO Settings",
     "selectWallets": "Select Wallets",
     "cancel": "Cancel",
-    "addNWallets": "Add {{walletCount}} Wallets"
+    "addNWallets": "Add {{walletCount}} Wallets",
+    "noAddressSelected": "No address selected"
   },
   "placeHolders": {
     "selectToken": "Select a Token ...",

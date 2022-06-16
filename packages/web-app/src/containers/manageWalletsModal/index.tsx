@@ -94,6 +94,10 @@ const ManageWalletsModal: React.FC<ManageWalletsModalProps> = ({
       </ModalHeader>
       <Container>
         <SelectAllContainer>
+          <p className="text-ui-400">
+            {Object.keys(selectedWallets).length === 0 &&
+              t('labels.noAddressSelected')}
+          </p>
           <CheckboxSimple
             label="Select All"
             multiSelect
@@ -158,7 +162,7 @@ const Container = styled.div.attrs({
 })``;
 
 const SelectAllContainer = styled.div.attrs({
-  className: 'flex flex-row-reverse mb-2.5 mr-2.25',
+  className: 'flex justify-between items-center mb-2.5 mr-2.25',
 })``;
 
 const ButtonContainer = styled.div.attrs({
