@@ -16,7 +16,11 @@ import {PollTokenOptions, VaultToken} from 'utils/types';
  * @returns A list of tokens in the DAO treasury, current USD sum value of all assets,
  * and the price change in USD based on the filter. An option to manually refetch assets is included.
  */
-export const useDaoVault = (daoAddress: string, options?: PollTokenOptions) => {
+export const useDaoVault = (
+  daoAddress: string,
+  showTransfers?: boolean,
+  options?: PollTokenOptions
+) => {
   const {data: balances, refetch: refetchBalances} = useDaoBalances(daoAddress);
   const {data: transfers, refetch: refetchTransfers} =
     useDaoTransfers(daoAddress);
@@ -45,7 +49,7 @@ export const useDaoVault = (daoAddress: string, options?: PollTokenOptions) => {
     tokens,
     totalAssetValue: data.totalAssetValue,
     totalAssetChange: data.totalAssetChange,
-    transfers: transfersData,
+    transfers: showTransfers ? transfersData : [],
     refetch: useCallback(async () => {
       await refetchBalances();
       await refetchTransfers();
