@@ -34,7 +34,7 @@ const Finance: React.FC = () => {
     if (state?.refetch) {
       setTimeout(() => {
         refetch();
-      }, 5000);
+      }, 10000);
     }
   }, [refetch, state?.refetch]);
 
