@@ -27,6 +27,8 @@
     "connectWallet": "Login"
   },
   "labels": {
+    "members": "Members",
+    "addMember": "Add Member",
     "approvalThreshold": "Approval Threshold",
     "viewTransactions": "View Transactions",
     "logOut": "Log Out",
@@ -500,9 +502,9 @@
       "myDaos": "My DAOs",
       "popular": "Popular",
       "newest": "Newest",
-      "walletBased": "Wallet Based",
+      "walletBased": "Wallet-Based",
       "showMore": "Show More",
-      "tokenBased": "Token Based"
+      "tokenBased": "Token-Based"
     },
     "activeProposals": "Active Proposals",
     "showMore": "Show More"

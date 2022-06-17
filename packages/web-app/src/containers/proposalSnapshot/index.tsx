@@ -2,7 +2,6 @@ import {
   ListItemHeader,
   IconGovernance,
   CardProposal,
-  CardProposalProps,
   ButtonText,
   IconChevronRight,
 } from '@aragon/ui-components';
@@ -12,18 +11,17 @@ import {useTranslation} from 'react-i18next';
 import {useNavigate, generatePath} from 'react-router-dom';
 
 import {useNetwork} from 'context/network';
-import {useDaoProposals} from 'hooks/useDaoProposals';
+import {MockProposal} from 'hooks/useDaoProposals';
 import {NewProposal, Governance} from 'utils/paths';
 
-type Props = {dao: string};
+type Props = {dao: string; proposals: MockProposal[]};
 
-const ProposalSnapshot: React.FC<Props> = ({dao}) => {
+const ProposalSnapshot: React.FC<Props> = ({dao, proposals}) => {
   const {t} = useTranslation();
   const navigate = useNavigate();
-  const {topTen} = useDaoProposals();
   const {network} = useNetwork();
 
-  if (topTen.length === 0) {
+  if (proposals.length === 0) {
     return (
       <div className="flex flex-1 justify-center items-center border">
         Empty State Placeholder
@@ -35,21 +33,15 @@ const ProposalSnapshot: React.FC<Props> = ({dao}) => {
     <Container>
       <ListItemHeader
         icon={<IconGovernance />}
-        value={topTen.length.toString()}
+        value={proposals.length.toString()}
         label={t('dashboard.proposalsTitle')}
         buttonText={t('newProposal.title')}
         orientation="horizontal"
         onClick={() => navigate(generatePath(NewProposal, {network, dao}))}
       />
 
-      {topTen.map(({process, ...rest}, index) => (
-        <CardProposal
-          key={index}
-          type="list"
-          onClick={() => null}
-          process={process as CardProposalProps['process']}
-          {...rest}
-        />
+      {proposals.map((p, index) => (
+        <CardProposal key={index} type="list" onClick={() => null} {...p} />
       ))}
 
       <ButtonText
@@ -66,5 +58,5 @@ const ProposalSnapshot: React.FC<Props> = ({dao}) => {
 export default ProposalSnapshot;
 
 const Container = styled.div.attrs({
-  className: 'space-y-1.5 desktop:space-y-2 w-full desktop:w-3/5',
+  className: 'space-y-1.5 desktop:space-y-2 w-full',
 })``;

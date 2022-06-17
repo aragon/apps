@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {
   AlertInline,
   ButtonText,
@@ -6,18 +6,28 @@ import {
   LinearProgress,
   Spinner,
 } from '@aragon/ui-components';
-import {useStepper} from 'hooks/useStepper';
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
-import {TransactionState} from 'utils/constants/misc';
+import {CHAIN_METADATA, TransactionState} from 'utils/constants';
+import {useNetwork} from 'context/network';
+import {formatUnits} from 'utils/library';
+import {fetchTokenPrice} from 'services/prices';
 
 type TransactionModalProps = {
   state: TransactionState;
-  callback: () => void;
+  handleDeposit: () => void;
+  handleApproval?: () => void;
   isOpen: boolean;
   onClose: () => void;
   closeOnDrag: boolean;
+  currentStep: number;
+  includeApproval?: boolean;
+  maxFee: BigInt | undefined;
+  averageFee: BigInt | undefined;
+  tokenPrice: number;
+  depositAmount: bigint;
+  token: string;
 };
 
 const icons = {
@@ -29,13 +39,21 @@ const icons = {
 
 const DepositModal: React.FC<TransactionModalProps> = ({
   state = TransactionState.WAITING,
-  callback,
+  handleDeposit,
+  handleApproval,
   isOpen,
   onClose,
   closeOnDrag,
+  currentStep,
+  includeApproval = false,
+  maxFee,
+  averageFee,
+  tokenPrice,
+  depositAmount,
+  token,
 }) => {
-  const {currentStep, next} = useStepper(2);
   const {t} = useTranslation();
+  const {network} = useNetwork();
 
   const label = {
     [TransactionState.WAITING]: t('TransactionModal.signDeposit'),
@@ -44,9 +62,12 @@ const DepositModal: React.FC<TransactionModalProps> = ({
     [TransactionState.ERROR]: t('TransactionModal.tryAgain'),
   };
 
+  const nativeCurrency = CHAIN_METADATA[network].nativeCurrency;
+
   const handleApproveClick = () => {
-    next();
+    handleApproval?.();
   };
+
   const handleButtonClick = () => {
     switch (state) {
       case TransactionState.SUCCESS:
@@ -55,9 +76,47 @@ const DepositModal: React.FC<TransactionModalProps> = ({
       case TransactionState.LOADING:
         break;
       default:
-        callback();
+        handleDeposit();
     }
   };
+
+  const formattedAmount =
+    depositAmount === undefined
+      ? undefined
+      : formatUnits(depositAmount.toString(), nativeCurrency.decimals);
+
+  // const usdDepositTokenPrice = useMemo(async () => {
+  //   return token && formattedAmount ? await fetchTokenPrice(token, network) : 0;
+  // }, [formattedAmount, network, token]);
+
+  // TODO: temporarily returning error when unable to estimate fees
+  // for chain on which contract not deployed
+  const [totalCost, formattedAverage] = useMemo(
+    () =>
+      averageFee === undefined
+        ? ['Error calculating costs', 'Error estimating fees']
+        : [
+            new Intl.NumberFormat('en-US', {
+              style: 'currency',
+              currency: 'USD',
+            }).format(
+              Number(
+                formatUnits(averageFee.toString(), nativeCurrency.decimals)
+              ) * tokenPrice
+            ),
+            `${Number(
+              formatUnits(averageFee.toString(), nativeCurrency.decimals)
+            ).toFixed(8)} ${nativeCurrency.symbol}`,
+          ],
+    [averageFee, nativeCurrency.decimals, nativeCurrency.symbol, tokenPrice]
+  );
+
+  const formattedMax =
+    maxFee === undefined
+      ? undefined
+      : `${Number(
+          formatUnits(maxFee.toString(), nativeCurrency.decimals)
+        ).toFixed(8)} ${nativeCurrency.symbol}`;
 
   return (
     <ModalBottomSheetSwitcher
@@ -70,8 +129,10 @@ const DepositModal: React.FC<TransactionModalProps> = ({
             <Label>{t('labels.deposit')}</Label>
           </VStack>
           <VStack>
-            <StrongText>{'0.0015 ETH'}</StrongText>
-            <p className="text-sm text-right text-ui-500">{'$6.00'}</p>
+            <StrongText>{formattedAmount}</StrongText>
+            <p className="text-sm text-right text-ui-500">
+              {/* {`${usdDepositTokenPrice}`} */}
+            </p>
           </VStack>
         </DepositAmountContainer>
         <GasCostEthContainer>
@@ -82,45 +143,54 @@ const DepositModal: React.FC<TransactionModalProps> = ({
             </p>
           </VStack>
           <VStack>
-            <StrongText>{'0.001ETH'}</StrongText>
-            <p className="text-sm text-right text-ui-500">{'127gwei'}</p>
+            <StrongText>{formattedAverage}</StrongText>
+            <p className="text-sm text-right text-ui-500">{formattedMax}</p>
           </VStack>
         </GasCostEthContainer>
 
         <GasCostUSDContainer>
           <Label>{t('TransactionModal.totalCost')}</Label>
-          <StrongText>{'$16.28'}</StrongText>
+          <VStack>
+            <StrongText>{formattedAverage}</StrongText>
+            <p className="text-sm text-right text-ui-500">{totalCost}</p>
+          </VStack>
         </GasCostUSDContainer>
       </GasCostTableContainer>
       <ApproveTxContainer>
-        <WizardContainer>
-          <PrimaryColoredText>
-            {currentStep === 1
-              ? t('TransactionModal.approveToken')
-              : t('TransactionModal.signDeposit')}
-          </PrimaryColoredText>
-          <p className="text-ui-400">{`${t('labels.step')} ${currentStep} ${t(
-            'labels.of'
-          )} 2`}</p>
-        </WizardContainer>
+        {includeApproval && (
+          <>
+            <WizardContainer>
+              <PrimaryColoredText>
+                {currentStep === 1
+                  ? t('TransactionModal.approveToken')
+                  : t('TransactionModal.signDeposit')}
+              </PrimaryColoredText>
+              <p className="text-ui-400">{`${t(
+                'labels.step'
+              )} ${currentStep} ${t('labels.of')} 2`}</p>
+            </WizardContainer>
 
-        <LinearProgress max={2} value={currentStep} />
+            <LinearProgress max={2} value={currentStep} />
 
-        <ApproveSubtitle>
-          {t('TransactionModal.approveSubtitle')}
-        </ApproveSubtitle>
+            <ApproveSubtitle>
+              {t('TransactionModal.approveSubtitle')}
+            </ApproveSubtitle>
+          </>
+        )}
         <HStack>
+          {includeApproval && (
+            <ButtonText
+              className="mt-3 w-full"
+              label={t('TransactionModal.approveToken')}
+              iconLeft={currentStep === 1 ? icons[state] : undefined}
+              onClick={handleApproveClick}
+              disabled={currentStep !== 1}
+            />
+          )}
           <ButtonText
-            className="mt-3 w-full"
-            label={t('TransactionModal.approveToken')}
-            iconLeft={currentStep === 1 ? icons[state] : undefined}
-            onClick={handleApproveClick}
-            disabled={currentStep !== 1}
-          />
-          <ButtonText
-            className="mt-3 w-full"
+            className={includeApproval ? 'mt-3 w-full' : 'w-full'}
             label={label[state]}
-            iconLeft={icons[state]}
+            iconLeft={currentStep === 2 ? icons[state] : undefined}
             onClick={handleButtonClick}
             disabled={currentStep !== 2}
           />
@@ -176,7 +246,7 @@ const AlertInlineContainer = styled.div.attrs({
 })``;
 
 const HStack = styled.div.attrs({
-  className: 'flex space-x-2',
+  className: 'flex gap-x-2',
 })``;
 
 const WizardContainer = styled.div.attrs({
