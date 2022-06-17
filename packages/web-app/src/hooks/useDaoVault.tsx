@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 
 import {useDaoBalances} from './useDaoBalances';
 import {useDaoTransfers} from './useDaoTransfers';
@@ -14,15 +14,16 @@ import {PollTokenOptions, VaultToken} from 'utils/types';
  * @param options.filter TimeFilter for market data
  * @param options.interval Delay in milliseconds
  * @returns A list of tokens in the DAO treasury, current USD sum value of all assets,
- * and the price change in USD based on the filter
+ * and the price change in USD based on the filter. An option to manually refetch assets is included.
  */
 export const useDaoVault = (
   daoAddress: string,
   showTransfers?: boolean,
   options?: PollTokenOptions
 ) => {
-  const {data: balances} = useDaoBalances(daoAddress);
-  const {data: transfers} = useDaoTransfers(daoAddress);
+  const {data: balances, refetch: refetchBalances} = useDaoBalances(daoAddress);
+  const {data: transfers, refetch: refetchTransfers} =
+    useDaoTransfers(daoAddress);
   const {data: tokensWithMetadata} = useTokenMetadata(balances);
   const {data} = usePollTokenPrices(tokensWithMetadata, options);
   const {data: transferPrices} = usePollTransfersPrices(transfers);
@@ -49,5 +50,9 @@ export const useDaoVault = (
     totalAssetValue: data.totalAssetValue,
     totalAssetChange: data.totalAssetChange,
     transfers: showTransfers ? transferPrices.transfers : [],
+    refetch: useCallback(async () => {
+      await refetchBalances();
+      await refetchTransfers();
+    }, [refetchBalances, refetchTransfers]),
   };
 };

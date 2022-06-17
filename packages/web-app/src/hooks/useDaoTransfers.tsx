@@ -8,6 +8,7 @@ import {DAO_TRANSFER_LIST} from 'queries/finances';
 export const useDaoTransfers = (daoAddress: Address) => {
   const {data, error, loading, refetch} = useQuery(DAO_TRANSFER_LIST, {
     variables: {dao: daoAddress},
+    fetchPolicy: 'no-cache',
   });
 
   const sortedData = useMemo(() => {
