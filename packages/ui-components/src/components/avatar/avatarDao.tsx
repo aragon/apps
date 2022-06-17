@@ -25,7 +25,7 @@ export const AvatarDao: React.FC<AvatarDaoProps> = ({
 
   return error || !src ? (
     <FallBackAvatar onClick={onClick} size={size} {...props}>
-      <DaoInitials>{daoInitials}</DaoInitials>
+      <DaoInitials>{daoInitials.toUpperCase()}</DaoInitials>
     </FallBackAvatar>
   ) : (
     <Avatar

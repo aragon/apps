@@ -97,7 +97,7 @@ export const HeaderDao: React.FC<HeaderDaoProps> = ({
           </NetworkDetails>
           <NetworkDetails>
             <IconBlock className="text-primary-400" />
-            <DetailsText>{daoChain}</DetailsText>
+            <DetailsText className="capitalize">{daoChain}</DetailsText>
           </NetworkDetails>
           <NetworkDetails>
             <IconCommunity className="text-primary-400" />
@@ -201,7 +201,7 @@ const NetworkDetails = styled.div.attrs({
 })``;
 
 const DetailsText = styled.span.attrs({
-  className: 'text-ui-600 text-sm',
+  className: 'text-ui-600 text-sm' as string | undefined,
 })``;
 
 const LinksWrapper = styled.div.attrs({
