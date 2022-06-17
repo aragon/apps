@@ -19,7 +19,7 @@ jobs:
         run: |
           GITHUB_REF="${{ github.ref }}"
           TAG=${GITHUB_REF##*/}
-          VERSION=$(echo "$TAG" | grep -woP "([0-9]+\.[0-9]+\.[0-9]+)-\w+")
+          VERSION=$(echo "$TAG" | grep -woP "([0-9]+\.[0-9]+\.[0-9]+)")
           echo "::set-output name=version::$VERSION"
   publish:
     runs-on: ubuntu-latest
