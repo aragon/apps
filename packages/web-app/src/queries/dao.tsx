@@ -157,3 +157,40 @@ export const DAO_BY_ADDRESS = gql`
     }
   }
 `;
+
+export const DAO_METADATA = gql`
+  query DAO($id: ID) {
+    dao(id: $id) {
+      id
+      name
+      creator
+      createdAt
+      metadata
+      packages {
+        pkg {
+          id
+          __typename
+        }
+      }
+    }
+  }
+`;
+
+// TODO: flesh out actual query
+export const DAO_MEMBERS = gql`
+  query DAO($id: ID) {
+    dao(id: $id) {
+      id
+      token {
+        id
+        symbol
+      }
+      packages {
+        pkg {
+          id
+          __typename
+        }
+      }
+    }
+  }
+`;
