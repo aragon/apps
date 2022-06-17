@@ -1,7 +1,7 @@
 import {constants} from 'ethers';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
-import React, {useState} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import {useForm, FormProvider, useFormState} from 'react-hook-form';
 import {generatePath, useNavigate} from 'react-router-dom';
 
@@ -27,6 +27,7 @@ import {useQuery} from '@apollo/client';
 import {client} from 'context/apolloClient';
 import {DAO_BY_ADDRESS} from 'queries/dao';
 import PublishModal from 'containers/transactionModals/publishModal';
+import {usePollGasFee} from 'hooks/usePollGasfee';
 
 const NewProposal: React.FC = () => {
   const {data: dao, loading} = useDaoParam();
@@ -50,27 +51,29 @@ const NewProposal: React.FC = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [creationProcessState, setCreationProcessState] =
-    useState<TransactionState>();
+    useState<TransactionState>(TransactionState.WAITING);
 
-  // TODO: Complete gas estimation on UI once the SDK is ready
+  const shouldPoll = useMemo(
+    () => creationProcessState === TransactionState.WAITING,
+    [creationProcessState]
+  );
 
-  // const shouldPoll = useMemo(
-  //   () => creationProcessState === TransactionState.WAITING,
-  //   [creationProcessState]
-  // );
+  const estimateCreationFees = useCallback(async () => {
+    const {__typename: type, id: votingAddress} = data.dao?.packages[0].pkg;
 
-  // const estimateCreationFees = useCallback(async () => {
-  //   return membership === 'token'
-  //     ? erc20?.estimate.create(daoCreationData as ICreateDaoERC20Voting)
-  //     : whitelist?.estimate.create(
-  //         daoCreationData as ICreateDaoWhitelistVoting
-  //       );
-  // }, [daoCreationData, erc20?.estimate, membership, whitelist?.estimate]);
+    return type === 'WhitelistPackage'
+      ? erc20Client?.estimate.createProposal(votingAddress, {
+          metadata: constants.AddressZero,
+        })
+      : whitelistClient?.estimate.createProposal(votingAddress, {
+          metadata: constants.AddressZero,
+        });
+  }, [data.dao?.packages, erc20Client?.estimate, whitelistClient?.estimate]);
 
-  // const {tokenPrice, maxFee, averageFee, stopPolling} = usePollGasFee(
-  //   estimateCreationFees,
-  //   shouldPoll
-  // );
+  const {tokenPrice, maxFee, averageFee, stopPolling} = usePollGasFee(
+    estimateCreationFees,
+    shouldPoll
+  );
 
   const handleCloseModal = () => {
     switch (creationProcessState) {
@@ -82,7 +85,7 @@ const NewProposal: React.FC = () => {
       default: {
         setCreationProcessState(TransactionState.WAITING);
         setShowModal(false);
-        // stopPolling();
+        stopPolling();
       }
     }
   };
@@ -204,9 +207,9 @@ const NewProposal: React.FC = () => {
         onClose={handleCloseModal}
         callback={handlePublishProposal}
         closeOnDrag={creationProcessState !== TransactionState.LOADING}
-        maxFee={BigInt(12)}
-        averageFee={BigInt(9)}
-        tokenPrice={1172}
+        maxFee={maxFee}
+        averageFee={averageFee}
+        tokenPrice={tokenPrice}
         title={t('TransactionModal.createProposal')}
         buttonLabel={t('TransactionModal.createProposalNow')}
       />
