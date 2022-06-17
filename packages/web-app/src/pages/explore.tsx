@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import {generatePath, useNavigate} from 'react-router-dom';
-import {ActionListItem, IconExpand} from '@aragon/ui-components';
+import {ActionListItem, ButtonText, IconExpand} from '@aragon/ui-components';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 
 import Hero from 'containers/hero';
@@ -12,6 +12,8 @@ import {DaoExplorer} from 'containers/daoExplorer';
 import ActiveProposalsExplore from 'containers/activeProposalsExplore';
 import useScreen from 'hooks/useScreen';
 import {GridLayout} from 'components/layout';
+import {useGlobalModalContext} from 'context/globalModals';
+import ManageWalletsModal from 'containers/manageWalletsModal';
 
 const existingDaos = [
   '0x5aa80e80fd670393d625b70ec57b81226a274646',
@@ -23,6 +25,7 @@ const Explore: React.FC = () => {
 
   // Temporary; for QA-purposes
   const {isMobile} = useScreen();
+  const {open} = useGlobalModalContext();
 
   return (
     <>
@@ -52,6 +55,22 @@ const Explore: React.FC = () => {
               />
             ))}
             <ActionListItem
+              title={
+                'DAO with ERC20 voting package to check proposal creation: 0xcf319af7c7b564c8f742b00af5cf19b4a1e1fe41'
+              }
+              subtitle={'Rinkeby testnet'}
+              icon={<IconExpand />}
+              background={'white'}
+              onClick={() =>
+                navigate(
+                  generatePath(Dashboard, {
+                    network: 'rinkeby',
+                    dao: '0xcf319af7c7b564c8f742b00af5cf19b4a1e1fe41',
+                  })
+                )
+              }
+            />
+            <ActionListItem
               title={'Non-existing dao: 0x1234'}
               subtitle={'Rinkeby testnet'}
               icon={<IconExpand />}
@@ -63,6 +82,16 @@ const Explore: React.FC = () => {
               }
             />
           </TemporarySection>
+          {/* Button and ManageWalletsModal are here for demo purposes only. will be removed before merging */}
+          <ButtonText
+            label="Open Manage Wallet Modal"
+            onClick={() => open('manageWallet')}
+            className="mx-auto"
+          />
+          <ManageWalletsModal
+            addWalletCallback={wallets => console.log(wallets)}
+            resetOnClose
+          />
         </ContentWrapper>
       </GridLayout>
     </>

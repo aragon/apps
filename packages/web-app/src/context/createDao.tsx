@@ -17,7 +17,7 @@ import {useNavigate} from 'react-router-dom';
 import {useFormContext, useWatch} from 'react-hook-form';
 
 import {useDao} from 'hooks/useCachedDao';
-import PublishDaoModal from 'containers/transactionModals/publishDaoModal';
+import PublishModal from 'containers/transactionModals/publishModal';
 import {TransactionState} from 'utils/constants';
 import {getSecondsFromDHM} from 'utils/date';
 import {CreateDaoFormData} from 'pages/createDAO';
@@ -237,7 +237,7 @@ const CreateDaoProvider: React.FC<Props> = ({children}) => {
   return (
     <CreateDaoContext.Provider value={{handlePublishDao}}>
       {children}
-      <PublishDaoModal
+      <PublishModal
         state={creationProcessState || TransactionState.WAITING}
         isOpen={showModal}
         onClose={handleCloseModal}

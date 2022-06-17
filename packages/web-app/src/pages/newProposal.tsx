@@ -1,15 +1,14 @@
 import {constants} from 'ethers';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
-import React, {useEffect} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import {useForm, FormProvider, useFormState} from 'react-hook-form';
-import {generatePath} from 'react-router-dom';
+import {generatePath, useNavigate} from 'react-router-dom';
 
-import {useWallet} from 'hooks/useWallet';
 import {Governance} from 'utils/paths';
 import AddActionMenu from 'containers/addActionMenu';
 import ReviewProposal from 'containers/reviewProposal';
-import {TransferTypes} from 'utils/constants';
+import {TransactionState} from 'utils/constants';
 import ConfigureActions from 'containers/configureActions';
 import {ActionsProvider} from 'context/actions';
 import {FullScreenStepper, Step} from 'components/fullScreenStepper';
@@ -22,12 +21,19 @@ import SetupVotingForm, {
 import {useNetwork} from 'context/network';
 import {useDaoParam} from 'hooks/useDaoParam';
 import {Loading} from 'components/temporary';
+import {useClient} from 'hooks/useClient';
+import {ICreateProposal} from '@aragon/sdk-client';
+import {useQuery} from '@apollo/client';
+import {client} from 'context/apolloClient';
+import {DAO_BY_ADDRESS} from 'queries/dao';
+import PublishModal from 'containers/transactionModals/publishModal';
+import {usePollGasFee} from 'hooks/usePollGasfee';
 
 const NewProposal: React.FC = () => {
   const {data: dao, loading} = useDaoParam();
 
   const {t} = useTranslation();
-  const {address} = useWallet();
+  const navigate = useNavigate();
   const {network} = useNetwork();
   const formMethods = useForm({
     mode: 'onChange',
@@ -37,14 +43,114 @@ const NewProposal: React.FC = () => {
   });
   const [durationSwitch] = formMethods.getValues(['durationSwitch']);
 
-  // TODO: Sepehr, is this still necessary?
-  useEffect(() => {
-    if (address) {
-      // TODO: Change from to proper address
-      formMethods.setValue('from', constants.AddressZero);
-      formMethods.setValue('type', TransferTypes.Withdraw);
+  const {erc20: erc20Client, whitelist: whitelistClient} = useClient();
+  const {data} = useQuery(DAO_BY_ADDRESS, {
+    variables: {id: dao},
+    client: client[network],
+  });
+
+  const [showModal, setShowModal] = useState(false);
+  const [creationProcessState, setCreationProcessState] =
+    useState<TransactionState>(TransactionState.WAITING);
+
+  const shouldPoll = useMemo(
+    () => creationProcessState === TransactionState.WAITING,
+    [creationProcessState]
+  );
+
+  const estimateCreationFees = useCallback(async () => {
+    const {__typename: type, id: votingAddress} = data.dao?.packages[0].pkg;
+
+    return type === 'WhitelistPackage'
+      ? erc20Client?.estimate.createProposal(votingAddress, {
+          metadata: constants.AddressZero,
+        })
+      : whitelistClient?.estimate.createProposal(votingAddress, {
+          metadata: constants.AddressZero,
+        });
+  }, [data.dao?.packages, erc20Client?.estimate, whitelistClient?.estimate]);
+
+  const {tokenPrice, maxFee, averageFee, stopPolling} = usePollGasFee(
+    estimateCreationFees,
+    shouldPoll
+  );
+
+  const handleCloseModal = () => {
+    switch (creationProcessState) {
+      case TransactionState.LOADING:
+        break;
+      case TransactionState.SUCCESS:
+        navigate(generatePath(Governance, {network, dao}));
+        break;
+      default: {
+        setCreationProcessState(TransactionState.WAITING);
+        setShowModal(false);
+        stopPolling();
+      }
     }
-  }, [address, formMethods]);
+  };
+
+  const createErc20VotingProposal = async (votingAddress: string) => {
+    if (!erc20Client) {
+      return Promise.reject(
+        new Error('ERC20 SDK client is not initialized correctly')
+      );
+    }
+
+    const proposalCreationParams: ICreateProposal = {
+      metadata: constants.AddressZero,
+    };
+
+    return erc20Client.dao.simpleVote.createProposal(
+      votingAddress,
+      proposalCreationParams
+    );
+  };
+
+  const createWhitelistVotingProposal = async (votingAddress: string) => {
+    if (!whitelistClient) {
+      return Promise.reject(
+        new Error('ERC20 SDK client is not initialized correctly')
+      );
+    }
+
+    const proposalCreationParams: ICreateProposal = {
+      metadata: constants.AddressZero,
+    };
+
+    return whitelistClient.dao.whitelist.createProposal(
+      votingAddress,
+      proposalCreationParams
+    );
+  };
+
+  const handlePublishProposal = async () => {
+    if (creationProcessState === TransactionState.SUCCESS) {
+      handleCloseModal();
+      return;
+    }
+
+    const {__typename: type, id: votingAddress} = data.dao?.packages[0].pkg;
+    setCreationProcessState(TransactionState.LOADING);
+
+    if (type === 'WhitelistPackage') {
+      try {
+        await createWhitelistVotingProposal(votingAddress);
+        setCreationProcessState(TransactionState.SUCCESS);
+      } catch (error) {
+        console.error(error);
+        setCreationProcessState(TransactionState.ERROR);
+      }
+    } else {
+      try {
+        await createErc20VotingProposal(votingAddress);
+        setCreationProcessState(TransactionState.SUCCESS);
+      } catch (error) {
+        console.error(error);
+        setCreationProcessState(TransactionState.ERROR);
+      }
+    }
+  };
 
   /*************************************************
    *                    Render                     *
@@ -86,7 +192,7 @@ const NewProposal: React.FC = () => {
             wizardTitle={t('newWithdraw.reviewProposal.heading')}
             wizardDescription={t('newWithdraw.reviewProposal.description')}
             nextButtonLabel={t('labels.submitWithdraw')}
-            isNextButtonDisabled
+            onNextButtonClicked={() => setShowModal(true)}
             fullWidth
           >
             <ReviewProposal />
@@ -95,6 +201,18 @@ const NewProposal: React.FC = () => {
 
         <AddActionMenu />
       </ActionsProvider>
+      <PublishModal
+        state={creationProcessState || TransactionState.WAITING}
+        isOpen={showModal}
+        onClose={handleCloseModal}
+        callback={handlePublishProposal}
+        closeOnDrag={creationProcessState !== TransactionState.LOADING}
+        maxFee={maxFee}
+        averageFee={averageFee}
+        tokenPrice={tokenPrice}
+        title={t('TransactionModal.createProposal')}
+        buttonLabel={t('TransactionModal.createProposalNow')}
+      />
     </FormProvider>
   );
 };

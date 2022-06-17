@@ -5,7 +5,7 @@ on:
     paths:
       - 'packages/ui-components/**'
     branches:
-      - 'main'
+      - 'develop'
 
 env:
   working-directory: packages/ui-components

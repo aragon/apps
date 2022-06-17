@@ -3,22 +3,24 @@ import {useApolloClient} from '@apollo/client';
 
 import {fetchTokenData} from 'services/prices';
 import {TransferTypes} from 'utils/constants';
-import {DaoTransfer, Transfer} from 'utils/types';
+import {DaoTransfer, HookData, Transfer} from 'utils/types';
 import {useNetwork} from 'context/network';
 import {formatUnits} from 'utils/library';
 import {formatDate} from 'utils/date';
 
-export const usePollTransfersPrices = (transfers: DaoTransfer[]) => {
+export const usePollTransfersPrices = (
+  transfers: DaoTransfer[]
+): HookData<{transfers: Transfer[]; totalTransfersValue: string}> => {
   const client = useApolloClient();
   const {network} = useNetwork();
   const [data, setData] = useState<Transfer[]>([]);
-  const [total, setTotal] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
+  const [totalTransfersValue, setTotalTransfersValue] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchMetadata = async () => {
       setLoading(true);
-      let totalTransfers = 0;
+      let total = 0;
 
       // fetch token metadata from external api
       const metadata = await Promise.all(
@@ -34,7 +36,8 @@ export const usePollTransfersPrices = (transfers: DaoTransfer[]) => {
             ? (transfer.amount / 10 ** transfer.token.decimals) *
               (metadata[index]?.price as number)
             : 0;
-          totalTransfers = totalTransfers + calculatedPrice;
+          total = total + calculatedPrice;
+
           return {
             id: transfer.id,
             title: transfer.reference ? transfer.reference : 'deposit',
@@ -63,12 +66,12 @@ export const usePollTransfersPrices = (transfers: DaoTransfer[]) => {
       );
 
       setData(tokensWithMetadata);
-      setTotal(`$${totalTransfers.toFixed(2)}`);
+      setTotalTransfersValue(`$${total.toFixed(2)}`);
       setLoading(false);
     };
 
     if (transfers) fetchMetadata();
   }, [network, client, transfers]);
 
-  return {data, total, loading};
+  return {data: {transfers: data, totalTransfersValue}, isLoading: loading};
 };

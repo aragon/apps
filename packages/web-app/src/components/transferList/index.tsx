@@ -2,8 +2,8 @@ import React from 'react';
 import {TransferListItem} from '@aragon/ui-components';
 import {useTranslation} from 'react-i18next';
 import {Transfer} from 'utils/types';
+import {abbreviateTokenAmount} from 'utils/tokens';
 
-// types might come from subgraph - not adding any now
 type TransferListProps = {
   transfers: Array<Transfer>;
   onTransferClick: (transfer: Transfer) => void;
@@ -20,15 +20,14 @@ const TransferList: React.FC<TransferListProps> = ({
 
   return (
     <div className="space-y-2" data-testid="transferList">
-      {transfers.map(transfer => {
-        return (
-          <TransferListItem
-            key={transfer.id}
-            {...transfer}
-            onClick={() => onTransferClick(transfer)}
-          />
-        );
-      })}
+      {transfers.map(({tokenAmount, ...rest}) => (
+        <TransferListItem
+          key={rest.id}
+          tokenAmount={abbreviateTokenAmount(tokenAmount)}
+          {...rest}
+          onClick={() => onTransferClick({tokenAmount, ...rest})}
+        />
+      ))}
     </div>
   );
 };

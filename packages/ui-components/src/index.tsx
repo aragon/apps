@@ -28,3 +28,4 @@ export * from './components/pagination';
 export * from './components/widgets';
 export * from './components/checkbox';
 export * from './components/headers';
+export * from './components/stateEmpty';
