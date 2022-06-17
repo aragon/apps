@@ -7,8 +7,11 @@ export default {
   component: IlluHuman,
 } as Meta;
 
-const Template: Story<IlluHumanHairProps> = args => <IlluHuman {...args} />;
-
+const Template: Story<IlluHumanHairProps> = args => (
+  <div className="absolute">
+    <IlluHuman {...args} />
+  </div>
+);
 export const Default = Template.bind({});
 Default.args = {
   body: 'chart',
