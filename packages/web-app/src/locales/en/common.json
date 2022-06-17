@@ -29,6 +29,7 @@
   "labels": {
     "members": "Members",
     "addMember": "Add Member",
+    "mintTokens": "Mint Tokens",
     "approvalThreshold": "Approval Threshold",
     "viewTransactions": "View Transactions",
     "logOut": "Log Out",

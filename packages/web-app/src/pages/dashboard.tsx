@@ -10,12 +10,20 @@ import {MembershipSnapshot} from 'containers/membershipSnapshot';
 import {useDaoParam} from 'hooks/useDaoParam';
 import {MockProposal, useDaoProposals} from 'hooks/useDaoProposals';
 import {useDaoVault} from 'hooks/useDaoVault';
+import {useDaoMetadata} from 'hooks/useDaoMetadata';
 import useScreen from 'hooks/useScreen';
 import {Transfer} from 'utils/types';
+import {formatDate} from 'utils/date';
+import {useNetwork} from 'context/network';
+import {useTranslation} from 'react-i18next';
 
 const Dashboard: React.FC = () => {
-  const {data: dao, loading} = useDaoParam();
+  const {t} = useTranslation();
+  const {network} = useNetwork();
   const {isDesktop} = useScreen();
+  const {loading, data: daoId} = useDaoParam();
+
+  const {data: dao, loading: metadataLoading} = useDaoMetadata(daoId);
 
   //temporary helpers
   const [showProposals, setShowProposals] = useState(true);
@@ -24,21 +32,27 @@ const Dashboard: React.FC = () => {
   const {topTen} = useDaoProposals(showProposals);
   const {transfers, totalAssetValue} = useDaoVault(dao, showTransactions);
 
-  if (loading) {
+  if (loading || metadataLoading) {
     return <Loading />;
   }
+
+  const isWalletBased = dao?.packages[0].pkg.__typename === 'WhitelistPackage';
 
   return (
     <>
       <HeaderWrapper>
         <HeaderDao
-          daoName={'DaoName'}
+          daoName={dao?.name}
           description={
             'We are a community that loves trees and the planet. We track where forestation is increasing (or shrinking), fund people who are growing and protecting trees...'
           }
-          created_at={'March 2022'}
-          daoChain={'Arbitrum'}
-          daoType={'Wallet Based'}
+          created_at={formatDate(dao?.createdAt, 'MMMM yyyy').toString()}
+          daoChain={network}
+          daoType={
+            isWalletBased
+              ? t('explore.explorer.walletBased')
+              : t('explore.explorer.tokenBased')
+          }
           links={[
             {
               label: 'Website',
@@ -69,14 +83,14 @@ const Dashboard: React.FC = () => {
       </div>
       {isDesktop ? (
         <DashboardContent
-          dao={dao}
+          dao={dao?.id}
           proposals={topTen}
           transfers={transfers}
           totalAssetValue={totalAssetValue}
         />
       ) : (
         <MobileDashboardContent
-          dao={dao}
+          dao={dao?.id}
           proposals={topTen}
           transfers={transfers}
           totalAssetValue={totalAssetValue}
