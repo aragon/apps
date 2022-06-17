@@ -3,7 +3,7 @@ name: UI-Components publish
 on:
   push:
     tags:
-      - '.*-ui-components'
+      - '*-ui-components'
 
 jobs:
   test:
