@@ -15,6 +15,7 @@ import {BaseTokenInfo, TokenBalance, TokenWithMetadata} from 'utils/types';
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 
 import {useTokenMetadata} from 'hooks/useTokenMetadata';
+import {abbreviateTokenAmount} from 'utils/tokens';
 
 const customToken = {
   address: '',
@@ -116,10 +117,9 @@ const TokenMenu: React.FC<TokenMenuProps> = ({
                 tokenName={token.metadata.name}
                 tokenLogo={token.metadata.imgUrl}
                 tokenSymbol={token.metadata.symbol}
-                tokenBalance={formatUnits(
-                  token.balance,
-                  token.metadata.decimals
-                ).slice(0, 6)}
+                tokenBalance={abbreviateTokenAmount(
+                  formatUnits(token.balance, token.metadata.decimals)
+                )}
               />
             </div>
           ))}

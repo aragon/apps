@@ -23,7 +23,7 @@ export const Icons = {
 
 export type CheckboxListItemProps = {
   label: string;
-  helptext: string;
+  helptext?: string;
   multiSelect?: boolean;
   disabled?: boolean;
   state?: 'default' | 'active' | 'multi';
@@ -49,7 +49,7 @@ export const CheckboxListItem: React.FC<CheckboxListItemProps> = ({
         <p className="font-bold">{label}</p>
         {Icons[multiSelect ? 'multiSelect' : 'radio'][state]}
       </HStack>
-      <Helptext>{helptext}</Helptext>
+      {helptext && <Helptext>{helptext}</Helptext>}
     </Container>
   );
 };

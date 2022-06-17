@@ -22,7 +22,7 @@ export function useDaoParam() {
   const {data, error, loading} = useQuery(DAO_BY_ADDRESS, {
     variables: {id: dao ? dao : ''},
     client: client[network],
-    fetchPolicy: 'no-cache',
+    fetchPolicy: 'cache-and-network',
   });
   const navigate = useNavigate();
 

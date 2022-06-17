@@ -95,7 +95,9 @@ const DepositProvider = ({children}: {children: ReactNode}) => {
       case TransactionState.LOADING:
         break;
       case TransactionState.SUCCESS:
-        navigate(generatePath(Finance, {network, dao}));
+        navigate(generatePath(Finance, {network, dao}), {
+          state: {refetch: true},
+        });
         break;
       default: {
         setShowModal(false);

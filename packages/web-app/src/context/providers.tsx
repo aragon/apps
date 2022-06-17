@@ -2,8 +2,13 @@ import {InfuraProvider, Web3Provider} from '@ethersproject/providers';
 import React, {createContext, useContext, useEffect, useState} from 'react';
 import {useWallet} from 'hooks/useWallet';
 
-import {INFURA_PROJECT_ID_ARB, SupportedChainID} from 'utils/constants';
+import {
+  CHAIN_METADATA,
+  INFURA_PROJECT_ID_ARB,
+  SupportedChainID,
+} from 'utils/constants';
 import {Nullable} from 'utils/types';
+import {useNetwork} from './network';
 
 const NW_ARB = {chainId: 42161, name: 'arbitrum'};
 const NW_ARB_RINKEBY = {chainId: 421611, name: 'arbitrum-rinkeby'};
@@ -31,15 +36,17 @@ type ProviderProviderProps = {
  * therefore be null if no wallet is connected.
  */
 export function ProvidersProvider({children}: ProviderProviderProps) {
-  const {chainId, provider} = useWallet();
+  const {provider} = useWallet();
+  const {network} = useNetwork();
 
   const [infuraProvider, setInfuraProvider] = useState(
     new InfuraProvider(NW_ARB, INFURA_PROJECT_ID_ARB)
   );
 
   useEffect(() => {
+    const chainId = CHAIN_METADATA[network].id;
     setInfuraProvider(getInfuraProvider(chainId as SupportedChainID));
-  }, [chainId]);
+  }, [network]);
 
   return (
     <ProviderContext.Provider

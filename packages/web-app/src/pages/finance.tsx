@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import {withTransaction} from '@elastic/apm-rum-react';
@@ -14,17 +14,29 @@ import {sortTokens} from 'utils/tokens';
 import TransferList from 'components/transferList';
 import {useDaoVault} from 'hooks/useDaoVault';
 import {useDaoParam} from 'hooks/useDaoParam';
-import {TemporarySection} from 'components/temporary';
 import {useGlobalModalContext} from 'context/globalModals';
 import {useTransactionDetailContext} from 'context/transactionDetail';
+import {useLocation} from 'react-router-dom';
 
 const Finance: React.FC = () => {
   const {t} = useTranslation();
   const {open} = useGlobalModalContext();
+  const {state} = useLocation();
   const {data: daoId, loading} = useDaoParam();
   const {handleTransferClicked} = useTransactionDetailContext();
-  const {tokens, totalAssetChange, totalAssetValue, transfers} =
+  const {tokens, totalAssetChange, totalAssetValue, transfers, refetch} =
     useDaoVault(daoId);
+
+  // delaying a second refresh for five seconds
+  // because subgraph doesn't immediately pick up
+  // transfer sometimes
+  useEffect(() => {
+    if (state?.refetch) {
+      setTimeout(() => {
+        refetch();
+      }, 10000);
+    }
+  }, [refetch, state?.refetch]);
 
   sortTokens(tokens, 'treasurySharePercentage');
 
@@ -67,13 +79,6 @@ const Finance: React.FC = () => {
             />
           </ListContainer>
         </TransferSectionWrapper>
-        <TemporarySection purpose="It whether the dao parameter was properly parsed and validated.">
-          {daoId ? (
-            <p>{`DAO address: ${daoId.slice(0, 15) + '...'}`}</p>
-          ) : (
-            <p>{"Something's not right"}</p>
-          )}
-        </TemporarySection>
       </PageWrapper>
     </>
   );

@@ -4,6 +4,7 @@ import {formatUnits} from 'ethers/lib/utils';
 import {useTranslation} from 'react-i18next';
 
 import {VaultToken} from 'utils/types';
+import {abbreviateTokenAmount} from 'utils/tokens';
 
 type TokenListProps = {
   tokens: VaultToken[];
@@ -12,10 +13,6 @@ type TokenListProps = {
 const usdFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
   currency: 'USD',
-});
-
-const numberFormatter = new Intl.NumberFormat('en-US', {
-  maximumFractionDigits: 4,
 });
 
 // TODO: Pass in current locale to usd value
@@ -33,8 +30,8 @@ const TokenList: React.FC<TokenListProps> = ({tokens}) => {
           tokenName={token.metadata.name}
           tokenSymbol={token.metadata.symbol}
           tokenImageUrl={token.metadata.imgUrl || ''}
-          tokenCount={numberFormatter.format(
-            Number(formatUnits(token.balance, token.metadata.decimals))
+          tokenCount={abbreviateTokenAmount(
+            formatUnits(token.balance, token.metadata.decimals)
           )}
           {...(!token.marketData
             ? {

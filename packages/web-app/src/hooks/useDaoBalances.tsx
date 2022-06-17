@@ -7,6 +7,7 @@ import {DAO_BALANCE_LIST} from 'queries/finances';
 export const useDaoBalances = (daoAddress: Address) => {
   const {data, error, loading, refetch} = useQuery(DAO_BALANCE_LIST, {
     variables: {dao: daoAddress},
+    fetchPolicy: 'no-cache',
   });
 
   return {

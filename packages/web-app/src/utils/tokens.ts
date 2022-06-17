@@ -4,6 +4,7 @@ import {TokenWithMetadata} from './types';
 import {constants, ethers, providers as EthersProviders} from 'ethers';
 
 import {formatUnits} from 'utils/library';
+import {TOKEN_AMOUNT_REGEX} from './constants';
 
 /**
  * This method sorts a list of array information. It is applicable to any field
@@ -169,3 +170,71 @@ export const fetchBalance = async (
 export const isETH = (tokenAddress: string) => {
   return tokenAddress === constants.AddressZero;
 };
+
+/**
+ * Helper-method formats a string of token amount.
+ *
+ * The method expects the string representation of an integer or decimal number.
+ * The string must contain only digits, except for the decimal dot and an option
+ * token symbol separated from the number by a whitespace. E.g.
+ *
+ * - '111' ok
+ * - '111.1' ok
+ * - '111.1 SYM' ok
+ * - '1'111'111.1 SYM' not ok.
+ *
+ * The output, in general, is engineering notation (scientific notation wher the
+ * exponent is divisible by 3 and the coefficient is between in [1,999]). For
+ * numbers up to a trillon, the power is replaced by the letters k (10^3), M
+ * (10^6) and G (10^9).
+ *
+ * Decimals are ignored for any number >= 10 k. Below that, rounding to 2
+ * decimals is applied if necessary.
+ *
+ * @param amount [string] token amount. May include token symbol.
+ * @returns [string] abbreviated token amount. Any decimal digits get discarded. For
+ * thousands, millions and billions letters are used. E.g. 10'123'456.78 SYM becomes 10M.
+ * Everything greater gets expressed as power of tens.
+ */
+export function abbreviateTokenAmount(amount: string): string {
+  if (!amount) return 'N/A';
+
+  const regexp_res = amount.match(TOKEN_AMOUNT_REGEX);
+  // discard failed matches
+  if (regexp_res?.length !== 4 || regexp_res[0].length !== amount.length)
+    return 'N/A';
+
+  // retrieve capturing groups
+  const integers = regexp_res[1];
+  const decimals = regexp_res[2];
+  const symbol = regexp_res[3];
+
+  if (integers?.length > 4) {
+    const integerNumber = Number.parseInt(integers);
+    const magnitude = Math.floor((integers.length - 1) / 3);
+    const lead = Math.floor(integerNumber / Math.pow(10, magnitude * 3));
+    const magnitude_letter = ['k', 'M', 'G'];
+
+    return `${lead}${
+      magnitude < 4
+        ? magnitude_letter[magnitude - 1]
+        : '*10^' + Math.floor(magnitude) * 3
+    }${symbol && ' ' + symbol}`;
+  }
+
+  if (decimals) {
+    const fraction = '0.' + decimals;
+    const fractionNumber = Number.parseFloat(fraction);
+    const intNumber = Number.parseInt(integers);
+    const totalNumber = intNumber + fractionNumber;
+
+    if (totalNumber < 0.01) {
+      return ` < 0.01${symbol && ' ' + symbol}`;
+    }
+
+    console.log('[LOGGING] totalNumber ' + totalNumber);
+    return `${totalNumber.toFixed(2)}${symbol && ' ' + symbol}`;
+  }
+
+  return `${Number.parseInt(integers)}${symbol && ' ' + symbol}`;
+}

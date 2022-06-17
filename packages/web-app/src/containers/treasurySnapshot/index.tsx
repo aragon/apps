@@ -15,6 +15,7 @@ import {AllTransfers} from 'utils/paths';
 import {useGlobalModalContext} from 'context/globalModals';
 import {useTransactionDetailContext} from 'context/transactionDetail';
 import {Transfer} from 'utils/types';
+import {abbreviateTokenAmount} from 'utils/tokens';
 
 type Props = {
   dao: string;
@@ -54,11 +55,12 @@ const TreasurySnapshot: React.FC<Props> = ({
         orientation="vertical"
         onClick={() => open()}
       />
-      {transfers.slice(0, 3).map(transfer => (
+      {transfers.slice(0, 3).map(({tokenAmount, ...rest}) => (
         <TransferListItem
-          key={transfer.id}
-          {...transfer}
-          onClick={() => handleTransferClicked(transfer)}
+          key={rest.id}
+          tokenAmount={abbreviateTokenAmount(tokenAmount)}
+          {...rest}
+          onClick={() => handleTransferClicked({tokenAmount, ...rest})}
         />
       ))}
       <ButtonText
