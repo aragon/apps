@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, {useMemo, useEffect, useState} from 'react';
 import {
   AlertInline,
   ButtonText,
@@ -27,7 +27,7 @@ type TransactionModalProps = {
   averageFee: BigInt | undefined;
   tokenPrice: number;
   depositAmount: bigint;
-  token: string;
+  tokenAddress: string;
 };
 
 const icons = {
@@ -50,10 +50,11 @@ const DepositModal: React.FC<TransactionModalProps> = ({
   averageFee,
   tokenPrice,
   depositAmount,
-  token,
+  tokenAddress,
 }) => {
   const {t} = useTranslation();
   const {network} = useNetwork();
+  const [USDtokenPrice, setUSDTokenPrice] = useState('');
 
   const label = {
     [TransactionState.WAITING]: t('TransactionModal.signDeposit'),
@@ -63,6 +64,30 @@ const DepositModal: React.FC<TransactionModalProps> = ({
   };
 
   const nativeCurrency = CHAIN_METADATA[network].nativeCurrency;
+
+  const formattedAmount =
+    depositAmount === undefined
+      ? undefined
+      : (formatUnits(
+          depositAmount.toString(),
+          nativeCurrency.decimals
+        ) as string);
+
+  useEffect(() => {
+    async function getPrice() {
+      const tokenPrice = await fetchTokenPrice(tokenAddress, network);
+      if (tokenPrice && formattedAmount) {
+        setUSDTokenPrice(
+          new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+          }).format(tokenPrice * Number(formattedAmount)) as string
+        );
+      }
+    }
+
+    getPrice();
+  }, [depositAmount, formattedAmount, network, tokenAddress]);
 
   const handleApproveClick = () => {
     handleApproval?.();
@@ -79,15 +104,6 @@ const DepositModal: React.FC<TransactionModalProps> = ({
         handleDeposit();
     }
   };
-
-  const formattedAmount =
-    depositAmount === undefined
-      ? undefined
-      : formatUnits(depositAmount.toString(), nativeCurrency.decimals);
-
-  // const usdDepositTokenPrice = useMemo(async () => {
-  //   return token && formattedAmount ? await fetchTokenPrice(token, network) : 0;
-  // }, [formattedAmount, network, token]);
 
   // TODO: temporarily returning error when unable to estimate fees
   // for chain on which contract not deployed
@@ -131,7 +147,7 @@ const DepositModal: React.FC<TransactionModalProps> = ({
           <VStack>
             <StrongText>{formattedAmount}</StrongText>
             <p className="text-sm text-right text-ui-500">
-              {/* {`${usdDepositTokenPrice}`} */}
+              {`${USDtokenPrice}`}
             </p>
           </VStack>
         </DepositAmountContainer>

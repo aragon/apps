@@ -185,7 +185,7 @@ const DepositProvider = ({children}: {children: ReactNode}) => {
         onClose={handleCloseModal}
         closeOnDrag={depositState !== TransactionState.LOADING}
         depositAmount={depositParams?.amount as bigint}
-        token={depositParams?.token as string}
+        tokenAddress={depositParams?.token as string}
       />
     </DepositContext.Provider>
   );
