@@ -11,20 +11,28 @@ import {useTranslation} from 'react-i18next';
 import {useNavigate, generatePath} from 'react-router-dom';
 
 import {useNetwork} from 'context/network';
-import {useDaoVault} from 'hooks/useDaoVault';
 import {AllTransfers} from 'utils/paths';
 import {useGlobalModalContext} from 'context/globalModals';
 import {useTransactionDetailContext} from 'context/transactionDetail';
+import {Transfer} from 'utils/types';
+import {abbreviateTokenAmount} from 'utils/tokens';
 
-type Props = {dao: string};
+type Props = {
+  dao: string;
+  transfers: Transfer[];
+  totalAssetValue: number;
+};
 
-const TreasurySnapshot: React.FC<Props> = ({dao}) => {
+const TreasurySnapshot: React.FC<Props> = ({
+  dao,
+  transfers,
+  totalAssetValue,
+}) => {
   const {t} = useTranslation();
   const {open} = useGlobalModalContext();
   const navigate = useNavigate();
   const {network} = useNetwork();
   const {handleTransferClicked} = useTransactionDetailContext();
-  const {transfers, totalAssetValue} = useDaoVault(dao);
 
   if (transfers.length === 0) {
     return (
@@ -47,11 +55,12 @@ const TreasurySnapshot: React.FC<Props> = ({dao}) => {
         orientation="vertical"
         onClick={() => open()}
       />
-      {transfers.slice(0, 3).map(transfer => (
+      {transfers.slice(0, 3).map(({tokenAmount, ...rest}) => (
         <TransferListItem
-          key={transfer.id}
-          {...transfer}
-          onClick={() => handleTransferClicked(transfer)}
+          key={rest.id}
+          tokenAmount={abbreviateTokenAmount(tokenAmount)}
+          {...rest}
+          onClick={() => handleTransferClicked({tokenAmount, ...rest})}
         />
       ))}
       <ButtonText
@@ -68,5 +77,5 @@ const TreasurySnapshot: React.FC<Props> = ({dao}) => {
 export default TreasurySnapshot;
 
 const Container = styled.div.attrs({
-  className: 'space-y-1.5 desktop:space-y-2 desktop:w-2/5',
+  className: 'space-y-1.5 desktop:space-y-2',
 })``;

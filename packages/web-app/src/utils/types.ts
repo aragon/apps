@@ -1,4 +1,4 @@
-import {Address} from '@aragon/ui-components/dist/utils/addresses';
+import {Address} from '@aragon/ui-components/src/utils/addresses';
 import {TimeFilter, TransferTypes} from './constants';
 
 /*************************************************

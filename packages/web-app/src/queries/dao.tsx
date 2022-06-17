@@ -148,6 +148,12 @@ export const DAO_BY_ADDRESS = gql`
   query DAO($id: ID) {
     dao(id: $id) {
       id
+      name
+      packages {
+        pkg {
+          id
+        }
+      }
     }
   }
 `;

@@ -12,8 +12,9 @@ import {CHAIN_METADATA, TransactionState} from 'utils/constants';
 import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 import {useNetwork} from 'context/network';
 import {formatUnits} from 'utils/library';
+import {abbreviateTokenAmount} from 'utils/tokens';
 
-type PublishDaoModalProps = {
+type PublishModalProps = {
   state: TransactionState;
   callback: () => void;
   isOpen: boolean;
@@ -22,6 +23,8 @@ type PublishDaoModalProps = {
   maxFee: BigInt | undefined;
   averageFee: BigInt | undefined;
   tokenPrice: number;
+  title?: string;
+  buttonLabel?: string;
 };
 
 const icons = {
@@ -31,7 +34,7 @@ const icons = {
   [TransactionState.ERROR]: <IconReload />,
 };
 
-const PublishDaoModal: React.FC<PublishDaoModalProps> = ({
+const PublishModal: React.FC<PublishModalProps> = ({
   state = TransactionState.LOADING,
   callback,
   isOpen,
@@ -40,13 +43,16 @@ const PublishDaoModal: React.FC<PublishDaoModalProps> = ({
   maxFee,
   averageFee,
   tokenPrice,
+  title,
+  buttonLabel,
 }) => {
   const {t} = useTranslation();
   const {network} = useNetwork();
 
   const label = {
-    [TransactionState.WAITING]: t('TransactionModal.publishDaoButtonLabel'),
-    [TransactionState.LOADING]: t('TransactionModal.publishDaoButtonLabel'),
+    [TransactionState.WAITING]:
+      buttonLabel || t('TransactionModal.publishDaoButtonLabel'),
+    [TransactionState.LOADING]: t('TransactionModal.waiting'),
     [TransactionState.SUCCESS]: t('TransactionModal.dismiss'),
     [TransactionState.ERROR]: t('TransactionModal.tryAgain'),
   };
@@ -68,9 +74,10 @@ const PublishDaoModal: React.FC<PublishDaoModalProps> = ({
                 formatUnits(averageFee.toString(), nativeCurrency.decimals)
               ) * tokenPrice
             ),
-            `${Number(
+            `${abbreviateTokenAmount(
               formatUnits(averageFee.toString(), nativeCurrency.decimals)
-            ).toFixed(8)} ${nativeCurrency.symbol}`,
+            )}
+           ${nativeCurrency.symbol}`,
           ],
     [averageFee, nativeCurrency.decimals, nativeCurrency.symbol, tokenPrice]
   );
@@ -78,14 +85,14 @@ const PublishDaoModal: React.FC<PublishDaoModalProps> = ({
   const formattedMax =
     maxFee === undefined
       ? undefined
-      : `${Number(
+      : `${abbreviateTokenAmount(
           formatUnits(maxFee.toString(), nativeCurrency.decimals)
-        ).toFixed(8)} ${nativeCurrency.symbol}`;
+        )} ${nativeCurrency.symbol}`;
 
   return (
     <ModalBottomSheetSwitcher
       {...{isOpen, onClose, closeOnDrag}}
-      title={t('TransactionModal.publishDao')}
+      title={title || t('TransactionModal.publishDao')}
     >
       <GasCostTableContainer>
         <GasCostEthContainer>
@@ -138,7 +145,7 @@ const PublishDaoModal: React.FC<PublishDaoModalProps> = ({
   );
 };
 
-export default PublishDaoModal;
+export default PublishModal;
 
 const GasCostTableContainer = styled.div.attrs({
   className: 'm-3 bg-white rounded-xl border border-ui-100 divide-y',

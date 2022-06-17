@@ -21,9 +21,13 @@ export type ListItemAddressProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   tokenInfo?: TokenInfo;
 };
 
-export const ListItemAddress: FC<ListItemAddressProps> = ({src, tokenInfo}) => {
+export const ListItemAddress: FC<ListItemAddressProps> = ({
+  src,
+  tokenInfo,
+  ...props
+}) => {
   return (
-    <Container data-testid="listItem-address">
+    <Container data-testid="listItem-address" {...props}>
       <LeftContent>
         <AvatarWallet src={src} />
         <p className="font-bold">{shortenAddress(src)}</p>

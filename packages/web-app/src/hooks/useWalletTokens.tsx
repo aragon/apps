@@ -29,7 +29,6 @@ export function useUserTokenAddresses(): HookData<string[]> {
   useEffect(() => {
     async function fetchTokenList() {
       setIsLoading(true);
-
       if (web3 && address) {
         try {
           const erc20Interface = new Interface(erc20TokenABI);

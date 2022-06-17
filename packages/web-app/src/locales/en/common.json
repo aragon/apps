@@ -27,6 +27,8 @@
     "connectWallet": "Login"
   },
   "labels": {
+    "members": "Members",
+    "addMember": "Add Member",
     "approvalThreshold": "Approval Threshold",
     "viewTransactions": "View Transactions",
     "logOut": "Log Out",
@@ -129,7 +131,11 @@
     "step": "Step",
     "of": "of",
     "edit": "Edit",
-    "daoSettings": "DAO Settings"
+    "daoSettings": "DAO Settings",
+    "selectWallets": "Select Wallets",
+    "cancel": "Cancel",
+    "addNWallets": "Add {{walletCount}} Wallets",
+    "noAddressSelected": "No address selected"
   },
   "placeHolders": {
     "selectToken": "Select a Token ...",
@@ -304,7 +310,10 @@
     "successLabel": "Transaction successfully executed",
     "synced": "Synced {{time}} sec ago",
     "totalCost": "Total Cost",
-    "tryAgain": "Try Again"
+    "tryAgain": "Try Again",
+    "createProposal": "Create Proposal",
+    "createProposalNow": "Create Proposal Now",
+    "waiting": "Waiting for Confirmation"
   },
   "AddActionModal": {
     "title": "Add Action",
@@ -500,9 +509,9 @@
       "myDaos": "My DAOs",
       "popular": "Popular",
       "newest": "Newest",
-      "walletBased": "Wallet Based",
+      "walletBased": "Wallet-Based",
       "showMore": "Show More",
-      "tokenBased": "Token Based"
+      "tokenBased": "Token-Based"
     },
     "activeProposals": "Active Proposals",
     "showMore": "Show More"
