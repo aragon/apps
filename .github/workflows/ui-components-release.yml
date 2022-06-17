@@ -4,10 +4,6 @@ on:
     types:
       - closed
 
-defaults:
-  run:
-    working-directory: packages/ui-components
-
 jobs:
   test:
     uses: ./.github/workflows/ui-components-test.yml
@@ -35,6 +31,9 @@ jobs:
     name: Create tag
     needs: [test, prepare]
     if: ${{ needs.prepare.outputs.bump != '' }}
+    defaults:
+      run:
+        working-directory: packages/ui-components
     steps:
       - uses: actions/checkout@v2
         with:

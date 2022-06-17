@@ -5,10 +5,6 @@ on:
     tags:
       - '.*-ui-components'
 
-defaults:
-  run:
-    working-directory: packages/ui-components
-
 jobs:
   test:
     uses: ./.github/workflows/ui-components-test.yml
@@ -29,6 +25,9 @@ jobs:
     runs-on: ubuntu-latest
     name: Publish ui-components
     needs: [test, checkTag]
+    defaults:
+      run:
+        working-directory: packages/ui-components
     steps:
       - uses: actions/checkout@v2
       - name: Install node
