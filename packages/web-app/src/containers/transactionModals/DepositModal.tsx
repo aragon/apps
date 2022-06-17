@@ -153,10 +153,12 @@ const DepositModal: React.FC<TransactionModalProps> = ({
         </DepositAmountContainer>
         <GasCostEthContainer>
           <VStack>
-            <Label>{t('TransactionModal.estimatedFees')}</Label>
-            <p className="text-sm text-ui-500">
-              {`${t('TransactionModal.synced', {time: 30})}`}
-            </p>
+            <VStack>
+              <Label>{t('TransactionModal.estimatedFees')}</Label>
+              <p className="text-sm text-ui-500">
+                {t('TransactionModal.maxFee')}
+              </p>
+            </VStack>
           </VStack>
           <VStack>
             <StrongText>{formattedAverage}</StrongText>

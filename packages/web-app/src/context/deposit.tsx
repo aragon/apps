@@ -61,6 +61,8 @@ const DepositProvider = ({children}: {children: ReactNode}) => {
     shouldPoll
   );
 
+  console.log('estimation', tokenPrice, maxFee, averageFee, stopPolling);
+
   const handleOpenModal = () => {
     // get deposit data from
     const {amount, tokenAddress, to, reference} = getValues();
