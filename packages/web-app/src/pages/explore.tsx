@@ -17,7 +17,7 @@ import ManageWalletsModal from 'containers/manageWalletsModal';
 
 const existingDaos = [
   '0x5aa80e80fd670393d625b70ec57b81226a274646',
-  '0xa2e993c4fd68fda9e28405cb9d8411a09117a47c',
+  '0xcf319af7c7b564c8f742b00af5cf19b4a1e1fe41',
 ];
 
 const Explore: React.FC = () => {
