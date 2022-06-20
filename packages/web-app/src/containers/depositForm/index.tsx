@@ -24,8 +24,9 @@ import {useProviders} from 'context/providers';
 import {fetchTokenData} from 'services/prices';
 import {useGlobalModalContext} from 'context/globalModals';
 import {handleClipboardActions} from 'utils/library';
-import {fetchBalance, getTokenInfo, isETH} from 'utils/tokens';
+import {fetchBalance, getTokenInfo, isNativeToken} from 'utils/tokens';
 import {validateTokenAddress, validateTokenAmount} from 'utils/validators';
+import {CHAIN_METADATA} from 'utils/constants';
 
 const DepositForm: React.FC = () => {
   const client = useApolloClient();
@@ -47,6 +48,7 @@ const DepositForm: React.FC = () => {
         'tokenSymbol',
       ],
     });
+  const nativeCurrency = CHAIN_METADATA[network].nativeCurrency;
 
   /*************************************************
    *                    Hooks                      *
@@ -67,9 +69,9 @@ const DepositForm: React.FC = () => {
       try {
         // fetch token balance and token metadata
         const allTokenInfoPromise = Promise.all([
-          isETH(tokenAddress)
+          isNativeToken(tokenAddress)
             ? utils.formatEther(walletBalance || 0)
-            : fetchBalance(tokenAddress, address, provider),
+            : fetchBalance(tokenAddress, address, provider, nativeCurrency),
           fetchTokenData(tokenAddress, client, network),
         ]);
 
@@ -80,7 +82,11 @@ const DepositForm: React.FC = () => {
           setValue('tokenSymbol', data.symbol);
           setValue('tokenImgUrl', data.imgUrl);
         } else {
-          const {name, symbol} = await getTokenInfo(tokenAddress, provider);
+          const {name, symbol} = await getTokenInfo(
+            tokenAddress,
+            provider,
+            nativeCurrency
+          );
           setValue('tokenName', name);
           setValue('tokenSymbol', symbol);
         }
@@ -110,6 +116,7 @@ const DepositForm: React.FC = () => {
     walletBalance,
     client,
     network,
+    nativeCurrency,
   ]);
 
   /*************************************************
@@ -117,7 +124,7 @@ const DepositForm: React.FC = () => {
    *************************************************/
   const addressValidator = useCallback(
     async (address: string) => {
-      if (isETH(address)) return true;
+      if (isNativeToken(address)) return true;
 
       const validationResult = await validateTokenAddress(address, provider);
 
@@ -148,7 +155,11 @@ const DepositForm: React.FC = () => {
       if (errors.tokenAddress) return t('errors.amountWithInvalidToken');
 
       try {
-        const {decimals} = await getTokenInfo(tokenAddress, provider);
+        const {decimals} = await getTokenInfo(
+          tokenAddress,
+          provider,
+          nativeCurrency
+        );
 
         // run amount rules
         return validateTokenAmount(amount, decimals, tokenBalance);
@@ -158,7 +169,7 @@ const DepositForm: React.FC = () => {
         return t('errors.defaultAmountValidationError');
       }
     },
-    [errors.tokenAddress, getValues, provider, t]
+    [errors.tokenAddress, getValues, provider, t, nativeCurrency]
   );
 
   /*************************************************

@@ -16,6 +16,7 @@ import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 
 import {useTokenMetadata} from 'hooks/useTokenMetadata';
 import {abbreviateTokenAmount} from 'utils/tokens';
+import {constants} from 'ethers';
 
 const customToken = {
   address: '',
@@ -71,10 +72,21 @@ const TokenMenu: React.FC<TokenMenuProps> = ({
     [searchValue]
   );
 
+  const sortTokens = (a: TokenWithMetadata, b: TokenWithMetadata) => {
+    if (
+      a.metadata.id === constants.AddressZero ||
+      b.metadata.id === constants.AddressZero
+    ) {
+      return 1;
+    } else {
+      return a.metadata.name
+        .toLowerCase()
+        .localeCompare(b.metadata.name.toLowerCase());
+    }
+  };
+
   const RenderTokens = () => {
-    const tokenList = tokens
-      .filter(filterValidator)
-      .sort((a, b) => (a.metadata.name < b.metadata.name ? -1 : 1));
+    const tokenList = tokens.filter(filterValidator).sort(sortTokens);
 
     if (tokenList.length === 0 && searchValue === '') {
       return (

@@ -4,7 +4,7 @@ import {TokenWithMetadata} from './types';
 import {constants, ethers, providers as EthersProviders} from 'ethers';
 
 import {formatUnits} from 'utils/library';
-import {TOKEN_AMOUNT_REGEX} from './constants';
+import {NativeTokenData, TOKEN_AMOUNT_REGEX} from './constants';
 
 /**
  * This method sorts a list of array information. It is applicable to any field
@@ -91,22 +91,24 @@ export async function isERC20Token(
  *
  * @param address token contract address
  * @param provider Eth provider
+ * @param nativeTokenData Information about the current native token
  * @returns number for decimals for each token
  */
 export async function getTokenInfo(
   address: string,
-  provider: EthersProviders.Provider
+  provider: EthersProviders.Provider,
+  nativeTokenData: NativeTokenData
 ) {
   let decimals = null,
     symbol = null,
     name = null,
     totalSupply = null;
 
-  if (isETH(address)) {
+  if (isNativeToken(address)) {
     return {
-      name: 'Ethereum',
-      symbol: constants.EtherSymbol,
-      decimals: 18,
+      name: nativeTokenData.name,
+      symbol: nativeTokenData.symbol,
+      decimals: nativeTokenData.decimals,
       totalSupply,
     };
   }
@@ -147,27 +149,31 @@ export const fetchBalance = async (
   tokenAddress: string,
   ownerAddress: string,
   provider: EthersProviders.Provider,
+  nativeCurrency: NativeTokenData,
   shouldFormat = true
 ) => {
   const contract = new ethers.Contract(tokenAddress, erc20TokenABI, provider);
   const balance = await contract.balanceOf(ownerAddress);
 
   if (shouldFormat) {
-    const {decimals} = await getTokenInfo(tokenAddress, provider);
+    const {decimals} = await getTokenInfo(
+      tokenAddress,
+      provider,
+      nativeCurrency
+    );
     return formatUnits(balance, decimals);
   }
-
   return balance;
 };
 
 /**
- * Check if token is Ether; the distinction is made
+ * Check if token is the chain native token; the distinction is made
  * especially in terms of whether the contract address
  * is that of an ERC20 token
  * @param tokenAddress address of token contract
  * @returns whether token is Ether
  */
-export const isETH = (tokenAddress: string) => {
+export const isNativeToken = (tokenAddress: string) => {
   return tokenAddress === constants.AddressZero;
 };
 

@@ -27,11 +27,12 @@ import {useProviders} from 'context/providers';
 import {fetchTokenData} from 'services/prices';
 import {useGlobalModalContext} from 'context/globalModals';
 import {handleClipboardActions} from 'utils/library';
-import {fetchBalance, getTokenInfo, isETH} from 'utils/tokens';
+import {fetchBalance, getTokenInfo, isNativeToken} from 'utils/tokens';
 import {WithdrawAction} from 'pages/newWithdraw';
 import {isAddress} from 'ethers/lib/utils';
 import {useNetwork} from 'context/network';
 import {useDaoParam} from 'hooks/useDaoParam';
+import {CHAIN_METADATA} from 'utils/constants';
 
 type ConfigureWithdrawFormProps = {
   index?: number;
@@ -63,6 +64,7 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
       `actions.${index}.tokenSymbol`,
     ],
   });
+  const nativeCurrency = CHAIN_METADATA[network].nativeCurrency;
 
   /*************************************************
    *                    Hooks                      *
@@ -73,7 +75,16 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
     if (from === '') {
       setValue(`actions.${index}.from`, daoAddress);
     }
-  }, [address, daoAddress, from, index, isCustomToken, setFocus, setValue]);
+  }, [
+    address,
+    daoAddress,
+    from,
+    index,
+    isCustomToken,
+    setFocus,
+    setValue,
+    nativeCurrency,
+  ]);
 
   // Fetch custom token information
   useEffect(() => {
@@ -89,9 +100,9 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
       try {
         // fetch token balance and token metadata
         const allTokenInfoPromise = Promise.all([
-          isETH(tokenAddress)
+          isNativeToken(tokenAddress)
             ? provider.getBalance(daoAddress)
-            : fetchBalance(tokenAddress, daoAddress, provider),
+            : fetchBalance(tokenAddress, daoAddress, provider, nativeCurrency),
           fetchTokenData(tokenAddress, client, network),
         ]);
 
@@ -103,7 +114,11 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
           setValue(`actions.${index}.tokenImgUrl`, data.imgUrl);
           setValue(`actions.${index}.tokenPrice`, data.price);
         } else {
-          const {name, symbol} = await getTokenInfo(tokenAddress, provider);
+          const {name, symbol} = await getTokenInfo(
+            tokenAddress,
+            provider,
+            nativeCurrency
+          );
           setValue(`actions.${index}.tokenName`, name);
           setValue(`actions.${index}.tokenSymbol`, symbol);
         }
@@ -135,6 +150,7 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
     client,
     network,
     daoAddress,
+    nativeCurrency,
   ]);
 
   /*************************************************
@@ -167,7 +183,7 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
    *************************************************/
   const addressValidator = useCallback(
     async (address: string) => {
-      if (isETH(address)) return true;
+      if (isNativeToken(address)) return true;
 
       const validationResult = await validateTokenAddress(address, provider);
 
@@ -195,7 +211,11 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
       if (errors.tokenAddress) return t('errors.amountWithInvalidToken');
 
       try {
-        const {decimals} = await getTokenInfo(tokenAddress, provider);
+        const {decimals} = await getTokenInfo(
+          tokenAddress,
+          provider,
+          nativeCurrency
+        );
 
         // run amount rules
         return validateTokenAmount(amount, decimals);
@@ -205,7 +225,7 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
         return t('errors.defaultAmountValidationError');
       }
     },
-    [errors.tokenAddress, getValues, index, provider, t]
+    [errors.tokenAddress, getValues, index, provider, t, nativeCurrency]
   );
 
   const recipientValidator = useCallback(
