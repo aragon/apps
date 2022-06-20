@@ -13,7 +13,7 @@ import {useNavigate, generatePath} from 'react-router-dom';
 
 import {Loading} from 'components/temporary';
 import {useNetwork} from 'context/network';
-import {useDaoMembers} from 'hooks/useDaoMembers';
+import {useDaoTokenHolders, useDaoWhitelist} from 'hooks/useDaoMembers';
 import {CHAIN_METADATA} from 'utils/constants';
 import {Community} from 'utils/paths';
 import useScreen from 'hooks/useScreen';
@@ -21,22 +21,33 @@ import {getTokenInfo} from 'utils/tokens';
 import {useSpecificProvider} from 'context/providers';
 import {formatUnits} from 'utils/library';
 
-type Props = {dao: string; horizontal?: boolean};
+type Props = {dao: string; walletBased: boolean; horizontal?: boolean};
 
-export const MembershipSnapshot: React.FC<Props> = ({dao, horizontal}) => {
+export const MembershipSnapshot: React.FC<Props> = ({
+  dao,
+  walletBased,
+  horizontal,
+}) => {
   const {t} = useTranslation();
   const navigate = useNavigate();
   const {network} = useNetwork();
   const provider = useSpecificProvider(CHAIN_METADATA[network].id);
   const {isDesktop} = useScreen();
+  const {data: whitelist, isLoading: whiteListLoading} = useDaoWhitelist(dao);
   const {
-    data: {daoMembers, daoType, token},
-    loading,
-  } = useDaoMembers(dao);
+    data: {daoMembers, token},
+    isLoading: tokenHoldersLoading,
+  } = useDaoTokenHolders(dao);
 
   const [totalSupply, setTotalSupply] = useState<number>(0);
-  const memberCount = daoMembers?.length;
-  const isTokenBased = daoType === 'ERC20VotingPackage';
+  const memberCount = walletBased ? whitelist?.length : daoMembers?.length;
+
+  const headerButtonHandler = () => {
+    () =>
+      walletBased
+        ? alert('This will soon take you to a page for minting tokens')
+        : alert('This will soon take you to a page that lets you add members');
+  };
 
   useEffect(() => {
     async function fetchTotalSupply() {
@@ -58,7 +69,7 @@ export const MembershipSnapshot: React.FC<Props> = ({dao, horizontal}) => {
     else window.open(baseUrl + '/enslookup-search?search=' + address, '_blank');
   };
 
-  if (loading) return <Loading />;
+  if (whiteListLoading || tokenHoldersLoading) return <Loading />;
 
   if (horizontal && isDesktop) {
     return (
@@ -68,41 +79,47 @@ export const MembershipSnapshot: React.FC<Props> = ({dao, horizontal}) => {
             icon={<IconCommunity />}
             value={`${memberCount} ${t('labels.members')}`}
             label={
-              isTokenBased
-                ? t('explore.explorer.tokenBased')
-                : t('explore.explorer.walletBased')
+              walletBased
+                ? t('explore.explorer.walletBased')
+                : t('explore.explorer.tokenBased')
             }
             buttonText={
-              isTokenBased ? t('labels.mintTokens') : t('labels.addMember')
+              walletBased ? t('labels.addMember') : t('labels.mintTokens')
             }
             orientation="vertical"
-            onClick={() =>
-              alert(
-                'This will soon take you to a page that lets you add members'
-              )
-            }
+            onClick={headerButtonHandler}
           />
         </div>
         <div className="space-y-2 w-2/3">
           <ListItemGrid>
-            {daoMembers?.slice(0, 3).map(({address, tokens}) => (
-              <ListItemAddress
-                src={address}
-                key={address}
-                {...(isTokenBased && tokens
-                  ? {
-                      tokenInfo: {
-                        amount: tokens,
-                        symbol: token?.symbol,
-                        percentage: Number(
-                          ((tokens / totalSupply) * 100).toFixed(2)
-                        ),
-                      },
-                    }
-                  : {})}
-                onClick={() => itemClickHandler(address)}
-              />
-            ))}
+            {walletBased
+              ? whitelist
+                  ?.slice(0, 3)
+                  .map(({id}) => (
+                    <ListItemAddress
+                      key={id}
+                      src={id}
+                      onClick={() => itemClickHandler(id)}
+                    />
+                  ))
+              : daoMembers?.slice(0, 3).map(({address, balance}) => (
+                  <ListItemAddress
+                    src={address}
+                    key={address}
+                    {...(!walletBased && balance
+                      ? {
+                          tokenInfo: {
+                            amount: balance,
+                            symbol: token?.symbol,
+                            percentage: Number(
+                              ((balance / totalSupply) * 100).toFixed(2)
+                            ),
+                          },
+                        }
+                      : {})}
+                    onClick={() => itemClickHandler(address)}
+                  />
+                ))}
           </ListItemGrid>
           <ButtonText
             mode="secondary"
@@ -122,38 +139,44 @@ export const MembershipSnapshot: React.FC<Props> = ({dao, horizontal}) => {
         icon={<IconCommunity />}
         value={`${memberCount} ${t('labels.members')}`}
         label={
-          isTokenBased
-            ? t('explore.explorer.tokenBased')
-            : t('explore.explorer.walletBased')
+          walletBased
+            ? t('explore.explorer.walletBased')
+            : t('explore.explorer.tokenBased')
         }
         buttonText={
-          isTokenBased ? t('labels.mintTokens') : t('labels.addMember')
+          walletBased ? t('labels.addMember') : t('labels.mintTokens')
         }
         orientation="vertical"
-        onClick={() =>
-          isTokenBased
-            ? alert('This will soon take you to a page for minting tokens')
-            : alert(
-                'This will soon take you to a page that lets you add members'
-              )
-        }
+        onClick={headerButtonHandler}
       />
-      {daoMembers?.slice(0, 3).map(({address, tokens}) => (
-        <ListItemAddress
-          src={address}
-          key={address}
-          {...(isTokenBased && tokens
-            ? {
-                tokenInfo: {
-                  amount: tokens,
-                  symbol: token?.symbol,
-                  percentage: Number(((tokens / totalSupply) * 100).toFixed(2)),
-                },
-              }
-            : {})}
-          onClick={() => itemClickHandler(address)}
-        />
-      ))}
+      {walletBased
+        ? whitelist
+            ?.slice(0, 3)
+            .map(({id}) => (
+              <ListItemAddress
+                key={id}
+                src={id}
+                onClick={() => itemClickHandler(id)}
+              />
+            ))
+        : daoMembers?.slice(0, 3).map(({address, balance}) => (
+            <ListItemAddress
+              src={address}
+              key={address}
+              {...(!walletBased && balance
+                ? {
+                    tokenInfo: {
+                      amount: balance,
+                      symbol: token?.symbol,
+                      percentage: Number(
+                        ((balance / totalSupply) * 100).toFixed(2)
+                      ),
+                    },
+                  }
+                : {})}
+              onClick={() => itemClickHandler(address)}
+            />
+          ))}
       <ButtonText
         mode="secondary"
         size="large"

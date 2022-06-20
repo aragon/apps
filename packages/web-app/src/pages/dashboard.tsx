@@ -83,17 +83,19 @@ const Dashboard: React.FC = () => {
       </div>
       {isDesktop ? (
         <DashboardContent
-          dao={dao?.id}
+          dao={daoId}
           proposals={topTen}
           transfers={transfers}
           totalAssetValue={totalAssetValue}
+          walletBased={isWalletBased}
         />
       ) : (
         <MobileDashboardContent
-          dao={dao?.id}
+          dao={daoId}
           proposals={topTen}
           transfers={transfers}
           totalAssetValue={totalAssetValue}
+          walletBased={isWalletBased}
         />
       )}
     </>
@@ -112,13 +114,15 @@ type DashboardContentProps = {
   proposals: MockProposal[];
   transfers: Transfer[];
   totalAssetValue: number;
+  walletBased: boolean;
 };
 
 const DashboardContent: React.FC<DashboardContentProps> = ({
-  dao,
   proposals,
   transfers,
+  dao,
   totalAssetValue,
+  walletBased,
 }) => {
   const proposalCount = proposals.length;
   const transactionCount = transfers.length;
@@ -150,7 +154,7 @@ const DashboardContent: React.FC<DashboardContentProps> = ({
           </>
         )}
         <MembersWrapper>
-          <MembershipSnapshot dao={dao} horizontal />
+          <MembershipSnapshot dao={dao} walletBased horizontal />
         </MembersWrapper>
       </>
     );
@@ -167,7 +171,7 @@ const DashboardContent: React.FC<DashboardContentProps> = ({
           transfers={transfers}
           totalAssetValue={totalAssetValue}
         />
-        <MembershipSnapshot dao={dao} />
+        <MembershipSnapshot dao={dao} walletBased />
       </RightNarrowContent>
     </>
   );
@@ -200,6 +204,7 @@ const MobileDashboardContent: React.FC<DashboardContentProps> = ({
   proposals,
   transfers,
   totalAssetValue,
+  walletBased,
 }) => {
   return (
     <MobileLayout>
@@ -209,7 +214,7 @@ const MobileDashboardContent: React.FC<DashboardContentProps> = ({
         transfers={transfers}
         totalAssetValue={totalAssetValue}
       />
-      <MembershipSnapshot dao={dao} />
+      <MembershipSnapshot dao={dao} walletBased />
     </MobileLayout>
   );
 };
