@@ -58,6 +58,7 @@ const DepositModal: React.FC<TransactionModalProps> = ({
   const {t} = useTranslation();
   const {network} = useNetwork();
   const [USDtokenPrice, setUSDTokenPrice] = useState('');
+  const [updateBlink, setUpdateBlink] = useState(false);
 
   const label = {
     [TransactionState.WAITING]: t('TransactionModal.signDeposit'),
@@ -75,6 +76,13 @@ const DepositModal: React.FC<TransactionModalProps> = ({
           depositAmount.toString(),
           nativeCurrency.decimals
         ) as string);
+
+  useEffect(() => {
+    setUpdateBlink(true);
+    setTimeout(() => {
+      setUpdateBlink(false);
+    }, 1000);
+  }, [averageFee]);
 
   useEffect(() => {
     async function getPrice() {
@@ -151,9 +159,7 @@ const DepositModal: React.FC<TransactionModalProps> = ({
             <StrongText>
               {formattedAmount} {modalParams?.tokenSymbol || ''}
             </StrongText>
-            <p className="text-sm text-right text-ui-500">
-              {`${USDtokenPrice}`}
-            </p>
+            <LightText>{`${USDtokenPrice}`}</LightText>
           </VStack>
         </DepositAmountContainer>
         <GasCostEthContainer>
@@ -166,16 +172,16 @@ const DepositModal: React.FC<TransactionModalProps> = ({
             </VStack>
           </VStack>
           <VStack>
-            <StrongText>{formattedAverage}</StrongText>
-            <p className="text-sm text-right text-ui-500">{formattedMax}</p>
+            <StrongText {...{updateBlink}}>{formattedAverage}</StrongText>
+            <LightText {...{updateBlink}}>{formattedMax}</LightText>
           </VStack>
         </GasCostEthContainer>
 
         <GasCostUSDContainer>
           <Label>{t('TransactionModal.totalCost')}</Label>
           <VStack>
-            <StrongText>{formattedAverage}</StrongText>
-            <p className="text-sm text-right text-ui-500">{totalCost}</p>
+            <StrongText {...{updateBlink}}>{formattedAverage}</StrongText>
+            <LightText {...{updateBlink}}>{totalCost}</LightText>
           </VStack>
         </GasCostUSDContainer>
       </GasCostTableContainer>
@@ -242,6 +248,10 @@ const DepositModal: React.FC<TransactionModalProps> = ({
 
 export default DepositModal;
 
+type StrongLightTextProps = {
+  updateBlink?: boolean;
+};
+
 const GasCostTableContainer = styled.div.attrs({
   className: 'm-3 bg-white rounded-xl border border-ui-100',
 })``;
@@ -282,7 +292,33 @@ const VStack = styled.div.attrs({
 
 const StrongText = styled.p.attrs({
   className: 'font-bold text-right text-ui-600',
-})``;
+})<StrongLightTextProps>`
+  ${props =>
+    props.updateBlink &&
+    `
+  animation: blinker 1s linear infinite;
+  @keyframes blinker {
+    50% {
+      opacity: 0;
+    }
+  }
+  `}
+`;
+
+const LightText = styled.p.attrs({
+  className: 'text-sm text-right text-ui-500',
+})<StrongLightTextProps>`
+  ${props =>
+    props.updateBlink &&
+    `
+  animation: blinker 1s linear infinite;
+  @keyframes blinker {
+    50% {
+      opacity: 0;
+    }
+  }
+  `}
+`;
 
 const Label = styled.p.attrs({
   className: 'text-ui-600',
