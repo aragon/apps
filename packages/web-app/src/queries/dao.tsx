@@ -187,8 +187,13 @@ export const DAO_MEMBERS = gql`
       }
       packages {
         pkg {
-          id
+          ... on WhitelistPackage {
+            users {
+              id
+            }
+          }
           __typename
+          id
         }
       }
     }
