@@ -13,6 +13,7 @@ import {CHAIN_METADATA, TransactionState} from 'utils/constants';
 import {useNetwork} from 'context/network';
 import {formatUnits} from 'utils/library';
 import {fetchTokenPrice} from 'services/prices';
+import {modalParamsType} from 'context/deposit';
 
 type TransactionModalProps = {
   state: TransactionState;
@@ -28,6 +29,7 @@ type TransactionModalProps = {
   tokenPrice: number;
   depositAmount: bigint;
   tokenAddress: string;
+  modalParams: modalParamsType;
 };
 
 const icons = {
@@ -51,6 +53,7 @@ const DepositModal: React.FC<TransactionModalProps> = ({
   tokenPrice,
   depositAmount,
   tokenAddress,
+  modalParams,
 }) => {
   const {t} = useTranslation();
   const {network} = useNetwork();
@@ -145,7 +148,9 @@ const DepositModal: React.FC<TransactionModalProps> = ({
             <Label>{t('labels.deposit')}</Label>
           </VStack>
           <VStack>
-            <StrongText>{formattedAmount}</StrongText>
+            <StrongText>
+              {formattedAmount} {modalParams?.tokenSymbol || ''}
+            </StrongText>
             <p className="text-sm text-right text-ui-500">
               {`${USDtokenPrice}`}
             </p>

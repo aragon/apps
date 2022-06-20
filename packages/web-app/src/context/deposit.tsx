@@ -24,6 +24,10 @@ interface IDepositContextType {
   handleOpenModal: () => void;
 }
 
+export type modalParamsType = {
+  tokenSymbol?: string;
+};
+
 const DepositContext = createContext<IDepositContextType | null>(null);
 
 const DepositProvider = ({children}: {children: ReactNode}) => {
@@ -37,6 +41,7 @@ const DepositProvider = ({children}: {children: ReactNode}) => {
   const {getValues} = useFormContext<DepositFormData>();
   const [depositState, setDepositState] = useState<TransactionState>();
   const [depositParams, setDepositParams] = useState<IDeposit>();
+  const [modalParams, setModalParams] = useState<modalParamsType>({});
 
   const {erc20: client} = useClient();
   const {setStep: setModalStep, currentStep} = useStepper(2);
@@ -52,20 +57,26 @@ const DepositProvider = ({children}: {children: ReactNode}) => {
   }, [client, depositParams]);
 
   const estimateDepositFees = useCallback(async () => {
-    if (client && depositParams)
-      return client?.estimate.deposit(depositParams as IDeposit);
-  }, [client, depositParams]);
+    if (client && depositParams) {
+      if (currentStep === 2)
+        return client?.estimate.deposit(depositParams as IDeposit);
+      else
+        return client?.estimate.increaseAllowance(
+          depositParams.token as string,
+          depositParams.daoAddress,
+          depositParams.amount
+        );
+    }
+  }, [client, currentStep, depositParams]);
 
   const {tokenPrice, maxFee, averageFee, stopPolling} = usePollGasFee(
     estimateDepositFees,
     shouldPoll
   );
 
-  console.log('estimation', tokenPrice, maxFee, averageFee, stopPolling);
-
   const handleOpenModal = () => {
     // get deposit data from
-    const {amount, tokenAddress, to, reference} = getValues();
+    const {amount, tokenAddress, to, reference, tokenSymbol} = getValues();
 
     // validate and set deposit data
     if (!to) {
@@ -78,6 +89,11 @@ const DepositProvider = ({children}: {children: ReactNode}) => {
       amount: BigInt(Number(amount) * Math.pow(10, 18)),
       token: tokenAddress,
       reference,
+    });
+
+    //add more information that aren't in the form
+    setModalParams({
+      tokenSymbol,
     });
 
     // determine whether to include approval step and show modal
@@ -183,6 +199,7 @@ const DepositProvider = ({children}: {children: ReactNode}) => {
           maxFee,
           averageFee,
           tokenPrice,
+          modalParams,
         }}
         state={depositState || TransactionState.WAITING}
         isOpen={showModal}
