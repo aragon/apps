@@ -55,15 +55,17 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
     useFormContext();
 
   const {errors, dirtyFields} = useFormState({control});
-  const [from, tokenAddress, isCustomToken, tokenBalance, symbol] = useWatch({
-    name: [
-      `actions.${index}.from`,
-      `actions.${index}.tokenAddress`,
-      `actions.${index}.isCustomToken`,
-      `actions.${index}.tokenBalance`,
-      `actions.${index}.tokenSymbol`,
-    ],
-  });
+  const [name, from, tokenAddress, isCustomToken, tokenBalance, symbol] =
+    useWatch({
+      name: [
+        `actions.${index}.name`,
+        `actions.${index}.from`,
+        `actions.${index}.tokenAddress`,
+        `actions.${index}.isCustomToken`,
+        `actions.${index}.tokenBalance`,
+        `actions.${index}.tokenSymbol`,
+      ],
+    });
   const nativeCurrency = CHAIN_METADATA[network].nativeCurrency;
 
   /*************************************************
@@ -85,6 +87,12 @@ const ConfigureWithdrawForm: React.FC<ConfigureWithdrawFormProps> = ({
     setValue,
     nativeCurrency,
   ]);
+
+  useEffect(() => {
+    if (!name) {
+      setValue(`actions.${index}.name`, 'withdraw_assets');
+    }
+  }, [index, name, setValue]);
 
   // Fetch custom token information
   useEffect(() => {

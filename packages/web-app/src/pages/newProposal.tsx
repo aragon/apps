@@ -28,6 +28,7 @@ import {client} from 'context/apolloClient';
 import {DAO_BY_ADDRESS} from 'queries/dao';
 import PublishModal from 'containers/transactionModals/publishModal';
 import {usePollGasFee} from 'hooks/usePollGasfee';
+import {parseUnits} from 'ethers/lib/utils';
 
 const NewProposal: React.FC = () => {
   const {data: dao, loading} = useDaoParam();
@@ -44,7 +45,7 @@ const NewProposal: React.FC = () => {
   const [durationSwitch] = formMethods.getValues(['durationSwitch']);
 
   const {erc20: erc20Client, whitelist: whitelistClient} = useClient();
-  const {data} = useQuery(DAO_BY_ADDRESS, {
+  const {data, loading: daoDetailsLoading} = useQuery(DAO_BY_ADDRESS, {
     variables: {id: dao},
     client: client[network],
   });
@@ -59,7 +60,7 @@ const NewProposal: React.FC = () => {
   );
 
   const estimateCreationFees = useCallback(async () => {
-    const {__typename: type, id: votingAddress} = data.dao?.packages[0].pkg;
+    const {__typename: type, id: votingAddress} = data?.dao?.packages[0].pkg;
 
     return type === 'WhitelistPackage'
       ? erc20Client?.estimate.createProposal(votingAddress, {
@@ -68,7 +69,7 @@ const NewProposal: React.FC = () => {
       : whitelistClient?.estimate.createProposal(votingAddress, {
           metadata: constants.AddressZero,
         });
-  }, [data.dao?.packages, erc20Client?.estimate, whitelistClient?.estimate]);
+  }, [data?.dao?.packages, erc20Client?.estimate, whitelistClient?.estimate]);
 
   const {tokenPrice, maxFee, averageFee, stopPolling} = usePollGasFee(
     estimateCreationFees,
@@ -99,6 +100,7 @@ const NewProposal: React.FC = () => {
 
     const proposalCreationParams: ICreateProposal = {
       metadata: constants.AddressZero,
+      actions: encodeActions(),
     };
 
     return erc20Client.dao.simpleVote.createProposal(
@@ -116,6 +118,7 @@ const NewProposal: React.FC = () => {
 
     const proposalCreationParams: ICreateProposal = {
       metadata: constants.AddressZero,
+      actions: encodeActions(),
     };
 
     return whitelistClient.dao.whitelist.createProposal(
@@ -124,13 +127,32 @@ const NewProposal: React.FC = () => {
     );
   };
 
+  const encodeActions = () => {
+    const actions = formMethods.getValues().actions;
+    return actions.map((action: Record<string, string>) => {
+      if (action.name === 'withdraw_assets') {
+        // doesn't matter which client we use to encode actions, both are the same
+        return erc20Client?.actions.withdraw(
+          action.to,
+          BigInt(parseUnits(action.amount, 18).toBigInt()),
+          {
+            to: action.to,
+            token: action.tokenAddress,
+            amount: BigInt(parseUnits(action.amount, 18).toBigInt()),
+            reference: action.reference,
+          }
+        );
+      }
+    });
+  };
+
   const handlePublishProposal = async () => {
     if (creationProcessState === TransactionState.SUCCESS) {
       handleCloseModal();
       return;
     }
 
-    const {__typename: type, id: votingAddress} = data.dao?.packages[0].pkg;
+    const {__typename: type, id: votingAddress} = data?.dao?.packages[0].pkg;
     setCreationProcessState(TransactionState.LOADING);
 
     if (type === 'WhitelistPackage') {
@@ -156,7 +178,7 @@ const NewProposal: React.FC = () => {
    *                    Render                     *
    *************************************************/
 
-  if (loading) {
+  if (loading || daoDetailsLoading) {
     return <Loading />;
   }
 
