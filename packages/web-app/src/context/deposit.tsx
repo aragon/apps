@@ -16,7 +16,7 @@ import {useNetwork} from './network';
 import DepositModal from 'containers/transactionModals/DepositModal';
 import {DepositFormData} from 'pages/newDeposit';
 import {TransactionState} from 'utils/constants';
-import {constants} from 'ethers';
+import {isETH} from 'utils/tokens';
 import {useStepper} from 'hooks/useStepper';
 import {usePollGasFee} from 'hooks/usePollGasfee';
 
@@ -58,9 +58,9 @@ const DepositProvider = ({children}: {children: ReactNode}) => {
 
   const estimateDepositFees = useCallback(async () => {
     if (client && depositParams) {
-      if (currentStep === 2)
+      if (currentStep === 2 || isETH(depositParams.token as string)) {
         return client?.estimate.deposit(depositParams as IDeposit);
-      else
+      } else
         return client?.estimate.increaseAllowance(
           depositParams.token as string,
           depositParams.daoAddress,
@@ -97,7 +97,7 @@ const DepositProvider = ({children}: {children: ReactNode}) => {
     });
 
     // determine whether to include approval step and show modal
-    if (tokenAddress === constants.AddressZero) {
+    if (isETH(tokenAddress)) {
       setIncludeApproval(false);
       setModalStep(2);
     }
@@ -198,7 +198,6 @@ const DepositProvider = ({children}: {children: ReactNode}) => {
           handleApproval,
           maxFee,
           averageFee,
-          tokenPrice,
           modalParams,
         }}
         state={depositState || TransactionState.WAITING}
@@ -207,6 +206,7 @@ const DepositProvider = ({children}: {children: ReactNode}) => {
         closeOnDrag={depositState !== TransactionState.LOADING}
         depositAmount={depositParams?.amount as bigint}
         tokenAddress={depositParams?.token as string}
+        ethPrice={tokenPrice}
       />
     </DepositContext.Provider>
   );

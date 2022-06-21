@@ -12,7 +12,7 @@ import {useTranslation} from 'react-i18next';
 import {CHAIN_METADATA, TransactionState} from 'utils/constants';
 import {useNetwork} from 'context/network';
 import {formatUnits} from 'utils/library';
-import {fetchTokenPrice} from 'services/prices';
+import {isETH} from 'utils/tokens';
 import {modalParamsType} from 'context/deposit';
 
 type TransactionModalProps = {
@@ -26,8 +26,8 @@ type TransactionModalProps = {
   includeApproval?: boolean;
   maxFee: BigInt | undefined;
   averageFee: BigInt | undefined;
-  tokenPrice: number;
-  depositAmount: bigint;
+  ethPrice: number;
+  depositAmount: BigInt;
   tokenAddress: string;
   modalParams: modalParamsType;
 };
@@ -50,14 +50,13 @@ const DepositModal: React.FC<TransactionModalProps> = ({
   includeApproval = false,
   maxFee,
   averageFee,
-  tokenPrice,
+  ethPrice,
   depositAmount,
   tokenAddress,
   modalParams,
 }) => {
   const {t} = useTranslation();
   const {network} = useNetwork();
-  const [USDtokenPrice, setUSDTokenPrice] = useState('');
   const [updateBlink, setUpdateBlink] = useState(false);
 
   const label = {
@@ -72,10 +71,21 @@ const DepositModal: React.FC<TransactionModalProps> = ({
   const formattedAmount =
     depositAmount === undefined
       ? undefined
-      : (formatUnits(
-          depositAmount.toString(),
-          nativeCurrency.decimals
-        ) as string);
+      : Number(formatUnits(depositAmount.toString(), nativeCurrency.decimals));
+
+  const tokenPrice = isETH(tokenAddress)
+    ? new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+      }).format(ethPrice * (formattedAmount as number))
+    : undefined;
+
+  const formattedMax =
+    maxFee === undefined
+      ? undefined
+      : `${Number(
+          formatUnits(maxFee.toString(), nativeCurrency.decimals)
+        ).toFixed(8)} ${nativeCurrency.symbol}`;
 
   useEffect(() => {
     setUpdateBlink(true);
@@ -83,22 +93,6 @@ const DepositModal: React.FC<TransactionModalProps> = ({
       setUpdateBlink(false);
     }, 1000);
   }, [averageFee]);
-
-  useEffect(() => {
-    async function getPrice() {
-      const tokenPrice = await fetchTokenPrice(tokenAddress, network);
-      if (tokenPrice && formattedAmount) {
-        setUSDTokenPrice(
-          new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-          }).format(tokenPrice * Number(formattedAmount)) as string
-        );
-      }
-    }
-
-    getPrice();
-  }, [depositAmount, formattedAmount, network, tokenAddress]);
 
   const handleApproveClick = () => {
     handleApproval?.();
@@ -118,32 +112,43 @@ const DepositModal: React.FC<TransactionModalProps> = ({
 
   // TODO: temporarily returning error when unable to estimate fees
   // for chain on which contract not deployed
-  const [totalCost, formattedAverage] = useMemo(
+  const [totalCost, totalAmount, formattedAverage] = useMemo(
     () =>
       averageFee === undefined
-        ? ['Error calculating costs', 'Error estimating fees']
+        ? [
+            'Error calculating costs',
+            'Error calculating costs',
+            'Error estimating fees',
+          ]
         : [
             new Intl.NumberFormat('en-US', {
               style: 'currency',
               currency: 'USD',
             }).format(
+              (Number(
+                formatUnits(averageFee.toString(), nativeCurrency.decimals)
+              ) +
+                (isETH(tokenAddress) ? (formattedAmount as number) : 0)) *
+                ethPrice
+            ),
+            `${(
               Number(
                 formatUnits(averageFee.toString(), nativeCurrency.decimals)
-              ) * tokenPrice
-            ),
+              ) + (isETH(tokenAddress) ? (formattedAmount as number) : 0)
+            ).toFixed(8)} ${nativeCurrency.symbol}`,
             `${Number(
               formatUnits(averageFee.toString(), nativeCurrency.decimals)
             ).toFixed(8)} ${nativeCurrency.symbol}`,
           ],
-    [averageFee, nativeCurrency.decimals, nativeCurrency.symbol, tokenPrice]
+    [
+      averageFee,
+      nativeCurrency.decimals,
+      nativeCurrency.symbol,
+      tokenAddress,
+      formattedAmount,
+      ethPrice,
+    ]
   );
-
-  const formattedMax =
-    maxFee === undefined
-      ? undefined
-      : `${Number(
-          formatUnits(maxFee.toString(), nativeCurrency.decimals)
-        ).toFixed(8)} ${nativeCurrency.symbol}`;
 
   return (
     <ModalBottomSheetSwitcher
@@ -159,7 +164,7 @@ const DepositModal: React.FC<TransactionModalProps> = ({
             <StrongText>
               {formattedAmount} {modalParams?.tokenSymbol || ''}
             </StrongText>
-            <LightText>{`${USDtokenPrice}`}</LightText>
+            <LightText>{tokenPrice}</LightText>
           </VStack>
         </DepositAmountContainer>
         <GasCostEthContainer>
@@ -180,7 +185,7 @@ const DepositModal: React.FC<TransactionModalProps> = ({
         <GasCostUSDContainer>
           <Label>{t('TransactionModal.totalCost')}</Label>
           <VStack>
-            <StrongText {...{updateBlink}}>{formattedAverage}</StrongText>
+            <StrongText {...{updateBlink}}>{totalAmount}</StrongText>
             <LightText {...{updateBlink}}>{totalCost}</LightText>
           </VStack>
         </GasCostUSDContainer>
