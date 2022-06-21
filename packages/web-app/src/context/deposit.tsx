@@ -73,8 +73,12 @@ const DepositProvider = ({children}: {children: ReactNode}) => {
     if (tokenAddress === constants.AddressZero) {
       setIncludeApproval(false);
       setModalStep(2);
+    } else {
+      setIncludeApproval(true);
+      setModalStep(1);
     }
 
+    setDepositState(TransactionState.WAITING);
     setShowModal(true);
   }, [getValues, setModalStep]);
 
