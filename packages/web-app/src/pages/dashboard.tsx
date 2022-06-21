@@ -154,7 +154,7 @@ const DashboardContent: React.FC<DashboardContentProps> = ({
           </>
         )}
         <MembersWrapper>
-          <MembershipSnapshot dao={dao} walletBased horizontal />
+          <MembershipSnapshot dao={dao} walletBased={walletBased} horizontal />
         </MembersWrapper>
       </>
     );
@@ -171,7 +171,7 @@ const DashboardContent: React.FC<DashboardContentProps> = ({
           transfers={transfers}
           totalAssetValue={totalAssetValue}
         />
-        <MembershipSnapshot dao={dao} walletBased />
+        <MembershipSnapshot dao={dao} walletBased={walletBased} />
       </RightNarrowContent>
     </>
   );
@@ -214,7 +214,7 @@ const MobileDashboardContent: React.FC<DashboardContentProps> = ({
         transfers={transfers}
         totalAssetValue={totalAssetValue}
       />
-      <MembershipSnapshot dao={dao} walletBased />
+      <MembershipSnapshot dao={dao} walletBased={walletBased} />
     </MobileLayout>
   );
 };
