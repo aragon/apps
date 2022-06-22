@@ -6,8 +6,10 @@ import {useState, useEffect} from 'react';
 import {erc20TokenABI} from 'abis/erc20TokenABI';
 import {useWallet} from 'hooks/useWallet';
 import {useProviders} from 'context/providers';
-import {isETH, fetchBalance, getTokenInfo} from 'utils/tokens';
+import {isNativeToken, fetchBalance, getTokenInfo} from 'utils/tokens';
 import {TokenBalance, HookData} from 'utils/types';
+import {useNetwork} from 'context/network';
+import {CHAIN_METADATA} from 'utils/constants';
 
 // TODO The two hooks in this file are very similar and should probably be
 // merged into one. The reason I'm not doing it now is that I'm not sure if
@@ -80,6 +82,9 @@ export function useUserTokenAddresses(): HookData<string[]> {
 export function useWalletTokens(): HookData<TokenBalance[]> {
   const {address, balance} = useWallet();
   const {infura: provider} = useProviders();
+  const {network} = useNetwork();
+  const nativeCurrency = CHAIN_METADATA[network].nativeCurrency;
+
   const {
     data: tokenList,
     isLoading: tokenListLoading,
@@ -99,47 +104,67 @@ export function useWalletTokens(): HookData<TokenBalance[]> {
         return;
       }
 
-      if (Number(balance) !== -1 && Number(balance) !== 0)
-        tokenList.push(constants.AddressZero);
+      if (
+        !balance?.eq(-1) &&
+        !balance?.isZero() &&
+        tokenList.indexOf(constants.AddressZero) === -1
+      )
+        tokenList.unshift(constants.AddressZero);
 
       // get tokens balance from wallet
       const balances: [
         string,
         {
+          id: string;
           name: string;
           symbol: string;
           decimals: number;
         }
       ][] = await Promise.all(
-        tokenList.map(address => {
-          if (isETH(address)) {
+        tokenList.map(async tokenAddress => {
+          if (isNativeToken(tokenAddress)) {
             return [
               balance ? balance.toString() : '',
               {
-                name: 'Ethereum (Canonical)',
-                symbol: 'ETH',
-                decimals: 18,
+                id: constants.AddressZero,
+                name: nativeCurrency.name,
+                symbol: nativeCurrency.symbol,
+                decimals: nativeCurrency.decimals,
               },
             ];
           }
 
-          return Promise.all([
-            fetchBalance(address, address, provider, false),
-            getTokenInfo(address, provider),
+          const promises = await Promise.all([
+            fetchBalance(
+              tokenAddress,
+              address,
+              provider,
+              nativeCurrency,
+              false
+            ),
+            getTokenInfo(tokenAddress, provider, nativeCurrency),
           ]);
+
+          return [
+            promises[0],
+            {
+              id: tokenAddress,
+              ...promises[1],
+            },
+          ];
         })
       );
 
       // map tokens with their balance
       setWalletTokens(
-        tokenList?.map((token, index) => ({
+        balances?.map(_balance => ({
           token: {
-            id: token,
-            name: balances[index][1].name,
-            symbol: balances[index][1].symbol,
-            decimals: balances[index][1].decimals,
+            id: _balance[1].id,
+            name: _balance[1].name,
+            symbol: _balance[1].symbol,
+            decimals: _balance[1].decimals,
           },
-          balance: BigInt(balances[index][0]),
+          balance: BigInt(_balance[0]),
         }))
       );
       setIsLoading(false);
@@ -151,7 +176,15 @@ export function useWalletTokens(): HookData<TokenBalance[]> {
       return;
     }
     fetchWalletTokens();
-  }, [address, balance, tokenList, provider, tokenListLoading, tokenListError]);
+  }, [
+    address,
+    balance,
+    tokenList,
+    provider,
+    tokenListLoading,
+    tokenListError,
+    nativeCurrency,
+  ]);
 
   return {data: walletTokens, isLoading: tokenListLoading || isLoading, error};
 }

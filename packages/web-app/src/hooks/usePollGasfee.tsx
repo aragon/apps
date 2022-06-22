@@ -22,9 +22,9 @@ export const usePollGasFee = (
   shouldPoll = true
 ) => {
   const {network} = useNetwork();
-  const [error, setError] = useState<Error | undefined>(undefined);
-  const [maxFee, setMaxFee] = useState<BigInt | undefined>(undefined);
-  const [averageFee, setAverageFee] = useState<BigInt | undefined>(undefined);
+  const [error, setError] = useState<Error | undefined>();
+  const [maxFee, setMaxFee] = useState<BigInt | undefined>(BigInt(0));
+  const [averageFee, setAverageFee] = useState<BigInt | undefined>(BigInt(0));
   const [tokenPrice, setTokenPrice] = useState<number>(0);
 
   // estimate gas for DAO creation
@@ -41,6 +41,8 @@ export const usePollGasFee = (
         setAverageFee(results[0]?.average);
       } catch (err) {
         setError(err as Error);
+        setMaxFee(undefined);
+        setAverageFee(undefined);
         console.log('Error fetching gas fees and price', err);
       }
     }
@@ -50,8 +52,8 @@ export const usePollGasFee = (
 
   // stop polling in anticipation for polling at interval
   const stopPolling = useCallback(() => {
-    setMaxFee(undefined);
-    setAverageFee(undefined);
+    setMaxFee(BigInt(0));
+    setAverageFee(BigInt(0));
     setTokenPrice(0);
   }, []);
   return {error, tokenPrice, maxFee, averageFee, stopPolling};

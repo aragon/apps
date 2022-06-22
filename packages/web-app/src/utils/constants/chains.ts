@@ -44,6 +44,12 @@ export type NetworkDomain = 'L1 Blockchain' | 'L2 Blockchain';
 
 /* CHAIN DATA =============================================================== */
 
+export type NativeTokenData = {
+  name: string;
+  symbol: string;
+  decimals: number;
+};
+
 export type ChainData = {
   id: SupportedChainID;
   name: string;
@@ -52,11 +58,7 @@ export type ChainData = {
   explorer: string;
   logo: string;
   rpc: string[];
-  nativeCurrency: {
-    name: string;
-    symbol: string;
-    decimals: number;
-  };
+  nativeCurrency: NativeTokenData;
 };
 
 export type ChainList = Record<SupportedNetworks, ChainData>;
