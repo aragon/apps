@@ -18,7 +18,7 @@ import {PollTokenOptions, VaultToken} from 'utils/types';
  */
 export const useDaoVault = (
   daoAddress: string,
-  showTransfers?: boolean,
+  showTransfers = true,
   options?: PollTokenOptions
 ) => {
   const {data: balances, refetch: refetchBalances} = useDaoBalances(daoAddress);

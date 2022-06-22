@@ -5,6 +5,7 @@ import React, {
   createContext,
   ReactNode,
   useCallback,
+  useEffect,
   useContext,
   useMemo,
   useState,
@@ -12,13 +13,15 @@ import React, {
 
 import {Finance} from 'utils/paths';
 import {useClient} from 'hooks/useClient';
+import {useWallet} from 'hooks/useWallet';
 import {useNetwork} from './network';
 import DepositModal from 'containers/transactionModals/DepositModal';
 import {DepositFormData} from 'pages/newDeposit';
 import {TransactionState} from 'utils/constants';
-import {isETH} from 'utils/tokens';
+import {isNativeToken} from 'utils/tokens';
 import {useStepper} from 'hooks/useStepper';
 import {usePollGasFee} from 'hooks/usePollGasfee';
+import {useGlobalModalContext} from './globalModals';
 
 interface IDepositContextType {
   handleOpenModal: () => void;
@@ -34,8 +37,10 @@ const DepositProvider = ({children}: {children: ReactNode}) => {
   const {dao} = useParams();
   const navigate = useNavigate();
   const {network} = useNetwork();
+  const {isOnWrongNetwork} = useWallet();
 
   const [showModal, setShowModal] = useState<boolean>(false);
+  const {open, close, isNetworkOpen} = useGlobalModalContext();
   const [includeApproval, setIncludeApproval] = useState<boolean>(true);
 
   const {getValues} = useFormContext<DepositFormData>();
@@ -58,7 +63,7 @@ const DepositProvider = ({children}: {children: ReactNode}) => {
 
   const estimateDepositFees = useCallback(async () => {
     if (client && depositParams) {
-      if (currentStep === 2 || isETH(depositParams.token as string)) {
+      if (currentStep === 2 || isNativeToken(depositParams.token as string)) {
         return client?.estimate.deposit(depositParams as IDeposit);
       } else
         return client?.estimate.increaseAllowance(
@@ -74,7 +79,7 @@ const DepositProvider = ({children}: {children: ReactNode}) => {
     shouldPoll
   );
 
-  const handleOpenModal = () => {
+  const handleOpenModal = useCallback(() => {
     // get deposit data from
     const {amount, tokenAddress, to, reference, tokenSymbol} = getValues();
 
@@ -97,16 +102,20 @@ const DepositProvider = ({children}: {children: ReactNode}) => {
     });
 
     // determine whether to include approval step and show modal
-    if (isETH(tokenAddress)) {
+    if (isNativeToken(tokenAddress)) {
       setIncludeApproval(false);
       setModalStep(2);
+    } else {
+      setIncludeApproval(true);
+      setModalStep(1);
     }
 
+    setDepositState(TransactionState.WAITING);
     setShowModal(true);
-  };
+  }, [getValues, setModalStep]);
 
   // Handler for modal close; don't close modal if transaction is still running
-  const handleCloseModal = () => {
+  const handleCloseModal = useCallback(() => {
     switch (depositState) {
       case TransactionState.LOADING:
         break;
@@ -121,7 +130,40 @@ const DepositProvider = ({children}: {children: ReactNode}) => {
         setDepositState(TransactionState.WAITING);
       }
     }
-  };
+  }, [dao, depositState, navigate, network, stopPolling]);
+
+  /*************************************************
+   *               Lifecycle hooks                 *
+   *************************************************/
+  useEffect(() => {
+    // resolve network mismatch when transaction is
+    // ready to execute or loading. Why user would change
+    // network while loading is anyone's guess really.
+    // Also, should probably extract into a hook for other flows
+    if (
+      isOnWrongNetwork &&
+      (depositState === TransactionState.WAITING ||
+        depositState === TransactionState.LOADING)
+    ) {
+      open('network');
+      handleCloseModal();
+      return;
+    }
+
+    // close switch network modal and continue with flow
+    if (!isOnWrongNetwork && isNetworkOpen) {
+      close('network');
+      handleOpenModal();
+    }
+  }, [
+    close,
+    depositState,
+    handleCloseModal,
+    handleOpenModal,
+    isNetworkOpen,
+    isOnWrongNetwork,
+    open,
+  ]);
 
   const handleApproval = async () => {
     // Check if SDK initialized properly
@@ -187,6 +229,9 @@ const DepositProvider = ({children}: {children: ReactNode}) => {
     }
   };
 
+  /*************************************************
+   *                   Render                      *
+   *************************************************/
   return (
     <DepositContext.Provider value={{handleOpenModal}}>
       {children}
@@ -199,10 +244,13 @@ const DepositProvider = ({children}: {children: ReactNode}) => {
           maxFee,
           averageFee,
           modalParams,
+          handleOpenModal,
         }}
         state={depositState || TransactionState.WAITING}
         isOpen={showModal}
         onClose={handleCloseModal}
+        handleDeposit={handleDeposit}
+        handleApproval={handleApproval}
         closeOnDrag={depositState !== TransactionState.LOADING}
         depositAmount={depositParams?.amount as bigint}
         tokenAddress={depositParams?.token as string}

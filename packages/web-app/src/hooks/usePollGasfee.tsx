@@ -23,8 +23,8 @@ export const usePollGasFee = (
 ) => {
   const {network} = useNetwork();
   const [error, setError] = useState<Error | undefined>();
-  const [maxFee, setMaxFee] = useState<BigInt | undefined>(0n);
-  const [averageFee, setAverageFee] = useState<BigInt | undefined>(0n);
+  const [maxFee, setMaxFee] = useState<BigInt | undefined>(BigInt(0));
+  const [averageFee, setAverageFee] = useState<BigInt | undefined>(BigInt(0));
   const [tokenPrice, setTokenPrice] = useState<number>(0);
 
   // estimate gas for DAO creation

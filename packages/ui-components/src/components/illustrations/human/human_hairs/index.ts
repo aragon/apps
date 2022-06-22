@@ -7,5 +7,6 @@ export {Curly as curly} from './curly';
 export {Informal as informal} from './informal';
 export {Long as long} from './long';
 export {Middle as middle} from './middle';
+export {Oldschool as oldschool} from './oldschool';
 export {Punk as punk} from './punk';
 export {Short as short} from './short';

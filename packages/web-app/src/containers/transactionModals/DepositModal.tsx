@@ -12,7 +12,7 @@ import {useTranslation} from 'react-i18next';
 import {CHAIN_METADATA, TransactionState} from 'utils/constants';
 import {useNetwork} from 'context/network';
 import {formatUnits} from 'utils/library';
-import {isETH} from 'utils/tokens';
+import {isNativeToken} from 'utils/tokens';
 import {modalParamsType} from 'context/deposit';
 
 type TransactionModalProps = {
@@ -30,6 +30,7 @@ type TransactionModalProps = {
   depositAmount: BigInt;
   tokenAddress: string;
   modalParams: modalParamsType;
+  handleOpenModal: () => void;
 };
 
 const icons = {
@@ -54,6 +55,7 @@ const DepositModal: React.FC<TransactionModalProps> = ({
   depositAmount,
   tokenAddress,
   modalParams,
+  handleOpenModal,
 }) => {
   const {t} = useTranslation();
   const {network} = useNetwork();
@@ -73,7 +75,7 @@ const DepositModal: React.FC<TransactionModalProps> = ({
       ? undefined
       : Number(formatUnits(depositAmount.toString(), nativeCurrency.decimals));
 
-  const tokenPrice = isETH(tokenAddress)
+  const tokenPrice = isNativeToken(tokenAddress)
     ? new Intl.NumberFormat('en-US', {
         style: 'currency',
         currency: 'USD',
@@ -103,6 +105,9 @@ const DepositModal: React.FC<TransactionModalProps> = ({
       case TransactionState.SUCCESS:
         onClose();
         break;
+      case TransactionState.ERROR:
+        handleOpenModal();
+        break;
       case TransactionState.LOADING:
         break;
       default:
@@ -128,13 +133,16 @@ const DepositModal: React.FC<TransactionModalProps> = ({
               (Number(
                 formatUnits(averageFee.toString(), nativeCurrency.decimals)
               ) +
-                (isETH(tokenAddress) ? (formattedAmount as number) : 0)) *
+                (isNativeToken(tokenAddress)
+                  ? (formattedAmount as number)
+                  : 0)) *
                 ethPrice
             ),
             `${(
               Number(
                 formatUnits(averageFee.toString(), nativeCurrency.decimals)
-              ) + (isETH(tokenAddress) ? (formattedAmount as number) : 0)
+              ) +
+              (isNativeToken(tokenAddress) ? (formattedAmount as number) : 0)
             ).toFixed(8)} ${nativeCurrency.symbol}`,
             `${Number(
               formatUnits(averageFee.toString(), nativeCurrency.decimals)

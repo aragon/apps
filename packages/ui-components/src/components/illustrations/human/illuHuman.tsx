@@ -116,7 +116,7 @@ export const IlluHuman: React.FC<IlluHumanHairProps> = ({
 };
 
 const Container = styled.div.attrs({
-  className: 'relative',
+  className: 'relative bottom-1/2 right-1/2',
 })``;
 
 const Item = styled.div.attrs({

@@ -37,3 +37,4 @@ deployments
 generated
 subgraph.yaml
 .bin
+packages/ui-components/out*

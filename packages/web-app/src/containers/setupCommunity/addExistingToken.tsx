@@ -16,6 +16,8 @@ import {useSpecificProvider} from 'context/providers';
 import {formatUnits} from 'utils/library';
 import {getTokenInfo} from 'utils/tokens';
 import {validateTokenAddress} from 'utils/validators';
+import {useNetwork} from 'context/network';
+import {CHAIN_METADATA} from 'utils/constants';
 
 const DEFAULT_BLOCK_EXPLORER = 'https://etherscan.io/';
 
@@ -48,12 +50,15 @@ const AddExistingToken: React.FC = () => {
     return DEFAULT_BLOCK_EXPLORER;
   }, [blockchain.id]);
 
+  const {network} = useNetwork();
+  const nativeCurrency = CHAIN_METADATA[network].nativeCurrency;
+
   // Trigger address validation on network change
   useEffect(() => {
     if (blockchain.id && tokenAddress !== '') {
       trigger('tokenAddress');
     }
-  }, [blockchain.id, tokenAddress, trigger]);
+  }, [blockchain.id, tokenAddress, trigger, nativeCurrency]);
 
   /*************************************************
    *            Functions and Callbacks            *
@@ -64,7 +69,11 @@ const AddExistingToken: React.FC = () => {
 
       if (isValid) {
         try {
-          const res = await getTokenInfo(contractAddress, provider);
+          const res = await getTokenInfo(
+            contractAddress,
+            provider,
+            nativeCurrency
+          );
 
           setValue('tokenName', res.name);
           setValue('tokenSymbol', res.symbol);
@@ -79,7 +88,7 @@ const AddExistingToken: React.FC = () => {
 
       return isValid;
     },
-    [provider, setValue]
+    [provider, setValue, nativeCurrency]
   );
 
   return (
