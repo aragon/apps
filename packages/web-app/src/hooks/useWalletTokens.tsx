@@ -157,15 +157,20 @@ export function useWalletTokens(): HookData<TokenBalance[]> {
 
       // map tokens with their balance
       setWalletTokens(
-        balances?.map(_balance => ({
-          token: {
-            id: _balance[1].id,
-            name: _balance[1].name,
-            symbol: _balance[1].symbol,
-            decimals: _balance[1].decimals,
-          },
-          balance: BigInt(_balance[0]),
-        }))
+        balances
+          ?.map(_balance => ({
+            token: {
+              id: _balance[1].id,
+              name: _balance[1].name,
+              symbol: _balance[1].symbol,
+              decimals: _balance[1].decimals,
+            },
+            balance: BigInt(_balance[0]),
+          }))
+          // do not display tokens without proper metadata
+          .filter(
+            ({token: {name, symbol, decimals}}) => name && symbol && decimals
+          )
       );
       setIsLoading(false);
     }
