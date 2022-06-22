@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import {ButtonText} from '../button';
-import {IlluHuman, IlluHumanHairProps} from '../illustrations';
+import {IllustrationHuman, IlluHumanProps} from '../illustrations';
 
-export type StateEmptyProps = IlluHumanHairProps & {
+export type StateEmptyProps = IlluHumanProps & {
   title: string;
   description?: string;
   buttonLabelPrimary: string;
@@ -25,7 +25,7 @@ export const StateEmpty: React.FC<StateEmptyProps> = ({
     <Card>
       <ContentWrapper>
         <SVGWrapper>
-          <IlluHuman
+          <IllustrationHuman
             {...{body, expression, hair, sunglass, accessory}}
             height={225}
             width={400}
