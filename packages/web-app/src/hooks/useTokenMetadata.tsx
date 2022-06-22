@@ -26,7 +26,11 @@ export const useTokenMetadata = (balances: TokenBalance[]) => {
       const tokensWithMetadata = balances?.map((balance, index) => ({
         balance: balance.balance,
         metadata: {
-          ...balance.token,
+          id: balance.token.id,
+          decimals: balance.token.decimals,
+          name: metadata[index]?.name || balance.token.name,
+          symbol: metadata[index]?.symbol || balance.token.symbol,
+          price: metadata[index]?.price,
           apiId: metadata[index]?.id,
           imgUrl: metadata[index]?.imgUrl || '',
         },

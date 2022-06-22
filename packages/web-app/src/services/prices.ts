@@ -1,16 +1,17 @@
 import {Address} from '@aragon/ui-components/dist/utils/addresses';
-import {constants} from 'ethers';
 import {ApolloClient} from '@apollo/client';
 
 import {
   ASSET_PLATFORMS,
   BASE_URL,
+  CHAIN_METADATA,
   DEFAULT_CURRENCY,
   NATIVE_TOKEN_ID,
   SupportedNetworks,
   TimeFilter,
 } from 'utils/constants';
 import {TOKEN_DATA_QUERY} from 'queries/coingecko/tokenData';
+import {isNativeToken} from 'utils/tokens';
 
 export type TokenPrices = {
   [key: string]: {
@@ -92,14 +93,14 @@ async function fetchTokenData(
   network: SupportedNetworks
 ): Promise<TokenData | undefined> {
   // check if token address is address zero, ie, native token of platform
-  const isNativeToken = address === constants.AddressZero;
+  const nativeToken = isNativeToken(address);
 
   // network unsupported, or testnet
   const platformId = ASSET_PLATFORMS[network];
-  if (!platformId && !isNativeToken) return;
+  if (!platformId && !nativeToken) return;
 
   // build url based on whether token is native token
-  const url = isNativeToken
+  const url = nativeToken
     ? `/coins/${getNativeTokenId(network)}`
     : `/coins/${platformId}/contract/${address}`;
 
@@ -111,15 +112,20 @@ async function fetchTokenData(
   if (!error && data.tokenData) {
     return {
       id: data.tokenData.id,
-      name: data.tokenData.name,
-      symbol: data.tokenData.symbol.toUpperCase(),
+      ...(nativeToken
+        ? CHAIN_METADATA[network].nativeCurrency
+        : {
+            name: data.tokenData.name,
+            symbol: data.tokenData.symbol.toUpperCase(),
+          }),
+
       imgUrl: data.tokenData.image.large,
       address: address,
       price: data.tokenData.market_data.current_price.usd,
     };
   }
 
-  console.error('Error fetching token price', error);
+  console.error('Error fetching token data', error);
 }
 
 /**
@@ -133,15 +139,15 @@ async function fetchTokenPrice(
   network: SupportedNetworks
 ): Promise<number | undefined> {
   // check if token address is address zero, ie, native token of platform
-  const isNativeToken = address === constants.AddressZero;
+  const nativeToken = isNativeToken(address);
 
   // network unsupported, or testnet
   const platformId = ASSET_PLATFORMS[network];
-  if (!platformId && !isNativeToken) return;
+  if (!platformId && !nativeToken) return;
 
   // build url based on whether token is ethereum
   const endPoint = `/simple/token_price/${platformId}?vs_currencies=usd&contract_addresses=`;
-  const url = isNativeToken
+  const url = nativeToken
     ? `${BASE_URL}/simple/price?ids=${getNativeTokenId(
         network
       )}&vs_currencies=usd`
