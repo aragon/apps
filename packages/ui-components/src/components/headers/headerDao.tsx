@@ -18,6 +18,7 @@ import {ListItemLink} from '../listItem';
 export type HeaderDaoProps = {
   daoName: string;
   daoAvatar?: string;
+  daoUrl: string;
   description: string;
   created_at: string;
   daoChain: string;
@@ -39,6 +40,7 @@ type DescriptionProps = {
 export const HeaderDao: React.FC<HeaderDaoProps> = ({
   daoName,
   daoAvatar,
+  daoUrl,
   description,
   created_at,
   daoChain,
@@ -49,9 +51,7 @@ export const HeaderDao: React.FC<HeaderDaoProps> = ({
   const [fullDescription, setFullDescription] = useState<boolean>(false);
 
   async function handleClipboardActions() {
-    await navigator.clipboard.writeText(
-      `app.aragon.org/dao/${daoName?.toLowerCase()}`
-    );
+    await navigator.clipboard.writeText(daoUrl);
 
     // TODO: change to proper mechanism
     alert('Copied');
@@ -63,7 +63,7 @@ export const HeaderDao: React.FC<HeaderDaoProps> = ({
         <Content>
           <Title>{daoName}</Title>
           <Link
-            label={`app.aragon.org/dao/${daoName?.toLowerCase()}`}
+            label={daoUrl}
             iconRight={<IconCopy />}
             onClick={handleClipboardActions}
           />
