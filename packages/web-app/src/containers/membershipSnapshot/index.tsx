@@ -54,13 +54,14 @@ export const MembershipSnapshot: React.FC<Props> = ({
       if (token) {
         const {totalSupply: supply, decimals} = await getTokenInfo(
           token.id,
-          provider
+          provider,
+          CHAIN_METADATA[network].nativeCurrency
         );
         setTotalSupply(Number(formatUnits(supply, decimals)));
       }
     }
     fetchTotalSupply();
-  }, [provider, token]);
+  }, [provider, token, network]);
 
   const itemClickHandler = (address: string) => {
     const baseUrl = CHAIN_METADATA[network].explorer;
