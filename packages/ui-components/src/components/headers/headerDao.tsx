@@ -157,7 +157,7 @@ export const HeaderDao: React.FC<HeaderDaoProps> = ({
 
 const Card = styled.div.attrs({
   className:
-    'w-full bg-white rounded-xl p-2 tablet:p-3 desktop:p-6 border border-ui-100 space-y-3',
+    'w-full bg-white tablet:rounded-xl p-2 tablet:p-3 desktop:p-6 border border-ui-100 space-y-3',
 })`
   box-shadow: 0px 4px 8px rgba(31, 41, 51, 0.04),
     0px 0px 2px rgba(31, 41, 51, 0.06), 0px 0px 1px rgba(31, 41, 51, 0.04);
@@ -193,7 +193,7 @@ const DetailsWrapper = styled.div.attrs({
 })``;
 
 const NetworkDetailsContainer = styled.div.attrs({
-  className: 'flex space-x-3',
+  className: 'flex space-x-3 w-full tablet:w-auto',
 })``;
 
 const NetworkDetails = styled.div.attrs({
