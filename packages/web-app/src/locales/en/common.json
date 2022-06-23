@@ -573,6 +573,11 @@
     "proposeSettingsInfo": "To make changes to the settings of this DAO, a vote must be taken via the community."
   },
   "dashboard": {
-    "proposalsTitle": "Proposals created"
+    "proposalsTitle": "Proposals created",
+    "emptyTransfers": {
+      "title": "Create Very First Transfer",
+      "description": "Create the first financial transaction for this DAO by by either depositing or withdrawing tokens.",
+      "buttonLabel": "Create Transaction"
+    }
   }
 }
