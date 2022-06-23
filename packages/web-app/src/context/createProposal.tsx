@@ -18,6 +18,8 @@ import {client} from './apolloClient';
 import {useNetwork} from './network';
 import {useDaoParam} from 'hooks/useDaoParam';
 import {Loading} from 'components/temporary';
+import {useWallet} from 'hooks/useWallet';
+import {useGlobalModalContext} from './globalModals';
 
 type Props = {
   showTxModal: boolean;
@@ -33,6 +35,8 @@ const CreateProposalProvider: React.FC<Props> = ({
   const {network} = useNetwork();
   const {getValues} = useFormContext();
   const {t} = useTranslation();
+  const {isOnWrongNetwork} = useWallet();
+  const {open} = useGlobalModalContext();
 
   const {data: dao, loading} = useDaoParam();
   const {erc20: erc20Client, whitelist: whitelistClient} = useClient();
@@ -138,6 +142,12 @@ const CreateProposalProvider: React.FC<Props> = ({
 
   const handlePublishProposal = async () => {
     if (creationProcessState === TransactionState.SUCCESS) {
+      handleCloseModal();
+      return;
+    }
+
+    if (isOnWrongNetwork) {
+      open('network');
       handleCloseModal();
       return;
     }
