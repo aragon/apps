@@ -30,6 +30,11 @@ export const useDaoVault = (
   const [tokens, setTokens] = useState<VaultToken[]>([]);
 
   useEffect(() => {
+    if (data?.tokens?.length === 0) {
+      setTokens(tokensWithMetadata as VaultToken[]);
+      return;
+    }
+
     const values = data.tokens.map(token => {
       return {
         ...token,
@@ -43,7 +48,7 @@ export const useDaoVault = (
     });
 
     setTokens(values);
-  }, [data.tokens, data?.totalAssetValue]);
+  }, [data.tokens, data?.totalAssetValue, tokensWithMetadata]);
 
   return {
     tokens,

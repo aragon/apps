@@ -30,7 +30,7 @@ const Dashboard: React.FC = () => {
   const [showTransactions, setShowTransactions] = useState(true);
 
   const {topTen} = useDaoProposals(showProposals);
-  const {transfers, totalAssetValue} = useDaoVault(dao, showTransactions);
+  const {transfers, totalAssetValue} = useDaoVault(daoId, showTransactions);
 
   if (loading || metadataLoading) {
     return <Loading />;
