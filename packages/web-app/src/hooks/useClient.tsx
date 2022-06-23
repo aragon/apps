@@ -47,6 +47,7 @@ export const UseClientProvider = ({children}: {children: ReactNode}) => {
           : [
               'https://eth-rinkeby.alchemyapi.io/v2/bgIqe2NxazpzsjfmVmhj3aS3j_HZ9mpr',
             ],
+        daoFactoryAddress: '0xF4433059cb12E224EF33510a3bE3329c8c750fD8', // TODO: remove temporary until SDK updates
       });
 
       setErc20Client(new ClientDaoERC20Voting(context));
