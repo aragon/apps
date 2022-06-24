@@ -1,12 +1,12 @@
 import React from 'react';
 import {render, screen} from '@testing-library/react';
 
-import {IlluHuman} from '../src/components/illustrations';
+import {IllustrationHuman} from '../src/components/illustrations';
 
 describe('IlluHuman', () => {
   // eslint-disable-next-line
   function setup(args: any) {
-    render(<IlluHuman {...args} />);
+    render(<IllustrationHuman {...args} />);
     return screen.getByTestId('illu-human');
   }
 
