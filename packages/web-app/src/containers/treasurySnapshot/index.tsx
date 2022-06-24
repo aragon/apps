@@ -37,7 +37,7 @@ const TreasurySnapshot: React.FC<Props> = ({
 
   if (transfers.length === 0) {
     return (
-      <div className="flex flex-1 justify-center items-center border">
+      <div className="flex flex-1 justify-center items-center">
         <StateEmpty
           body={'correct'}
           expression={'surprised'}

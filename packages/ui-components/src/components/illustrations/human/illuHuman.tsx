@@ -24,7 +24,10 @@ export const IllustrationHuman: React.FC<IlluHumanProps> = ({
   ...rest
 }) => {
   return (
-    <Container data-testid="illu-human">
+    <div
+      data-testid="illu-human"
+      style={{width: rest.width, height: rest.height}}
+    >
       <Item>
         <IllustrationBodies type={body} {...rest} />
       </Item>
@@ -40,13 +43,9 @@ export const IllustrationHuman: React.FC<IlluHumanProps> = ({
       <Item>
         <IllustrationAccessory type={accessory} {...rest} />
       </Item>
-    </Container>
+    </div>
   );
 };
-
-const Container = styled.div.attrs({
-  className: 'relative bottom-1/2 right-1/2',
-})``;
 
 const Item = styled.div.attrs({
   className: 'absolute',

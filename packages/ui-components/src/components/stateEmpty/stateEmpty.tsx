@@ -30,65 +30,46 @@ export const StateEmpty: React.FC<StateEmptyProps> = ({
 }) => {
   return (
     <Card>
-      <ContentWrapper>
-        <SVGWrapper>
-          <IllustrationHuman
-            {...{body, expression, hair, sunglass, accessory}}
-            height={225}
-            width={400}
-          />
-        </SVGWrapper>
-        <TextWrapper>
-          <Title>{title}</Title>
-          {renderHtml ? (
-            <Description
-              dangerouslySetInnerHTML={{__html: description || ''}}
-            />
-          ) : (
-            <Description>{description}</Description>
-          )}
-        </TextWrapper>
-        <ActionContainer>
+      <IllustrationHuman
+        {...{body, expression, hair, sunglass, accessory}}
+        height={225}
+        width={400}
+      />
+      <TextWrapper>
+        <Title>{title}</Title>
+        {renderHtml ? (
+          <Description dangerouslySetInnerHTML={{__html: description || ''}} />
+        ) : (
+          <Description>{description}</Description>
+        )}
+      </TextWrapper>
+      <ActionContainer>
+        <ButtonText
+          label={primaryButton.label}
+          onClick={primaryButton.onClick}
+          size="large"
+        />
+        {secondaryButton && (
           <ButtonText
-            label={primaryButton.label}
-            onClick={primaryButton.onClick}
+            label={secondaryButton.label}
+            onClick={secondaryButton.onClick}
+            mode="ghost"
             size="large"
           />
-          {secondaryButton && (
-            <ButtonText
-              label={secondaryButton.label}
-              onClick={secondaryButton.onClick}
-              mode="ghost"
-              size="large"
-            />
-          )}
-        </ActionContainer>
-      </ContentWrapper>
+        )}
+      </ActionContainer>
     </Card>
   );
 };
 
 const Card = styled.div.attrs({
   className:
-    'flex items-center justify-center bg-ui-0 rounded-xl p-3 desktop:p-6 w-full',
+    'flex flex-col items-center justify-center bg-ui-0 rounded-xl p-3 pb-6 desktop:p-6 w-full space-y-3 border',
 })``;
-
-const ContentWrapper = styled.div.attrs({
-  className: 'flex items-center flex-col space-y-3',
-})`
-  max-width: 560px;
-`;
 
 const TextWrapper = styled.div.attrs({
   className: 'space-y-2 text-center',
 })``;
-
-const SVGWrapper = styled.div.attrs({
-  className: 'flex items-center justify-center',
-})`
-  height: 225px;
-  width: 400px;
-`;
 
 const ActionContainer = styled.div.attrs({
   className:
