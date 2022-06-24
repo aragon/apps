@@ -1,6 +1,9 @@
 import React from 'react';
 
-import {IllustrationComponentProps} from '../illuHuman';
+import {
+  IllustrationComponentProps,
+  UnknownIllustrationVariantError,
+} from '../illuHuman';
 import {Aragon} from './aragon';
 import {Blocks} from './blocks';
 import {Chart} from './chart';
@@ -27,10 +30,10 @@ export type Body =
   | 'voting';
 
 export const IllustrationBodies: React.FC<IllustrationComponentProps<Body>> = ({
-  type,
+  variant,
   ...rest
 }) => {
-  switch (type) {
+  switch (variant) {
     case 'aragon':
       return <Aragon {...rest} />;
     case 'blocks':
@@ -54,8 +57,6 @@ export const IllustrationBodies: React.FC<IllustrationComponentProps<Body>> = ({
     case 'voting':
       return <Voting {...rest} />;
     default:
-      throw new Error(
-        'Unknown type of illustration required. Make sure to only request types of illustrations that exist. Also check that the component and Type were extended in case new types are introduced.'
-      );
+      throw new UnknownIllustrationVariantError(variant, 'body');
   }
 };

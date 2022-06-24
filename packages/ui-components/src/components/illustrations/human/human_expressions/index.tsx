@@ -1,6 +1,9 @@
 import React from 'react';
 
-import {IllustrationComponentProps} from '../illuHuman';
+import {
+  IllustrationComponentProps,
+  UnknownIllustrationVariantError,
+} from '../illuHuman';
 import {Angry} from './angry';
 import {Casual} from './casual';
 import {Crying} from './crying';
@@ -28,8 +31,8 @@ export type Expression =
 
 export const IllustrationExpression: React.FC<
   IllustrationComponentProps<Expression>
-> = ({type, ...rest}) => {
-  switch (type) {
+> = ({variant, ...rest}) => {
+  switch (variant) {
     case 'angry':
       return <Angry {...rest} />;
     case 'casual':
@@ -53,8 +56,6 @@ export const IllustrationExpression: React.FC<
     case 'suspecting':
       return <Suspecting {...rest} />;
     default:
-      throw new Error(
-        'Unknown type of Expression illustration required. Make sure to only request types of illustrations that exist. Also check that the component and Type were extended in case new types are introduced.'
-      );
+      throw new UnknownIllustrationVariantError(variant, 'expression');
   }
 };

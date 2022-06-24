@@ -1,6 +1,10 @@
 import React from 'react';
 
-import {IllustrationComponentProps, Noneable} from '../illuHuman';
+import {
+  IllustrationComponentProps,
+  Noneable,
+  UnknownIllustrationVariantError,
+} from '../illuHuman';
 import {Buddha} from './buddha';
 import {EarringsCircle} from './earrings_circle';
 import {EarringsHoops} from './earrings_hoops';
@@ -29,8 +33,8 @@ export type Accessory = Noneable<
 
 export const IllustrationAccessory: React.FC<
   IllustrationComponentProps<Accessory>
-> = ({type, ...rest}) => {
-  switch (type) {
+> = ({variant, ...rest}) => {
+  switch (variant) {
     case 'buddha':
       return <Buddha {...rest} />;
     case 'earrings_circle':
@@ -56,8 +60,6 @@ export const IllustrationAccessory: React.FC<
     case 'none':
       return null;
     default:
-      throw new Error(
-        'Unknown type of Accessory illustration required. Make sure to only request types of illustrations that exist. Also check that the component and Type were extended in case new types are introduced.'
-      );
+      throw new UnknownIllustrationVariantError(variant, 'accessory');
   }
 };

@@ -8,10 +8,28 @@ import {Hair, IllustrationHair} from './human_hairs';
 import {IllustrationSunglass, Sunglass} from './human_sunglasses';
 
 export type IlluHumanProps = {
+  /**
+   * The variant of human body used as for the Illustration
+   */
   body: Body;
+  /**
+   * The variant of facial expression used as for the Illustration
+   */
   expression: Expression;
+  /**
+   * The variant of hair style used as for the Illustration. This is prop is
+   * optional. If not specified, no hair will be shown.
+   */
   hair?: Hair;
+  /**
+   * The variant of glasses used as for the Illustration. This is prop is
+   * optional. If not specified, no glasses will be shown.
+   */
   sunglass?: Sunglass;
+  /**
+   * The variant of accessory used as for the Illustration. This is prop is
+   * optional. If not specified, no accessories will be shown.
+   */
   accessory?: Accessory;
 } & Dimensions;
 
@@ -29,19 +47,19 @@ export const IllustrationHuman: React.FC<IlluHumanProps> = ({
       style={{width: rest.width, height: rest.height}}
     >
       <Item>
-        <IllustrationBodies type={body} {...rest} />
+        <IllustrationBodies variant={body} {...rest} />
       </Item>
       <Item>
-        <IllustrationExpression type={expression} {...rest} />
+        <IllustrationExpression variant={expression} {...rest} />
       </Item>
       <Item>
-        <IllustrationHair type={hair} {...rest} />
+        <IllustrationHair variant={hair} {...rest} />
       </Item>
       <Item>
-        <IllustrationSunglass type={sunglass} {...rest} />
+        <IllustrationSunglass variant={sunglass} {...rest} />
       </Item>
       <Item>
-        <IllustrationAccessory type={accessory} {...rest} />
+        <IllustrationAccessory variant={accessory} {...rest} />
       </Item>
     </div>
   );
@@ -57,13 +75,23 @@ const Item = styled.div.attrs({
  * as well as its dimensions.
  */
 export type IllustrationComponentProps<T> = {
-  type: T;
+  variant: T;
 } & Dimensions;
 
 /** Add the literal type 'none' to a Type */
 export type Noneable<T> = T | 'none';
 
 export type Dimensions = {
-  height?: number;
   width?: number;
+  height?: number;
 };
+
+export class UnknownIllustrationVariantError extends Error {
+  constructor(variant: string, illustrationComponent: string) {
+    super(
+      `Unknown variant "${variant}" of ${illustrationComponent} illustration. 
+       Make sure to only request variants of illustrations that exist. 
+       Also, check that the corresponding component and Type were properly extended in case new variants are introduced.`
+    );
+  }
+}

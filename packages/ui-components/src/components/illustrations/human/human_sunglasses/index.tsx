@@ -1,6 +1,10 @@
 import React from 'react';
 
-import {IllustrationComponentProps, Noneable} from '../illuHuman';
+import {
+  IllustrationComponentProps,
+  Noneable,
+  UnknownIllustrationVariantError,
+} from '../illuHuman';
 import {BigRounded} from './big_rounded';
 import {BigSemirounded} from './big_semirounded';
 import {LargeStylized} from './large_stylized';
@@ -29,8 +33,8 @@ export type Sunglass = Noneable<
 
 export const IllustrationSunglass: React.FC<
   IllustrationComponentProps<Sunglass>
-> = ({type, ...rest}) => {
-  switch (type) {
+> = ({variant, ...rest}) => {
+  switch (variant) {
     case 'big_rounded':
       return <BigRounded {...rest} />;
     case 'big_semirounded':
@@ -56,8 +60,6 @@ export const IllustrationSunglass: React.FC<
     case 'none':
       return null;
     default:
-      throw new Error(
-        'Unknown type of Sunglass illustration required. Make sure to only request types of illustrations that exist. Also check that the component and Type were extended in case new types are introduced.'
-      );
+      throw new UnknownIllustrationVariantError(variant, 'sunglasses');
   }
 };

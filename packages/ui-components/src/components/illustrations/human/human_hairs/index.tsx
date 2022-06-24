@@ -1,6 +1,10 @@
 import React from 'react';
 
-import {IllustrationComponentProps, Noneable} from '../illuHuman';
+import {
+  IllustrationComponentProps,
+  Noneable,
+  UnknownIllustrationVariantError,
+} from '../illuHuman';
 import {Afro} from './afro';
 import {Bald} from './bald';
 import {Bun} from './bun';
@@ -30,10 +34,10 @@ export type Hair = Noneable<
 >;
 
 export const IllustrationHair: React.FC<IllustrationComponentProps<Hair>> = ({
-  type,
+  variant,
   ...rest
 }) => {
-  switch (type) {
+  switch (variant) {
     case 'afro':
       return <Afro {...rest} />;
     case 'bald':
@@ -61,8 +65,6 @@ export const IllustrationHair: React.FC<IllustrationComponentProps<Hair>> = ({
     case 'none':
       return null;
     default:
-      throw new Error(
-        'Unknown type Hair of illustration required. Make sure to only request types of illustrations that exist. Also check that the component and Type were extended in case new types are introduced.'
-      );
+      throw new UnknownIllustrationVariantError(variant, 'hair');
   }
 };
