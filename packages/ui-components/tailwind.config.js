@@ -149,7 +149,7 @@ module.exports = {
         screenMin: 20, // 20rem === 320px
         screenMax: 96, // 96rem === 1536px
         unit: 'rem',
-        prefix: 'ft',
+        prefix: 'ft-',
       },
       // Creates the ft-text-xx classes. These are to be used for inline text
       // and headings.
@@ -164,6 +164,7 @@ module.exports = {
         '3xl': [4, 1.2],
         '4xl': [5, 1.2],
         '5xl': [6, 1.2],
+        '6xl': [7, 1.2],
       },
     },
     outline: {
