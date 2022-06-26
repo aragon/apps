@@ -90,7 +90,7 @@ const HeaderContainer = styled.div.attrs({
 })``;
 
 const Title = styled.p.attrs({
-  className: 'font-bold text-ui-800 text-base desktop:text-xl',
+  className: 'font-bold text-ui-800 ft-text-xl',
 })``;
 
 // The line desktop breakpoint does not work with
@@ -98,7 +98,7 @@ const Title = styled.p.attrs({
 // is achieved using styled components
 const Description = styled.p.attrs({
   className: `
-  font-medium text-ui-600 text-sm desktop:text-base flex text-left
+  font-medium text-ui-600 ft-text-base flex text-left
   `,
 })<DescriptionProps>`
   overflow: hidden;
@@ -111,7 +111,7 @@ const DaoMetadataWrapper = styled.div.attrs({
   className: 'flex flex-row space-x-3',
 })``;
 const IconLabel = styled.p.attrs({
-  className: 'text-ui-600 text-sm',
+  className: 'text-ui-600 ft-text-sm',
 })``;
 const IconWrapper = styled.div.attrs({
   className: 'flex flex-row space-x-1',

@@ -54,14 +54,14 @@ const ContentWrapper = styled.div.attrs({
 
 const Title = styled.h1.attrs({
   className:
-    'text-ui-0 font-bold desktop:text-6xl text-3xl desktop:text-left text-center desktop:leading-7.5 leading-4.5',
+    'text-ui-0 font-bold ft-text-5xl desktop:text-left text-center desktop:leading-7.5 leading-4.5',
 })`
   font-family: Syne;
 `;
 
 const Subtitle = styled.h3.attrs({
   className:
-    'text-ui-0 desktop:text-lg text-base font-normal text-center desktop:text-left leading-3 desktop:leading-3.75',
+    'text-ui-0 ft-text-lg font-normal text-center desktop:text-left leading-3 desktop:leading-3.75',
 })``;
 
 const ImageWrapper = styled.div.attrs({

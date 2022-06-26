@@ -65,7 +65,7 @@ const TEMP_PROPOSALS = [TEMP_PROPOSAL, TEMP_PROPOSAL, TEMP_PROPOSAL];
 
 const Container = styled.div.attrs({className: 'space-y-3'})``;
 const SectionTitle = styled.p.attrs({
-  className: 'text-xl font-bold text-ui-800',
+  className: 'ft-text-xl font-bold text-ui-800',
 })``;
 
 const CardsWrapper = styled.div.attrs({
