@@ -516,7 +516,11 @@
       "tokenBased": "Token-Based"
     },
     "activeProposals": "Active Proposals",
-    "showMore": "Show More"
+    "showMore": "Show More",
+    "emptyStateProposal": {
+      "title": "There are no active proposals",
+      "description": "You can still check upcoming or past proposals on your DAOs."
+    }
   },
   "privacyPolicy": {
     "title": "Privacy policy",

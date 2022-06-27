@@ -1,5 +1,9 @@
-import {ButtonText, CardProposal, IconChevronDown} from '@aragon/ui-components';
-// import {StateEmpty} from '@aragon/ui-components/src';
+import {
+  ButtonText,
+  CardProposal,
+  IconChevronDown,
+  StateEmpty,
+} from '@aragon/ui-components';
 import {TemporarySection} from 'components/temporary';
 import {useDaoProposals} from 'hooks/useDaoProposals';
 import React, {useState} from 'react';
@@ -59,8 +63,20 @@ const ActiveProposalsExplore: React.FC = () => {
               onClick={handleShowProposals}
             />
           </TemporarySection>
-          {/* Use proposal id instead of index when integrating */}
-          {<StateEmpty />}
+          {
+            <StateEmpty
+              body="voting"
+              expression="surprised"
+              sunglass="big_rounded"
+              hair="middle"
+              accessory="earrings_rhombus"
+              title={'There are no active proposals'}
+              description={
+                'You can still check upcoming or past proposals on your DAOs.'
+              }
+              primaryButton={{label: 'Hi', onClick: () => alert('HI')}}
+            />
+          }
         </>
       )}
     </Container>
@@ -76,8 +92,4 @@ const SectionTitle = styled.p.attrs({
 
 const CardsWrapper = styled.div.attrs({
   className: 'grid grid-cols-1 gap-1.5 desktop:grid-cols-3 desktop:gap-3',
-})``;
-
-const StateEmpty = styled.div.attrs({
-  className: 'w-full h-10 bg-warning-200',
 })``;
