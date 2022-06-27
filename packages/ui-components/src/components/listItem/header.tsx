@@ -74,7 +74,9 @@ const ContentWrapper = styled.div.attrs(({horizontal}: VariableAlignment) => ({
 }))<VariableAlignment>``;
 
 const Value = styled.p.attrs({
-  className: 'text-2xl text-ui-800 font-bold truncate',
+  className: 'ft-text-2xl text-ui-800 font-bold truncate',
 })``;
 
-const Label = styled.p.attrs({className: 'text-ui-500 truncate'})``;
+const Label = styled.p.attrs({
+  className: 'ft-text-base text-ui-500 truncate',
+})``;

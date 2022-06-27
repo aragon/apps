@@ -32,5 +32,5 @@ type ContainerProps = {
 };
 
 const Container = styled.div.attrs(({mode}: ContainerProps) => ({
-  className: `text-xs py-0.5 px-2 text-center font-bold ${styles[mode]}`,
+  className: `ft-text-xs py-0.5 px-2 text-center font-bold ${styles[mode]}`,
 }))<ContainerProps>``;

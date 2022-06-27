@@ -59,7 +59,7 @@ const Container = styled.div.attrs(({bgWhite}: ContainerProps) => {
 })<ContainerProps>``;
 
 const Label = styled.p.attrs({
-  className: 'text-sm text-ui-500 capitalize',
+  className: 'ft-text-sm text-ui-500 capitalize',
 })``;
 
 // TODO: Revisit address shortening

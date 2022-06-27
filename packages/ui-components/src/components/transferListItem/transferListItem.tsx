@@ -96,7 +96,7 @@ const Title = styled.p.attrs({
 })``;
 
 const Date = styled.p.attrs({
-  className: 'text-sm text-ui-500',
+  className: 'ft-text-sm text-ui-500',
 })``;
 
 const Value = styled.div.attrs({
@@ -108,5 +108,5 @@ const USDValue = styled.p.attrs({
 })``;
 
 const TokenAmount = styled.p.attrs({
-  className: 'text-sm text-ui-500',
+  className: 'ft-text-sm text-ui-500',
 })``;

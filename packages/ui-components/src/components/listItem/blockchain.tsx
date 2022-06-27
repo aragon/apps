@@ -54,7 +54,7 @@ const Domain = styled.p.attrs(({selected}: SelectedProps) => ({
   className: `${selected ? 'text-primary-500' : 'text-ui-600'} font-bold`,
 }))<SelectedProps>``;
 
-const Name = styled.p.attrs({className: 'text-sm text-ui-500'})``;
+const Name = styled.p.attrs({className: 'ft-text-sm text-ui-500'})``;
 
 const Logo = styled.img.attrs({className: 'w-6 h-6'})``;
 

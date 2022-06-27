@@ -53,7 +53,7 @@ const Heading = styled.p.attrs({
 `;
 
 const HelpText = styled.p.attrs({
-  className: 'text-sm font-normal text-ui-600',
+  className: 'ft-text-sm font-normal text-ui-600',
 })`
   & > a {
     color: #003bf5;

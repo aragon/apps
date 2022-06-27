@@ -28,8 +28,8 @@ export const TableCell: React.FC<TableCellProps> = ({
           rightAligned ? 'text-right' : 'text-left'
         }`}
       >
-        <p className="text-ui-600">{text}</p>
-        {subtext && <p className="text-sm text-ui-500">{subtext}</p>}
+        <p className="text-ui-600 ft-text-base">{text}</p>
+        {subtext && <p className="text-ui-500 ft-text-sm">{subtext}</p>}
       </td>
     );
   } else if (type === 'head') {
@@ -40,7 +40,7 @@ export const TableCell: React.FC<TableCellProps> = ({
           rightAligned ? 'text-right' : 'text-left'
         }`}
       >
-        <p className="text-sm font-bold text-ui-800">{text}</p>
+        <p className="font-bold text-ui-800 ft-text-sm">{text}</p>
       </th>
     );
   } else if (type === 'link') {
@@ -51,7 +51,9 @@ export const TableCell: React.FC<TableCellProps> = ({
           rightAligned ? 'text-right' : 'text-left'
         }`}
       >
-        <p className="font-bold text-primary-500 cursor-pointer">{children}</p>
+        <p className="font-bold text-primary-500 cursor-pointer ft-text-base">
+          {children}
+        </p>
       </td>
     );
   } else if (type === 'tag') {
@@ -72,8 +74,8 @@ export const TableCell: React.FC<TableCellProps> = ({
         rightAligned ? 'text-right' : 'text-left'
       }`}
     >
-      <p className="text-ui-600">{text}</p>
-      {subtext && <p className="text-sm text-ui-500">{subtext}</p>}
+      <p className="text-ui-600 ft-text-base">{text}</p>
+      {subtext && <p className="text-ui-500 ft-text-sm">{subtext}</p>}
     </td>
   );
 };

@@ -54,4 +54,4 @@ const Container = styled.div.attrs(({mode}: ContainerProps) => ({
   className: `flex items-center space-x-1 ${styles[mode].color}`,
 }))<ContainerProps>``;
 
-const Label = styled.p.attrs({className: 'font-bold text-sm'})``;
+const Label = styled.p.attrs({className: 'font-bold ft-text-sm'})``;

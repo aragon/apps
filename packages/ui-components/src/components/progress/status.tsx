@@ -92,7 +92,8 @@ const IconContainer = styled.div.attrs({className: 'my-2'})``;
 const LabelContainer = styled.div.attrs({className: 'my-1.5'})``;
 
 const BlockContainer = styled.div.attrs({
-  className: 'flex items-start max-h-full space-x-1 my-2 text-ui-500 text-sm',
+  className:
+    'flex items-start max-h-full space-x-1 my-2 text-ui-500 ft-text-sm',
 })``;
 
 const textColors: Record<ModeType, string> = {
@@ -151,5 +152,5 @@ const Heading = styled.p.attrs({
 })``;
 
 const HelpText = styled.p.attrs({
-  className: 'text-sm font-normal text-ui-500',
+  className: 'ft-text-sm font-normal text-ui-500',
 })``;

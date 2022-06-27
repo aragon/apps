@@ -75,7 +75,7 @@ export const HeaderDao: React.FC<HeaderDaoProps> = ({
                   ? `${translation?.readLess || 'Read less'} ↑`
                   : `${translation?.readMore || 'Read more'} ↓`
               }
-              className="text-base"
+              className="ft-text-base"
               onClick={() => setFullDescription(prevState => !prevState)}
             />
           </div>
@@ -176,11 +176,11 @@ const AvatarContainer = styled.div.attrs({
 })``;
 
 const Title = styled.h1.attrs({
-  className: 'text-3xl font-bold text-ui-800',
+  className: 'ft-text-3xl font-bold text-ui-800',
 })``;
 
 const Description = styled.p.attrs({
-  className: 'font-medium text-ui-600 text-base',
+  className: 'font-medium text-ui-600 ft-text-base',
 })<DescriptionProps>`
   overflow: hidden;
   display: -webkit-box;
@@ -201,7 +201,7 @@ const NetworkDetails = styled.div.attrs({
 })``;
 
 const DetailsText = styled.span.attrs({
-  className: 'text-ui-600 text-sm' as string | undefined,
+  className: 'text-ui-600 ft-text-sm' as string | undefined,
 })``;
 
 const LinksWrapper = styled.div.attrs({

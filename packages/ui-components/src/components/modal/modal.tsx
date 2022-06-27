@@ -115,7 +115,7 @@ const ModalTitle = styled(Title).attrs({
 })``;
 
 const ModalSubtitle = styled.div.attrs({
-  className: 'text-sm text-ui-500',
+  className: 'ft-text-sm text-ui-500',
 })``;
 
 const ModalClose = styled(Close).attrs({

@@ -137,7 +137,7 @@ const CoinName = styled.h1.attrs({
 })``;
 
 const SecondaryCoinDetails = styled.div.attrs({
-  className: 'text-sm text-ui-500 space-x-0.5',
+  className: 'ft-text-sm text-ui-500 space-x-0.5',
 })``;
 
 const MarketProperties = styled.div.attrs({
@@ -150,7 +150,7 @@ const FiatValue = styled.h1.attrs({
 
 const SecondaryFiatDetails = styled.div.attrs({
   className:
-    'text-sm text-ui-500 space-x-1 flex justify-end items-center truncate',
+    'ft-text-sm text-ui-500 space-x-1 flex justify-end items-center truncate',
 })``;
 
 type ToggleMobileVisibilityProps = {

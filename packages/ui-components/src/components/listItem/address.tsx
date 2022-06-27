@@ -66,5 +66,5 @@ const Container = styled.button.attrs(() => {
 
 const LeftContent = styled.div.attrs({className: 'flex space-x-2'})``;
 const RightContent = styled.div.attrs({
-  className: 'flex space-x-2 items-center text-sm',
+  className: 'flex space-x-2 items-center ft-text-sm',
 })``;

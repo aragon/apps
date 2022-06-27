@@ -75,5 +75,5 @@ const DaoName = styled.p.attrs({
 })``;
 
 const DaoAddress = styled.p.attrs({
-  className: 'text-ui-500 text-sm desktop:hidden',
+  className: 'text-ui-500 ft-text-sm desktop:hidden',
 })``;

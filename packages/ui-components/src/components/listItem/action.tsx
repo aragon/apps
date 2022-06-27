@@ -48,8 +48,8 @@ export const ListItemAction: React.FC<ListItemActionProps> = ({
         {/* This could be done with label. However, I can't get the label's text
          to inherit the color (for example, when selected mode is on) */}
         <LabelContainer>
-          <p className="font-bold">{title}</p>
-          {subtitle && <p className="text-sm">{subtitle}</p>}
+          <p className="font-bold ft-text-base">{title}</p>
+          {subtitle && <p className="ft-text-sm">{subtitle}</p>}
         </LabelContainer>
       </LeftContent>
       {iconRight && <span>{iconRight}</span>}

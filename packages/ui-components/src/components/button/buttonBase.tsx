@@ -51,9 +51,9 @@ const sizeStyles = {
 };
 
 const fontStyles = {
-  small: 'text-sm',
-  medium: 'text-base',
-  large: 'text-base',
+  small: 'ft-text-sm',
+  medium: 'ft-text-base',
+  large: 'ft-text-base',
 };
 
 const iconStyles = {

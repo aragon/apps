@@ -59,11 +59,11 @@ const Wrapper = styled.div.attrs({
 })``;
 
 const StepTitle = styled.p.attrs({
-  className: 'text-2xl desktop:text-3xl text-ui-800 font-bold',
+  className: 'ft-text-3xl text-ui-800 font-bold',
 })``;
 
 const StepSubTitle = styled.p.attrs({
-  className: 'text-ui-600 desktop:text-lg',
+  className: 'text-ui-600 ft-text-lg',
 })``;
 
 const CenteredFlex = styled.div.attrs({

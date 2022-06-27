@@ -54,7 +54,7 @@ const Content = styled.div.attrs({
 })``;
 
 const Domain = styled.p.attrs({
-  className: 'text-sm text-ui-500 truncate',
+  className: 'ft-text-sm text-ui-500 truncate',
 })``;
 
 const DaoName = styled.p.attrs(({selected}: Selectable) => {
@@ -69,7 +69,7 @@ const DaoName = styled.p.attrs(({selected}: Selectable) => {
 const IconContainer = styled.div.attrs(({selected}: Selectable) => {
   return {
     className: selected
-      ? 'text-sm text-primary-500'
-      : 'text-sm text-ui-400 group-hover:text-primary-500 group-active:text-primary-500',
+      ? 'ft-text-sm text-primary-500'
+      : 'ft-text-sm text-ui-400 group-hover:text-primary-500 group-active:text-primary-500',
   };
 })<Selectable>``;

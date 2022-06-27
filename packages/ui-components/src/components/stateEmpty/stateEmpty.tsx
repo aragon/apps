@@ -72,9 +72,9 @@ const ActionContainer = styled.div.attrs({
 })``;
 
 const Title = styled.h2.attrs({
-  className: 'text-xl font-bold text-ui-800 mb-1.5',
+  className: 'ft-text-xl font-bold text-ui-800 mb-1.5',
 })``;
 
 const Description = styled.p.attrs({
-  className: 'text-ui-500 text-sm mb-3',
+  className: 'text-ui-500 desktop:ft-text-base ft-text-sm mb-3',
 })``;

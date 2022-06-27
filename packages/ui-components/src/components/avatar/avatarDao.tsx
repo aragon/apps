@@ -44,10 +44,10 @@ type AvatarPropsType = {
 };
 
 const sizes = {
-  small: 'w-3 h-3 text-xs',
-  medium: 'w-6 h-6',
-  big: 'w-10 h-10 text-lg',
-  hero: 'w-14 h-14 text-xl',
+  small: 'w-3 h-3 ft-text-xs',
+  medium: 'w-6 h-6 ft-text-base',
+  big: 'w-10 h-10 ft-text-lg',
+  hero: 'w-14 h-14 ft-text-xl',
 };
 
 const Avatar = styled.img.attrs(({size}: AvatarPropsType) => ({
