@@ -27,4 +27,4 @@ jobs:
       - name: Deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: yarn deploy-storybook --ci --host-token-env-variable=GITHUB_TOKEN --source-branch develop
+        run: yarn deploy-storybook --ci --host-token-env-variable=GITHUB_TOKEN --source-branch develop --branch gh-pages
