@@ -11,7 +11,7 @@ type ButtonProps = {
 export type StateEmptyProps = IlluHumanProps & {
   title: string;
   description?: string;
-  primaryButton: ButtonProps;
+  primaryButton?: ButtonProps;
   secondaryButton?: ButtonProps;
   renderHtml?: boolean;
 };
@@ -44,11 +44,13 @@ export const StateEmpty: React.FC<StateEmptyProps> = ({
         )}
       </TextWrapper>
       <ActionContainer>
-        <ButtonText
-          label={primaryButton.label}
-          onClick={primaryButton.onClick}
-          size="large"
-        />
+        {primaryButton && (
+          <ButtonText
+            label={primaryButton.label}
+            onClick={primaryButton.onClick}
+            size="large"
+          />
+        )}
         {secondaryButton && (
           <ButtonText
             label={secondaryButton.label}

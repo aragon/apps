@@ -18,7 +18,7 @@ const ActiveProposalsExplore: React.FC = () => {
   const [proposalCount, setProposalCount] = useState(4);
 
   const handleShowMore = () => {
-    setProposalCount(prev => prev++);
+    setProposalCount(prev => prev + 1);
   };
 
   const handleShowProposals = () => {
@@ -43,7 +43,11 @@ const ActiveProposalsExplore: React.FC = () => {
                 key={index}
                 type="explore"
                 daoName="Some Mock Dao"
-                onClick={() => alert('This would take you to the proposal')}
+                onClick={() =>
+                  alert(
+                    'This will eventually take you to the proposal detail view.'
+                  )
+                }
                 {...proposal}
               />
             ))}
@@ -74,7 +78,6 @@ const ActiveProposalsExplore: React.FC = () => {
               description={
                 'You can still check upcoming or past proposals on your DAOs.'
               }
-              primaryButton={{label: 'Hi', onClick: () => alert('HI')}}
             />
           }
         </>
