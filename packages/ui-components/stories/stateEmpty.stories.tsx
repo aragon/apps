@@ -18,8 +18,18 @@ Default.args = {
   accessory: 'earrings_rhombus',
   title: 'title',
   description: 'description',
-  buttonLabelPrimary: 'button text',
-  buttonLabelSecondary: 'button text',
+  primaryButton: {
+    label: 'Primary text',
+    onClick: () => {
+      alert('You clicked the primary button');
+    },
+  },
+  secondaryButton: {
+    label: 'Secondary text',
+    onClick: () => {
+      alert('You clicked the secondary button');
+    },
+  },
   width: 800,
   height: 450,
 };
