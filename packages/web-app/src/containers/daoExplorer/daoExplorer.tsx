@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {DaoCard, DaoType} from 'components/daoCard';
+import {DaoCard} from 'components/daoCard';
 import {useTranslation} from 'react-i18next';
 import styled from 'styled-components';
 import {useWallet} from 'hooks/useWallet';
@@ -9,52 +9,39 @@ import {
   Option,
   ButtonText,
 } from '@aragon/ui-components';
+import {useDaos} from 'hooks/useDaos';
 
-type Dao = {
-  name: string;
-  description: string;
-  logo?: string;
-  chainId: number;
-  daoType: DaoType;
-};
+const EXPLORE_FILTER = ['favourite', 'newest', 'popular'] as const;
 
-// Just 2 placeholders before the data
-// is polled from graph
-const placeholderDaos: Dao[] = [
-  {
-    name: 'The dao 1',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In blandit enim ac quam porta tempus. Morbi feugiat leo in ultricies commodo. Praesent tempus neque eu tellus pulvinar, suscipit imperdiet erat laoreet. Vivamus interdum risus fermentum magna convallis tristique. Praesent sit amet venenatis nulla, non ornare lectus. Quisque elit tortor, suscipit sed mi id, mattis tempus felis. Praesent bibendum viverra auctor. Cras finibus, mauris at congue cursus, nisl magna semper lorem, quis ornare odio sem id nulla. Vestibulum fermentum commodo tortor, ac vehicula libero. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nunc facilisis nisl viverra, fermentum dui non, ultricies dolor. Mauris ornare varius est, eu finibus tellus lobortis quis. Nullam sagittis vulputate mi in tincidunt. Nam tempor lacus lorem, ac consectetur velit malesuada sed. ',
-    chainId: 4,
-    daoType: 'wallet-based',
-  },
-  {
-    name: 'The dao 2',
-    logo: 'https://cdn.vox-cdn.com/thumbor/2l9eryHceOI1AmNOQNSNxXcKLu8=/0x0:1268x845/1400x1400/filters:focal(0x0:1268x845):format(png)/cdn.vox-cdn.com/uploads/chorus_image/image/35813328/Screenshot_2014-07-19_15.24.57.0.png',
-    description: 'Lorem ipsum dolor sit amet, ',
-    chainId: 1,
-    daoType: 'token-based',
-  },
-];
+export type ExploreFilter = typeof EXPLORE_FILTER[number];
+
+export function isExploreFilter(
+  filterValue: string
+): filterValue is ExploreFilter {
+  return EXPLORE_FILTER.some(ef => ef === filterValue);
+}
+
+const PAGE_SIZE = 4;
 
 export const DaoExplorer = () => {
   const {t} = useTranslation();
-  const [daos, setDaos] = useState<Dao[]>(placeholderDaos);
-  const [filter, setFilter] = useState('popular');
+  const [showCount, setShowCount] = useState(PAGE_SIZE);
   const {isConnected} = useWallet();
+  const [filterValue, setFilterValue] = useState<ExploreFilter>(
+    isConnected ? 'favourite' : 'popular'
+  );
+  const {data} = useDaos(filterValue);
 
   const handleShowMoreClick = () => {
-    setDaos([...daos, ...placeholderDaos]);
+    setShowCount(prev => prev + PAGE_SIZE);
   };
 
   const handleFliterChange = (filterValue: string) => {
-    if (filterValue === 'my-daos') {
-      setDaos([placeholderDaos[0]]);
-      setFilter(filterValue);
-      return;
-    }
-    setFilter(filterValue);
-    setDaos([...placeholderDaos]);
+    if (isExploreFilter(filterValue)) {
+      setFilterValue(filterValue);
+      setShowCount(PAGE_SIZE);
+    } else throw Error(`${filterValue} is not an acceptable filter value`);
+    return;
   };
 
   return (
@@ -64,12 +51,15 @@ export const DaoExplorer = () => {
           <Title>{t('explore.explorer.title')}</Title>
           <ButtonGroupContainer>
             <ButtonGroup
-              defaultValue={filter}
-              onChange={handleFliterChange}
+              defaultValue={filterValue}
+              onChange={v => handleFliterChange(v)}
               bgWhite={false}
             >
               {isConnected ? (
-                <Option label={t('explore.explorer.myDaos')} value="my-daos" />
+                <Option
+                  label={t('explore.explorer.myDaos')}
+                  value="favourite"
+                />
               ) : (
                 <></>
               )}
@@ -79,7 +69,7 @@ export const DaoExplorer = () => {
           </ButtonGroupContainer>
         </HeaderWrapper>
         <CardsWrapper>
-          {daos.map((dao, index) => (
+          {data.slice(0, showCount).map((dao, index) => (
             <DaoCard
               name={dao.name}
               logo={dao.logo}
@@ -91,7 +81,7 @@ export const DaoExplorer = () => {
           ))}
         </CardsWrapper>
       </MainContainer>
-      {filter !== 'my-daos' && (
+      {data.length > 4 && (
         <div>
           <ButtonText
             label={t('explore.explorer.showMore')}
