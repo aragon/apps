@@ -81,7 +81,7 @@ export const DaoExplorer = () => {
           ))}
         </CardsWrapper>
       </MainContainer>
-      {data.length > 4 && (
+      {data.length > PAGE_SIZE && (
         <div>
           <ButtonText
             label={t('explore.explorer.showMore')}
@@ -89,6 +89,7 @@ export const DaoExplorer = () => {
             bgWhite
             mode="ghost"
             onClick={handleShowMoreClick}
+            disabled={showCount > data.length}
           />
         </div>
       )}
