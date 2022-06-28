@@ -26,5 +26,5 @@ jobs:
         run: yarn install --pure-lockfile
       - name: Deploy
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: yarn deploy-storybook --ci --host-token-env-variable=GITHUB_TOKEN --source-branch develop
+          GITHUB_TOKEN: ${{ secrets.ARABOT_PAT }}
+        run: yarn deploy-storybook --ci --host-token-env-variable=GITHUB_TOKEN --source-branch develop --branch gh-pages

@@ -157,7 +157,8 @@
       "title": "Create your very first proposal now",
       "subtitleLine1": "By creating a proposal, your community can vote and participate in this DAO.",
       "subtitleLine2": "Learn more in",
-      "proposalGuide": "our Proposal Guide."
+      "proposalGuide": "our Proposal Guide.",
+      "completeDescription": "By creating a proposal, your community can vote and participate in this DAO. Learn more in our <a href='https://aragon.org' target='_blank' rel='noreferrer'>Proposal Guide</a>"
     },
     "proposals": {
       "publishedBy": "Published by",
@@ -298,7 +299,7 @@
     "noAddresses": "No address Found"
   },
   "TransactionModal": {
-    "approveSubtitle": "To sign your first transaction, you must approve Aragon Zaragoza to make a transaction with your token.",
+    "approveSubtitle": "To sign your first transaction, you must approve Aragon App to make a transaction with your token.",
     "approveToken": "Approve token",
     "depositTitle": "Sign Deposit",
     "dismiss": "Dismiss",
@@ -406,7 +407,7 @@
       "label": "Step 3",
       "title": "Setup Community",
       "newToken": "No",
-      "authorisedWalletsSubtitle": "Add as many addresses as you like to the DAO. These are authorised to create proposals, transactions or suggest changes to the DAO settings after its creation. Upload a CSV with <a href='https://the.csv/template'>this template</a> if you want.",
+      "authorisedWalletsSubtitle": "Add as many addresses as you like to the DAO. These are authorised to create proposals, transactions or suggest changes to the DAO settings after its creation. Upload a CSV with <a href='https://aragon.org' external>this template</a> if you want.",
       "warningTitle": "Changing the list",
       "warningSubtitle": "If you want to add addresses after creating your DAO, you will need to create a proposal to be voted by the members.",
       "newTokenSubtitle": "No, I would like to create a token.",
@@ -572,6 +573,11 @@
     "proposeSettingsInfo": "To make changes to the settings of this DAO, a vote must be taken via the community."
   },
   "dashboard": {
-    "proposalsTitle": "Proposals created"
+    "proposalsTitle": "Proposals created",
+    "emptyTransfers": {
+      "title": "Create Very First Transfer",
+      "description": "Create the first financial transaction for this DAO by by either depositing or withdrawing tokens.",
+      "buttonLabel": "Create Transaction"
+    }
   }
 }

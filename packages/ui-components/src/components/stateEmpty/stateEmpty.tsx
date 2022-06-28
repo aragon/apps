@@ -1,13 +1,19 @@
 import React from 'react';
 import styled from 'styled-components';
 import {ButtonText} from '../button';
-import {IlluHuman, IlluHumanHairProps} from '../illustrations';
+import {IllustrationHuman, IlluHumanProps} from '../illustrations';
 
-export type StateEmptyProps = IlluHumanHairProps & {
+type ButtonProps = {
+  label: string;
+  onClick: () => void;
+};
+
+export type StateEmptyProps = IlluHumanProps & {
   title: string;
   description?: string;
-  buttonLabelPrimary: string;
-  buttonLabelSecondary?: string;
+  primaryButton: ButtonProps;
+  secondaryButton?: ButtonProps;
+  renderHtml?: boolean;
 };
 
 export const StateEmpty: React.FC<StateEmptyProps> = ({
@@ -18,53 +24,52 @@ export const StateEmpty: React.FC<StateEmptyProps> = ({
   accessory,
   title,
   description,
-  buttonLabelPrimary,
-  buttonLabelSecondary,
+  primaryButton,
+  secondaryButton,
+  renderHtml = false,
 }) => {
   return (
     <Card>
-      <ContentWrapper>
-        <SVGWrapper>
-          <IlluHuman
-            {...{body, expression, hair, sunglass, accessory}}
-            height={225}
-            width={400}
-          />
-        </SVGWrapper>
+      <IllustrationHuman
+        {...{body, expression, hair, sunglass, accessory}}
+        height={225}
+        width={400}
+      />
+      <TextWrapper>
         <Title>{title}</Title>
-        <Description>{description}</Description>
-        <ActionContainer>
-          <ButtonText label={buttonLabelPrimary} size="large" />
-          {buttonLabelSecondary && (
-            <ButtonText
-              label={buttonLabelSecondary}
-              mode="ghost"
-              size="large"
-            />
-          )}
-        </ActionContainer>
-      </ContentWrapper>
+        {renderHtml ? (
+          <Description dangerouslySetInnerHTML={{__html: description || ''}} />
+        ) : (
+          <Description>{description}</Description>
+        )}
+      </TextWrapper>
+      <ActionContainer>
+        <ButtonText
+          label={primaryButton.label}
+          onClick={primaryButton.onClick}
+          size="large"
+        />
+        {secondaryButton && (
+          <ButtonText
+            label={secondaryButton.label}
+            onClick={secondaryButton.onClick}
+            mode="ghost"
+            size="large"
+          />
+        )}
+      </ActionContainer>
     </Card>
   );
 };
 
 const Card = styled.div.attrs({
   className:
-    'flex items-center justify-center bg-ui-0 rounded-xl p-3 desktop:p-6 w-full mb-5',
+    'flex flex-col items-center justify-center bg-ui-0 rounded-xl p-3 pb-6 desktop:p-6 w-full space-y-3 border',
 })``;
 
-const ContentWrapper = styled.div.attrs({
-  className: 'flex items-center flex-col',
-})`
-  max-width: 560px;
-`;
-
-const SVGWrapper = styled.div.attrs({
-  className: 'flex items-center justify-center mb-3',
-})`
-  height: 225px;
-  width: 400px;
-`;
+const TextWrapper = styled.div.attrs({
+  className: 'space-y-2 text-center',
+})``;
 
 const ActionContainer = styled.div.attrs({
   className:
@@ -72,9 +77,13 @@ const ActionContainer = styled.div.attrs({
 })``;
 
 const Title = styled.h2.attrs({
-  className: 'ft-text-xl font-bold text-ui-800 mb-1.5',
+  className: 'ft-text-xl font-bold text-ui-800',
 })``;
 
 const Description = styled.p.attrs({
-  className: 'text-ui-500 desktop:ft-text-base ft-text-sm mb-3',
-})``;
+  className: 'text-ui-500 text-sm desktop:text-base',
+})`
+  & > a {
+    color: #003bf5;
+    font-weight: 700;
+`;

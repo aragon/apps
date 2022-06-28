@@ -3,6 +3,7 @@ import {
   IconChevronRight,
   IconFinance,
   ListItemHeader,
+  StateEmpty,
   TransferListItem,
 } from '@aragon/ui-components';
 import React from 'react';
@@ -36,8 +37,20 @@ const TreasurySnapshot: React.FC<Props> = ({
 
   if (transfers.length === 0) {
     return (
-      <div className="flex flex-1 justify-center items-center border">
-        Empty State Placeholder
+      <div className="flex flex-1 justify-center items-center">
+        <StateEmpty
+          body={'correct'}
+          expression={'surprised'}
+          hair={'cool'}
+          sunglass={'thuglife'}
+          title={t('dashboard.emptyTransfers.title')}
+          description={t('dashboard.emptyTransfers.description')}
+          primaryButton={{
+            label: t('dashboard.emptyTransfers.buttonLabel'),
+            onClick: () => open(),
+          }}
+          renderHtml
+        />
       </div>
     );
   }

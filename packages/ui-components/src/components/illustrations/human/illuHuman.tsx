@@ -1,124 +1,97 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import {IconType} from '../../icons';
+import {Accessory, IllustrationAccessory} from './human_accessories';
+import {Body, IllustrationBodies} from './human_bodies';
+import {Expression, IllustrationExpression} from './human_expressions';
+import {Hair, IllustrationHair} from './human_hairs';
+import {IllustrationSunglass, Sunglass} from './human_sunglasses';
 
-export type IlluHumanHairProps = {
-  hair?:
-    | 'long'
-    | 'afro'
-    | 'bald'
-    | 'bun'
-    | 'cool'
-    | 'curly_bangs'
-    | 'curly'
-    | 'informal'
-    | 'middle'
-    | 'oldschool'
-    | 'punk'
-    | 'short';
-  body:
-    | 'relaxed'
-    | 'aragon'
-    | 'blocks'
-    | 'chart'
-    | 'computer_correct'
-    | 'computer'
-    | 'correct'
-    | 'double_correct'
-    | 'elevating'
-    | 'sending_love'
-    | 'voting';
-  expression:
-    | 'angry'
-    | 'casual'
-    | 'crying'
-    | 'decided'
-    | 'excited'
-    | 'sad_left'
-    | 'sad_right'
-    | 'smile_wink'
-    | 'smile'
-    | 'surprised'
-    | 'suspecting';
-  sunglass?:
-    | 'big_rounded'
-    | 'big_semirounded'
-    | 'large_stylized_xl'
-    | 'large_stylized'
-    | 'pirate'
-    | 'small_intellectual'
-    | 'small_sympathetic'
-    | 'small_weird_one'
-    | 'small_weird_two'
-    | 'thuglife_rounded'
-    | 'thuglife';
-  accessory?:
-    | 'buddha'
-    | 'earrings_circle'
-    | 'earrings_hoops'
-    | 'earrings_rhombus'
-    | 'earrings_skull'
-    | 'earrings_thunder'
-    | 'expression'
-    | 'flushed'
-    | 'head_flower'
-    | 'piercings_tattoo'
-    | 'piercings';
-  height?: number;
-  width?: number;
-};
+export type IlluHumanProps = {
+  /**
+   * The variant of human body used as for the Illustration
+   */
+  body: Body;
+  /**
+   * The variant of facial expression used as for the Illustration
+   */
+  expression: Expression;
+  /**
+   * The variant of hair style used as for the Illustration. This is prop is
+   * optional. If not specified, no hair will be shown.
+   */
+  hair?: Hair;
+  /**
+   * The variant of glasses used as for the Illustration. This is prop is
+   * optional. If not specified, no glasses will be shown.
+   */
+  sunglass?: Sunglass;
+  /**
+   * The variant of accessory used as for the Illustration. This is prop is
+   * optional. If not specified, no accessories will be shown.
+   */
+  accessory?: Accessory;
+} & Dimensions;
 
-export const IlluHuman: React.FC<IlluHumanHairProps> = ({
-  body = 'long',
-  expression = 'aragon',
-  hair,
-  sunglass,
-  accessory,
-  height,
-  width,
+export const IllustrationHuman: React.FC<IlluHumanProps> = ({
+  body,
+  expression,
+  hair = 'none',
+  sunglass = 'none',
+  accessory = 'none',
+  ...rest
 }) => {
-  const Expression: IconType = require('./human_expressions')[expression];
-  const Body: IconType = require('./human_bodies')[body];
-  const Hair: IconType = hair ? require('./human_hairs')[hair] : null;
-  const Sunglass: IconType = sunglass
-    ? require('./human_sunglasses')[sunglass]
-    : null;
-  const Accessory: IconType = accessory
-    ? require('./human_accessories')[accessory]
-    : null;
-
   return (
-    <Container data-testid="illu-human">
-      {hair && (
-        <Item>
-          <Hair {...{height, width}} />
-        </Item>
-      )}
+    <div
+      data-testid="illu-human"
+      style={{width: rest.width, height: rest.height}}
+    >
       <Item>
-        <Expression {...{height, width}} />
+        <IllustrationBodies variant={body} {...rest} />
       </Item>
       <Item>
-        <Body {...{height, width}} />
+        <IllustrationExpression variant={expression} {...rest} />
       </Item>
-      {Sunglass && (
-        <Item>
-          <Sunglass {...{height, width}} />
-        </Item>
-      )}
-      {Accessory && (
-        <Item>
-          <Accessory {...{height, width}} />
-        </Item>
-      )}
-    </Container>
+      <Item>
+        <IllustrationHair variant={hair} {...rest} />
+      </Item>
+      <Item>
+        <IllustrationSunglass variant={sunglass} {...rest} />
+      </Item>
+      <Item>
+        <IllustrationAccessory variant={accessory} {...rest} />
+      </Item>
+    </div>
   );
 };
-
-const Container = styled.div.attrs({
-  className: 'relative bottom-1/2 right-1/2',
-})``;
 
 const Item = styled.div.attrs({
   className: 'absolute',
 })``;
+
+/**
+ * Type of any illustration component that makes up an illustration. Comes with
+ * the various types (in the sense of "variations") that component can come in,
+ * as well as its dimensions.
+ */
+export type IllustrationComponentProps<T> = {
+  variant: T;
+} & Dimensions;
+
+/** Add the literal type 'none' to a Type */
+export type Noneable<T> = T | 'none';
+
+export type Dimensions = {
+  width?: number;
+  height?: number;
+};
+
+export class UnknownIllustrationVariantError extends Error {
+  constructor(variant: string, illustrationComponent: string) {
+    super(
+      `Unknown variant "${variant}" of ${illustrationComponent} illustration. 
+       Make sure to only request variants of illustrations that exist. 
+       Also, check that the corresponding component and Type were properly extended in case new variants are introduced.`
+    );
+  }
+}

@@ -4,7 +4,7 @@ import {
   CardProposal,
   ButtonText,
   IconChevronRight,
-} from '@aragon/ui-components';
+} from '@aragon/ui-components/';
 import React from 'react';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
@@ -13,6 +13,7 @@ import {useNavigate, generatePath} from 'react-router-dom';
 import {useNetwork} from 'context/network';
 import {MockProposal} from 'hooks/useDaoProposals';
 import {NewProposal, Governance} from 'utils/paths';
+import {StateEmpty} from '@aragon/ui-components/src';
 
 type Props = {dao: string; proposals: MockProposal[]};
 
@@ -24,7 +25,20 @@ const ProposalSnapshot: React.FC<Props> = ({dao, proposals}) => {
   if (proposals.length === 0) {
     return (
       <div className="flex flex-1 justify-center items-center border">
-        Empty State Placeholder
+        <StateEmpty
+          body={'voting'}
+          expression={'smile'}
+          hair={'middle'}
+          accessory={'earrings_rhombus'}
+          sunglass={'big_rounded'}
+          title={'Create Very First Proposal'}
+          description={t('governance.emptyState.completeDescription')}
+          primaryButton={{
+            label: t('TransactionModal.createProposal'),
+            onClick: () => navigate(generatePath(NewProposal, {network, dao})),
+          }}
+          renderHtml
+        />
       </div>
     );
   }
