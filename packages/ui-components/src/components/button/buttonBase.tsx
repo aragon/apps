@@ -71,7 +71,7 @@ type SizeProps = {
 
 const BaseStyledButton = styled.button.attrs(({size = 'medium'}: SizeProps) => {
   const className = `${sizeStyles[size]} ${fontStyles[size]} 
-  flex justify-center items-center font-bold focus:outline-none 
+  flex justify-center items-center focus:outline-none 
   focus:ring-2 focus:ring-primary-500`;
   return {className};
 })<SizeProps>``;
@@ -81,8 +81,8 @@ type LabelProps = {
 };
 
 const Label = styled.span.attrs(({visible}: LabelProps) => {
-  let className: string | undefined;
-  if (!visible) className = 'hidden';
+  let className = 'font-bold';
+  if (!visible) className += ' hidden';
   return {className};
 })<LabelProps>``;
 

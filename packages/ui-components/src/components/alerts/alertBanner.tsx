@@ -15,7 +15,7 @@ export const AlertBanner: React.FC<AlertBannerProps> = ({
 }) => {
   return (
     <Container role="alert" mode={mode}>
-      <p>{label}</p>
+      {label}
     </Container>
   );
 };

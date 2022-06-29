@@ -112,7 +112,7 @@ type CardProps = Pick<CardTokenProps, 'bgWhite'>;
 const Card = styled.div.attrs(({bgWhite}: CardProps) => ({
   className: `flex justify-between items-center py-2.5 px-3 ${
     bgWhite ? 'bg-ui-50' : 'bg-ui-0'
-  } rounded-xl font-normal`,
+  } rounded-xl`,
 }))<CardProps>``;
 
 const CoinDetailsWithImage = styled.div.attrs({
