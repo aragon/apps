@@ -14,11 +14,13 @@ import styled from 'styled-components';
 const ActiveProposalsExplore: React.FC = () => {
   const {t} = useTranslation();
   const [showProposals, setShowProposals] = useState(true);
-  const {topTen} = useDaoProposals(showProposals);
-  const [proposalCount, setProposalCount] = useState(4);
+  const topTen = useDaoProposals(showProposals).topTen.filter(
+    value => value.process === 'active'
+  );
+  const [proposalCount, setProposalCount] = useState(3);
 
   const handleShowMore = () => {
-    setProposalCount(prev => prev + 1);
+    setProposalCount(prev => prev + 3);
   };
 
   const handleShowProposals = () => {
@@ -52,12 +54,14 @@ const ActiveProposalsExplore: React.FC = () => {
               />
             ))}
           </CardsWrapper>
-          <ButtonText
-            mode="secondary"
-            label={t('explore.showMore')}
-            iconRight={<IconChevronDown />}
-            onClick={handleShowMore}
-          />
+          {proposalCount <= topTen.length && (
+            <ButtonText
+              mode="secondary"
+              label={t('explore.showMore')}
+              iconRight={<IconChevronDown />}
+              onClick={handleShowMore}
+            />
+          )}
         </>
       ) : (
         <>
