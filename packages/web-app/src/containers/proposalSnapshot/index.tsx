@@ -24,22 +24,20 @@ const ProposalSnapshot: React.FC<Props> = ({dao, proposals}) => {
 
   if (proposals.length === 0) {
     return (
-      <div className="flex flex-1 justify-center items-center border">
-        <StateEmpty
-          body={'voting'}
-          expression={'smile'}
-          hair={'middle'}
-          accessory={'earrings_rhombus'}
-          sunglass={'big_rounded'}
-          title={'Create Very First Proposal'}
-          description={t('governance.emptyState.completeDescription')}
-          primaryButton={{
-            label: t('TransactionModal.createProposal'),
-            onClick: () => navigate(generatePath(NewProposal, {network, dao})),
-          }}
-          renderHtml
-        />
-      </div>
+      <StateEmpty
+        body={'voting'}
+        expression={'smile'}
+        hair={'middle'}
+        accessory={'earrings_rhombus'}
+        sunglass={'big_rounded'}
+        title={'Create Very First Proposal'}
+        description={t('governance.emptyState.completeDescription')}
+        primaryButton={{
+          label: t('TransactionModal.createProposal'),
+          onClick: () => navigate(generatePath(NewProposal, {network, dao})),
+        }}
+        renderHtml
+      />
     );
   }
 
