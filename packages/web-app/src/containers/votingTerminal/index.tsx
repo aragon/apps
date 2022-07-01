@@ -12,6 +12,7 @@ import {
 } from '@aragon/ui-components/src/components/table';
 import {CheckboxListItem} from '@aragon/ui-components/src/components/checkbox';
 import {useTranslation} from 'react-i18next';
+import {IconClock} from '@aragon/ui-components';
 
 // TODO: Every string and data needed by the component is hardcoded for now.
 
@@ -39,11 +40,13 @@ const voters: Array<VoterType> = [
 type VotingTerminalProps = {
   breakdownTabDisabled?: boolean;
   votersTabDisabled?: boolean;
+  voteNowDisabled?: boolean;
 };
 
 export const VotingTerminal: React.FC<VotingTerminalProps> = ({
   breakdownTabDisabled = false,
   votersTabDisabled = false,
+  voteNowDisabled = false,
 }) => {
   const [buttonGroupState, setButtonGroupState] = useState('info');
   const [votingInProcess, setVotingInProcess] = useState(false);
@@ -203,7 +206,7 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
               />
             </ButtonWrapper>
             <AlertInline
-              label={t('votingTerminal.remainingTime')}
+              label={t('votingTerminal.notStartedYet')}
               mode="neutral"
             />
           </VoteContainer>
@@ -215,10 +218,12 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
             size="large"
             onClick={() => setVotingInProcess(true)}
             className="w-full tablet:w-max"
+            disabled={voteNowDisabled}
           />
           <AlertInline
-            label={t('votingTerminal.remainingTime')}
+            label={t('votingTerminal.notStartedYet')}
             mode="neutral"
+            icon={<IconClock className="text-info-500" />}
           />
         </VoteContainer>
       )}

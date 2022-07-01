@@ -93,7 +93,11 @@ const ReviewProposal: React.FC = () => {
             TODO: All the values inside the voting terminal is hardcoded.
             The info tab needs to display data from the form context & graph query
           */}
-          <VotingTerminal breakdownTabDisabled votersTabDisabled />
+          <VotingTerminal
+            breakdownTabDisabled
+            votersTabDisabled
+            voteNowDisabled
+          />
 
           {/* TODO: generalize types so that proper execution card can be rendered */}
           {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}

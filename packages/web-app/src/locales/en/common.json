@@ -498,7 +498,8 @@
     "submit": "Submit your vote",
     "cancel": "Cancel",
     "remainingTime": "Remaining time",
-    "voteNow": "Vote now"
+    "voteNow": "Vote now",
+    "notStartedYet": "Not started yet"
   },
   "explore": {
     "hero": {
