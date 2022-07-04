@@ -18,7 +18,12 @@ export type ValueInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
 export const ValueInput = React.forwardRef<HTMLInputElement, ValueInputProps>(
   ({mode = 'default', disabled = false, ...props}, ref) => (
     <Container data-testid="input-value" {...{mode, disabled}}>
-      <StyledInput disabled={disabled} {...props} ref={ref} />
+      <StyledInput
+        disabled={disabled}
+        {...props}
+        ref={ref}
+        onWheel={e => (e.target as HTMLInputElement).blur()}
+      />
       <ButtonText
         label={props.adornmentText}
         size="small"
