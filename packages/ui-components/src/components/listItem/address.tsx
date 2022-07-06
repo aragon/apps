@@ -1,8 +1,9 @@
 import React, {ButtonHTMLAttributes, FC} from 'react';
 import styled from 'styled-components';
+
 import {shortenAddress} from '../../utils/addresses';
 import {AvatarWallet} from '../avatar';
-import {IconLinkExternal} from '../icons';
+import {IconLinkExternal, IconPerson} from '../icons';
 
 type TokenInfo = {
   amount: number;
@@ -11,10 +12,11 @@ type TokenInfo = {
 };
 
 export type ListItemAddressProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+  label: string | null;
   /**
    * String representing EITHER a wallet address OR an ens name.
    */
-  src: string;
+  src: string | null;
   /**
    * Optional token information. Consists of a token amount, symbol and share.
    */
@@ -22,6 +24,7 @@ export type ListItemAddressProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 export const ListItemAddress: FC<ListItemAddressProps> = ({
+  label,
   src,
   tokenInfo,
   ...props
@@ -29,8 +32,8 @@ export const ListItemAddress: FC<ListItemAddressProps> = ({
   return (
     <Container data-testid="listItem-address" {...props}>
       <LeftContent>
-        <AvatarWallet src={src} />
-        <p className="font-bold">{shortenAddress(src)}</p>
+        <Avatar src={src || ''} />
+        <p className="font-bold">{shortenAddress(label)}</p>
       </LeftContent>
 
       <RightContent>
@@ -43,6 +46,13 @@ export const ListItemAddress: FC<ListItemAddressProps> = ({
       </RightContent>
     </Container>
   );
+};
+
+type AvatarProps = Pick<ListItemAddressProps, 'src'>;
+
+const Avatar: FC<AvatarProps> = ({src}) => {
+  if (!src) return <IconPerson className="w-2.5 h-2.5" />;
+  return <AvatarWallet src={src || ''} />;
 };
 
 const Container = styled.button.attrs(() => {
