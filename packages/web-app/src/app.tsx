@@ -21,6 +21,7 @@ import ExploreNav from 'containers/navbar/exploreNav';
 import Footer from 'containers/exploreFooter';
 import NetworkErrorMenu from 'containers/networkErrorMenu';
 import TransferMenu from 'containers/transferMenu';
+import {useWallet} from 'hooks/useWallet';
 
 const ExplorePage = lazy(() => import('pages/explore'));
 const NotFoundPage = lazy(() => import('pages/notFound'));
@@ -45,6 +46,13 @@ function App() {
   // TODO this needs to be inside a Routes component. Will be moved there with
   // further refactoring of layout (see further below).
   const {pathname} = useLocation();
+  const {methods} = useWallet();
+
+  useEffect(() => {
+    if (localStorage.getItem('WEB3_CONNECT_CACHED_PROVIDER')) {
+      methods.selectWallet();
+    }
+  }, []);
 
   useEffect(() => {
     trackPage(pathname);
