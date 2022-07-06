@@ -2,24 +2,24 @@ import {
   ButtonText,
   IconChevronRight,
   IconCommunity,
-  ListItemHeader,
   ListItemAddress,
+  ListItemHeader,
 } from '@aragon/ui-components';
 import {isAddress} from 'ethers/lib/utils';
 import React, {useEffect, useState} from 'react';
-import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
-import {useNavigate, generatePath} from 'react-router-dom';
+import {generatePath, useNavigate} from 'react-router-dom';
+import styled from 'styled-components';
 
 import {Loading} from 'components/temporary';
 import {useNetwork} from 'context/network';
-import {useDaoTokenHolders, useDaoWhitelist} from 'hooks/useDaoMembers';
-import {CHAIN_METADATA} from 'utils/constants';
-import {Community} from 'utils/paths';
-import useScreen from 'hooks/useScreen';
-import {getTokenInfo} from 'utils/tokens';
 import {useSpecificProvider} from 'context/providers';
+import {useDaoTokenHolders, useDaoWhitelist} from 'hooks/useDaoMembers';
+import useScreen from 'hooks/useScreen';
+import {CHAIN_METADATA} from 'utils/constants';
 import {formatUnits} from 'utils/library';
+import {Community} from 'utils/paths';
+import {getTokenInfo} from 'utils/tokens';
 
 type Props = {dao: string; walletBased: boolean; horizontal?: boolean};
 
@@ -99,14 +99,16 @@ export const MembershipSnapshot: React.FC<Props> = ({
                   .map(({id}) => (
                     <ListItemAddress
                       key={id}
+                      label={id}
                       src={id}
                       onClick={() => itemClickHandler(id)}
                     />
                   ))
               : daoMembers?.slice(0, 3).map(({address, balance}) => (
                   <ListItemAddress
-                    src={address}
                     key={address}
+                    label={address}
+                    src={address}
                     {...(!walletBased && balance
                       ? {
                           tokenInfo: {
@@ -156,14 +158,16 @@ export const MembershipSnapshot: React.FC<Props> = ({
             .map(({id}) => (
               <ListItemAddress
                 key={id}
+                label={id}
                 src={id}
                 onClick={() => itemClickHandler(id)}
               />
             ))
         : daoMembers?.slice(0, 3).map(({address, balance}) => (
             <ListItemAddress
-              src={address}
               key={address}
+              label={address}
+              src={address}
               {...(!walletBased && balance
                 ? {
                     tokenInfo: {
