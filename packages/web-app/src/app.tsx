@@ -49,9 +49,12 @@ function App() {
   const {methods} = useWallet();
 
   useEffect(() => {
+    // This check would prevent the wallet selection modal from opening up if the user hasn't logged in previously.
+    // But if the injected wallet like Metamask is locked and the user has logged in before using that wallet, there will be a prompt for password.
     if (localStorage.getItem('WEB3_CONNECT_CACHED_PROVIDER')) {
       methods.selectWallet();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
