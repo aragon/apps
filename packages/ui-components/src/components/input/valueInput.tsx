@@ -22,7 +22,10 @@ export const ValueInput = React.forwardRef<HTMLInputElement, ValueInputProps>(
         disabled={disabled}
         {...props}
         ref={ref}
-        onWheel={e => (e.target as HTMLInputElement).blur()}
+        onWheel={e => {
+          e.preventDefault();
+          (e.target as HTMLInputElement).blur();
+        }}
       />
       <ButtonText
         label={props.adornmentText}

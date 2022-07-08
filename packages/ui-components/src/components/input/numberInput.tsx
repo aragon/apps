@@ -48,7 +48,10 @@ export const NumberInput: React.FC<NumberInputProps> = ({
           disabled={disabled}
           type={'number'}
           placeholder={percentage ? '0 %' : '0'}
-          onWheel={e => (e.target as HTMLInputElement).blur()}
+          onWheel={e => {
+            e.preventDefault();
+            (e.target as HTMLInputElement).blur();
+          }}
         />
         {percentage && value !== '' && <Percent disabled={disabled}>%</Percent>}
       </InputWrapper>
