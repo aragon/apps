@@ -61,6 +61,8 @@ const Carousel: React.FC = () => {
           emulateTouch
           centerMode
           autoPlay
+          preventMovementUntilSwipeScrollTolerance
+          swipeScrollTolerance={100}
           interval={4000}
           showArrows={false}
           showStatus={false}
