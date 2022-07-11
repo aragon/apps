@@ -3,7 +3,7 @@ import React from 'react';
 import {
   IllustrationComponentProps,
   UnknownIllustrationVariantError,
-} from '../illuHuman';
+} from '../../../../utils/illustrations';
 import {Angry} from './angry';
 import {Casual} from './casual';
 import {Crying} from './crying';
