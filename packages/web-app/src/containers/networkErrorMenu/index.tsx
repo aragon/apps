@@ -93,7 +93,7 @@ const NetworkErrorMenu = () => {
 export default NetworkErrorMenu;
 
 const ModalHeader = styled.div.attrs({
-  className: 'flex p-3 bg-ui-0 rounded-xl gap-2',
+  className: 'flex p-3 bg-ui-0 rounded-xl gap-2 sticky top-0',
 })`
   box-shadow: 0px 4px 8px rgba(31, 41, 51, 0.04),
     0px 0px 2px rgba(31, 41, 51, 0.06), 0px 0px 1px rgba(31, 41, 51, 0.04);

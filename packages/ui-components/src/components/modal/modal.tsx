@@ -100,7 +100,7 @@ const ModalContainer = styled(Content).attrs(({style}: StyledContentProps) => {
 
 const ModalHeader = styled.div.attrs({
   className:
-    'flex justify-between items-start bg-white rounded-xl p-3 space-x-3',
+    'flex justify-between items-start bg-white rounded-xl p-3 space-x-3 sticky top-0',
 })`
   box-shadow: 0px 4px 8px rgba(31, 41, 51, 0.04),
     0px 0px 2px rgba(31, 41, 51, 0.06), 0px 0px 1px rgba(31, 41, 51, 0.04);

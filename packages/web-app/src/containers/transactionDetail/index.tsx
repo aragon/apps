@@ -90,7 +90,7 @@ export default TransactionDetail;
 
 const ModalHeader = styled.div.attrs({
   className:
-    'flex items-center space-between h-10 gap-x-3 p-2 bg-ui-0 rounded-xl',
+    'flex items-center space-between h-10 gap-x-3 p-2 bg-ui-0 rounded-xl sticky top-0',
 })`
   box-shadow: 0px 4px 8px rgba(31, 41, 51, 0.04),
     0px 0px 2px rgba(31, 41, 51, 0.06), 0px 0px 1px rgba(31, 41, 51, 0.04);
