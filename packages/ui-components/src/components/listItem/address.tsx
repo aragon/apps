@@ -52,7 +52,7 @@ type AvatarProps = Pick<ListItemAddressProps, 'src'>;
 
 const Avatar: FC<AvatarProps> = ({src}) => {
   if (!src) return <IconPerson className="w-2.5 h-2.5" />;
-  return <AvatarWallet src={src || ''} />;
+  return <AvatarWallet src={src} />;
 };
 
 const Container = styled.button.attrs(() => {
