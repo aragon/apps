@@ -31,6 +31,7 @@ export const WalletMenu = () => {
     methods
       .disconnect()
       .then(() => {
+        localStorage.removeItem('WEB3_CONNECT_CACHED_PROVIDER');
         close('wallet');
       })
       .catch((e: Error) => {
