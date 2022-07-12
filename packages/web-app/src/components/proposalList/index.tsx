@@ -21,30 +21,35 @@ const ProposalList: React.FC<ProposalListProps> = ({proposals}) => {
 
   return (
     <div className="space-y-3" data-testid="proposalList">
-      {proposals.map(proposal => {
+      {proposals.map(p => {
+        const totalVoteCount = p.abstain + p.yea + p.nay;
+
         const AlertMessage = translateProposalDate(
-          proposal.type,
-          proposal.startDate,
-          proposal.endDate
+          p.type,
+          p.startDate,
+          p.endDate
         );
         return (
           <CardProposal
             title={'Title eventually coming from Metadata'}
             description={'Summary eventually coming from Metadata'}
             onClick={() => {
-              navigate('proposals/' + proposal.id);
+              navigate('proposals/' + p.id);
             }}
-            process={proposal.type}
+            process={p.type}
             chainId={chainId}
             voteTitle={t('governance.proposals.voteTitle') as string}
-            // {...(proposal.type === 'active' && {
-            //   voteProgress: getVoteResults(proposal.vote).toString(),
-            //   voteLabel: proposal.yea.toString(),
-            //   tokenAmount: proposal.total.toString(),
-            //   tokenSymbol: proposal.vote.tokenSymbol,
-            // })}
+            {...(p.type === 'active' && {
+              voteProgress: relativeVoteCount(
+                p.yea || 0,
+                totalVoteCount
+              ).toString(),
+              voteLabel: p.yea?.toString(),
+              tokenAmount: totalVoteCount.toString(),
+              tokenSymbol: p.pkg.token?.symbol || undefined,
+            })}
             publishLabel={t('governance.proposals.publishedBy') as string}
-            publisherAddress={proposal.creator}
+            publisherAddress={p.creator}
             stateLabel={[
               t('governance.proposals.states.draft'),
               t('governance.proposals.states.pending'),
@@ -54,7 +59,7 @@ const ProposalList: React.FC<ProposalListProps> = ({proposals}) => {
               t('governance.proposals.states.defeated'),
             ]}
             {...(AlertMessage && {AlertMessage})}
-            key={proposal.id}
+            key={p.id}
           />
         );
       })}
@@ -62,11 +67,11 @@ const ProposalList: React.FC<ProposalListProps> = ({proposals}) => {
   );
 };
 
-// function getVoteResults(votes: VotingData) {
-//   if (votes.results.total === 0) {
-//     return 0;
-//   }
-//   return Math.round((votes.results.yes / votes.total) * 100);
-// }
+function relativeVoteCount(optionCount: number, totalCount: number) {
+  if (totalCount === 0) {
+    return 0;
+  }
+  return Math.round((optionCount / totalCount) * 100);
+}
 
 export default ProposalList;
