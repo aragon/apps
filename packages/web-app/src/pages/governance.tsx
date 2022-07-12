@@ -16,7 +16,6 @@ import {useQuery} from '@apollo/client';
 import {PageWrapper} from 'components/wrappers';
 import ProposalList from 'components/proposalList';
 import NoProposals from 'public/noProposals.svg';
-import {getRemainingTime} from 'utils/date';
 import {ERC20VOTING_PROPOSAL_LIST} from 'queries/proposals';
 import {
   erc20VotingProposals,
@@ -197,13 +196,17 @@ function categorizeProposal(
   uncategorizedProposal: erc20VotingProposals_erc20VotingProposals
 ): CategorizedProposal {
   const now = Date.now();
+  //onchain data coming in as seconds. Convert to milliseconds
+  const start =
+    Number.parseInt(uncategorizedProposal.startDate as string) * 1000;
+  const end = Number.parseInt(uncategorizedProposal.endDate as string) * 1000;
 
-  if (getRemainingTime(uncategorizedProposal.startDate) >= now) {
+  if (start >= now) {
     return {
       ...uncategorizedProposal,
       type: 'pending',
     };
-  } else if (getRemainingTime(uncategorizedProposal.endDate) >= now) {
+  } else if (end >= now) {
     return {
       ...uncategorizedProposal,
       type: 'active',
