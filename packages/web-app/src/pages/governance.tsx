@@ -41,21 +41,15 @@ const Governance: React.FC = () => {
   const ProposalsPerPage = 6;
   const [page, setPage] = useState(1);
 
-  // This sort function should implement on graph side!
-  // function sortProposals(a: ProposalData, b: ProposalData): number {
-  //   if (filterValue === 'active') {
-  //     return (
-  //       parseInt(a.vote.start as string) - parseInt(b.vote.start as string)
-  //     );
-  //   } else if (filterValue !== 'draft') {
-  //     return parseInt(a.vote.end as string) - parseInt(b.vote.end as string);
-  //   }
-  //   return 1;
-  // }
-
-  const daoProposals = uncategorizedDaoProposals?.erc20VotingProposals.map(
-    proposal => categorizeProposal(proposal)
-  );
+  const daoProposals = uncategorizedDaoProposals?.erc20VotingProposals
+    // As of this commit, vote data is not available. Simply delete the first
+    // mapping once they are. [VR 13-07-2022]
+    .map(p => ({
+      ...p,
+      yea: Math.floor(Math.random() * 100),
+      nay: Math.floor(Math.random() * 100),
+    }))
+    .map(categorizeProposal);
 
   let displayedProposals: CategorizedProposal[] = [];
   if (daoProposals && daoProposals.length > 0 && filterValue) {
@@ -186,6 +180,7 @@ export interface CategorizedProposal
   extends erc20VotingProposals_erc20VotingProposals {
   type: 'draft' | 'pending' | 'active' | 'succeeded' | 'executed' | 'defeated';
 }
+
 /**
  * Takes and uncategorized proposal and categorizes it according to definitions.
  * @param uncategorizedProposal
@@ -196,7 +191,7 @@ function categorizeProposal(
   uncategorizedProposal: erc20VotingProposals_erc20VotingProposals
 ): CategorizedProposal {
   const now = Date.now();
-  //onchain data coming in as seconds. Convert to milliseconds
+  //onchain data coming in as seconds. Convert to milliseconds to compare with now.
   const start =
     Number.parseInt(uncategorizedProposal.startDate as string) * 1000;
   const end = Number.parseInt(uncategorizedProposal.endDate as string) * 1000;
