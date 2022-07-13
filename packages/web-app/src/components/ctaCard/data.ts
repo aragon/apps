@@ -16,9 +16,9 @@ const CTACards = [
     title: i18n.t('cta.create.title'),
   },
   {
-    actionAvailable: false,
+    actionAvailable: true,
     actionLabel: i18n.t('cta.learn.actionLabel'),
-    path: '',
+    path: 'https://aragon.org/how-to',
     imgSrc: learnImg,
     subtitle: i18n.t('cta.learn.description'),
     title: i18n.t('cta.learn.title'),

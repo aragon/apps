@@ -4,7 +4,7 @@ import {LinearProgress} from '../progress';
 
 export type WizardProps = {
   title: string;
-  description: string;
+  description: string | React.ReactNode;
   includeStepper?: boolean;
   processName?: string;
   currentStep?: number;

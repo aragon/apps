@@ -3,7 +3,7 @@ import React, {ReactElement} from 'react';
 export type StepProps = {
   includeStepper?: boolean;
   wizardTitle?: string;
-  wizardDescription?: string;
+  wizardDescription?: string | React.ReactNode;
   hideWizard?: boolean;
   fullWidth?: boolean;
   customHeader?: ReactElement;

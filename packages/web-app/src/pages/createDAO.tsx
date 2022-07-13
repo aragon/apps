@@ -4,7 +4,7 @@ import {useTranslation} from 'react-i18next';
 import {FormProvider, useForm, useFormState, useWatch} from 'react-hook-form';
 
 import {FullScreenStepper, Step} from 'components/fullScreenStepper';
-import {OverviewDAOFooter, OverviewDAOStep} from 'containers/daoOverview';
+import {OverviewDAOHeader, OverviewDAOStep} from 'containers/daoOverview';
 import SelectChain from 'containers/selectChainForm';
 import DefineMetadata from 'containers/defineMetadata';
 import ConfigureCommunity from 'containers/configureCommunity';
@@ -16,6 +16,7 @@ import {CreateDaoProvider} from 'context/createDao';
 import {CHAIN_METADATA, getSupportedNetworkByChainId} from 'utils/constants';
 import {useNetwork} from 'context/network';
 import {useWallet} from 'hooks/useWallet';
+import {Link} from '@aragon/ui-components';
 
 export type WhitelistWallet = {
   id: string;
@@ -203,16 +204,23 @@ const CreateDAO: React.FC = () => {
         >
           <Step
             fullWidth
-            includeStepper={false}
-            wizardTitle={t('createDAO.overview.title')}
-            wizardDescription={t('createDAO.overview.description')}
-            customFooter={<OverviewDAOFooter />}
+            hideWizard
+            customHeader={<OverviewDAOHeader />}
+            customFooter={<></>}
           >
             <OverviewDAOStep />
           </Step>
           <Step
             wizardTitle={t('createDAO.step1.title')}
-            wizardDescription={t('createDAO.step1.description')}
+            wizardDescription={
+              <>
+                {t('createDAO.step1.description')}
+                <Link
+                  href=""
+                  label={t('createDAO.step1.blockchainOverviewGuide.')}
+                />
+              </>
+            }
           >
             <SelectChain />
           </Step>
@@ -232,7 +240,12 @@ const CreateDAO: React.FC = () => {
           </Step>
           <Step
             wizardTitle={t('createDAO.step4.title')}
-            wizardDescription={t('createDAO.step4.description')}
+            wizardDescription={
+              <>
+                {t('createDAO.step4.description')}
+                <Link href="" label={t('createDAO.step4.bestPractices')} />
+              </>
+            }
             isNextButtonDisabled={!daoConfigureCommunity}
           >
             <ConfigureCommunity />

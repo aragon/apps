@@ -20,6 +20,11 @@ const Carousel: React.FC = () => {
   // when the rest of CTAs are enabled
   const handleCTAClick = useCallback(
     (path: string) => {
+      if (path.indexOf('://') !== -1) {
+        window.open(path, '_blank');
+        return;
+      }
+
       if (isConnected) {
         navigate(path);
         return;
