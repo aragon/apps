@@ -57,6 +57,7 @@ const StyledBackdrop = styled.div.attrs(({visible}: StyledBackdropProps) => {
     transition: 'visibility 0.2s, opacity 0.2s linear',
     backdropFilter: 'blur(24px)',
     cursor: 'pointer',
+    marginTop: 0,
   };
 
   return {className, style};
