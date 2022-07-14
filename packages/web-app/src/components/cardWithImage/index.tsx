@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 type CardWithImageProps = {
-  imgSrc: string;
+  imgSrc: React.ReactNode;
   caption: string;
   title: string;
   subtitle: string;
@@ -16,7 +16,7 @@ const CardWithImage: React.FC<CardWithImageProps> = ({
 }) => {
   return (
     <Container>
-      <ImageContainer src={imgSrc} />
+      <ImageContainer>{imgSrc}</ImageContainer>
       <VStack>
         <Caption>{caption}</Caption>
         <Title>{title}</Title>
@@ -29,11 +29,11 @@ const CardWithImage: React.FC<CardWithImageProps> = ({
 export default CardWithImage;
 
 const Container = styled.div.attrs({
-  className: 'flex-1 p-3 rounded-xl bg-ui-0',
+  className: 'flex-1 p-3 rounded-xl bg-ui-0 mx-1 mb-3 desktop:m-0',
 })``;
 
-const ImageContainer = styled.img.attrs({
-  className: 'object-cover mb-2 rounded-xl w-full',
+const ImageContainer = styled.div.attrs({
+  className: 'mb-2 rounded-xl flex justify-center bg-ui-50',
 })``;
 
 const VStack = styled.div.attrs({

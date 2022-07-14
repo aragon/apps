@@ -113,15 +113,15 @@ const MobileCTA = styled.div.attrs({
   className: 'relative -mt-15 mb-5 -mx-2 tablet:-mx-3 desktop:mx-0',
 })``;
 
-const ActiveIndicator = styled.li.attrs({
+export const ActiveIndicator = styled.li.attrs({
   className: 'inline-block bg-primary-500 h-0.75 w-6 ml-1 rounded-xl',
 })``;
 
-const Indicator = styled.li.attrs({
+export const Indicator = styled.li.attrs({
   className: 'inline-block bg-ui-200 h-0.75 w-2 ml-1 rounded-xl',
 })``;
 
-const StyledCarousel = styled(ReactResponsiveCarousel).attrs({})`
+export const StyledCarousel = styled(ReactResponsiveCarousel).attrs({})`
   & > .carousel-slider > ul {
     display: flex;
     justify-content: center;
