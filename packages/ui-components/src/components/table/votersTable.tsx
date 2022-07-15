@@ -20,6 +20,7 @@ export type VotersTableProps = {
   showOption?: boolean;
   showVotingPower?: boolean;
   showAmount?: boolean;
+  defaultRowCount?: number;
 };
 
 const colorScheme = (option: string) =>
@@ -31,6 +32,7 @@ export const VotersTable: React.FC<VotersTableProps> = ({
   showOption = false,
   showVotingPower = false,
   showAmount = false,
+  defaultRowCount = 3,
 }) => {
   return (
     <Table data-testid="votersTable">
@@ -68,7 +70,7 @@ export const VotersTable: React.FC<VotersTableProps> = ({
         ))}
       </tbody>
       <tfoot>
-        {onLoadMore && (
+        {onLoadMore && voters.length > defaultRowCount && (
           <tr>
             <TableCell type="link">
               <Link
