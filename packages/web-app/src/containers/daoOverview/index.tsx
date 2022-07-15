@@ -15,12 +15,12 @@ export const OverviewDAOHeader: React.FC = () => {
   const {next} = useFormStep();
 
   return (
-    <div className="tablet:flex items-end p-2 tablet:p-6 tablet:space-x-6 tablet:rounded-xl bg-ui-0">
+    <div className="tablet:flex items-end p-2 tablet:p-6 tablet:space-x-6 bg-ui-0 tablet:rounded-xl">
       <div>
-        <h1 className="font-bold ft-text-3xl text-ui-800">
+        <h1 className="font-bold text-ui-800 ft-text-3xl">
           {t('createDAO.overview.title')}
         </h1>
-        <p className="mt-2 ft-text-lg text-ui-600">
+        <p className="mt-2 text-ui-600 ft-text-lg">
           {t('createDAO.overview.description')}
         </p>
       </div>
