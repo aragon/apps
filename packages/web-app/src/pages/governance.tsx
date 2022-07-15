@@ -51,6 +51,10 @@ const Governance: React.FC = () => {
     }))
     .map(categorizeProposal);
 
+  const activeProposalCount = daoProposals?.filter(
+    proposal => proposal.type === 'active'
+  ).length;
+
   let displayedProposals: CategorizedProposal[] = [];
   if (daoProposals && daoProposals.length > 0 && filterValue) {
     displayedProposals = daoProposals.filter(
@@ -99,7 +103,9 @@ const Governance: React.FC = () => {
       <PageWrapper
         title={'Proposals'}
         buttonLabel={'New Proposal'}
-        subtitle={'1 active Proposal'}
+        subtitle={`${activeProposalCount} active proposal${
+          activeProposalCount !== 1 ? 's' : ''
+        }`}
         onClick={() => navigate('new-proposal')}
       >
         <div className="flex mt-3 desktop:mt-8">
@@ -187,7 +193,7 @@ export interface CategorizedProposal
  * @returns categorized proposal (i.e., uncategorizedProposal with additional
  * type field)
  */
-function categorizeProposal(
+export function categorizeProposal(
   uncategorizedProposal: erc20VotingProposals_erc20VotingProposals
 ): CategorizedProposal {
   const now = Date.now();

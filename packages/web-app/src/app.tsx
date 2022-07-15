@@ -90,7 +90,7 @@ function App() {
                 element={<NewProposalPage />}
               />
               <Route
-                path="governance/proposal/:id"
+                path="governance/proposals/:id"
                 element={<ProposalPage />}
               />
               <Route path="community" element={<CommunityPage />} />
