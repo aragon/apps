@@ -104,13 +104,11 @@ export const Table = styled.table.attrs({
     border-bottom: 1px solid #e4e7eb;
   }
 
-  tr th:first-child,
-  tr td:first-child {
+  tr th:first-child {
     border-left: 1px solid #e4e7eb;
   }
 
-  tr th:last-child,
-  tr td:last-child {
+  tr th:last-child {
     border-right: 1px solid #e4e7eb;
   }
 

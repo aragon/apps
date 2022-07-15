@@ -42,10 +42,10 @@ export type VotingTerminalProps = {
   breakdownTabDisabled?: boolean;
   votersTabDisabled?: boolean;
   voteNowDisabled?: boolean;
-  startDate: Date;
-  endDate: Date;
-  participation: string;
-  approval: string;
+  startDate?: string;
+  endDate?: string;
+  participation?: string;
+  approval?: string;
   voters?: Array<VoterType>;
   token?: {
     symbol: string;
@@ -183,11 +183,11 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
             <Strong>{t('votingTerminal.duration')}</Strong>
             <InfoLine>
               <p>{t('votingTerminal.start')}</p>
-              <Strong>{startDate.toString()}</Strong>
+              <Strong>{startDate?.toString()}</Strong>
             </InfoLine>
             <InfoLine>
               <p>{t('votingTerminal.end')}</p>
-              <Strong>{endDate.toString()}</Strong>
+              <Strong>{endDate}</Strong>
             </InfoLine>
           </VStackNormal>
         </VStackRelaxed>

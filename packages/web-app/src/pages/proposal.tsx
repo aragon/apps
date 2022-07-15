@@ -20,6 +20,7 @@ import TipTapLink from '@tiptap/extension-link';
 import {useQuery} from '@apollo/client';
 import {generatePath, useNavigate, useParams} from 'react-router-dom';
 import React, {useState, useCallback, useMemo} from 'react';
+import {format} from 'date-fns';
 
 import ResourceList from 'components/resourceList';
 import {StyledEditorContent} from 'containers/reviewProposal';
@@ -35,6 +36,7 @@ import {CHAIN_METADATA} from 'utils/constants';
 import {BigNumber} from 'ethers';
 import {formatUnits} from 'utils/library';
 import {StringIndexed} from 'utils/types';
+import {getFormattedUtcOffset} from 'utils/date';
 
 /* MOCK DATA ================================================================ */
 
@@ -55,6 +57,8 @@ const publishedDone: ProgressStatusProps = {
 const proposalTags = ['Finance', 'Withdraw'];
 
 /* PROPOSAL COMPONENT ======================================================= */
+
+const DATE_FORMAT = 'yyyy/MM/dd hh:mm a';
 
 const Proposal: React.FC = () => {
   const {data: daoId, loading: daoIdLoading, error: daoIdError} = useDaoParam();
@@ -105,6 +109,7 @@ const Proposal: React.FC = () => {
       abstain,
       startDate,
       endDate,
+      createdAt,
       // supportRequiredPct, Note not using this currently because the one proposal created with script has it set to a crazy massive number
     } = proposalData.erc20VotingProposals[0];
 
@@ -164,8 +169,18 @@ const Proposal: React.FC = () => {
 
     return {
       results,
-      endDate: new Date(endDate),
-      startDate: new Date(startDate),
+      createdAt: `${format(
+        Number(createdAt),
+        DATE_FORMAT
+      )} ${getFormattedUtcOffset()}`,
+      endDate: `${format(
+        Number(endDate),
+        DATE_FORMAT
+      )} ${getFormattedUtcOffset()}`,
+      startDate: `${format(
+        Number(startDate),
+        DATE_FORMAT
+      )} ${getFormattedUtcOffset()}`,
       voters: mappedVoters,
       token: {name: token.name, symbol: token.symbol},
       approval: `${formatUnits(
@@ -303,6 +318,7 @@ const Proposal: React.FC = () => {
             steps={[
               {
                 ...publishedDone,
+                date: terminalProps?.createdAt,
                 block:
                   new Intl.NumberFormat(i18n.language).format(
                     proposalData?.erc20VotingProposals?.[0]
@@ -312,7 +328,7 @@ const Proposal: React.FC = () => {
               {
                 label: 'Executed',
                 mode: 'succeeded',
-                date: '2021/11/21 4:30 PM UTC+2',
+                date: terminalProps?.endDate,
               },
             ]}
           />
