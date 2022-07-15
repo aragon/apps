@@ -42,6 +42,8 @@ export type VotingTerminalProps = {
   breakdownTabDisabled?: boolean;
   votersTabDisabled?: boolean;
   voteNowDisabled?: boolean;
+  startDate: Date;
+  endDate: Date;
   participation: string;
   approval: string;
   voters?: Array<VoterType>;
@@ -65,6 +67,8 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
   voters = tempVoters,
   results,
   token,
+  startDate,
+  endDate,
 }) => {
   const [query, setQuery] = useState('');
   const [buttonGroupState, setButtonGroupState] = useState('info');
@@ -179,11 +183,11 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
             <Strong>{t('votingTerminal.duration')}</Strong>
             <InfoLine>
               <p>{t('votingTerminal.start')}</p>
-              <Strong>2021/11/17 00:00 AM UTC+2</Strong>
+              <Strong>{startDate.toString()}</Strong>
             </InfoLine>
             <InfoLine>
               <p>{t('votingTerminal.end')}</p>
-              <Strong>2021/16/17 00:00 AM UTC+2</Strong>
+              <Strong>{endDate.toString()}</Strong>
             </InfoLine>
           </VStackNormal>
         </VStackRelaxed>

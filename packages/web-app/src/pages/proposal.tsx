@@ -103,6 +103,8 @@ const Proposal: React.FC = () => {
       yea,
       nay,
       abstain,
+      startDate,
+      endDate,
       // supportRequiredPct, Note not using this currently because the one proposal created with script has it set to a crazy massive number
     } = proposalData.erc20VotingProposals[0];
 
@@ -162,9 +164,10 @@ const Proposal: React.FC = () => {
 
     return {
       results,
+      endDate: new Date(endDate),
+      startDate: new Date(startDate),
       voters: mappedVoters,
       token: {name: token.name, symbol: token.symbol},
-
       approval: `${formatUnits(
         BigNumber.from(15).mul(BigNumber.from(votingPower)).div(100),
         token.decimals
@@ -298,16 +301,18 @@ const Proposal: React.FC = () => {
           />
           <WidgetStatus
             steps={[
-              {...publishedDone},
               {
-                label: 'Executed',
-                mode: 'done',
-                date: '2021/11/21 4:30 PM UTC+2',
+                ...publishedDone,
                 block:
                   new Intl.NumberFormat(i18n.language).format(
-                    proposalData?.erc20VotingProposals[0]
+                    proposalData?.erc20VotingProposals?.[0]
                       ?.snapshotBlock as number
                   ) || '',
+              },
+              {
+                label: 'Executed',
+                mode: 'succeeded',
+                date: '2021/11/21 4:30 PM UTC+2',
               },
             ]}
           />
