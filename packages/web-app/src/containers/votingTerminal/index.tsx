@@ -1,6 +1,7 @@
-import React, {useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import styled from 'styled-components';
 
+// TODO: Change to use proper imports
 import {AlertInline} from '@aragon/ui-components/src/components/alerts';
 import {ButtonText} from '@aragon/ui-components/src/components/button';
 import {SearchInput} from '@aragon/ui-components/src/components/input';
@@ -16,7 +17,7 @@ import {IconClock} from '@aragon/ui-components';
 
 // TODO: Every string and data needed by the component is hardcoded for now.
 
-const voters: Array<VoterType> = [
+const tempVoters: Array<VoterType> = [
   {
     wallet: 'DAO XYZ',
     option: 'Yes',
@@ -37,21 +38,45 @@ const voters: Array<VoterType> = [
   },
 ];
 
-type VotingTerminalProps = {
+export type VotingTerminalProps = {
   breakdownTabDisabled?: boolean;
   votersTabDisabled?: boolean;
   voteNowDisabled?: boolean;
+  participation: string;
+  approval: string;
+  voters?: Array<VoterType>;
+  token?: {
+    symbol: string;
+    name: string;
+  };
+  results?: {
+    yes: {value: string; percentage: string};
+    no: {value: string; percentage: string};
+    abstain: {value: string; percentage: string};
+  };
 };
 
 export const VotingTerminal: React.FC<VotingTerminalProps> = ({
   breakdownTabDisabled = false,
   votersTabDisabled = false,
   voteNowDisabled = false,
+  participation,
+  approval,
+  voters = tempVoters,
+  results,
+  token,
 }) => {
+  const [query, setQuery] = useState('');
   const [buttonGroupState, setButtonGroupState] = useState('info');
   const [votingInProcess, setVotingInProcess] = useState(false);
   const [selectedVote, setSelectedVote] = useState('');
   const {t} = useTranslation();
+
+  const displayedVoters = useMemo(() => {
+    return query === ''
+      ? voters
+      : voters.filter(voter => voter.wallet.includes(query));
+  }, [query, voters]);
 
   return (
     <Container>
@@ -80,53 +105,50 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
         <VStackRelaxed>
           <VStackNormal>
             <HStack>
-              <p className="font-bold text-primary-500">
-                {t('votingTerminal.yes')}
-              </p>
-              <p className="flex-1 text-right text-ui-600">{`X ${t(
-                'votingTerminal.token'
-              )}`}</p>
-              <p className="pl-6 font-bold text-primary-500">0%</p>
+              <VoteOption>{t('votingTerminal.yes')}</VoteOption>
+              <TokenValue>{`${results?.yes.value} ${token?.symbol}`}</TokenValue>
+              <VotePercentage>{results?.yes.percentage}%</VotePercentage>
             </HStack>
-            <LinearProgress max={100} value={1} />
+            <LinearProgress max={100} value={results?.yes.value} />
           </VStackNormal>
 
           <VStackNormal>
             <HStack>
-              <p className="font-bold text-primary-500">
-                {t('votingTerminal.abstain')}
-              </p>
-              <p className="flex-1 text-right text-ui-600">{`X ${t(
-                'votingTerminal.token'
-              )}`}</p>
-              <p className="pl-6 font-bold text-primary-500">0%</p>
+              <VoteOption>{t('votingTerminal.abstain')}</VoteOption>
+              <TokenValue>{`${results?.abstain.value} ${token?.symbol}`}</TokenValue>
+              <VotePercentage>{results?.abstain.percentage}%</VotePercentage>
             </HStack>
-            <LinearProgress max={100} value={1} />
+            <LinearProgress max={100} value={results?.abstain.value} />
           </VStackNormal>
 
           <VStackNormal>
             <HStack>
-              <p className="font-bold text-primary-500">
-                {t('votingTerminal.no')}
-              </p>
-              <p className="flex-1 text-right text-ui-600">{`X ${t(
-                'votingTerminal.token'
-              )}`}</p>
-              <p className="pl-6 font-bold text-primary-500">0%</p>
+              <VoteOption>{t('votingTerminal.no')}</VoteOption>
+              <TokenValue>{`${results?.no.value} ${token?.symbol}`}</TokenValue>
+              <VotePercentage>{results?.no.percentage}%</VotePercentage>
             </HStack>
-            <LinearProgress max={100} value={1} />
+            <LinearProgress max={100} value={results?.no.value} />
           </VStackNormal>
         </VStackRelaxed>
       ) : buttonGroupState === 'voters' ? (
         <div className="space-y-2">
-          <SearchInput placeholder={t('votingTerminal.inputPlaceholder')} />
-          <VotersTable
-            voters={voters}
-            showOption
-            showVotingPower
-            showAmount
-            onLoadMore={() => console.log('load more clicked')}
+          <SearchInput
+            placeholder={t('votingTerminal.inputPlaceholder')}
+            value={query}
+            onChange={e => setQuery(e.target.value)}
           />
+          {displayedVoters.length !== 0 ? (
+            <VotersTable
+              voters={displayedVoters}
+              showOption
+              showVotingPower
+              showAmount
+              onLoadMore={() => console.log('load more clicked')}
+            />
+          ) : (
+            // TODO: Replace with empty state
+            <p className="text-ui-800">No voter found.</p>
+          )}
         </div>
       ) : (
         <VStackRelaxed>
@@ -141,15 +163,15 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
             </InfoLine>
             <InfoLine>
               <p>{t('votingTerminal.minimumApproval')}</p>
-              <Strong>420k DNT (15%)</Strong>
+              <Strong>{approval}</Strong>
             </InfoLine>
             <InfoLine>
               <p>{t('votingTerminal.participation')}</p>
-              <Strong>0 of 3.5M DNT (0%)</Strong>
+              <Strong>{participation}</Strong>
             </InfoLine>
             <InfoLine>
               <p>{t('votingTerminal.uniqueVoters')}</p>
-              <Strong>0</Strong>
+              <Strong>{voters.length}</Strong>
             </InfoLine>
           </VStackNormal>
 
@@ -285,3 +307,13 @@ const ButtonWrapper = styled.div.attrs({
   className:
     'flex flex-col tablet:flex-row space-y-2 space-x-0 tablet:space-y-0 tablet:space-x-2 w-full tablet:w-max',
 })``;
+
+const VotePercentage = styled.p.attrs({
+  className: 'w-8 font-bold text-right text-primary-500',
+})``;
+
+const TokenValue = styled.p.attrs({
+  className: 'flex-1 text-right text-ui-600',
+})``;
+
+const VoteOption = styled.p.attrs({className: 'font-bold text-primary-500'})``;
