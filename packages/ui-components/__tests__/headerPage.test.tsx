@@ -1,17 +1,17 @@
 import React from 'react';
 import {render, screen} from '@testing-library/react';
 
-import {IlluObject} from '../src/components/illustrations/object/illuObject';
+import {Page as HeaderPage} from '../stories/headerPage.stories';
 
-describe('IlluObject', () => {
+describe('HeaderPage', () => {
   // eslint-disable-next-line
   function setup(args: any) {
-    render(<IlluObject {...args} />);
-    return screen;
+    render(<HeaderPage {...args} />);
+    return screen.getByTestId('page-dao');
   }
 
   test('should render without crashing', () => {
-    const element = setup({object: 'users'});
+    const element = setup({});
     expect(element).toBeInTheDocument;
   });
 });

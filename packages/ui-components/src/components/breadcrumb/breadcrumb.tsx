@@ -78,7 +78,7 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
             onClick={() => onClick?.(crumbs.path)}
             bgWhite
           />
-          <p className="font-bold">{crumbs.label}</p>
+          <p className="font-bold">{crumbs?.label}</p>
           {tag}
         </ProcessCrumbContainer>
       </ProcessContainer>

@@ -1,0 +1,63 @@
+import styled from 'styled-components';
+import React from 'react';
+import {ButtonText} from '../button';
+import {IconAdd} from '../icons';
+import {Breadcrumb, DefaultCrumbProps} from '../breadcrumb';
+
+export type HeaderPageProps = DefaultCrumbProps & {
+  title: string;
+  description: string;
+  buttonLabel: string;
+};
+
+export const HeaderPage: React.FC<HeaderPageProps> = ({
+  title,
+  description,
+  buttonLabel,
+  crumbs,
+  icon,
+}) => {
+  return (
+    <Card data-testid="page-dao">
+      <BreadcrumbWrapper>
+        <Breadcrumb crumbs={crumbs} {...{icon}} />
+      </BreadcrumbWrapper>
+      <ContentWrapper>
+        <Content>
+          <Title>{title}</Title>
+          <Description>{description}</Description>
+        </Content>
+        <ButtonText label={buttonLabel} iconLeft={<IconAdd />} size="large" />
+      </ContentWrapper>
+    </Card>
+  );
+};
+
+const Card = styled.div.attrs({
+  className:
+    'w-full bg-white tablet:rounded-xl p-2 tablet:p-3 desktop:p-5 border border-ui-100 desktop:space-y-0 tablet:space-3 space-y-2',
+})`
+  box-shadow: 0px 4px 8px rgba(31, 41, 51, 0.04),
+    0px 0px 2px rgba(31, 41, 51, 0.06), 0px 0px 1px rgba(31, 41, 51, 0.04);
+`;
+
+const Content = styled.div.attrs({
+  className: 'space-y-1 desktop:space-y-2',
+})``;
+
+const Title = styled.h2.attrs({
+  className: 'ft-text-3xl font-bold text-ui-800',
+})``;
+
+const Description = styled.div.attrs({
+  className: 'ft-text-lg text-ui-600',
+})``;
+
+const ContentWrapper = styled.div.attrs({
+  className:
+    'flex flex-col tablet:flex-row justify-between desktop:items-center space-y-2 tablet:space-y-0',
+})``;
+
+const BreadcrumbWrapper = styled.div.attrs({
+  className: 'desktop:hidden flex',
+})``;
