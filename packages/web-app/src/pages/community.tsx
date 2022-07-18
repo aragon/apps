@@ -1,12 +1,7 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
-import {
-  HeaderPage,
-  IconFinance,
-  SearchInput,
-  Pagination,
-} from '@aragon/ui-components';
+import {HeaderPage, SearchInput, Pagination} from '@aragon/ui-components';
 import {withTransaction} from '@elastic/apm-rum-react';
 
 import {useDaoTokenHolders, useDaoWhitelist} from 'hooks/useDaoMembers';
@@ -14,10 +9,12 @@ import {useDaoParam} from 'hooks/useDaoParam';
 import {useDaoMetadata} from 'hooks/useDaoMetadata';
 import {Loading} from 'components/temporary';
 import {MembersList} from 'components/membersList';
+import {useMappedBreadcrumbs} from 'hooks/useMappedBreadcrumbs';
 
 const Community: React.FC = () => {
   const {t} = useTranslation();
   const {data: daoId} = useDaoParam();
+  const {breadcrumbs, icon} = useMappedBreadcrumbs();
 
   const {data: dao, loading: metadataLoading} = useDaoMetadata(daoId);
   const {data: whitelist, isLoading: whiteListLoading} = useDaoWhitelist(dao);
@@ -39,19 +36,17 @@ const Community: React.FC = () => {
   return (
     <Container>
       <HeaderPage
-        crumbs={[
-          {label: 'Finance', path: '/abc'},
-          {label: 'Tokens', path: '/abc'},
-          {label: 'Third Level', path: '/abc'},
-        ]}
-        icon={<IconFinance />}
+        icon={icon}
+        crumbs={breadcrumbs}
         title={`${memberCount} ${t('labels.members')}`}
         description={
           walletBased
             ? t('explore.explorer.walletBased')
             : t('explore.explorer.tokenBased')
         }
-        buttonLabel={'Add Member'}
+        buttonLabel={
+          walletBased ? t('labels.addMember') : t('labels.mintTokens')
+        }
       />
       <SearchInput placeholder={'Type to search ...'} />
       <div className="flex space-x-3">

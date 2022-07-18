@@ -20,7 +20,7 @@ export const HeaderPage: React.FC<HeaderPageProps> = ({
   return (
     <Card data-testid="page-dao">
       <BreadcrumbWrapper>
-        <Breadcrumb crumbs={crumbs} {...{icon}} />
+        <Breadcrumb {...{icon, crumbs}} />
       </BreadcrumbWrapper>
       <ContentWrapper>
         <Content>
