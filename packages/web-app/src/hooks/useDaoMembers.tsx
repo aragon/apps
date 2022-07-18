@@ -8,7 +8,7 @@ import {HookData} from 'utils/types';
 // clarity on how to fetch the token holder data, splitting the hook into two
 // parts seemed the simplest way to go.
 
-type DaoWhitelist = {
+export type DaoWhitelist = {
   id: string;
 }[];
 
