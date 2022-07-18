@@ -114,6 +114,7 @@ const LinkRow: React.FC<LinkRowProps> = ({index, onDelete}) => {
               </LabelWrapper>
               <TextInput
                 {...field}
+                placeholder="eg: Forum"
                 mode={error?.message ? 'critical' : 'default'}
               />
               {error?.message && (

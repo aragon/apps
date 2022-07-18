@@ -1,44 +1,66 @@
 import React from 'react';
 import {useTranslation} from 'react-i18next';
-import {ButtonText, IconChevronRight} from '@aragon/ui-components';
+import {Breadcrumb, ButtonText, IconChevronRight} from '@aragon/ui-components';
 import {IlluObject} from '@aragon/ui-components/src/components/illustrations';
+import styled from 'styled-components';
+import {useNavigate} from 'react-router-dom';
 
 import CardWithImage from 'components/cardWithImage';
 import {useFormStep} from 'components/fullScreenStepper';
 import useScreen from 'hooks/useScreen';
 import {ActiveIndicator, Indicator, StyledCarousel} from 'containers/carousel';
-import styled from 'styled-components';
 import {i18n} from '../../../i18n.config';
 
-export const OverviewDAOHeader: React.FC = () => {
+type OverviewDAOHeaderProps = {
+  navLabel: string;
+  returnPath: string;
+};
+
+export const OverviewDAOHeader: React.FC<OverviewDAOHeaderProps> = ({
+  navLabel,
+  returnPath,
+}) => {
   const {t} = useTranslation();
   const {next} = useFormStep();
+  const navigate = useNavigate();
 
   return (
-    <div className="tablet:flex items-end p-2 tablet:p-6 tablet:space-x-6 bg-ui-0 tablet:rounded-xl">
-      <div>
-        <h1 className="font-bold text-ui-800 ft-text-3xl">
-          {t('createDAO.overview.title')}
-        </h1>
-        <p className="mt-2 text-ui-600 ft-text-lg">
-          {t('createDAO.overview.description')}
-        </p>
+    <div className="p-2 tablet:p-6 tablet:rounded-xl bg-ui-0">
+      <div className="desktop:hidden mb-3">
+        <Breadcrumb
+          crumbs={{
+            label: navLabel,
+            path: returnPath,
+          }}
+          onClick={(path: string) => navigate(path)}
+        />
       </div>
-      <div className="flex mt-2 tablet:mt-0 space-x-2">
-        {/* <ButtonText
+
+      <div className="tablet:flex items-end tablet:space-x-6">
+        <div>
+          <h1 className="font-bold text-ui-800 ft-text-3xl">
+            {t('createDAO.overview.title')}
+          </h1>
+          <p className="mt-2 text-ui-600 ft-text-lg">
+            {t('createDAO.overview.description')}
+          </p>
+        </div>
+        <div className="flex mt-2 tablet:mt-0 space-x-2">
+          {/* <ButtonText
           size="large"
           mode="secondary"
           bgWhite
           className="whitespace-nowrap"
           label={'Continue Draft'}
         /> */}
-        <ButtonText
-          size="large"
-          className="w-full tablet:w-max whitespace-nowrap"
-          iconRight={<IconChevronRight />}
-          label={t('createDAO.overview.button')}
-          onClick={next}
-        />
+          <ButtonText
+            size="large"
+            className="w-full tablet:w-max whitespace-nowrap"
+            iconRight={<IconChevronRight />}
+            label={t('createDAO.overview.button')}
+            onClick={next}
+          />
+        </div>
       </div>
     </div>
   );
