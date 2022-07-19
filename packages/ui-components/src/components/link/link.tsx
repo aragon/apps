@@ -36,18 +36,16 @@ export const Link: React.FC<LinkProps> = ({
       {...props}
       data-testid="link"
     >
-      <Content>
-        {iconLeft && iconLeft}
-        <Label>{label || href}</Label>
-        {!iconLeft && iconRight && iconRight}
-      </Content>
+      {iconLeft && <div>{iconLeft}</div>}
+      <Label>{label || href}</Label>
+      {!iconLeft && iconRight && <div>{iconRight}</div>}
     </StyledLink>
   );
 };
 
 type StyledLinkProps = {disabled: boolean; active: boolean};
 const StyledLink = styled.a.attrs(({active, disabled}: StyledLinkProps) => {
-  let className = `inline-flex overflow-hidden hover:text-primary-700 rounded 
+  let className = `flex items-center space-x-1.5 max-w-full hover:text-primary-700 rounded
      focus:ring-2 focus:ring-primary-500 focus:outline-none cursor-pointer`;
 
   className += ` ${
@@ -57,10 +55,6 @@ const StyledLink = styled.a.attrs(({active, disabled}: StyledLinkProps) => {
   return {className};
 })<StyledLinkProps>``;
 
-const Content = styled.span.attrs({
-  className: 'flex items-center space-x-1.5',
-})``;
-
-const Label = styled.span.attrs({
-  className: 'font-bold',
+const Label = styled.div.attrs({
+  className: 'font-bold truncate',
 })``;
