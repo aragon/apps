@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {UnknownIllustrationVariantError} from '..';
+import {UnknownIllustrationVariantError} from '../../../utils/illustrations';
 import {Action} from './action';
 import {App} from './app';
 import {Archive} from './archive';
