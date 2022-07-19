@@ -176,6 +176,7 @@ const CreateDAO: React.FC = () => {
   const daoConfigureCommunity = useMemo(() => {
     if (
       errors.minimumApproval ||
+      errors.minimumParticipation ||
       errors.support ||
       errors.durationDays ||
       errors.durationHours ||
@@ -188,6 +189,7 @@ const CreateDAO: React.FC = () => {
     errors.durationHours,
     errors.durationMinutes,
     errors.minimumApproval,
+    errors.minimumParticipation,
     errors.support,
   ]);
 
