@@ -1,5 +1,6 @@
 import React from 'react';
 import {AlertInline, ButtonText, IconAdd, Label} from '@aragon/ui-components';
+import {IlluObject} from '@aragon/ui-components/src/components/illustrations';
 import {useTranslation} from 'react-i18next';
 import styled from 'styled-components';
 
@@ -14,45 +15,51 @@ const ConfigureActions: React.FC = () => {
 
   return (
     <>
-      {actions.length !== 0 ? (
-        <ActionsWrapper>
-          <ActionBuilder />
-          <ButtonText
-            mode="ghost"
-            size="large"
-            bgWhite
-            label={t('newProposal.configureActions.addAction')}
-            iconLeft={<IconAdd />}
-            onClick={() => open('addAction')}
-            className="mt-2"
-          />
-        </ActionsWrapper>
-      ) : (
-        <FormItem>
-          <Label
-            label={t('newProposal.configureActions.yesOption')}
-            helpText={t('newProposal.configureActions.yesOptionSubtitle')}
-          />
-          <div className="flex flex-col items-center p-6 text-center bg-ui-0 rounded-xl">
-            <h1 className="font-bold text-ui-800">
-              {t('newProposal.configureActions.addFirstActionTitle')}
-            </h1>
-            <p className="mt-0.5 text-sm text-ui-600">
-              {t('newProposal.configureActions.addFirstActionSubtitle')}
-            </p>
+      <FormItem>
+        <Label
+          label={t('newProposal.configureActions.yesOption')}
+          helpText={t('newProposal.configureActions.yesOptionSubtitle')}
+          isOptional
+        />
+        {actions.length !== 0 ? (
+          <ActionsWrapper>
+            <ActionBuilder />
             <ButtonText
-              mode="secondary"
+              mode="ghost"
               size="large"
               bgWhite
-              label={t('newProposal.configureActions.addFirstAction')}
+              label={t('newProposal.configureActions.addAction')}
               iconLeft={<IconAdd />}
               onClick={() => open('addAction')}
-              className="mt-3"
+              className="mt-2"
             />
-          </div>
-          <AlertInline label={t('newProposal.configureActions.actionsInfo')} />
-        </FormItem>
-      )}
+          </ActionsWrapper>
+        ) : (
+          <>
+            <div className="flex flex-col items-center p-6 text-center rounded-xl bg-ui-0">
+              <IlluObject object="smart_contract" />
+              <h1 className="mt-1 text-xl font-bold text-ui-800">
+                {t('newProposal.configureActions.addFirstAction')}
+              </h1>
+              <p className="mt-1.5 text-ui-500">
+                {t('newProposal.configureActions.addFirstActionSubtitle')}
+              </p>
+              <ButtonText
+                mode="secondary"
+                size="large"
+                bgWhite
+                label={t('newProposal.configureActions.addAction')}
+                iconLeft={<IconAdd />}
+                onClick={() => open('addAction')}
+                className="mt-3"
+              />
+            </div>
+            <AlertInline
+              label={t('newProposal.configureActions.actionsInfo')}
+            />
+          </>
+        )}
+      </FormItem>
     </>
   );
 };

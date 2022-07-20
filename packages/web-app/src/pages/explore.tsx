@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import {generatePath, useNavigate} from 'react-router-dom';
-import {ActionListItem, ButtonText, IconExpand} from '@aragon/ui-components';
+import {ActionListItem, IconExpand} from '@aragon/ui-components';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 
 import Hero from 'containers/hero';
@@ -11,15 +11,9 @@ import {TemporarySection} from 'components/temporary';
 import {DaoExplorer} from 'containers/daoExplorer';
 import ActiveProposalsExplore from 'containers/activeProposalsExplore';
 import {GridLayout} from 'components/layout';
-import {useGlobalModalContext} from 'context/globalModals';
-import ManageWalletsModal from 'containers/manageWalletsModal';
-import {AccordionMethod} from 'components/accordionMethod';
 
 const Explore: React.FC = () => {
   const navigate = useNavigate();
-
-  // Temporary; for QA-purposes
-  const {open} = useGlobalModalContext();
 
   return (
     <>
@@ -72,33 +66,6 @@ const Explore: React.FC = () => {
               }
             />
           </TemporarySection>
-          {/* Button and ManageWalletsModal are here for demo purposes only. will be removed before merging */}
-          <ButtonText
-            label="Open Manage Wallet Modal"
-            onClick={() => open('manageWallet')}
-            className="mx-auto"
-          />
-          <ManageWalletsModal
-            addWalletCallback={wallets => console.log(wallets)}
-            resetOnClose
-          />
-          <div className="mx-auto max-w-3xl">
-            <AccordionMethod
-              type="action-builder"
-              methodName="Method Name"
-              smartContractName="Smart Contract Name"
-              verified
-              methodDescription="This is the description of the method provided by NatSpec Format or if those are our smart contracts, by further implementation"
-            />
-          </div>
-          <div className="p-2 tablet:py-4 tablet:px-8 mx-auto max-w-4xl bg-white">
-            <AccordionMethod
-              type="execution-widget"
-              methodName="Method Name"
-              smartContractName="0x23f3....9382"
-              methodDescription="This is the description of the method provided by NatSpec Format or if those are our smart contracts, by further implementation"
-            />
-          </div>
         </ContentWrapper>
       </GridLayout>
     </>

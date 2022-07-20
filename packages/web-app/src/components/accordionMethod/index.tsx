@@ -132,7 +132,7 @@ type AccordionType = Pick<AccordionMethodType, 'type'>;
 
 const AccordionHeader = styled(Accordion.Header).attrs(
   ({type}: AccordionType) => ({
-    className: `p-2 rounded-xl border border-ui-100 ${
+    className: `p-2 tablet:px-3 rounded-xl ${
       type === 'action-builder' ? 'bg-white' : 'bg-ui-50'
     }`,
   })
@@ -140,6 +140,7 @@ const AccordionHeader = styled(Accordion.Header).attrs(
   &[data-state='open'] {
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
+    border: 1px solid #e4e7eb;
   }
 `;
 

@@ -482,9 +482,8 @@
       "description": "If the response is to execute a transaction, store your desired actions at the corresponding response. These can be simple transactions or any smart contract methods you can find (e.g. Uniswap or similar).",
       "yesOption": "Yes",
       "yesOptionSubtitle": "If the option “yes” wins the voting, perform the following actions.",
-      "addFirstActionTitle": "Add your very first action",
-      "addFirstActionSubtitle": "Add optional actions if you wish to perform on-chain executions",
       "addFirstAction": "Add First Action",
+      "addFirstActionSubtitle": "Add your very first optional action if you wish to perform on-chain executions",
       "addAction": "Add Action",
       "actionsInfo": "Based on the voting options setup, it is only possible to add actions to the option \"Yes\"."
     }
