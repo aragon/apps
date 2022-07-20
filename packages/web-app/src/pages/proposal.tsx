@@ -110,6 +110,7 @@ const Proposal: React.FC = () => {
       startDate,
       endDate,
       createdAt,
+      open,
       // supportRequiredPct, Note not using this currently because the one proposal created with script has it set to a crazy massive number
     } = proposalData.erc20VotingProposals[0];
 
@@ -169,6 +170,7 @@ const Proposal: React.FC = () => {
 
     return {
       results,
+      voteNowDisabled: !open,
       createdAt: `${format(
         Number(createdAt),
         DATE_FORMAT
