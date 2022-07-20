@@ -9,16 +9,25 @@ import {
 } from '@aragon/ui-components';
 import {withTransaction} from '@elastic/apm-rum-react';
 
-import {useDaoTokenHolders, useDaoWhitelist} from 'hooks/useDaoMembers';
+import {
+  DaoTokenBased,
+  DaoWhitelist,
+  useDaoTokenHolders,
+  useDaoWhitelist,
+} from 'hooks/useDaoMembers';
 import {useDaoParam} from 'hooks/useDaoParam';
 import {useDaoMetadata} from 'hooks/useDaoMetadata';
 import {Loading} from 'components/temporary';
 import {MembersList} from 'components/membersList';
 import {useMappedBreadcrumbs} from 'hooks/useMappedBreadcrumbs';
+import {useNetwork} from 'context/network';
+import {CHAIN_METADATA} from 'utils/constants';
 
 const Community: React.FC = () => {
   const {t} = useTranslation();
   const {data: daoId} = useDaoParam();
+  const {network} = useNetwork();
+
   const {breadcrumbs, icon} = useMappedBreadcrumbs();
 
   const {data: dao, loading: metadataLoading} = useDaoMetadata(daoId);
@@ -56,6 +65,14 @@ const Community: React.FC = () => {
             }
             {...(!walletBased && {
               secondaryButtonLabel: t('labels.seeAllHolders'),
+              secondaryOnClick: () => {
+                window.open(
+                  CHAIN_METADATA[network].explorer +
+                    '/token/tokenholderchart/' +
+                    token.id,
+                  '_blank'
+                );
+              },
             })}
           />
           <InputWrapper>
@@ -66,7 +83,7 @@ const Community: React.FC = () => {
           </InputWrapper>
           <div className="flex space-x-3">
             <div className="space-y-2 w-full">
-              <MembersList {...{walletBased, whitelist, daoMembers, token}} />
+              <MembersList {...{walletBased, token, whitelist, daoMembers}} />
             </div>
           </div>
         </Wrapper>

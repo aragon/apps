@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {ListItemAddress} from '@aragon/ui-components';
 
-import {DaoWhitelist} from 'hooks/useDaoMembers';
+import {DaoTokenBased, DaoWhitelist} from 'hooks/useDaoMembers';
 import {CHAIN_METADATA} from 'utils/constants';
 import {useNetwork} from 'context/network';
 import {formatUnits, isAddress} from 'ethers/lib/utils';
@@ -11,10 +11,7 @@ import {getTokenInfo} from 'utils/tokens';
 type MembersListProps = {
   walletBased: boolean;
   whitelist: DaoWhitelist;
-  daoMembers: {
-    address: string;
-    balance: number;
-  }[];
+  daoMembers: DaoTokenBased;
   token: {
     id: string;
     symbol: string;
@@ -53,8 +50,6 @@ export const MembersList: React.FC<MembersListProps> = ({
     else window.open(baseUrl + '/enslookup-search?search=' + address, '_blank');
   };
 
-  //   console.log('check', whitelist);
-
   if (walletBased)
     return (
       <>
@@ -81,9 +76,9 @@ export const MembersList: React.FC<MembersListProps> = ({
                   tokenInfo: {
                     amount: balance,
                     symbol: token?.symbol,
-                    percentage: Number(
-                      ((balance / totalSupply) * 100).toFixed(2)
-                    ),
+                    percentage: totalSupply
+                      ? Number(((balance / totalSupply) * 100).toFixed(2))
+                      : '-',
                   },
                 }
               : {})}

@@ -9,6 +9,8 @@ export type HeaderPageProps = DefaultCrumbProps & {
   description: string;
   buttonLabel: string;
   secondaryButtonLabel?: string;
+  onClick?: () => void;
+  secondaryOnClick?: () => void;
 };
 
 export const HeaderPage: React.FC<HeaderPageProps> = ({
@@ -18,6 +20,8 @@ export const HeaderPage: React.FC<HeaderPageProps> = ({
   secondaryButtonLabel,
   crumbs,
   icon,
+  onClick,
+  secondaryOnClick,
 }) => {
   return (
     <Card data-testid="page-dao">
@@ -36,9 +40,15 @@ export const HeaderPage: React.FC<HeaderPageProps> = ({
               iconLeft={<IconLinkExternal />}
               size="large"
               mode="ghost"
+              onClick={secondaryOnClick}
             />
           )}
-          <ButtonText label={buttonLabel} iconLeft={<IconAdd />} size="large" />
+          <ButtonText
+            label={buttonLabel}
+            iconLeft={<IconAdd />}
+            size="large"
+            onClick={onClick}
+          />
         </ActionWrapper>
       </ContentWrapper>
     </Card>
