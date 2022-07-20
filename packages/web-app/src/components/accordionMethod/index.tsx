@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import * as Accordion from '@radix-ui/react-accordion';
 import {
   AlertInline,
@@ -7,8 +7,11 @@ import {
   IconMenuVertical,
   IconSuccess,
   IconWarning,
+  ListItemAction,
+  Popover,
 } from '@aragon/ui-components';
 import styled from 'styled-components';
+import {useTranslation} from 'react-i18next';
 
 type AccordionMethodType = {
   type: 'action-builder' | 'execution-widget';
@@ -16,6 +19,7 @@ type AccordionMethodType = {
   smartContractName: string;
   verified?: boolean;
   methodDescription?: string;
+  additionalInfo?: string;
 };
 
 export const AccordionMethod: React.FC<AccordionMethodType> = ({
@@ -24,8 +28,12 @@ export const AccordionMethod: React.FC<AccordionMethodType> = ({
   smartContractName,
   verified = false,
   methodDescription,
+  additionalInfo,
   children,
 }) => {
+  const [openMenu, setOpenMenu] = useState(false);
+  const {t} = useTranslation();
+
   return (
     <Accordion.Root type="single" defaultValue="item-1" collapsible>
       <Accordion.Item value="item-1">
@@ -51,11 +59,47 @@ export const AccordionMethod: React.FC<AccordionMethodType> = ({
 
             <VStack>
               {type === 'action-builder' && (
-                <ButtonIcon
-                  mode="ghost"
-                  size="medium"
-                  icon={<IconMenuVertical />}
-                />
+                <Popover
+                  open={openMenu}
+                  onOpenChange={setOpenMenu}
+                  side="bottom"
+                  align="end"
+                  width={264}
+                  content={
+                    <div className="p-1.5 space-y-0.5">
+                      <ListItemAction
+                        title={t('labels.duplicateAction')}
+                        onClick={() => {
+                          // duplicateAction(index);
+                          setOpenMenu(false);
+                        }}
+                        bgWhite
+                      />
+                      <ListItemAction
+                        title={t('labels.resetAction')}
+                        onClick={() => {
+                          // resetWithdrawFields();
+                          setOpenMenu(false);
+                        }}
+                        bgWhite
+                      />
+                      <ListItemAction
+                        title={t('labels.removeEntireAction')}
+                        onClick={() => {
+                          // removeAction(index);
+                          setOpenMenu(false);
+                        }}
+                        bgWhite
+                      />
+                    </div>
+                  }
+                >
+                  <ButtonIcon
+                    mode="ghost"
+                    size="medium"
+                    icon={<IconMenuVertical />}
+                  />
+                </Popover>
               )}
               <Accordion.Trigger>
                 <AccordionButton
@@ -69,12 +113,11 @@ export const AccordionMethod: React.FC<AccordionMethodType> = ({
 
           {methodDescription && (
             <AdditionalInfoContainer>
-              <p>{methodDescription}</p>
+              <p className="tablet:pr-10">{methodDescription}</p>
 
-              <AlertInline
-                label="Additional Information of method"
-                mode="neutral"
-              />
+              {additionalInfo && (
+                <AlertInline label={additionalInfo} mode="neutral" />
+              )}
             </AdditionalInfoContainer>
           )}
         </AccordionHeader>
@@ -89,7 +132,7 @@ type AccordionType = Pick<AccordionMethodType, 'type'>;
 
 const AccordionHeader = styled(Accordion.Header).attrs(
   ({type}: AccordionType) => ({
-    className: `p-2 rounded-xl ${
+    className: `p-2 rounded-xl border border-ui-100 ${
       type === 'action-builder' ? 'bg-white' : 'bg-ui-50'
     }`,
   })

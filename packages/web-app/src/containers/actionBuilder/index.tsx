@@ -12,6 +12,7 @@ import {useFormContext} from 'react-hook-form';
 import {useDaoBalances} from 'hooks/useDaoBalances';
 import {useNetwork} from 'context/network';
 import {useDaoParam} from 'hooks/useDaoParam';
+import MintTokens from './mintTokens';
 
 /**
  * This Component is responsible for generating all actions that append to pipeline context (actions)
@@ -29,6 +30,8 @@ const Action: React.FC<actionsComponentType> = ({name, index}) => {
   switch (name) {
     case AddActionItems.WITHDRAW_ASSETS:
       return <WithdrawAction {...{index}} />;
+    case AddActionItems.MINT_TOKENS:
+      return <MintTokens {...{index}} />;
     default:
       return null;
   }

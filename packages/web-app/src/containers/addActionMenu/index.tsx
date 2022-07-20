@@ -36,7 +36,12 @@ const AddActionMenu: React.FC = () => {
           title={t('AddActionModal.mintTokens')}
           subtitle={t('AddActionModal.mintTokensSubtitle')}
           iconRight={<IconChevronRight />}
-          onClick={() => alert(AddActionItems.MINT_TOKENS)}
+          onClick={() => {
+            addAction({
+              name: AddActionItems.MINT_TOKENS,
+            });
+            close('addAction');
+          }}
         />
         <ListItemAction
           title={t('AddActionModal.withdrawAssets')}
