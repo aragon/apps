@@ -1,12 +1,13 @@
 import {AlertInline, Label, NumberInput} from '@aragon/ui-components';
-import React, {useMemo} from 'react';
+import React, {useCallback, useMemo} from 'react';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import {Controller, useFormContext, useWatch} from 'react-hook-form';
+import {HOURS_IN_DAY, MINS_IN_DAY, MINS_IN_HOUR} from 'utils/constants';
 
 const ConfigureCommunity: React.FC = () => {
   const {t} = useTranslation();
-  const {control} = useFormContext();
+  const {control, setValue, getValues} = useFormContext();
   const defaultMinimumParticipation = 51;
   const [
     tokenTotalSupply,
@@ -23,6 +24,56 @@ const ConfigureCommunity: React.FC = () => {
       'minimumParticipation',
     ],
   });
+
+  /*************************************************
+   *             Callbacks and Handlers            *
+   *************************************************/
+  const handleHoursChanged = useCallback(
+    (
+      e: React.ChangeEvent<HTMLInputElement>,
+      onChange: React.ChangeEventHandler
+    ) => {
+      const value = Number(e.target.value);
+      if (value >= HOURS_IN_DAY) {
+        const {days, hours} = getDaysHoursMins(value, 'hours');
+        e.target.value = hours.toString();
+
+        if (days > 0) {
+          setValue('durationDays', Number(getValues('durationDays')) + days);
+        }
+      }
+
+      onChange(e);
+    },
+    [getValues, setValue]
+  );
+
+  const handleMinutesChanged = useCallback(
+    (
+      e: React.ChangeEvent<HTMLInputElement>,
+      onChange: React.ChangeEventHandler
+    ) => {
+      const value = Number(e.target.value);
+
+      if (value >= MINS_IN_HOUR) {
+        const [oldDays, oldHours] = getValues([
+          'durationDays',
+          'durationHours',
+        ]);
+
+        const totalMins =
+          oldDays * MINS_IN_DAY + oldHours * MINS_IN_HOUR + value;
+
+        const {days, hours, mins} = getDaysHoursMins(totalMins);
+        setValue('durationDays', days);
+        setValue('durationHours', hours);
+        e.target.value = mins.toString();
+      }
+
+      onChange(e);
+    },
+    [getValues, setValue]
+  );
 
   const percentageInputValidator = (value: string | number) => {
     return value <= 100 && value >= 0 ? true : t('errors.percentage');
@@ -43,6 +94,9 @@ const ConfigureCommunity: React.FC = () => {
     );
   }, [minimumParticipation, whitelistWallets?.length]);
 
+  /*************************************************
+   *                   Render                     *
+   *************************************************/
   return (
     <>
       {/* Minimum approval */}
@@ -220,13 +274,7 @@ const ConfigureCommunity: React.FC = () => {
             name="durationHours"
             control={control}
             defaultValue="0"
-            rules={{
-              required: t('errors.emptyDistributionHours'),
-              validate: value =>
-                value <= 23 && value >= 0
-                  ? true
-                  : t('errors.distributionHours'),
-            }}
+            rules={{required: t('errors.emptyDistributionHours')}}
             render={({
               field: {onBlur, onChange, value, name},
               fieldState: {error},
@@ -237,10 +285,11 @@ const ConfigureCommunity: React.FC = () => {
                   name={name}
                   value={value}
                   onBlur={onBlur}
-                  onChange={onChange}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    handleHoursChanged(e, onChange)
+                  }
                   placeholder={'0'}
                   min="0"
-                  max="23"
                 />
                 {error?.message && (
                   <AlertInline label={error.message} mode="critical" />
@@ -270,10 +319,11 @@ const ConfigureCommunity: React.FC = () => {
                   name={name}
                   value={value}
                   onBlur={onBlur}
-                  onChange={onChange}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    handleMinutesChanged(e, onChange)
+                  }
                   placeholder={'0'}
                   min="0"
-                  max="59"
                 />
                 {error?.message && (
                   <AlertInline label={error.message} mode="critical" />
@@ -318,3 +368,18 @@ const TimeLabelWrapper = styled.div.attrs({
 const TimeLabel = styled.span.attrs({
   className: 'text-sm font-bold text-ui-800',
 })``;
+
+function getDaysHoursMins(value: number, period: 'hours' | 'mins' = 'mins') {
+  if (period === 'mins') {
+    return {
+      days: Math.floor(value / MINS_IN_DAY),
+      hours: Math.floor((value / MINS_IN_HOUR) % HOURS_IN_DAY),
+      mins: value % MINS_IN_HOUR,
+    };
+  } else
+    return {
+      days: Math.floor(value / HOURS_IN_DAY),
+      hours: value % HOURS_IN_DAY,
+      mins: 0,
+    };
+}

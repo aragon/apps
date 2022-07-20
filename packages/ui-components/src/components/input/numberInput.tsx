@@ -10,6 +10,8 @@ export type NumberInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   width?: number;
   percentage?: boolean;
   value: string;
+  /** Determines whether decimal values are accepted */
+  includeDecimal?: boolean;
 };
 
 export const NumberInput: React.FC<NumberInputProps> = ({
@@ -18,15 +20,30 @@ export const NumberInput: React.FC<NumberInputProps> = ({
   width,
   percentage = false,
   value,
+  includeDecimal,
+  onChange,
   ...props
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleChange = (mode: 'up' | 'down') => {
+  const handleStepperChange = (mode: 'up' | 'down') => {
     mode === 'up' ? inputRef.current?.stepUp() : inputRef.current?.stepDown();
 
     // For Calling th onChange Function
     inputRef.current?.dispatchEvent(new Event('input', {bubbles: true}));
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!includeDecimal && event.key === '.') event?.preventDefault();
+    else props.onKeyDown?.(event);
+  };
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // this handles pasting in the value/ could also use onPaste event
+    if (!includeDecimal)
+      event.target.value = event.target.value.replace(/[^0-9]/g, '');
+
+    onChange?.(event);
   };
 
   return (
@@ -37,7 +54,7 @@ export const NumberInput: React.FC<NumberInputProps> = ({
         size="small"
         icon={<IconRemove />}
         disabled={disabled}
-        onClick={() => handleChange('down')}
+        onClick={() => handleStepperChange('down')}
       />
       <InputWrapper>
         <StyledNumberInput
@@ -48,6 +65,8 @@ export const NumberInput: React.FC<NumberInputProps> = ({
           disabled={disabled}
           type={'number'}
           placeholder={percentage ? '0 %' : '0'}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
           onWheel={e => {
             e.preventDefault();
             (e.target as HTMLInputElement).blur();
@@ -61,7 +80,7 @@ export const NumberInput: React.FC<NumberInputProps> = ({
         size="small"
         icon={<IconAdd />}
         disabled={disabled}
-        onClick={() => handleChange('up')}
+        onClick={() => handleStepperChange('up')}
       />
     </Container>
   );

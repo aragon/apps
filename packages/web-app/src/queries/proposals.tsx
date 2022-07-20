@@ -205,6 +205,10 @@ export const ERC20VOTING_PROPOSAL_DETAILS = gql`
       voters {
         id
         vote
+        weight
+        voter {
+          id
+        }
       }
       executed
       createdAt

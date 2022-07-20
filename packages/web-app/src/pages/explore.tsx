@@ -13,6 +13,7 @@ import ActiveProposalsExplore from 'containers/activeProposalsExplore';
 import {GridLayout} from 'components/layout';
 import {useGlobalModalContext} from 'context/globalModals';
 import ManageWalletsModal from 'containers/manageWalletsModal';
+import {AccordionMethod} from 'components/accordionMethod';
 
 const Explore: React.FC = () => {
   const navigate = useNavigate();
@@ -81,6 +82,23 @@ const Explore: React.FC = () => {
             addWalletCallback={wallets => console.log(wallets)}
             resetOnClose
           />
+          <div className="mx-auto max-w-3xl">
+            <AccordionMethod
+              type="action-builder"
+              methodName="Method Name"
+              smartContractName="Smart Contract Name"
+              verified
+              methodDescription="This is the description of the method provided by NatSpec Format or if those are our smart contracts, by further implementation"
+            />
+          </div>
+          <div className="p-2 tablet:py-4 tablet:px-8 mx-auto max-w-4xl bg-white">
+            <AccordionMethod
+              type="execution-widget"
+              methodName="Method Name"
+              smartContractName="0x23f3....9382"
+              methodDescription="This is the description of the method provided by NatSpec Format or if those are our smart contracts, by further implementation"
+            />
+          </div>
         </ContentWrapper>
       </GridLayout>
     </>

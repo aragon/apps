@@ -19,7 +19,8 @@ import StarterKit from '@tiptap/starter-kit';
 import TipTapLink from '@tiptap/extension-link';
 import {useQuery} from '@apollo/client';
 import {generatePath, useNavigate, useParams} from 'react-router-dom';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useCallback, useMemo} from 'react';
+import {format} from 'date-fns';
 
 import ResourceList from 'components/resourceList';
 import {StyledEditorContent} from 'containers/reviewProposal';
@@ -27,15 +28,23 @@ import {VotingTerminal} from 'containers/votingTerminal';
 import {useMappedBreadcrumbs} from 'hooks/useMappedBreadcrumbs';
 import {useNetwork} from 'context/network';
 import {ERC20VOTING_PROPOSAL_DETAILS} from 'queries/proposals';
-import {
-  erc20VotingProposal,
-  erc20VotingProposalVariables,
-} from 'queries/__generated__/erc20VotingProposal';
 import {NotFound} from 'utils/paths';
 import {useDaoParam} from 'hooks/useDaoParam';
 import {Loading} from 'components/temporary';
+import {useWallet} from 'hooks/useWallet';
+import {CHAIN_METADATA} from 'utils/constants';
+import {BigNumber} from 'ethers';
+import {formatUnits} from 'utils/library';
+import {StringIndexed} from 'utils/types';
+import {getFormattedUtcOffset} from 'utils/date';
 
 /* MOCK DATA ================================================================ */
+
+const Votes: StringIndexed = {
+  Yea: 'Yes',
+  Nay: 'No',
+  Abstain: 'Abstain',
+};
 
 // TODO: This is just some mock data. Remove this while integration
 const publishedDone: ProgressStatusProps = {
@@ -45,24 +54,18 @@ const publishedDone: ProgressStatusProps = {
   block: '132,123,231',
 };
 
-const stepDataRunning: ProgressStatusProps[] = [
-  publishedDone,
-  {
-    label: 'Running',
-    date: '2021/11/16 4:30 PM UTC+2',
-    mode: 'active',
-  },
-];
-
 const proposalTags = ['Finance', 'Withdraw'];
 
 /* PROPOSAL COMPONENT ======================================================= */
 
+const DATE_FORMAT = 'yyyy/MM/dd hh:mm a';
+
 const Proposal: React.FC = () => {
   const {data: daoId, loading: daoIdLoading, error: daoIdError} = useDaoParam();
   const {network} = useNetwork();
+  const {address} = useWallet();
   const {breadcrumbs} = useMappedBreadcrumbs();
-  const {t} = useTranslation();
+  const {t, i18n} = useTranslation();
   const {id} = useParams();
   const navigate = useNavigate();
   const {isDesktop} = useScreen();
@@ -75,12 +78,10 @@ const Proposal: React.FC = () => {
     data: proposalData,
     loading: proposalLoading,
     error: proposalError,
-  } = useQuery<erc20VotingProposal, erc20VotingProposalVariables>(
-    ERC20VOTING_PROPOSAL_DETAILS,
-    {variables: {id: proposalId}}
-  );
+  } = useQuery(ERC20VOTING_PROPOSAL_DETAILS, {variables: {id: proposalId}});
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [metadata, setMetadata] = useState<Record<string, any> | undefined>();
+  const [metadata] = useState<Record<string, any> | undefined>();
   const [expandedProposal, setExpandedProposal] = useState(false);
 
   const editor = useEditor({
@@ -93,17 +94,124 @@ const Proposal: React.FC = () => {
     ],
   });
 
-  useEffect(() => {
-    if (!proposalLoading && proposalData) {
-      setMetadata(JSON.parse(proposalData.erc20VotingProposals[0].metadata));
-      editor?.commands.setContent(metadata?.proposal);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [proposalLoading, proposalData]);
+  // remove this when integrating with sdk
+  const mapDataToView = useCallback(() => {
+    if (!proposalData) return;
+
+    let tokenParticipation = BigNumber.from(0);
+
+    const {
+      voters,
+      pkg: {token},
+      votingPower,
+      yea,
+      nay,
+      abstain,
+      startDate,
+      endDate,
+      createdAt,
+      // supportRequiredPct, Note not using this currently because the one proposal created with script has it set to a crazy massive number
+    } = proposalData.erc20VotingProposals[0];
+
+    const mappedVoters = voters.map(
+      ({
+        vote,
+        weight,
+        voter,
+      }: {
+        vote: string;
+        weight: string;
+        voter: {id: string};
+      }) => {
+        tokenParticipation = BigNumber.from(weight).add(tokenParticipation);
+
+        return {
+          wallet: voter.id,
+          option: Votes[vote],
+          votingPower: `${BigNumber.from(weight)
+            .div(BigNumber.from(votingPower))
+            .mul(100)
+            .toString()}%`,
+          tokenAmount: `${formatUnits(weight, token.decimals)} ${token.symbol}`,
+        };
+      }
+    );
+
+    const results = {
+      yes: yea
+        ? {
+            value: formatUnits(yea, token.decimals),
+            percentage: BigNumber.from(yea)
+              .div(BigNumber.from(votingPower))
+              .mul(100)
+              .toString(),
+          }
+        : {value: '0', percentage: '0'},
+      no: nay
+        ? {
+            value: formatUnits(nay, token.decimals),
+            percentage: BigNumber.from(nay)
+              .div(BigNumber.from(votingPower))
+              .mul(100)
+              .toString(),
+          }
+        : {value: '0', percentage: '0'},
+      abstain: abstain
+        ? {
+            value: formatUnits(abstain, token.decimals),
+            percentage: BigNumber.from(abstain)
+              .div(BigNumber.from(votingPower))
+              .mul(100)
+              .toString(),
+          }
+        : {value: '0', percentage: '0'},
+    };
+
+    return {
+      results,
+      createdAt: `${format(
+        Number(createdAt),
+        DATE_FORMAT
+      )} ${getFormattedUtcOffset()}`,
+      endDate: `${format(
+        Number(endDate),
+        DATE_FORMAT
+      )} ${getFormattedUtcOffset()}`,
+      startDate: `${format(
+        Number(startDate),
+        DATE_FORMAT
+      )} ${getFormattedUtcOffset()}`,
+      voters: mappedVoters,
+      token: {name: token.name, symbol: token.symbol},
+      approval: `${formatUnits(
+        BigNumber.from(15).mul(BigNumber.from(votingPower)).div(100),
+        token.decimals
+      )} ${token.symbol} (15%)`,
+
+      participation: `${formatUnits(
+        tokenParticipation,
+        token.decimals
+      )} of ${formatUnits(votingPower, token.decimals)} ${
+        token.symbol
+      } (${tokenParticipation.div(BigNumber.from(votingPower)).mul(100)}%)`,
+    };
+  }, [proposalData]);
+
+  const terminalProps = useMemo(() => mapDataToView(), [mapDataToView]);
+
+  // useEffect(() => {
+  //   if (!proposalLoading && proposalData) {
+  //     setMetadata(JSON.parse(proposalData.erc20VotingProposals[0].metadata));
+  //     editor?.commands.setContent(metadata?.proposal);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [proposalLoading, proposalData]);
 
   // TODO Do we still need this? [VR 10-05-2022]
-  // const publisher (publisherAddress === account) ? 'you' : shortenAddress(publisherAddress);
-  const publisher = 'you';
+  // const publisher =
+  //   publisherAddress === account ? 'you' : shortenAddress(publisherAddress);
+  const creator = proposalData?.erc20VotingProposals[0]?.creator;
+  const publisher = creator === address ? 'you' : creator;
 
   if (proposalLoading || daoIdLoading) {
     return <Loading />;
@@ -142,7 +250,7 @@ const Proposal: React.FC = () => {
             <Link
               external
               label={publisher}
-              // href={`${explorers[chainId]}${publisherAddress}`}
+              href={`${CHAIN_METADATA[network].explorer}/address/${creator}`}
             />
           </ProposerLink>
         </ContentWrapper>
@@ -176,7 +284,7 @@ const Proposal: React.FC = () => {
             </>
           )}
 
-          <VotingTerminal />
+          {terminalProps && <VotingTerminal {...terminalProps} />}
 
           <CardExecution
             title="Execution"
@@ -206,7 +314,24 @@ const Proposal: React.FC = () => {
               },
             ]}
           />
-          <WidgetStatus steps={stepDataRunning} />
+          <WidgetStatus
+            steps={[
+              {
+                ...publishedDone,
+                date: terminalProps?.createdAt,
+                block:
+                  new Intl.NumberFormat(i18n.language).format(
+                    proposalData?.erc20VotingProposals?.[0]
+                      ?.snapshotBlock as number
+                  ) || '',
+              },
+              {
+                label: 'Executed',
+                mode: 'succeeded',
+                date: terminalProps?.endDate,
+              },
+            ]}
+          />
         </AdditionalInfoContainer>
       </ContentContainer>
     </Container>

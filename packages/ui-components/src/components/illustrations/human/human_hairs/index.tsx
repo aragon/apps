@@ -4,7 +4,7 @@ import {
   IllustrationComponentProps,
   Noneable,
   UnknownIllustrationVariantError,
-} from '../illuHuman';
+} from '../../../../utils/illustrations';
 import {Afro} from './afro';
 import {Bald} from './bald';
 import {Bun} from './bun';

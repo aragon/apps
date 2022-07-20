@@ -4,7 +4,7 @@ import {
   IllustrationComponentProps,
   Noneable,
   UnknownIllustrationVariantError,
-} from '../illuHuman';
+} from '../../../../utils/illustrations';
 import {Buddha} from './buddha';
 import {EarringsCircle} from './earrings_circle';
 import {EarringsHoops} from './earrings_hoops';

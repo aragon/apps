@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
 import {Controller, useFormContext} from 'react-hook-form';
 import AddWallets from 'components/addWallets';
+import {alphaNumericValidator} from 'utils/validators';
 
 const CreateNewToken: React.FC = () => {
   const {t} = useTranslation();
@@ -30,6 +31,8 @@ const CreateNewToken: React.FC = () => {
           defaultValue=""
           rules={{
             required: t('errors.required.tokenName') as string,
+            validate: value =>
+              alphaNumericValidator(value, t('errors.fields.tokenName')),
           }}
           render={({
             field: {onBlur, onChange, value, name},
@@ -61,6 +64,8 @@ const CreateNewToken: React.FC = () => {
           defaultValue=""
           rules={{
             required: t('errors.required.tokenSymbol') as string,
+            validate: value =>
+              alphaNumericValidator(value, t('errors.fields.tokenSymbol')),
           }}
           render={({
             field: {onBlur, onChange, value, name},

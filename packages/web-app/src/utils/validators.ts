@@ -4,6 +4,7 @@ import {BigNumber, providers as EthersProviders} from 'ethers';
 
 import {i18n} from '../../i18n.config';
 import {isERC20Token} from './tokens';
+import {ALPHA_NUMERIC_PATTERN} from './constants';
 
 /**
  * Validate given token contract address
@@ -79,4 +80,20 @@ export const validateAddress = (address: string): ValidateResult => {
   return isAddress(address)
     ? true
     : (i18n.t('errors.invalidAddress') as string);
+};
+
+/**
+ * Check if given string is a valid alpha-numeric string
+ *
+ * @param value value to be validated
+ * @param field name of field to be validated
+ * @returns true if valid, error message if invalid
+ */
+export const alphaNumericValidator = (
+  value: string,
+  field = 'Field'
+): ValidateResult => {
+  return new RegExp(ALPHA_NUMERIC_PATTERN).test(value)
+    ? true
+    : (i18n.t('errors.onlyAlphaNumeric', {field}) as string);
 };

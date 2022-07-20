@@ -150,6 +150,7 @@ const WalletRow: React.FC<WalletRowProps> = ({index, onDelete}) => {
               onChange={field.onChange}
               placeholder="0"
               min={0}
+              includeDecimal
               disabled={isDuplicate}
               mode={error?.message ? 'critical' : 'default'}
               value={field.value}

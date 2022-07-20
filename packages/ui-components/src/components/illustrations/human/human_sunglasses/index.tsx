@@ -4,7 +4,7 @@ import {
   IllustrationComponentProps,
   Noneable,
   UnknownIllustrationVariantError,
-} from '../illuHuman';
+} from '../../../../utils/illustrations';
 import {BigRounded} from './big_rounded';
 import {BigSemirounded} from './big_semirounded';
 import {LargeStylized} from './large_stylized';

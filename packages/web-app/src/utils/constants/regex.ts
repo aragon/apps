@@ -9,3 +9,5 @@ export const EMAIL_PATTERN =
 
 export const TOKEN_AMOUNT_REGEX =
   /(?<integers>[\d*]*)[.]*(?<decimals>[\d]*)\s*(?<symbol>[A-Za-z]*)/;
+
+export const ALPHA_NUMERIC_PATTERN = /^[a-zA-Z\s0-9]+$/g;
