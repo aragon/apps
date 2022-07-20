@@ -86,6 +86,7 @@ const Proposal: React.FC = () => {
 
   const editor = useEditor({
     editable: false,
+    content: PROPOSAL, // TODO: remove this when proper data comes in
     extensions: [
       StarterKit,
       TipTapLink.configure({
@@ -205,17 +206,14 @@ const Proposal: React.FC = () => {
     // uncomment when integrating with sdk
     // if (!proposalLoading && proposalData) {
     //   setMetadata(JSON.parse(proposalData.erc20VotingProposals[0].metadata));
+    // editor?.commands.setContent(metadata?.proposal, true);
     // }
-
     setMetadata({
       title: 'Create new Pets United Sub DAO',
       summary: "We're creating a new DAO to manage pets and their owners.",
       proposal: PROPOSAL,
     });
-
-    editor?.commands.setContent(PROPOSAL, true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [proposalLoading, proposalData]);
+  }, []);
 
   // TODO Do we still need this? [VR 10-05-2022]
   // const publisher =
