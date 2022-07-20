@@ -17,13 +17,15 @@ const Community: React.FC = () => {
   const {breadcrumbs, icon} = useMappedBreadcrumbs();
 
   const {data: dao, loading: metadataLoading} = useDaoMetadata(daoId);
-  const {data: whitelist, isLoading: whiteListLoading} = useDaoWhitelist(dao);
+  const {data: whitelist, isLoading: whiteListLoading} = useDaoWhitelist(daoId);
   const {
     data: {daoMembers, token},
     isLoading: tokenHoldersLoading,
-  } = useDaoTokenHolders(dao);
+  } = useDaoTokenHolders(daoId);
 
   const [page, setPage] = useState(1);
+
+  console.log('whitelist', whitelist);
 
   // The number of members displayed on each page
   const MembersPerPage = 10;

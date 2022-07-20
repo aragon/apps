@@ -53,10 +53,12 @@ export const MembersList: React.FC<MembersListProps> = ({
     else window.open(baseUrl + '/enslookup-search?search=' + address, '_blank');
   };
 
+  //   console.log('check', whitelist);
+
   if (walletBased)
     return (
       <>
-        {whitelist.map(({id}: DaoWhitelist[number]) => (
+        {whitelist?.map(({id}: DaoWhitelist[number]) => (
           <ListItemAddress
             key={id}
             label={id}

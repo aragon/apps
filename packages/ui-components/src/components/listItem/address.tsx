@@ -1,7 +1,8 @@
 import React, {ButtonHTMLAttributes, FC} from 'react';
 import styled from 'styled-components';
+import {constants} from 'ethers';
 
-import {shortenAddress} from '../../utils/addresses';
+import {IsAddress, shortenAddress} from '../../utils/addresses';
 import {AvatarWallet} from '../avatar';
 import {IconLinkExternal, IconPerson} from '../icons';
 
@@ -32,7 +33,7 @@ export const ListItemAddress: FC<ListItemAddressProps> = ({
   return (
     <Container data-testid="listItem-address" {...props}>
       <LeftContent>
-        <Avatar src={src || ''} />
+        <Avatar src={IsAddress(src) ? src : constants.AddressZero} />
         <p className="font-bold">{shortenAddress(label)}</p>
       </LeftContent>
 
