@@ -1,19 +1,21 @@
 import styled from 'styled-components';
 import React from 'react';
 import {ButtonText} from '../button';
-import {IconAdd} from '../icons';
+import {IconAdd, IconLinkExternal} from '../icons';
 import {Breadcrumb, DefaultCrumbProps} from '../breadcrumb';
 
 export type HeaderPageProps = DefaultCrumbProps & {
   title: string;
   description: string;
   buttonLabel: string;
+  secondaryButtonLabel?: string;
 };
 
 export const HeaderPage: React.FC<HeaderPageProps> = ({
   title,
   description,
   buttonLabel,
+  secondaryButtonLabel,
   crumbs,
   icon,
 }) => {
@@ -27,7 +29,17 @@ export const HeaderPage: React.FC<HeaderPageProps> = ({
           <Title>{title}</Title>
           <Description>{description}</Description>
         </Content>
-        <ButtonText label={buttonLabel} iconLeft={<IconAdd />} size="large" />
+        <ActionWrapper>
+          {secondaryButtonLabel && (
+            <ButtonText
+              label={secondaryButtonLabel}
+              iconLeft={<IconLinkExternal />}
+              size="large"
+              mode="ghost"
+            />
+          )}
+          <ButtonText label={buttonLabel} iconLeft={<IconAdd />} size="large" />
+        </ActionWrapper>
       </ContentWrapper>
     </Card>
   );
@@ -56,6 +68,10 @@ const Description = styled.div.attrs({
 const ContentWrapper = styled.div.attrs({
   className:
     'flex flex-col tablet:flex-row justify-between desktop:items-center space-y-2 tablet:space-y-0',
+})``;
+
+const ActionWrapper = styled.div.attrs({
+  className: 'flex space-x-2',
 })``;
 
 const BreadcrumbWrapper = styled.div.attrs({

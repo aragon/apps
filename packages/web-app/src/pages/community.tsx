@@ -1,7 +1,12 @@
 import React, {useState} from 'react';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
-import {HeaderPage, SearchInput, Pagination} from '@aragon/ui-components';
+import {
+  HeaderPage,
+  SearchInput,
+  Pagination,
+  AlertInline,
+} from '@aragon/ui-components';
 import {withTransaction} from '@elastic/apm-rum-react';
 
 import {useDaoTokenHolders, useDaoWhitelist} from 'hooks/useDaoMembers';
@@ -25,8 +30,6 @@ const Community: React.FC = () => {
 
   const [page, setPage] = useState(1);
 
-  console.log('whitelist', whitelist);
-
   // The number of members displayed on each page
   const MembersPerPage = 10;
   const walletBased = dao?.packages[0].pkg.__typename === 'WhitelistPackage';
@@ -36,49 +39,69 @@ const Community: React.FC = () => {
     return <Loading />;
 
   return (
-    <Container>
-      <HeaderPage
-        icon={icon}
-        crumbs={breadcrumbs}
-        title={`${memberCount} ${t('labels.members')}`}
-        description={
-          walletBased
-            ? t('explore.explorer.walletBased')
-            : t('explore.explorer.tokenBased')
-        }
-        buttonLabel={
-          walletBased ? t('labels.addMember') : t('labels.mintTokens')
-        }
-      />
-      <SearchInput placeholder={'Type to search ...'} />
-      <div className="flex space-x-3">
-        <div className="space-y-2 w-full">
-          <MembersList {...{walletBased, whitelist, daoMembers, token}} />
-        </div>
-      </div>
-      <PaginationWrapper>
-        {memberCount > MembersPerPage && (
-          <Pagination
-            totalPages={Math.ceil(memberCount / MembersPerPage) as number}
-            activePage={page}
-            onChange={(activePage: number) => {
-              setPage(activePage);
-              window.scrollTo({top: 0, behavior: 'smooth'});
-            }}
+    <>
+      <Container>
+        <Wrapper>
+          <HeaderPage
+            icon={icon}
+            crumbs={breadcrumbs}
+            title={`${memberCount} ${t('labels.members')}`}
+            description={
+              walletBased
+                ? t('explore.explorer.walletBased')
+                : t('explore.explorer.tokenBased')
+            }
+            buttonLabel={
+              walletBased ? t('labels.addMember') : t('labels.mintTokens')
+            }
+            {...(!walletBased && {
+              secondaryButtonLabel: t('labels.seeAllHolders'),
+            })}
           />
-        )}
-      </PaginationWrapper>
-    </Container>
+          <InputWrapper>
+            <SearchInput placeholder={'Type to search ...'} />
+            {!walletBased && (
+              <AlertInline label={t('alert.tokenBasedMembers') as string} />
+            )}
+          </InputWrapper>
+          <div className="flex space-x-3">
+            <div className="space-y-2 w-full">
+              <MembersList {...{walletBased, whitelist, daoMembers, token}} />
+            </div>
+          </div>
+        </Wrapper>
+        <PaginationWrapper>
+          {memberCount > MembersPerPage && (
+            <Pagination
+              totalPages={Math.ceil(memberCount / MembersPerPage) as number}
+              activePage={page}
+              onChange={(activePage: number) => {
+                setPage(activePage);
+                window.scrollTo({top: 0, behavior: 'smooth'});
+              }}
+            />
+          )}
+        </PaginationWrapper>
+      </Container>
+    </>
   );
 };
 
 const Container = styled.div.attrs({
   className:
-    'col-span-full desktop:col-start-2 desktop:col-end-12 desktop:mt-5 space-y-5 desktop:space-y-8',
+    'col-span-full desktop:col-start-2 desktop:col-end-12 desktop:space-y-8 mt-5',
+})``;
+
+const Wrapper = styled.div.attrs({
+  className: ' desktop:space-y-5',
 })``;
 
 const PaginationWrapper = styled.div.attrs({
   className: 'flex mt-8',
+})``;
+
+const InputWrapper = styled.div.attrs({
+  className: 'space-y-1',
 })``;
 
 export default withTransaction('Community', 'component')(Community);
