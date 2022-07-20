@@ -1,20 +1,12 @@
-import {
-  Popover,
-  ListItemAction,
-  ButtonIcon,
-  IconMenuVertical,
-  AlertInline,
-  ButtonText,
-  ValueInput,
-  Label,
-  NumberInput,
-} from '@aragon/ui-components';
+import {ButtonText} from '@aragon/ui-components';
 import {useTranslation} from 'react-i18next';
 import {useFormContext} from 'react-hook-form';
-import React, {useState} from 'react';
+import React from 'react';
+import styled from 'styled-components';
 
 import {useActionsContext} from 'context/actions';
 import {AccordionMethod} from 'components/accordionMethod';
+import {AddressAndTokenRow} from './addressTokenRow';
 
 type Props = {
   index: number;
@@ -22,7 +14,6 @@ type Props = {
 
 const MintTokens: React.FC<Props> = ({index}) => {
   const {t} = useTranslation();
-  const [openMenu, setOpenMenu] = useState<boolean>(false);
   const {removeAction, duplicateAction} = useActionsContext();
   const {setValue, clearErrors} = useFormContext();
 
@@ -34,50 +25,13 @@ const MintTokens: React.FC<Props> = ({index}) => {
       verified
       methodDescription="Which wallet addresses should get tokens, and how much?  Add the wallets you want here, and then choose the distribution. Upload a CSV with this template if you want."
       additionalInfo="The total token supply is inclusive of the already distributed tokens of the existing holders."
+      duplicateActionCallback={() => duplicateAction(index)}
+      removeActionCallback={() => removeAction(index)}
     >
-      <div className="bg-white rounded-b-xl border border-t-0 divide-y border-ui-100 divide-ui-100">
-        <div className="p-2 tablet:p-3 space-y-3">
-          <div className="space-y-0.5">
-            <Label label="Address" />
-            <div className="flex space-x-2">
-              <div className="flex-1">
-                <ValueInput
-                  value=""
-                  adornmentText={t('labels.copy')}
-                  onAdornmentClick={function (): void {
-                    throw new Error('Function not implemented.');
-                  }}
-                />
-              </div>
-              <ButtonIcon
-                mode="ghost"
-                size="large"
-                icon={<IconMenuVertical />}
-              />
-            </div>
-          </div>
-          <div>
-            <Label label="Tokens" />
-            <div className="flex tablet:pr-8 space-x-2">
-              <NumberInput
-                placeholder="0"
-                min={0}
-                includeDecimal
-                value={10.1}
-              />
-              {/* <PercentageInputDisplayWrapper>
-                <PercentageInputDisplay
-                  name={`wallets.${index}.amount`}
-                  value={'5%'}
-                  mode="default"
-                  disabled
-                />
-              </PercentageInputDisplayWrapper> */}
-            </div>
-          </div>
-        </div>
+      <Container>
+        <AddressAndTokenRow />
 
-        <div className="flex justify-between tablet:justify-start p-2 tablet:p-3 space-x-2">
+        <ButtonContainer>
           <ButtonText
             label="Add Wallet"
             mode="secondary"
@@ -92,30 +46,52 @@ const MintTokens: React.FC<Props> = ({index}) => {
             bgWhite
             className="flex-1 tablet:flex-initial"
           />
-        </div>
+        </ButtonContainer>
 
-        <div className="p-2 tablet:p-3 space-y-1.5 font-bold text-ui-800">
+        <SummaryContainer>
           <p>Summary</p>
-          <div className="flex justify-between">
-            <p className="font-normal text-ui-500">New Tokens</p>
+          <HStack>
+            <SummaryLabel>New Tokens</SummaryLabel>
             <p>+8000 LRX</p>
-          </div>
-          <div className="flex justify-between">
-            <p className="font-normal text-ui-500">New Holders</p>
+          </HStack>
+          <HStack>
+            <SummaryLabel>New Holders</SummaryLabel>
             <p>+2</p>
-          </div>
-          <div className="flex justify-between">
-            <p className="font-normal text-ui-500">Total Tokens</p>
+          </HStack>
+          <HStack>
+            <SummaryLabel>Total Tokens</SummaryLabel>
             <p>100,000 LRX</p>
-          </div>
-          <div className="flex justify-between">
-            <p className="font-normal text-ui-500">Total Holders</p>
+          </HStack>
+          <HStack>
+            <SummaryLabel>Total Holders</SummaryLabel>
             <p>1000</p>
-          </div>
-        </div>
-      </div>
+          </HStack>
+        </SummaryContainer>
+      </Container>
     </AccordionMethod>
   );
 };
 
 export default MintTokens;
+
+const Container = styled.div.attrs({
+  className:
+    'bg-white rounded-b-xl border border-t-0 divide-y border-ui-100 divide-ui-100',
+})``;
+
+const ButtonContainer = styled.div.attrs({
+  className:
+    'flex justify-between tablet:justify-start p-2 tablet:p-3 space-x-2',
+})``;
+
+const SummaryContainer = styled.div.attrs({
+  className: 'p-2 tablet:p-3 space-y-1.5 font-bold text-ui-800',
+})``;
+
+const HStack = styled.div.attrs({
+  className: 'flex justify-between',
+})``;
+
+const SummaryLabel = styled.p.attrs({
+  className: 'font-normal text-ui-500',
+})``;

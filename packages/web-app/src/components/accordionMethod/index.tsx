@@ -20,6 +20,9 @@ type AccordionMethodType = {
   verified?: boolean;
   methodDescription?: string;
   additionalInfo?: string;
+  duplicateActionCallback?: () => void;
+  resetActionCallback?: () => void;
+  removeActionCallback?: () => void;
 };
 
 export const AccordionMethod: React.FC<AccordionMethodType> = ({
@@ -29,6 +32,9 @@ export const AccordionMethod: React.FC<AccordionMethodType> = ({
   verified = false,
   methodDescription,
   additionalInfo,
+  duplicateActionCallback,
+  resetActionCallback,
+  removeActionCallback,
   children,
 }) => {
   const [openMenu, setOpenMenu] = useState(false);
@@ -70,7 +76,7 @@ export const AccordionMethod: React.FC<AccordionMethodType> = ({
                       <ListItemAction
                         title={t('labels.duplicateAction')}
                         onClick={() => {
-                          // duplicateAction(index);
+                          duplicateActionCallback?.();
                           setOpenMenu(false);
                         }}
                         bgWhite
@@ -78,7 +84,7 @@ export const AccordionMethod: React.FC<AccordionMethodType> = ({
                       <ListItemAction
                         title={t('labels.resetAction')}
                         onClick={() => {
-                          // resetWithdrawFields();
+                          resetActionCallback?.();
                           setOpenMenu(false);
                         }}
                         bgWhite
@@ -86,7 +92,7 @@ export const AccordionMethod: React.FC<AccordionMethodType> = ({
                       <ListItemAction
                         title={t('labels.removeEntireAction')}
                         onClick={() => {
-                          // removeAction(index);
+                          removeActionCallback?.();
                           setOpenMenu(false);
                         }}
                         bgWhite
@@ -132,7 +138,7 @@ type AccordionType = Pick<AccordionMethodType, 'type'>;
 
 const AccordionHeader = styled(Accordion.Header).attrs(
   ({type}: AccordionType) => ({
-    className: `p-2 tablet:px-3 rounded-xl ${
+    className: `p-2 tablet:px-3 rounded-xl border border-transparent ${
       type === 'action-builder' ? 'bg-white' : 'bg-ui-50'
     }`,
   })
@@ -140,7 +146,7 @@ const AccordionHeader = styled(Accordion.Header).attrs(
   &[data-state='open'] {
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
-    border: 1px solid #e4e7eb;
+    border-color: #e4e7eb;
   }
 `;
 
