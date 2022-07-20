@@ -25,7 +25,7 @@ export const OverviewDAOHeader: React.FC<OverviewDAOHeaderProps> = ({
   const navigate = useNavigate();
 
   return (
-    <div className="p-2 tablet:p-6 tablet:rounded-xl bg-ui-0">
+    <div className="p-2 tablet:p-6 bg-ui-0 tablet:rounded-xl">
       <div className="desktop:hidden mb-3">
         <Breadcrumb
           crumbs={{
