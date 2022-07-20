@@ -19,7 +19,7 @@ import StarterKit from '@tiptap/starter-kit';
 import TipTapLink from '@tiptap/extension-link';
 import {useQuery} from '@apollo/client';
 import {generatePath, useNavigate, useParams} from 'react-router-dom';
-import React, {useState, useCallback, useMemo} from 'react';
+import React, {useState, useCallback, useEffect, useMemo} from 'react';
 import {format} from 'date-fns';
 
 import ResourceList from 'components/resourceList';
@@ -81,7 +81,7 @@ const Proposal: React.FC = () => {
   } = useQuery(ERC20VOTING_PROPOSAL_DETAILS, {variables: {id: proposalId}});
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [metadata] = useState<Record<string, any> | undefined>();
+  const [metadata, setMetadata] = useState<Record<string, any> | undefined>();
   const [expandedProposal, setExpandedProposal] = useState(false);
 
   const editor = useEditor({
@@ -201,13 +201,21 @@ const Proposal: React.FC = () => {
 
   const terminalProps = useMemo(() => mapDataToView(), [mapDataToView]);
 
-  // useEffect(() => {
-  //   if (!proposalLoading && proposalData) {
-  //     setMetadata(JSON.parse(proposalData.erc20VotingProposals[0].metadata));
-  //     editor?.commands.setContent(metadata?.proposal);
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [proposalLoading, proposalData]);
+  useEffect(() => {
+    // uncomment when integrating with sdk
+    // if (!proposalLoading && proposalData) {
+    //   setMetadata(JSON.parse(proposalData.erc20VotingProposals[0].metadata));
+    // }
+
+    setMetadata({
+      title: 'Create new Pets United Sub DAO',
+      summary: "We're creating a new DAO to manage pets and their owners.",
+      proposal: PROPOSAL,
+    });
+
+    editor?.commands.setContent(PROPOSAL, true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [proposalLoading, proposalData]);
 
   // TODO Do we still need this? [VR 10-05-2022]
   // const publisher =
@@ -389,3 +397,6 @@ const ContentContainer = styled.div.attrs(
     } mt-3 tablet:flex tablet:space-x-3 space-y-3 tablet:space-y-0`,
   })
 )<ContentContainerProps>``;
+
+const PROPOSAL =
+  "<p><strong>We LOVE pets!</strong><br /></p><p>As we all know, pets are amazing, and the feelings we experience because of their amazing existence are overwhelmingly powerful. But, of course, with great power comes great responsibility, and let's face it: many of us are not paragons of responsibility. We often need to set reminders for doggy bath time or kitty vet visit. </p><br /><p>In order to make sure that our pets are well taken cared of and that we enjoy the awesomeness that is adopting and raising a pet, I propose we create a sub DAO. </p><p>The new Pets United sub DAO would be an organization of pet owners (obviously) looking out for each other, and making sure that everyone is aware of new discounts at the groomer and that we present a united front when eventually we demand<strong> full citizenship </strong>for our pets!</p><br /><p>Looking forward to your comments!</p>";
