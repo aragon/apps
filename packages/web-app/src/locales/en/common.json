@@ -31,6 +31,7 @@
     "addMember": "Add Member",
     "mintTokens": "Mint Tokens",
     "seeAllHolders": "See All Holders",
+    "aragonCore": "Aragon Core",
     "approvalThreshold": "Approval Threshold",
     "viewTransactions": "View Transactions",
     "logOut": "Log Out",
@@ -486,6 +487,10 @@
       "addFirstActionSubtitle": "Add your very first optional action if you wish to perform on-chain executions",
       "addAction": "Add Action",
       "actionsInfo": "Based on the voting options setup, it is only possible to add actions to the option \"Yes\"."
+    },
+    "mintTokens": {
+      "methodDescription": "Which wallet addresses should get tokens, and how much? Add the wallets you want here, and then choose the distribution. Upload a CSV with <1>this template</1> if you want.",
+      "additionalInfo": "The total token supply is inclusive of the already distributed tokens of the existing holders."
     }
   },
   "votingTerminal": {

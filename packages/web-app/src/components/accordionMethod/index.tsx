@@ -18,7 +18,7 @@ type AccordionMethodType = {
   methodName: string;
   smartContractName: string;
   verified?: boolean;
-  methodDescription?: string;
+  methodDescription?: string | React.ReactNode;
   additionalInfo?: string;
   duplicateActionCallback?: () => void;
   resetActionCallback?: () => void;
