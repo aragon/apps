@@ -43,8 +43,11 @@ const MintTokens: React.FC<Props> = ({index}) => {
         const csvData = reader.result;
         if (csvData) {
           const lines = (csvData as string).split('\n');
-          for (let i = 1; i < lines.length; i++) {
+          for (let i = 0; i < lines.length; i++) {
             const tuple = lines[i].split(',');
+            if (tuple[0] === 'Address' && tuple[1] === 'Tokens' && i === 0) {
+              continue;
+            }
             append({address: tuple[0], amount: tuple[1]});
           }
         }
@@ -92,7 +95,7 @@ const MintTokens: React.FC<Props> = ({index}) => {
             <input
               type="file"
               name="uploadCSV"
-              accept="text/csv"
+              accept=".csv, .txt"
               onChange={handleCSVUpload}
               hidden
             />
