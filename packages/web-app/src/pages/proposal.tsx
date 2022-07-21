@@ -20,7 +20,7 @@ import TipTapLink from '@tiptap/extension-link';
 import {useQuery} from '@apollo/client';
 import {generatePath, useNavigate, useParams} from 'react-router-dom';
 import React, {useState, useCallback, useEffect, useMemo} from 'react';
-import {format} from 'date-fns';
+import {format, formatDistance} from 'date-fns';
 
 import ResourceList from 'components/resourceList';
 import {StyledEditorContent} from 'containers/reviewProposal';
@@ -37,6 +37,7 @@ import {BigNumber} from 'ethers';
 import {formatUnits} from 'utils/library';
 import {StringIndexed} from 'utils/types';
 import {getFormattedUtcOffset} from 'utils/date';
+import {categorizeProposal} from './governance';
 
 /* MOCK DATA ================================================================ */
 
@@ -94,6 +95,25 @@ const Proposal: React.FC = () => {
       }),
     ],
   });
+
+  const getStatusLabel = useCallback(
+    (status: string, endDate: number) => {
+      console.log(status);
+      switch (status) {
+        case 'pending':
+          return t('votingTerminal.notStartedYet');
+
+        case 'active':
+          return t('votingTerminal.remainingTime', {
+            time: formatDistance(new Date(), new Date(endDate)),
+          });
+
+        default:
+          return t('votingTerminal.voteEnded');
+      }
+    },
+    [t]
+  );
 
   // remove this when integrating with sdk
   const mapDataToView = useCallback(() => {
@@ -169,23 +189,32 @@ const Proposal: React.FC = () => {
         : {value: '0', percentage: '0'},
     };
 
+    const status = categorizeProposal(
+      proposalData.erc20VotingProposals[0]
+    ).type;
+
     return {
       results,
       voteNowDisabled: !open,
+
       createdAt: `${format(
-        Number(createdAt),
+        Number(createdAt) * 1000,
         DATE_FORMAT
       )} ${getFormattedUtcOffset()}`,
+
       endDate: `${format(
-        Number(endDate),
+        Number(endDate) * 1000,
         DATE_FORMAT
       )} ${getFormattedUtcOffset()}`,
+
       startDate: `${format(
-        Number(startDate),
+        Number(startDate) * 1000,
         DATE_FORMAT
       )} ${getFormattedUtcOffset()}`,
+
       voters: mappedVoters,
       token: {name: token.name, symbol: token.symbol},
+
       approval: `${formatUnits(
         BigNumber.from(15).mul(BigNumber.from(votingPower)).div(100),
         token.decimals
@@ -197,10 +226,48 @@ const Proposal: React.FC = () => {
       )} of ${formatUnits(votingPower, token.decimals)} ${
         token.symbol
       } (${tokenParticipation.div(BigNumber.from(votingPower)).mul(100)}%)`,
+
+      status,
+      statusLabel: getStatusLabel(status, Number(endDate) * 1000),
     };
-  }, [proposalData]);
+  }, [getStatusLabel, proposalData]);
 
   const terminalProps = useMemo(() => mapDataToView(), [mapDataToView]);
+  const proposalSteps = useMemo(() => {
+    const steps = [
+      {
+        ...publishedDone,
+        date: terminalProps?.createdAt,
+        block:
+          new Intl.NumberFormat(i18n.language).format(
+            proposalData?.erc20VotingProposals?.[0]?.snapshotBlock as number
+          ) || '',
+      },
+    ];
+
+    if (
+      terminalProps?.status !== 'pending' &&
+      terminalProps?.status !== 'active'
+    ) {
+      steps.push({
+        label: 'Executed',
+        mode: 'succeeded',
+        date: terminalProps?.endDate,
+        block:
+          new Intl.NumberFormat(i18n.language).format(
+            proposalData?.erc20VotingProposals?.[0]?.snapshotBlock as number
+          ) || '',
+      });
+    }
+
+    return steps;
+  }, [
+    i18n.language,
+    proposalData?.erc20VotingProposals,
+    terminalProps?.createdAt,
+    terminalProps?.endDate,
+    terminalProps?.status,
+  ]);
 
   useEffect(() => {
     // uncomment when integrating with sdk
@@ -322,24 +389,7 @@ const Proposal: React.FC = () => {
               },
             ]}
           />
-          <WidgetStatus
-            steps={[
-              {
-                ...publishedDone,
-                date: terminalProps?.createdAt,
-                block:
-                  new Intl.NumberFormat(i18n.language).format(
-                    proposalData?.erc20VotingProposals?.[0]
-                      ?.snapshotBlock as number
-                  ) || '',
-              },
-              {
-                label: 'Executed',
-                mode: 'succeeded',
-                date: terminalProps?.endDate,
-              },
-            ]}
-          />
+          <WidgetStatus steps={proposalSteps} />
         </AdditionalInfoContainer>
       </ContentContainer>
     </Container>

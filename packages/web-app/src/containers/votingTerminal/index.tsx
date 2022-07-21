@@ -47,6 +47,8 @@ export type VotingTerminalProps = {
   participation?: string;
   approval?: string;
   voters?: Array<VoterType>;
+  status?: string;
+  statusLabel?: string;
   token?: {
     symbol: string;
     name: string;
@@ -69,6 +71,7 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
   token,
   startDate,
   endDate,
+  statusLabel,
 }) => {
   const [query, setQuery] = useState('');
   const [buttonGroupState, setButtonGroupState] = useState('info');
@@ -231,10 +234,7 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
                 onClick={() => setVotingInProcess(false)}
               />
             </ButtonWrapper>
-            <AlertInline
-              label={t('votingTerminal.notStartedYet')}
-              mode="neutral"
-            />
+            <AlertInline label={statusLabel || ''} mode="neutral" />
           </VoteContainer>
         </VotingContainer>
       ) : (
@@ -247,7 +247,7 @@ export const VotingTerminal: React.FC<VotingTerminalProps> = ({
             disabled={voteNowDisabled}
           />
           <AlertInline
-            label={t('votingTerminal.notStartedYet')}
+            label={statusLabel || ''}
             mode="neutral"
             icon={<IconClock className="text-info-500" />}
           />
