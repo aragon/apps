@@ -28,6 +28,26 @@ const MintTokens: React.FC<Props> = ({index}) => {
     append({address: '', amount: '0'});
   };
 
+  const handleCSVUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const myFile = e.target.files[0];
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        const csvData = reader.result;
+        if (csvData) {
+          const lines = (csvData as string).split('\n');
+          for (let i = 1; i < lines.length; i++) {
+            const tuple = lines[i].split(',');
+            append({address: tuple[0], amount: tuple[1]});
+          }
+        }
+      };
+
+      reader.readAsBinaryString(myFile);
+    }
+  };
+
   return (
     <AccordionMethod
       type="action-builder"
@@ -59,13 +79,17 @@ const MintTokens: React.FC<Props> = ({index}) => {
             className="flex-1 tablet:flex-initial"
             onClick={handleAddWallet}
           />
-          <ButtonText
-            label={t('labels.whitelistWallets.uploadCSV')}
-            mode="ghost"
-            size="large"
-            bgWhite
-            className="flex-1 tablet:flex-initial"
-          />
+
+          <label className="flex-1 tablet:flex-initial py-1.5 px-2 space-x-1.5 h-6 font-bold rounded-xl cursor-pointer bg-ui-0 hover:text-primary-500 ft-text-base">
+            Upload CSV
+            <input
+              type="file"
+              name="uploadCSV"
+              accept="text/csv"
+              onChange={handleCSVUpload}
+              hidden
+            />
+          </label>
         </ButtonContainer>
 
         <SummaryContainer>
@@ -98,12 +122,13 @@ const MintTokenDescription: React.FC = () => (
   <Trans i18nKey="newProposal.mintTokens.methodDescription">
     Which wallet addresses should get tokens, and how much? Add the wallets you
     want here, and then choose the distribution. Upload a CSV with
-    <button
-      className="font-bold text-primary-500 hover:text-primary-700 rounded focus:ring-2 focus:ring-primary-500 focus:outline-none"
-      onClick={() => alert('Download template')}
+    <a
+      href="data:text/csv;base64,QWRkcmVzcyxUb2tlbnMKMHgwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwLDEwLjUw"
+      download="MintTokenTemplate.csv"
+      className="font-bold rounded focus:ring-2 focus:outline-none text-primary-500 hover:text-primary-700 focus:ring-primary-500"
     >
       this template
-    </button>{' '}
+    </a>{' '}
     if you want.
   </Trans>
 );
