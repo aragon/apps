@@ -9,12 +9,7 @@ import {
 } from '@aragon/ui-components';
 import {withTransaction} from '@elastic/apm-rum-react';
 
-import {
-  DaoTokenBased,
-  DaoWhitelist,
-  useDaoTokenHolders,
-  useDaoWhitelist,
-} from 'hooks/useDaoMembers';
+import {useDaoTokenHolders, useDaoWhitelist} from 'hooks/useDaoMembers';
 import {useDaoParam} from 'hooks/useDaoParam';
 import {useDaoMetadata} from 'hooks/useDaoMetadata';
 import {Loading} from 'components/temporary';
