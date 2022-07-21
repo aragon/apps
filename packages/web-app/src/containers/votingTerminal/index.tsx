@@ -14,7 +14,7 @@ import {
 import {CheckboxListItem} from '@aragon/ui-components/src/components/checkbox';
 import {useTranslation} from 'react-i18next';
 import {IconClock} from '@aragon/ui-components';
-import {IlluObject} from '@aragon/ui-components/src';
+import {IlluObject} from '@aragon/ui-components';
 
 // TODO: Every string and data needed by the component is hardcoded for now.
 
