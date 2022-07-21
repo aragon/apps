@@ -9,7 +9,7 @@ import {IconLinkExternal, IconPerson} from '../icons';
 type TokenInfo = {
   amount: number;
   symbol: string;
-  percentage: number;
+  percentage: number | string;
 };
 
 export type ListItemAddressProps = ButtonHTMLAttributes<HTMLButtonElement> & {
