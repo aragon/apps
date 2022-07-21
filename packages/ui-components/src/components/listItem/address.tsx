@@ -33,7 +33,7 @@ export const ListItemAddress: FC<ListItemAddressProps> = ({
   return (
     <Container data-testid="listItem-address" {...props}>
       <LeftContent>
-        <Avatar src={IsAddress(src) ? src : constants.AddressZero} />
+        <Avatar src={src || ''} />
         <p className="font-bold">{shortenAddress(label)}</p>
       </LeftContent>
 
@@ -53,7 +53,7 @@ type AvatarProps = Pick<ListItemAddressProps, 'src'>;
 
 const Avatar: FC<AvatarProps> = ({src}) => {
   if (!src) return <IconPerson className="w-2.5 h-2.5" />;
-  return <AvatarWallet src={src} />;
+  return <AvatarWallet src={IsAddress(src) ? src : constants.AddressZero} />;
 };
 
 const Container = styled.button.attrs(() => {
