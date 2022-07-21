@@ -518,7 +518,11 @@
     "remainingTime": "{{time}} remaining",
     "voteNow": "Vote now",
     "notStartedYet": "Not started yet",
-    "voteEnded": "Voting ended"
+    "voteEnded": "Voting ended",
+    "emptyState": {
+      "title": "No result found for {{query}}",
+      "subtitle": "Search for another wallet or ENS address"
+    }
   },
   "explore": {
     "hero": {

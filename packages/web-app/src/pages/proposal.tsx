@@ -98,7 +98,6 @@ const Proposal: React.FC = () => {
 
   const getStatusLabel = useCallback(
     (status: string, endDate: number) => {
-      console.log(status);
       switch (status) {
         case 'pending':
           return t('votingTerminal.notStartedYet');
@@ -364,8 +363,8 @@ const Proposal: React.FC = () => {
           <CardExecution
             title="Execution"
             description="These smart actions are executed when the proposal reaches sufficient support. Find out which actions are executed."
-            to="Patito DAO"
-            from="0x3430008404144CD5000005A44B8ac3f4DB2a3434"
+            to="0x3430008404144CD5000005A44B8ac3f4DB2a3434"
+            from="Patito DAO"
             toLabel="To"
             fromLabel="From"
             tokenName="DAI"
