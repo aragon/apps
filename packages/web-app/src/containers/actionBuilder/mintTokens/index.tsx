@@ -99,7 +99,7 @@ const MintTokenDescription: React.FC = () => (
     Which wallet addresses should get tokens, and how much? Add the wallets you
     want here, and then choose the distribution. Upload a CSV with
     <button
-      className="font-bold rounded focus:ring-2 focus:outline-none text-primary-500 focus:ring-primary-500 hover:text-primary-700"
+      className="font-bold text-primary-500 hover:text-primary-700 rounded focus:ring-2 focus:ring-primary-500 focus:outline-none"
       onClick={() => alert('Download template')}
     >
       this template
