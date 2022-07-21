@@ -28,6 +28,12 @@ const MintTokens: React.FC<Props> = ({index}) => {
     append({address: '', amount: '0'});
   };
 
+  const handleReset = () => {
+    const resetIndex = new Array(fields.length).fill(1);
+    resetIndex.map((_, i) => i);
+    remove(resetIndex);
+  };
+
   const handleCSVUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const myFile = e.target.files[0];
@@ -58,6 +64,7 @@ const MintTokens: React.FC<Props> = ({index}) => {
       additionalInfo={t('newProposal.mintTokens.additionalInfo')}
       duplicateActionCallback={() => duplicateAction(index)}
       removeActionCallback={() => removeAction(index)}
+      resetActionCallback={handleReset}
     >
       <Container>
         {fields.map((field, index) => {
@@ -80,7 +87,7 @@ const MintTokens: React.FC<Props> = ({index}) => {
             onClick={handleAddWallet}
           />
 
-          <label className="flex-1 tablet:flex-initial py-1.5 px-2 space-x-1.5 h-6 font-bold hover:text-primary-500 bg-ui-0 rounded-xl cursor-pointer ft-text-base">
+          <label className="flex-1 tablet:flex-initial py-1.5 px-2 space-x-1.5 h-6 font-bold rounded-xl cursor-pointer hover:text-primary-500 bg-ui-0 ft-text-base">
             Upload CSV
             <input
               type="file"
@@ -125,7 +132,7 @@ const MintTokenDescription: React.FC = () => (
     <a
       href="data:text/csv;base64,QWRkcmVzcyxUb2tlbnMKMHgwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwLDEwLjUw"
       download="MintTokenTemplate.csv"
-      className="font-bold text-primary-500 hover:text-primary-700 rounded focus:ring-2 focus:ring-primary-500 focus:outline-none"
+      className="font-bold rounded focus:ring-2 focus:outline-none text-primary-500 hover:text-primary-700 focus:ring-primary-500"
     >
       this template
     </a>{' '}
