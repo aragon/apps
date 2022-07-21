@@ -80,7 +80,7 @@ const MintTokens: React.FC<Props> = ({index}) => {
             onClick={handleAddWallet}
           />
 
-          <label className="flex-1 tablet:flex-initial py-1.5 px-2 space-x-1.5 h-6 font-bold rounded-xl cursor-pointer bg-ui-0 hover:text-primary-500 ft-text-base">
+          <label className="flex-1 tablet:flex-initial py-1.5 px-2 space-x-1.5 h-6 font-bold hover:text-primary-500 bg-ui-0 rounded-xl cursor-pointer ft-text-base">
             Upload CSV
             <input
               type="file"
@@ -125,7 +125,7 @@ const MintTokenDescription: React.FC = () => (
     <a
       href="data:text/csv;base64,QWRkcmVzcyxUb2tlbnMKMHgwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwLDEwLjUw"
       download="MintTokenTemplate.csv"
-      className="font-bold rounded focus:ring-2 focus:outline-none text-primary-500 hover:text-primary-700 focus:ring-primary-500"
+      className="font-bold text-primary-500 hover:text-primary-700 rounded focus:ring-2 focus:ring-primary-500 focus:outline-none"
     >
       this template
     </a>{' '}
