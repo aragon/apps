@@ -20,9 +20,6 @@ type AccordionMethodType = {
   methodDescription?: string | React.ReactNode;
   additionalInfo?: string;
   dropdownItems: ListItemProps[];
-  duplicateActionCallback?: () => void;
-  resetActionCallback?: () => void;
-  removeActionCallback?: () => void;
 };
 
 export const AccordionMethod: React.FC<AccordionMethodType> = ({

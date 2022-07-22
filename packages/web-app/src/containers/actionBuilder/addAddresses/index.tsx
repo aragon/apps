@@ -22,7 +22,7 @@ type Props = {
 
 const AddAddresses: React.FC<Props> = ({index}) => {
   const {t} = useTranslation();
-  const {removeAction, duplicateAction} = useActionsContext();
+  const {removeAction} = useActionsContext();
 
   // form context
   const {control} = useFormContext();
@@ -137,9 +137,6 @@ const AddAddresses: React.FC<Props> = ({index}) => {
       smartContractName={t('labels.aragonCore')}
       methodDescription={t('labels.addWalletsDescription')}
       dropdownItems={methodActions}
-      duplicateActionCallback={() => duplicateAction(index)}
-      removeActionCallback={() => removeAction(index)}
-      resetActionCallback={handleResetAll}
     >
       {controlledWallets.length === 0 ? (
         <EmptyState
@@ -210,9 +207,10 @@ const AddAddresses: React.FC<Props> = ({index}) => {
                     <ListItemAction
                       title={t('labels.whitelistWallets.uploadCSV')}
                       bgWhite
+                      mode="disabled"
                     />
                   ),
-                  callback: () => alert('Not yet implemented'),
+                  callback: () => {},
                 },
               ]}
             />
