@@ -29,6 +29,8 @@
   "labels": {
     "members": "Members",
     "addMember": "Add Member",
+    "addWallets": "Add Wallet",
+    "addWalletsSubtitle": "Add a wallet to your DAO",
     "mintTokens": "Mint Tokens",
     "seeAllHolders": "See All Holders",
     "aragonCore": "Aragon Core",
