@@ -150,12 +150,15 @@ const AddAddresses: React.FC<Props> = ({index}) => {
         />
       ) : (
         <>
-          <FormItem className="pb-0">
-            <Label label="Address" />
+          <FormItem className="hidden desktop:block pb-0">
+            <Label label={t('labels.whitelistWallets.address')} />
           </FormItem>
           {controlledWallets.map((field, fieldIndex) => {
             return (
               <FormItem key={field.id}>
+                <div className="desktop:hidden mb-0.5 desktop:mb-0">
+                  <Label label={t('labels.whitelistWallets.address')} />
+                </div>
                 <AddressRow
                   actionIndex={index}
                   fieldIndex={fieldIndex}
