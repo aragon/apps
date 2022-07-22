@@ -25,7 +25,7 @@ const AddAddresses: React.FC<Props> = ({index}) => {
   const {removeAction} = useActionsContext();
 
   // form context
-  const {control} = useFormContext();
+  const {control, trigger} = useFormContext();
   const memberWallets = useWatch({
     name: `actions.${index}.inputs.memberWallets`,
     control,
@@ -78,6 +78,9 @@ const AddAddresses: React.FC<Props> = ({index}) => {
   // remove single row
   const handleRowDelete = (index: number) => {
     remove(index);
+    setTimeout(() => {
+      trigger(`actions.${index}.inputs.memberWallets`);
+    }, 50);
   };
 
   // add empty wallet
