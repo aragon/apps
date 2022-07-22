@@ -1,7 +1,7 @@
 import React from 'react';
 import {IlluObject, ButtonText} from '@aragon/ui-components';
 
-import {FormGroup} from '.';
+import {FormItem} from '.';
 
 type Props = {
   onClick: () => void;
@@ -17,7 +17,7 @@ const EmptyState: React.FC<Props> = ({
   buttonLabel,
 }) => {
   return (
-    <FormGroup className="rounded-b-xl">
+    <FormItem className="rounded-b-xl">
       <div className="flex flex-col justify-center items-center">
         <IlluObject object="wallet" />
         <div className="flex flex-col items-center">
@@ -33,7 +33,7 @@ const EmptyState: React.FC<Props> = ({
           />
         </div>
       </div>
-    </FormGroup>
+    </FormItem>
   );
 };
 

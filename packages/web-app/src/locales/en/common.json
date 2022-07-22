@@ -29,8 +29,8 @@
   "labels": {
     "members": "Members",
     "addMember": "Add Member",
-    "addWallets": "Add Wallet",
-    "addWalletsSubtitle": "Add a wallet to your DAO",
+    "addWallets": "Add Wallets",
+    "addWalletsDescription": "Add as many wallets as you like to the DAO. These are authorized to create proposals, request transactions or suggest changes to the DAO settings from the time of initial creation.",
     "mintTokens": "Mint Tokens",
     "seeAllHolders": "See All Holders",
     "aragonCore": "Aragon Core",
@@ -46,6 +46,7 @@
     "amount": "Amount",
     "reference": "Reference",
     "address": "Token Contract Address",
+    "clear": "Clear",
     "copy": "Copy",
     "paste": "Paste",
     "max": "Max",
@@ -118,7 +119,9 @@
       "resetEntry": "Reset Entry",
       "deleteEntry": "Delete Entry",
       "resetAllEntries": "Reset All Entries",
-      "deleteAllEntries": "Delete All Entries"
+      "deleteAllEntries": "Delete All Entries",
+      "noWallets": "No Wallets",
+      "addWalletsSubtitle": "Add a wallet to your DAO"
     },
     "review": {
       "blockchain": "Blockchain",
