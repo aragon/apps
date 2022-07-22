@@ -43,6 +43,8 @@ const AddAddresses: React.FC<Props> = ({index: actionIndex}) => {
     };
   });
 
+  console.log(controlledWallets.filter(wallet => wallet.address));
+
   /*************************************************
    *                Hooks & Effects                *
    *************************************************/
