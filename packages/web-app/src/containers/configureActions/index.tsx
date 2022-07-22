@@ -13,6 +13,8 @@ const ConfigureActions: React.FC = () => {
   const {open} = useGlobalModalContext();
   const {actions} = useActionsContext();
 
+  console.log('actions', actions);
+
   return (
     <>
       <FormItem>
