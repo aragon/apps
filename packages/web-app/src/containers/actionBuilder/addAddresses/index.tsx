@@ -43,8 +43,6 @@ const AddAddresses: React.FC<Props> = ({index}) => {
     };
   });
 
-  console.log(controlledWallets.filter(wallet => wallet.address));
-
   /*************************************************
    *                Hooks & Effects                *
    *************************************************/
@@ -87,6 +85,32 @@ const AddAddresses: React.FC<Props> = ({index}) => {
     append({address: ''});
   };
 
+  // separating this because rows sometimes don't have the same actions
+  const rowActions = [
+    {
+      component: (
+        <ListItemAction
+          title={t('labels.whitelistWallets.resetEntry')}
+          bgWhite
+        />
+      ),
+      callback: () => {
+        handleRowReset(index);
+      },
+    },
+    {
+      component: (
+        <ListItemAction
+          title={t('labels.whitelistWallets.deleteEntry')}
+          bgWhite
+        />
+      ),
+      callback: () => {
+        handleRowDelete(index);
+      },
+    },
+  ];
+
   /*************************************************
    *                    Render                    *
    *************************************************/
@@ -119,8 +143,7 @@ const AddAddresses: React.FC<Props> = ({index}) => {
                 <AddressRow
                   actionIndex={index}
                   fieldIndex={fieldIndex}
-                  onResetAddress={handleRowReset}
-                  onDeleteAddress={handleRowDelete}
+                  dropdownItems={rowActions}
                 />
               </FormItem>
             );
@@ -173,7 +196,7 @@ const AddAddresses: React.FC<Props> = ({index}) => {
                       bgWhite
                     />
                   ),
-                  callback: handleDeleteAll,
+                  callback: () => alert('Not yet implemented'),
                 },
               ]}
             />

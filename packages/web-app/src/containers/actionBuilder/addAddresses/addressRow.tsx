@@ -1,10 +1,10 @@
 import {
-  ButtonIcon,
-  IconMenuVertical,
-  ListItemAction,
   AlertInline,
-  ValueInput,
+  ButtonIcon,
   Dropdown,
+  IconMenuVertical,
+  ListItemProps,
+  ValueInput,
 } from '@aragon/ui-components';
 import styled from 'styled-components';
 import {useTranslation} from 'react-i18next';
@@ -18,8 +18,7 @@ import {handleClipboardActions} from 'utils/library';
 type Props = {
   actionIndex: number;
   fieldIndex: number;
-  onResetAddress: (index: number) => void;
-  onDeleteAddress: (index: number) => void;
+  dropdownItems: ListItemProps[];
 };
 
 export const AddressRow = ({actionIndex, fieldIndex, ...props}: Props) => {
@@ -104,30 +103,7 @@ export const AddressRow = ({actionIndex, fieldIndex, ...props}: Props) => {
                 bgWhite
               />
             }
-            listItems={[
-              {
-                component: (
-                  <ListItemAction
-                    title={t('labels.whitelistWallets.resetEntry')}
-                    bgWhite
-                  />
-                ),
-                callback: () => {
-                  props.onResetAddress(actionIndex);
-                },
-              },
-              {
-                component: (
-                  <ListItemAction
-                    title={t('labels.whitelistWallets.deleteEntry')}
-                    bgWhite
-                  />
-                ),
-                callback: () => {
-                  props.onDeleteAddress(actionIndex);
-                },
-              },
-            ]}
+            listItems={props.dropdownItems}
           />
         </Container>
       )}
