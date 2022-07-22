@@ -111,6 +111,21 @@ const AddAddresses: React.FC<Props> = ({index}) => {
     },
   ];
 
+  const methodActions = [
+    {
+      component: <ListItemAction title={t('labels.resetAction')} bgWhite />,
+      callback: handleResetAll,
+    },
+    {
+      component: (
+        <ListItemAction title={t('labels.removeEntireAction')} bgWhite />
+      ),
+      callback: () => {
+        removeAction(index);
+      },
+    },
+  ];
+
   /*************************************************
    *                    Render                    *
    *************************************************/
@@ -121,6 +136,7 @@ const AddAddresses: React.FC<Props> = ({index}) => {
       methodName={t('labels.addWallets')}
       smartContractName={t('labels.aragonCore')}
       methodDescription={t('labels.addWalletsDescription')}
+      dropdownItems={methodActions}
       duplicateActionCallback={() => duplicateAction(index)}
       removeActionCallback={() => removeAction(index)}
       resetActionCallback={handleResetAll}

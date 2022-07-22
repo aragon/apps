@@ -1,4 +1,4 @@
-import {ButtonText} from '@aragon/ui-components';
+import {ButtonText, ListItemAction} from '@aragon/ui-components';
 import {Trans, useTranslation} from 'react-i18next';
 import {useFieldArray} from 'react-hook-form';
 import React, {useEffect} from 'react';
@@ -59,6 +59,25 @@ const MintTokens: React.FC<Props> = ({index}) => {
     }
   };
 
+  const methodActions = [
+    {
+      component: <ListItemAction title={t('labels.duplicateAction')} bgWhite />,
+      callback: () => duplicateAction(index),
+    },
+    {
+      component: <ListItemAction title={t('labels.resetAction')} bgWhite />,
+      callback: handleReset,
+    },
+    {
+      component: (
+        <ListItemAction title={t('labels.removeEntireAction')} bgWhite />
+      ),
+      callback: () => {
+        removeAction(index);
+      },
+    },
+  ];
+
   return (
     <AccordionMethod
       type="action-builder"
@@ -67,9 +86,7 @@ const MintTokens: React.FC<Props> = ({index}) => {
       verified
       methodDescription={<MintTokenDescription />}
       additionalInfo={t('newProposal.mintTokens.additionalInfo')}
-      duplicateActionCallback={() => duplicateAction(index)}
-      removeActionCallback={() => removeAction(index)}
-      resetActionCallback={handleReset}
+      dropdownItems={methodActions}
     >
       <Container>
         {fields.map((field, index) => {

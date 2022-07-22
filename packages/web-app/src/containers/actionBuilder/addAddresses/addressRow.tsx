@@ -94,6 +94,7 @@ export const AddressRow = ({actionIndex, fieldIndex, ...props}: Props) => {
             side="bottom"
             align="start"
             sideOffset={4}
+            listItems={props.dropdownItems}
             trigger={
               <ButtonIcon
                 size="large"
@@ -103,7 +104,6 @@ export const AddressRow = ({actionIndex, fieldIndex, ...props}: Props) => {
                 bgWhite
               />
             }
-            listItems={props.dropdownItems}
           />
         </Container>
       )}
