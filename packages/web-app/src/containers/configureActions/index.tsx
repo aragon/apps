@@ -31,12 +31,13 @@ const ConfigureActions: React.FC = () => {
               label={t('newProposal.configureActions.addAction')}
               iconLeft={<IconAdd />}
               onClick={() => open('addAction')}
-              className="mt-2"
+              className="mt-2 w-full tablet:w-max"
             />
           </ActionsWrapper>
         ) : (
           <>
-            <div className="flex flex-col items-center p-6 text-center bg-ui-0 rounded-xl">
+            {/* TODO: Refactor with StateEmpty component. Checkout APP-734 */}
+            <div className="flex flex-col items-center p-6 text-center rounded-xl bg-ui-0">
               <IlluObject object="smart_contract" />
               <h1 className="mt-1 text-xl font-bold text-ui-800">
                 {t('newProposal.configureActions.addFirstAction')}

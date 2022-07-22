@@ -22,7 +22,8 @@ const MintTokens: React.FC<Props> = ({index}) => {
     if (fields.length === 0) {
       append({address: '', amount: '0'});
     }
-  }, [append, fields.length]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleAddWallet = () => {
     append({address: '', amount: '0'});
@@ -30,8 +31,7 @@ const MintTokens: React.FC<Props> = ({index}) => {
 
   const handleReset = () => {
     const resetIndex = new Array(fields.length).fill(1);
-    resetIndex.map((_, i) => i);
-    remove(resetIndex);
+    remove(resetIndex.map((_, i) => i));
   };
 
   const handleCSVUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,7 +48,9 @@ const MintTokens: React.FC<Props> = ({index}) => {
             if (tuple[0] === 'Address' && tuple[1] === 'Tokens' && i === 0) {
               continue;
             }
-            append({address: tuple[0], amount: tuple[1]});
+            if (tuple[0] && tuple[1]) {
+              append({address: tuple[0], amount: tuple[1]});
+            }
           }
         }
       };
