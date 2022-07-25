@@ -12,21 +12,16 @@ import ModalBottomSheetSwitcher from 'components/modalBottomSheetSwitcher';
 import {useGlobalModalContext} from 'context/globalModals';
 import {shortenAddress} from '@aragon/ui-components/src/utils/addresses';
 
-const wallets = [
-  'web3rules.eth',
-  '0x10656c07e857B7f3338EA26ECD9A0936a24c0ae3',
-  '0x13456c07e857B7f3338EA26ECD9A0936a24c0fd1',
-  'dao.eth',
-];
-
 type ManageWalletsModalProps = {
   addWalletCallback: (wallets: Array<string>) => void;
   resetOnClose?: boolean;
+  wallets: Array<string>;
 };
 
 const ManageWalletsModal: React.FC<ManageWalletsModalProps> = ({
   addWalletCallback,
   resetOnClose = false,
+  wallets,
 }) => {
   const [searchValue, setSearchValue] = useState('');
   const [selectedWallets, setSelectedWallets] = useState<
@@ -46,7 +41,7 @@ const ManageWalletsModal: React.FC<ManageWalletsModalProps> = ({
     } else {
       return wallets;
     }
-  }, [searchValue]);
+  }, [searchValue, wallets]);
 
   const handleSelectWallet = (wallet: string) => {
     const tempSelectedWallets = {...selectedWallets};

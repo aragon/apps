@@ -17,7 +17,7 @@ const EmptyState: React.FC<Props> = ({
   buttonLabel,
 }) => {
   return (
-    <FormItem className="rounded-b-xl">
+    <FormItem className="pt-3 pb-3 rounded-b-xl">
       <div className="flex flex-col justify-center items-center">
         <IlluObject object="wallet" />
         <div className="flex flex-col items-center">

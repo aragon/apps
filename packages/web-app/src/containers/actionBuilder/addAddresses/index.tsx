@@ -157,7 +157,7 @@ const AddAddresses: React.FC<Props> = ({index: actionIndex}) => {
         />
       ) : (
         <>
-          <FormItem className="hidden desktop:block pb-0">
+          <FormItem className="hidden desktop:block py-1.5">
             <Label label={t('labels.whitelistWallets.address')} />
           </FormItem>
           {controlledWallets.map((field, fieldIndex) => {
@@ -176,7 +176,7 @@ const AddAddresses: React.FC<Props> = ({index: actionIndex}) => {
           })}
           <FormItem className="flex justify-between">
             <ButtonText
-              label="Add Wallet"
+              label={t('labels.addWallet')}
               mode="secondary"
               size="large"
               bgWhite
@@ -228,15 +228,9 @@ const AddAddresses: React.FC<Props> = ({index: actionIndex}) => {
               ]}
             />
           </FormItem>
-          <AccordionFooter>
-            <BoldedText>Summary</BoldedText>
-            <div className="flex justify-between">
-              <p className="text-ui-600 ft-text-base">Total Wallets</p>
-              <BoldedText>
-                {controlledWallets.filter(wallet => wallet.address).length}
-              </BoldedText>
-            </div>
-          </AccordionFooter>
+          <AccordionFooter
+            total={controlledWallets.filter(wallet => wallet.address).length}
+          />
         </>
       )}
     </AccordionMethod>
@@ -246,12 +240,12 @@ const AddAddresses: React.FC<Props> = ({index: actionIndex}) => {
 export default AddAddresses;
 
 export const FormItem = styled.div.attrs({
-  className: 'p-3 bg-ui-0 border border-ui-100 border-t-0' as
+  className: 'px-3 py-1.5 bg-ui-0 border border-ui-100 border-t-0' as
     | string
     | undefined,
 })``;
 
-const AccordionFooter = styled.div.attrs({
+const Footer = styled.div.attrs({
   className:
     'space-y-1.5 p-3 bg-ui-0 rounded-b-xl border border-t-0 border-ui-100 ',
 })``;
@@ -259,3 +253,13 @@ const AccordionFooter = styled.div.attrs({
 const BoldedText = styled.span.attrs({
   className: 'font-bold text-ui-800 ft-text-base',
 })``;
+
+export const AccordionFooter: React.FC<{total: number}> = ({total}) => (
+  <Footer>
+    <BoldedText>Summary</BoldedText>
+    <div className="flex justify-between">
+      <p className="text-ui-600 ft-text-base">Total Wallets</p>
+      <BoldedText>{total}</BoldedText>
+    </div>
+  </Footer>
+);
