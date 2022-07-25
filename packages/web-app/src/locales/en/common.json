@@ -149,7 +149,10 @@
     "daoSettings": "DAO Settings",
     "selectWallets": "Select Wallets",
     "cancel": "Cancel",
+    "addSingleWallet": "Add 1 Wallet",
+    "singleAddressSelected": "1 Address selected",
     "addNWallets": "Add {{walletCount}} Wallets",
+    "nAddressesSelected": "{{walletCount}} Addresses selected",
     "noAddressSelected": "No address selected"
   },
   "placeHolders": {

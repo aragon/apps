@@ -32,7 +32,8 @@ const ManageWalletsModal: React.FC<ManageWalletsModalProps> = ({
   const [searchValue, setSearchValue] = useState('');
   const [selectedWallets, setSelectedWallets] = useState<SelectableWallets>({});
 
-  const selectAll = Object.keys(selectedWallets).length === wallets.length;
+  const selectedWalletsNum = Object.keys(selectedWallets).length;
+  const selectAll = selectedWalletsNum === wallets.length;
 
   const filteredWallets = useMemo(() => {
     if (searchValue !== '') {
@@ -89,13 +90,34 @@ const ManageWalletsModal: React.FC<ManageWalletsModalProps> = ({
   };
 
   // handles cleanup after modal is closed.
-  // @Rakesh considering the initialSelection state, is it
+  // @RakeshUp considering the initialSelection state, is it
   // still necessary to include the resetOnclose logic?
   const handleClose = () => {
     setSearchValue('');
     setSelectedWallets({});
     close('manageWallet');
   };
+
+  const labels = useMemo(() => {
+    if (selectedWalletsNum === 0) {
+      return {
+        button: t('labels.selectWallets'),
+        label: t('labels.noAddressSelected'),
+      };
+    } else if (selectedWalletsNum === 1) {
+      return {
+        button: t('labels.addSingleWallet'),
+        label: t('labels.singleAddressSelected'),
+      };
+    } else {
+      return {
+        button: t('labels.addNWallets', {walletCount: selectedWalletsNum}),
+        label: t('labels.nAddressesSelected', {
+          walletCount: selectedWalletsNum,
+        }),
+      };
+    }
+  }, [selectedWalletsNum, t]);
 
   return (
     <ModalBottomSheetSwitcher
@@ -114,10 +136,7 @@ const ManageWalletsModal: React.FC<ManageWalletsModalProps> = ({
       </ModalHeader>
       <Container>
         <SelectAllContainer>
-          <p className="text-ui-400">
-            {Object.keys(selectedWallets).length === 0 &&
-              t('labels.noAddressSelected')}
-          </p>
+          <p className="text-ui-400">{labels.label as string}</p>
           <CheckboxSimple
             label="Select All"
             multiSelect
@@ -142,13 +161,7 @@ const ManageWalletsModal: React.FC<ManageWalletsModalProps> = ({
 
       <ButtonContainer>
         <ButtonText
-          label={
-            Object.keys(selectedWallets).length === 0
-              ? t('labels.selectWallets')
-              : t('labels.addNWallets', {
-                  walletCount: Object.keys(selectedWallets).length,
-                })
-          }
+          label={labels.button as string}
           size="large"
           onClick={() => {
             addWalletCallback(Object.keys(selectedWallets));
