@@ -20,26 +20,26 @@ type Props = {
   index: number;
 };
 
-const AddAddresses: React.FC<Props> = ({index}) => {
+const AddAddresses: React.FC<Props> = ({index: actionIndex}) => {
   const {t} = useTranslation();
   const {removeAction} = useActionsContext();
 
   // form context
   const {control, trigger} = useFormContext();
   const memberWallets = useWatch({
-    name: `actions.${index}.inputs.memberWallets`,
+    name: `actions.${actionIndex}.inputs.memberWallets`,
     control,
   });
 
   const {fields, update, replace, append, remove} = useFieldArray({
     control,
-    name: `actions.${index}.inputs.memberWallets`,
+    name: `actions.${actionIndex}.inputs.memberWallets`,
   });
 
-  const controlledWallets = fields.map((field, index) => {
+  const controlledWallets = fields.map((field, ctrlledIndex) => {
     return {
       ...field,
-      ...(memberWallets && {...memberWallets[index]}),
+      ...(memberWallets && {...memberWallets[ctrlledIndex]}),
     };
   });
 
@@ -68,6 +68,12 @@ const AddAddresses: React.FC<Props> = ({index}) => {
   // reset single row
   const handleRowReset = (index: number) => {
     update(index, {address: ''});
+
+    // this is quite unfortunate, but now empty fields will all be validated
+    // on row reset. Turn off required validation for row if that is not desired
+    setTimeout(() => {
+      trigger(`actions.${actionIndex}.inputs.memberWallets`);
+    }, 50);
   };
 
   // remove all rows
@@ -79,7 +85,7 @@ const AddAddresses: React.FC<Props> = ({index}) => {
   const handleRowDelete = (index: number) => {
     remove(index);
     setTimeout(() => {
-      trigger(`actions.${index}.inputs.memberWallets`);
+      trigger(`actions.${actionIndex}.inputs.memberWallets`);
     }, 50);
   };
 
@@ -97,8 +103,8 @@ const AddAddresses: React.FC<Props> = ({index}) => {
           bgWhite
         />
       ),
-      callback: () => {
-        handleRowReset(index);
+      callback: (rowIndex: number) => {
+        handleRowReset(rowIndex);
       },
     },
     {
@@ -108,8 +114,8 @@ const AddAddresses: React.FC<Props> = ({index}) => {
           bgWhite
         />
       ),
-      callback: () => {
-        handleRowDelete(index);
+      callback: (rowIndex: number) => {
+        handleRowDelete(rowIndex);
       },
     },
   ];
@@ -124,7 +130,7 @@ const AddAddresses: React.FC<Props> = ({index}) => {
         <ListItemAction title={t('labels.removeEntireAction')} bgWhite />
       ),
       callback: () => {
-        removeAction(index);
+        removeAction(actionIndex);
       },
     },
   ];
@@ -160,7 +166,7 @@ const AddAddresses: React.FC<Props> = ({index}) => {
                   <Label label={t('labels.whitelistWallets.address')} />
                 </div>
                 <AddressRow
-                  actionIndex={index}
+                  actionIndex={actionIndex}
                   fieldIndex={fieldIndex}
                   dropdownItems={rowActions}
                 />

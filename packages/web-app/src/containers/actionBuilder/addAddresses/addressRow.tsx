@@ -3,7 +3,6 @@ import {
   ButtonIcon,
   Dropdown,
   IconMenuVertical,
-  ListItemProps,
   ValueInput,
 } from '@aragon/ui-components';
 import styled from 'styled-components';
@@ -18,7 +17,10 @@ import {handleClipboardActions} from 'utils/library';
 type Props = {
   actionIndex: number;
   fieldIndex: number;
-  dropdownItems: ListItemProps[];
+  dropdownItems: Array<{
+    component: React.ReactNode;
+    callback: (index: number) => void;
+  }>;
 };
 
 export const AddressRow = ({actionIndex, fieldIndex, ...props}: Props) => {
@@ -71,7 +73,7 @@ export const AddressRow = ({actionIndex, fieldIndex, ...props}: Props) => {
       control={control}
       rules={{
         required: t('errors.required.walletAddress'),
-        validate: value => addressValidator(value, actionIndex),
+        validate: value => addressValidator(value, fieldIndex),
       }}
       render={({field: {onChange, value}, fieldState: {error}}) => (
         <Container>
@@ -94,7 +96,10 @@ export const AddressRow = ({actionIndex, fieldIndex, ...props}: Props) => {
             side="bottom"
             align="start"
             sideOffset={4}
-            listItems={props.dropdownItems}
+            listItems={props.dropdownItems.map(item => ({
+              component: item.component,
+              callback: () => item.callback(fieldIndex),
+            }))}
             trigger={
               <ButtonIcon
                 size="large"
