@@ -33,6 +33,8 @@
     "removeWallets": "Remove Wallets",
     "addWalletsDescription": "Add as many wallets as you like to the DAO. These are authorized to create proposals, request transactions or suggest changes to the DAO settings from the time of initial creation.",
     "removeWalletsDescription": "Remove existing wallets from the authorised list of this particular DAO.",
+    "summary": "Summary",
+    "totalWallets": "Total Wallets",
     "mintTokens": "Mint Tokens",
     "seeAllHolders": "See All Holders",
     "aragonCore": "Aragon Core",

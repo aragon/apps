@@ -13,6 +13,7 @@ import {useFieldArray, useFormContext, useWatch} from 'react-hook-form';
 
 import EmptyState from './emptyState';
 import {AddressRow} from './addressRow';
+import AccordionSummary from './accordionSummary';
 import {AccordionMethod} from 'components/accordionMethod';
 import {useActionsContext} from 'context/actions';
 
@@ -228,7 +229,7 @@ const AddAddresses: React.FC<Props> = ({index: actionIndex}) => {
               ]}
             />
           </FormItem>
-          <AccordionFooter
+          <AccordionSummary
             total={controlledWallets.filter(wallet => wallet.address).length}
           />
         </>
@@ -244,22 +245,3 @@ export const FormItem = styled.div.attrs({
     | string
     | undefined,
 })``;
-
-const Footer = styled.div.attrs({
-  className:
-    'space-y-1.5 p-3 bg-ui-0 rounded-b-xl border border-t-0 border-ui-100 ',
-})``;
-
-const BoldedText = styled.span.attrs({
-  className: 'font-bold text-ui-800 ft-text-base',
-})``;
-
-export const AccordionFooter: React.FC<{total: number}> = ({total}) => (
-  <Footer>
-    <BoldedText>Summary</BoldedText>
-    <div className="flex justify-between">
-      <p className="text-ui-600 ft-text-base">Total Wallets</p>
-      <BoldedText>{total}</BoldedText>
-    </div>
-  </Footer>
-);

@@ -38,13 +38,21 @@ export const AddressRow = ({actionIndex, fieldIndex, ...props}: Props) => {
    *************************************************/
   const handleAdornmentClick = useCallback(
     (value: string, onChange: (value: string) => void) => {
+      // allow the user to copy the address even when input is disabled
+      if (props.disabled) {
+        handleClipboardActions(value, onChange);
+        return;
+      }
+
+      // if the input is not disabled, when there is a value clear it,
+      // paste from clipboard, and set the value
       if (value) {
         onChange('');
       } else {
         handleClipboardActions(value, onChange);
       }
     },
-    []
+    [props.disabled]
   );
 
   const addressValidator = useCallback(
@@ -64,6 +72,7 @@ export const AddressRow = ({actionIndex, fieldIndex, ...props}: Props) => {
     [t, memberWallets]
   );
 
+  // gets the proper label for adornment button. ick.
   const getAdornmentText = (value: string) => {
     if (props.disabled) return t('labels.copy');
     return value ? t('labels.clear') : t('labels.paste');

@@ -10,6 +10,7 @@ type Props = {
   buttonLabel: string;
 };
 
+// This needs to be removed when the empty state is implemented
 const EmptyState: React.FC<Props> = ({
   onClick,
   title,

@@ -1,11 +1,3 @@
-import React, {useState} from 'react';
-import {useTranslation} from 'react-i18next';
-
-import EmptyState from '../addAddresses/emptyState';
-import {useActionsContext} from 'context/actions';
-import {useDaoWhitelist} from 'hooks/useDaoMembers';
-import {useDaoParam} from 'hooks/useDaoParam';
-import {AccordionMethod} from 'components/accordionMethod';
 import {
   ButtonIcon,
   ButtonText,
@@ -14,11 +6,20 @@ import {
   Label,
   ListItemAction,
 } from '@aragon/ui-components';
-import ManageWalletsModal from 'containers/manageWalletsModal';
-import {useGlobalModalContext} from 'context/globalModals';
+import {useTranslation} from 'react-i18next';
+import React, {useState} from 'react';
 import {useFormContext, useWatch, useFieldArray} from 'react-hook-form';
+
+import EmptyState from '../addAddresses/emptyState';
+import {FormItem} from '../addAddresses';
 import {AddressRow} from '../addAddresses/addressRow';
-import {FormItem, AccordionFooter} from '../addAddresses';
+import {useDaoParam} from 'hooks/useDaoParam';
+import AccordionSummary from '../addAddresses/accordionSummary';
+import {useDaoWhitelist} from 'hooks/useDaoMembers';
+import {AccordionMethod} from 'components/accordionMethod';
+import ManageWalletsModal from 'containers/manageWalletsModal';
+import {useActionsContext} from 'context/actions';
+import {useGlobalModalContext} from 'context/globalModals';
 
 type Props = {
   index: number;
@@ -29,19 +30,19 @@ const RemoveAddresses: React.FC<Props> = ({index: actionIndex}) => {
 
   const {removeAction} = useActionsContext();
 
+  // dao data
   const {data: dao} = useDaoParam();
   const {data: members} = useDaoWhitelist(dao);
 
-  const membersListKey = `actions.${actionIndex}.inputs.memberWallets`;
+  // form context data & hooks
   const {control} = useFormContext();
-
-  const memberWallets = useWatch({name: membersListKey, control});
-
-  const {fields, update, replace, remove} = useFieldArray({
+  const membersListKey = `actions.${actionIndex}.inputs.memberWallets`;
+  const {fields, replace, remove} = useFieldArray({
     control,
     name: membersListKey,
   });
 
+  const memberWallets = useWatch({name: membersListKey, control});
   const controlledWallets = fields.map((field, ctrlledIndex) => {
     return {
       ...field,
@@ -49,26 +50,24 @@ const RemoveAddresses: React.FC<Props> = ({index: actionIndex}) => {
     };
   });
 
+  // modal state
   const {open} = useGlobalModalContext();
   const [selectedWallets, setSelectedWallets] = useState<
     Record<string, boolean>
   >(() => {
     const temp = {} as Record<string, boolean>;
+
     controlledWallets.forEach(({address}) => {
       temp[address] = true;
     });
-
     return temp;
   });
 
-  const handleSelectWallet = (wallet: string) => {
-    const tempSelectedWallets = {...selectedWallets};
-    tempSelectedWallets[wallet]
-      ? delete tempSelectedWallets[wallet]
-      : (tempSelectedWallets[wallet] = true);
-    setSelectedWallets(tempSelectedWallets);
-  };
-
+  /*************************************************
+   *             Callbacks and Handlers            *
+   *************************************************/
+  // Modal Handlers
+  // handles select all checkbox
   const handleSelectAll = () => {
     const tempSelectedWallets = {...selectedWallets};
     members.forEach(member => {
@@ -77,16 +76,21 @@ const RemoveAddresses: React.FC<Props> = ({index: actionIndex}) => {
     setSelectedWallets(tempSelectedWallets);
   };
 
-  const handleAddWallets = (wallets: Array<string>) => {
+  // handles checkbox selection for individual wallets
+  const handleSelectWallet = (wallet: string) => {
+    const tempSelectedWallets = {...selectedWallets};
+    tempSelectedWallets[wallet]
+      ? delete tempSelectedWallets[wallet]
+      : (tempSelectedWallets[wallet] = true);
+    setSelectedWallets(tempSelectedWallets);
+  };
+
+  // handles modal Select wallets button
+  const handleAddSelectedWallets = (wallets: Array<string>) => {
     replace(wallets.map(address => ({address})));
   };
 
-  function handleResetAll() {
-    controlledWallets.forEach((_, index) => {
-      update(index, {address: ''});
-    });
-  }
-
+  // Action Handlers
   function handleRowDelete(rowIndex: number) {
     remove(rowIndex);
   }
@@ -110,10 +114,6 @@ const RemoveAddresses: React.FC<Props> = ({index: actionIndex}) => {
   ];
 
   const methodActions = [
-    {
-      component: <ListItemAction title={t('labels.resetAction')} bgWhite />,
-      callback: handleResetAll,
-    },
     {
       component: (
         <ListItemAction title={t('labels.removeEntireAction')} bgWhite />
@@ -189,15 +189,6 @@ const RemoveAddresses: React.FC<Props> = ({index: actionIndex}) => {
                   {
                     component: (
                       <ListItemAction
-                        title={t('labels.whitelistWallets.resetAllEntries')}
-                        bgWhite
-                      />
-                    ),
-                    callback: handleResetAll,
-                  },
-                  {
-                    component: (
-                      <ListItemAction
                         title={t('labels.whitelistWallets.deleteAllEntries')}
                         bgWhite
                       />
@@ -217,12 +208,12 @@ const RemoveAddresses: React.FC<Props> = ({index: actionIndex}) => {
                 ]}
               />
             </FormItem>
-            <AccordionFooter total={controlledWallets.length} />
+            <AccordionSummary total={controlledWallets.length} />
           </>
         )}
 
         <ManageWalletsModal
-          addWalletCallback={handleAddWallets}
+          addWalletCallback={handleAddSelectedWallets}
           wallets={members?.map(member => member.id) || []}
           selectedWallets={selectedWallets}
           handleSelectWallet={handleSelectWallet}
