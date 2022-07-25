@@ -94,6 +94,7 @@ const AddAddresses: React.FC<Props> = ({index: actionIndex}) => {
     append({address: ''});
   };
 
+  // TODO: extract actions out of component
   // separating this because rows sometimes don't have the same actions
   const rowActions = [
     {
