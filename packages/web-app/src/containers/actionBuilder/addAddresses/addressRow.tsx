@@ -21,6 +21,7 @@ type Props = {
     component: React.ReactNode;
     callback: (index: number) => void;
   }>;
+  disabled?: boolean;
 };
 
 export const AddressRow = ({actionIndex, fieldIndex, ...props}: Props) => {
@@ -63,6 +64,11 @@ export const AddressRow = ({actionIndex, fieldIndex, ...props}: Props) => {
     [t, memberWallets]
   );
 
+  const getAdornmentText = (value: string) => {
+    if (props.disabled) return t('labels.copy');
+    return value ? t('labels.clear') : t('labels.paste');
+  };
+
   /*************************************************
    *                    Render                    *
    *************************************************/
@@ -85,8 +91,9 @@ export const AddressRow = ({actionIndex, fieldIndex, ...props}: Props) => {
               }}
               mode="default"
               placeholder="0x..."
-              adornmentText={value ? t('labels.clear') : t('labels.paste')}
+              adornmentText={getAdornmentText(value)}
               onAdornmentClick={() => handleAdornmentClick(value, onChange)}
+              disabled={props.disabled}
             />
             {error?.message && (
               <AlertInline label={error.message} mode="critical" />

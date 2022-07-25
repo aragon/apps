@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import EmptyState from '../addAddresses/emptyState';
@@ -26,7 +26,6 @@ type Props = {
 
 const RemoveAddresses: React.FC<Props> = ({index: actionIndex}) => {
   const {t} = useTranslation();
-  const {open} = useGlobalModalContext();
 
   const {removeAction} = useActionsContext();
 
@@ -49,6 +48,34 @@ const RemoveAddresses: React.FC<Props> = ({index: actionIndex}) => {
       ...(memberWallets && {...memberWallets[ctrlledIndex]}),
     };
   });
+
+  const {open} = useGlobalModalContext();
+  const [selectedWallets, setSelectedWallets] = useState<
+    Record<string, boolean>
+  >(() => {
+    const temp = {} as Record<string, boolean>;
+    controlledWallets.forEach(({address}) => {
+      temp[address] = true;
+    });
+
+    return temp;
+  });
+
+  const handleSelectWallet = (wallet: string) => {
+    const tempSelectedWallets = {...selectedWallets};
+    tempSelectedWallets[wallet]
+      ? delete tempSelectedWallets[wallet]
+      : (tempSelectedWallets[wallet] = true);
+    setSelectedWallets(tempSelectedWallets);
+  };
+
+  const handleSelectAll = () => {
+    const tempSelectedWallets = {...selectedWallets};
+    members.forEach(member => {
+      tempSelectedWallets[member.id] = true;
+    });
+    setSelectedWallets(tempSelectedWallets);
+  };
 
   const handleAddWallets = (wallets: Array<string>) => {
     replace(wallets.map(address => ({address})));
@@ -128,6 +155,7 @@ const RemoveAddresses: React.FC<Props> = ({index: actionIndex}) => {
                   <Label label={t('labels.whitelistWallets.address')} />
                 </div>
                 <AddressRow
+                  disabled
                   key={field.id}
                   actionIndex={actionIndex}
                   fieldIndex={fieldIndex}
@@ -196,6 +224,9 @@ const RemoveAddresses: React.FC<Props> = ({index: actionIndex}) => {
         <ManageWalletsModal
           addWalletCallback={handleAddWallets}
           wallets={members?.map(member => member.id) || []}
+          selectedWallets={selectedWallets}
+          handleSelectWallet={handleSelectWallet}
+          handleSelectAll={handleSelectAll}
         />
       </AccordionMethod>
     </>

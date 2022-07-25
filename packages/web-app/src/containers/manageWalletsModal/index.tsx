@@ -16,18 +16,21 @@ type ManageWalletsModalProps = {
   addWalletCallback: (wallets: Array<string>) => void;
   resetOnClose?: boolean;
   wallets: Array<string>;
+  selectedWallets: Record<string, boolean>;
+  handleSelectWallet: (wallet: string) => void;
+  handleSelectAll: () => void;
 };
 
 const ManageWalletsModal: React.FC<ManageWalletsModalProps> = ({
   addWalletCallback,
   resetOnClose = false,
   wallets,
+  selectedWallets,
+  handleSelectWallet,
+  handleSelectAll,
 }) => {
   const [searchValue, setSearchValue] = useState('');
-  const [selectedWallets, setSelectedWallets] = useState<
-    Record<string, boolean>
-  >({});
-  const [selectAll, setSelectAll] = useState(false);
+  const selectAll = Object.keys(selectedWallets).length === wallets.length;
   const {isManageWalletOpen, close} = useGlobalModalContext();
   const {t} = useTranslation();
 
@@ -43,32 +46,10 @@ const ManageWalletsModal: React.FC<ManageWalletsModalProps> = ({
     }
   }, [searchValue, wallets]);
 
-  const handleSelectWallet = (wallet: string) => {
-    const tempSelectedWallets = {...selectedWallets};
-    tempSelectedWallets[wallet]
-      ? delete tempSelectedWallets[wallet]
-      : (tempSelectedWallets[wallet] = true);
-    setSelectedWallets(tempSelectedWallets);
-
-    if (Object.keys(tempSelectedWallets).length !== wallets.length) {
-      setSelectAll(false);
-    }
-  };
-
-  const handleSelectAll = () => {
-    setSelectedWallets(
-      wallets.reduce((tempSelectedWallets, wallet) => {
-        tempSelectedWallets[wallet] = true;
-        return tempSelectedWallets;
-      }, {} as Record<string, boolean>)
-    );
-    setSelectAll(true);
-  };
-
   const handleClose = () => {
     setSearchValue('');
-    setSelectedWallets({});
-    setSelectAll(false);
+    // setSelectedWallets({});
+    // setSelectAll(false);
     close('manageWallet');
   };
 
