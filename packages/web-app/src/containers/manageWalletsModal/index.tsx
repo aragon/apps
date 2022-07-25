@@ -1,4 +1,4 @@
-import React, {useState, useMemo} from 'react';
+import React, {useEffect, useState, useMemo} from 'react';
 import {
   SearchInput,
   CheckboxListItem,
@@ -16,23 +16,23 @@ type ManageWalletsModalProps = {
   addWalletCallback: (wallets: Array<string>) => void;
   resetOnClose?: boolean;
   wallets: Array<string>;
-  selectedWallets: Record<string, boolean>;
-  handleSelectWallet: (wallet: string) => void;
-  handleSelectAll: () => void;
+  initialSelections: Array<string>;
 };
+
+type SelectableWallets = Record<string, boolean>;
 
 const ManageWalletsModal: React.FC<ManageWalletsModalProps> = ({
   addWalletCallback,
   resetOnClose = false,
   wallets,
-  selectedWallets,
-  handleSelectWallet,
-  handleSelectAll,
+  initialSelections,
 }) => {
-  const [searchValue, setSearchValue] = useState('');
-  const selectAll = Object.keys(selectedWallets).length === wallets.length;
-  const {isManageWalletOpen, close} = useGlobalModalContext();
   const {t} = useTranslation();
+  const {isManageWalletOpen, close} = useGlobalModalContext();
+  const [searchValue, setSearchValue] = useState('');
+  const [selectedWallets, setSelectedWallets] = useState<SelectableWallets>({});
+
+  const selectAll = Object.keys(selectedWallets).length === wallets.length;
 
   const filteredWallets = useMemo(() => {
     if (searchValue !== '') {
@@ -46,10 +46,54 @@ const ManageWalletsModal: React.FC<ManageWalletsModalProps> = ({
     }
   }, [searchValue, wallets]);
 
+  /*************************************************
+   *             Callbacks and Handlers            *
+   *************************************************/
+  useEffect(() => {
+    /**
+     * Note: I very much dislike this pattern. That said, we need
+     * to somehow both load initial selections and keep them in sync
+     * with what the user has selected. Cancelling after changing the
+     * initial state will not work otherwise.
+     */
+    // map initial selections to selectedWallets.
+    if (initialSelections) {
+      const temp: SelectableWallets = {};
+      initialSelections.forEach(address => {
+        temp[address] = true;
+      });
+      setSelectedWallets(temp);
+    }
+  }, [initialSelections]);
+
+  // handles select all checkbox
+  const handleSelectAll = () => {
+    if (selectAll) {
+      setSelectedWallets({} as SelectableWallets);
+    } else {
+      const tempSelectedWallets = {...selectedWallets};
+      wallets.forEach(address => {
+        tempSelectedWallets[address] = true;
+      });
+      setSelectedWallets(tempSelectedWallets);
+    }
+  };
+
+  // handles checkbox selection for individual wallets
+  const handleSelectWallet = (wallet: string) => {
+    const tempSelectedWallets = {...selectedWallets};
+    tempSelectedWallets[wallet]
+      ? delete tempSelectedWallets[wallet]
+      : (tempSelectedWallets[wallet] = true);
+    setSelectedWallets(tempSelectedWallets);
+  };
+
+  // handles cleanup after modal is closed.
+  // @Rakesh considering the initialSelection state, is it
+  // still necessary to include the resetOnclose logic?
   const handleClose = () => {
     setSearchValue('');
-    // setSelectedWallets({});
-    // setSelectAll(false);
+    setSelectedWallets({});
     close('manageWallet');
   };
 

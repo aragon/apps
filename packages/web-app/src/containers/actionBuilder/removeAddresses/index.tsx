@@ -6,8 +6,8 @@ import {
   Label,
   ListItemAction,
 } from '@aragon/ui-components';
+import React from 'react';
 import {useTranslation} from 'react-i18next';
-import React, {useState} from 'react';
 import {useFormContext, useWatch, useFieldArray} from 'react-hook-form';
 
 import EmptyState from '../addAddresses/emptyState';
@@ -27,7 +27,7 @@ type Props = {
 
 const RemoveAddresses: React.FC<Props> = ({index: actionIndex}) => {
   const {t} = useTranslation();
-
+  const {open} = useGlobalModalContext();
   const {removeAction} = useActionsContext();
 
   // dao data
@@ -50,41 +50,9 @@ const RemoveAddresses: React.FC<Props> = ({index: actionIndex}) => {
     };
   });
 
-  // modal state
-  const {open} = useGlobalModalContext();
-  const [selectedWallets, setSelectedWallets] = useState<
-    Record<string, boolean>
-  >(() => {
-    const temp = {} as Record<string, boolean>;
-
-    controlledWallets.forEach(({address}) => {
-      temp[address] = true;
-    });
-    return temp;
-  });
-
   /*************************************************
    *             Callbacks and Handlers            *
    *************************************************/
-  // Modal Handlers
-  // handles select all checkbox
-  const handleSelectAll = () => {
-    const tempSelectedWallets = {...selectedWallets};
-    members.forEach(member => {
-      tempSelectedWallets[member.id] = true;
-    });
-    setSelectedWallets(tempSelectedWallets);
-  };
-
-  // handles checkbox selection for individual wallets
-  const handleSelectWallet = (wallet: string) => {
-    const tempSelectedWallets = {...selectedWallets};
-    tempSelectedWallets[wallet]
-      ? delete tempSelectedWallets[wallet]
-      : (tempSelectedWallets[wallet] = true);
-    setSelectedWallets(tempSelectedWallets);
-  };
-
   // handles modal Select wallets button
   const handleAddSelectedWallets = (wallets: Array<string>) => {
     replace(wallets.map(address => ({address})));
@@ -215,9 +183,7 @@ const RemoveAddresses: React.FC<Props> = ({index: actionIndex}) => {
         <ManageWalletsModal
           addWalletCallback={handleAddSelectedWallets}
           wallets={members?.map(member => member.id) || []}
-          selectedWallets={selectedWallets}
-          handleSelectWallet={handleSelectWallet}
-          handleSelectAll={handleSelectAll}
+          initialSelections={controlledWallets.map(field => field.address)}
         />
       </AccordionMethod>
     </>
