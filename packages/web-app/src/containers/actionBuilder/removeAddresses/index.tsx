@@ -25,6 +25,8 @@ type Props = {
   index: number;
 };
 
+// README: when uploading CSV be sure to check for duplicates
+
 const RemoveAddresses: React.FC<Props> = ({index: actionIndex}) => {
   const {t} = useTranslation();
   const {open} = useGlobalModalContext();

@@ -7,7 +7,9 @@ import {generatePath} from 'react-router-dom';
 import {Governance} from 'utils/paths';
 import AddActionMenu from 'containers/addActionMenu';
 import ReviewProposal from 'containers/reviewProposal';
-import ConfigureActions from 'containers/configureActions';
+import ConfigureActions, {
+  isValid as actionsAreValid,
+} from 'containers/configureActions';
 import {ActionsProvider} from 'context/actions';
 import {FullScreenStepper, Step} from 'components/fullScreenStepper';
 import DefineProposal, {
@@ -41,6 +43,7 @@ const NewProposal: React.FC = () => {
    *                    Render                     *
    *************************************************/
 
+  console.log(errors, dirtyFields);
   if (loading) {
     return <Loading />;
   }
@@ -74,6 +77,7 @@ const NewProposal: React.FC = () => {
             <Step
               wizardTitle={t('newProposal.configureActions.heading')}
               wizardDescription={t('newProposal.configureActions.description')}
+              isNextButtonDisabled={!actionsAreValid(errors)}
             >
               <ConfigureActions />
             </Step>

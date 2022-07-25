@@ -27,14 +27,15 @@ const AddAddresses: React.FC<Props> = ({index: actionIndex}) => {
 
   // form context
   const {control, trigger} = useFormContext();
+  const memberListKey = `actions.${actionIndex}.inputs.memberWallets`;
   const memberWallets = useWatch({
-    name: `actions.${actionIndex}.inputs.memberWallets`,
+    name: memberListKey,
     control,
   });
 
   const {fields, update, replace, append, remove} = useFieldArray({
     control,
-    name: `actions.${actionIndex}.inputs.memberWallets`,
+    name: memberListKey,
   });
 
   const controlledWallets = fields.map((field, ctrlledIndex) => {
@@ -73,7 +74,7 @@ const AddAddresses: React.FC<Props> = ({index: actionIndex}) => {
     // this is quite unfortunate, but now empty fields will all be validated
     // on row reset. Turn off required validation for row if that is not desired
     setTimeout(() => {
-      trigger(`actions.${actionIndex}.inputs.memberWallets`);
+      trigger(memberListKey);
     }, 50);
   };
 
@@ -86,7 +87,7 @@ const AddAddresses: React.FC<Props> = ({index: actionIndex}) => {
   const handleRowDelete = (index: number) => {
     remove(index);
     setTimeout(() => {
-      trigger(`actions.${actionIndex}.inputs.memberWallets`);
+      trigger(memberListKey);
     }, 50);
   };
 

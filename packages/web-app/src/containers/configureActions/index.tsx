@@ -4,6 +4,7 @@ import {IlluObject} from '@aragon/ui-components/src/components/illustrations';
 import {useTranslation} from 'react-i18next';
 import styled from 'styled-components';
 
+import {StringIndexed} from 'utils/types';
 import {useGlobalModalContext} from 'context/globalModals';
 import {useActionsContext} from 'context/actions';
 import ActionBuilder from 'containers/actionBuilder';
@@ -66,6 +67,15 @@ const ConfigureActions: React.FC = () => {
 };
 
 export default ConfigureActions;
+
+/**
+ * Check if the screen is valid
+ * @param errors List of fields with errors
+ * @returns Whether the screen is valid
+ */
+export function isValid(errors: StringIndexed) {
+  return !errors.actions;
+}
 
 const FormItem = styled.div.attrs({
   className: 'space-y-1.5',
