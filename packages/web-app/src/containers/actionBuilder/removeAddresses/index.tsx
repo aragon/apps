@@ -26,17 +26,6 @@ const RemoveAddresses: React.FC<Props> = ({index}) => {
     {
       component: (
         <ListItemAction
-          title={t('labels.whitelistWallets.resetEntry')}
-          bgWhite
-        />
-      ),
-      callback: () => {
-        handleRowReset(index);
-      },
-    },
-    {
-      component: (
-        <ListItemAction
           title={t('labels.whitelistWallets.deleteEntry')}
           bgWhite
         />
@@ -70,15 +59,15 @@ const RemoveAddresses: React.FC<Props> = ({index}) => {
       <AccordionMethod
         verified
         type="action-builder"
-        methodName={t('labels.addWallets')}
+        methodName={t('labels.removeWallets')}
         smartContractName={t('labels.aragonCore')}
-        methodDescription={t('labels.addWalletsDescription')}
+        methodDescription={t('labels.removeWalletsDescription')}
         dropdownItems={methodActions}
       >
         <EmptyState
           title={t('labels.whitelistWallets.noWallets')}
-          subtitle={t('labels.whitelistWallets.addWalletsSubtitle')}
-          buttonLabel={t('labels.addWallet')}
+          subtitle={t('labels.whitelistWallets.removeWalletsSubtitle')}
+          buttonLabel={t('labels.selectWallet')}
           onClick={() => {}}
         />
       </AccordionMethod>
