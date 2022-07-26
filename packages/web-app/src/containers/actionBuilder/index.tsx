@@ -21,12 +21,12 @@ import AddAddresses from './addAddresses';
  * @returns List of actions
  */
 
-type actionsComponentType = {
+type ActionsComponentProps = {
   name: ActionsTypes;
   index: number;
 };
 
-const Action: React.FC<actionsComponentType> = ({name, index}) => {
+const Action: React.FC<ActionsComponentProps> = ({name, index}) => {
   switch (name) {
     case 'withdraw_assets':
       return <WithdrawAction {...{index}} />;

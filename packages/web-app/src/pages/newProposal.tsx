@@ -67,9 +67,14 @@ const NewProposal: React.FC = () => {
 
   const whitelistActions = baseActions.concat([
     {
-      type: 'add_remove_address',
-      title: t('AddActionModal.addRemoveAddresses'),
-      subtitle: t('AddActionModal.addRemoveAddressesSubtitle'),
+      type: 'add_address',
+      title: t('AddActionModal.addAddresses'),
+      subtitle: t('AddActionModal.addAddressesSubtitle'),
+    },
+    {
+      type: 'remove_address',
+      title: t('AddActionModal.removeAddresses'),
+      subtitle: t('AddActionModal.removeAddressesSubtitle'),
     },
   ]);
 
