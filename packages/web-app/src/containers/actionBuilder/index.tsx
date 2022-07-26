@@ -3,7 +3,6 @@ import React from 'react';
 import {useActionsContext} from 'context/actions';
 import WithdrawAction from './withdraw/withdrawAction';
 import {ActionsTypes} from 'utils/types';
-import {AddActionItems} from '../addActionMenu';
 import TokenMenu from 'containers/tokenMenu';
 import {BaseTokenInfo, ActionItem} from 'utils/types';
 import {fetchTokenPrice} from 'services/prices';
@@ -28,12 +27,12 @@ type actionsComponentType = {
 
 const Action: React.FC<actionsComponentType> = ({name, index}) => {
   switch (name) {
-    case AddActionItems.WITHDRAW_ASSETS:
+    case 'withdraw_assets':
       return <WithdrawAction {...{index}} />;
-    case AddActionItems.MINT_TOKENS:
+    case 'mint_token':
       return <MintTokens {...{index}} />;
     default:
-      return null;
+      throw Error('Action not found');
   }
 };
 

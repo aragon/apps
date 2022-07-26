@@ -86,7 +86,30 @@ const NewProposal: React.FC = () => {
             </Step>
           </FullScreenStepper>
 
-          <AddActionMenu />
+          <AddActionMenu
+            actions={[
+              {
+                type: 'add_remove_address',
+                title: t('AddActionModal.addRemoveAddresses'),
+                subtitle: t('AddActionModal.addRemoveAddressesSubtitle'),
+              },
+              {
+                type: 'mint_token',
+                title: t('AddActionModal.mintTokens'),
+                subtitle: t('AddActionModal.mintTokensSubtitle'),
+              },
+              {
+                type: 'withdraw_assets',
+                title: t('AddActionModal.withdrawAssets'),
+                subtitle: t('AddActionModal.withdrawAssetsSubtitle'),
+              },
+              {
+                type: 'external_contract',
+                title: t('AddActionModal.externalContract'),
+                subtitle: t('AddActionModal.externalContractSubtitle'),
+              },
+            ]}
+          />
         </ActionsProvider>
       </CreateProposalProvider>
     </FormProvider>
