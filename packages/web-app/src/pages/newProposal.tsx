@@ -20,9 +20,12 @@ import {useNetwork} from 'context/network';
 import {useDaoParam} from 'hooks/useDaoParam';
 import {Loading} from 'components/temporary';
 import {CreateProposalProvider} from 'context/createProposal';
+import {useDaoWhitelist} from 'hooks/useDaoMembers';
+import {ActionParameter} from 'utils/types';
 
 const NewProposal: React.FC = () => {
   const {data: dao, loading} = useDaoParam();
+  const {data: whitelist} = useDaoWhitelist(dao);
   const [showTxModal, setShowTxModal] = useState(false);
 
   const {t} = useTranslation();
@@ -42,6 +45,41 @@ const NewProposal: React.FC = () => {
   if (loading) {
     return <Loading />;
   }
+
+  const baseActions: ActionParameter[] = [
+    {
+      type: 'withdraw_assets',
+      title: t('AddActionModal.withdrawAssets'),
+      subtitle: t('AddActionModal.withdrawAssetsSubtitle'),
+    },
+    {
+      type: 'modify_settings',
+      // TODO: Replace these with proper copies and i18n.
+      title: 'Modify Settings',
+      subtitle: 'Propose new settings for your DAO',
+    },
+    {
+      type: 'external_contract',
+      title: t('AddActionModal.externalContract'),
+      subtitle: t('AddActionModal.externalContractSubtitle'),
+    },
+  ];
+
+  const whitelistActions = baseActions.concat([
+    {
+      type: 'add_remove_address',
+      title: t('AddActionModal.addRemoveAddresses'),
+      subtitle: t('AddActionModal.addRemoveAddressesSubtitle'),
+    },
+  ]);
+
+  const erc20Actions = baseActions.concat([
+    {
+      type: 'mint_token',
+      title: t('AddActionModal.mintTokens'),
+      subtitle: t('AddActionModal.mintTokensSubtitle'),
+    },
+  ]);
 
   return (
     <FormProvider {...formMethods}>
@@ -87,28 +125,7 @@ const NewProposal: React.FC = () => {
           </FullScreenStepper>
 
           <AddActionMenu
-            actions={[
-              {
-                type: 'add_remove_address',
-                title: t('AddActionModal.addRemoveAddresses'),
-                subtitle: t('AddActionModal.addRemoveAddressesSubtitle'),
-              },
-              {
-                type: 'mint_token',
-                title: t('AddActionModal.mintTokens'),
-                subtitle: t('AddActionModal.mintTokensSubtitle'),
-              },
-              {
-                type: 'withdraw_assets',
-                title: t('AddActionModal.withdrawAssets'),
-                subtitle: t('AddActionModal.withdrawAssetsSubtitle'),
-              },
-              {
-                type: 'external_contract',
-                title: t('AddActionModal.externalContract'),
-                subtitle: t('AddActionModal.externalContractSubtitle'),
-              },
-            ]}
+            actions={whitelist ? whitelistActions : erc20Actions}
           />
         </ActionsProvider>
       </CreateProposalProvider>

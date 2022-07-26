@@ -31,6 +31,12 @@ const Action: React.FC<actionsComponentType> = ({name, index}) => {
       return <WithdrawAction {...{index}} />;
     case 'mint_token':
       return <MintTokens {...{index}} />;
+    case 'external_contract':
+      return null;
+    case 'modify_settings':
+      return null;
+    case 'add_remove_address':
+      return null;
     default:
       throw Error('Action not found');
   }

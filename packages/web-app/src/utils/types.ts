@@ -182,7 +182,8 @@ export type ActionsTypes =
   | 'add_remove_address'
   | 'withdraw_assets'
   | 'mint_token'
-  | 'external_contract';
+  | 'external_contract'
+  | 'modify_settings';
 
 export type ParamType = {
   type: string;
