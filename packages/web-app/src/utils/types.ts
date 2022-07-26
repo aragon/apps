@@ -179,7 +179,8 @@ export type ActionParameter = {
  * Allowed Actions for each dao
  */
 export type ActionsTypes =
-  | 'add_remove_address'
+  | 'add_address'
+  | 'remove_address'
   | 'withdraw_assets'
   | 'mint_token'
   | 'external_contract'

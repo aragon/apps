@@ -24,7 +24,7 @@ const ProposalList: React.FC<ProposalListProps> = ({proposals}) => {
       {proposals.map(p => {
         const totalVoteCount = p.abstain + p.yea + p.nay;
 
-        const AlertMessage = translateProposalDate(
+        const alertMessage = translateProposalDate(
           p.type,
           p.startDate,
           p.endDate
@@ -44,7 +44,7 @@ const ProposalList: React.FC<ProposalListProps> = ({proposals}) => {
                 p.yea || 0,
                 totalVoteCount
               ).toString(),
-              voteLabel: p.yea?.toString(),
+              voteLabel: t('newProposal.configureActions.yesOption'),
               tokenAmount: totalVoteCount.toString(),
               tokenSymbol: p.pkg.token?.symbol || undefined,
             })}
@@ -58,7 +58,7 @@ const ProposalList: React.FC<ProposalListProps> = ({proposals}) => {
               t('governance.proposals.states.succeeded'),
               t('governance.proposals.states.defeated'),
             ]}
-            {...(AlertMessage && {AlertMessage})}
+            {...(alertMessage && {alertMessage})}
             key={p.id}
           />
         );

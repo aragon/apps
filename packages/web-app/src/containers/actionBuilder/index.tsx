@@ -12,6 +12,7 @@ import {useDaoBalances} from 'hooks/useDaoBalances';
 import {useNetwork} from 'context/network';
 import {useDaoParam} from 'hooks/useDaoParam';
 import MintTokens from './mintTokens';
+import AddAddresses from './addAddresses';
 
 /**
  * This Component is responsible for generating all actions that append to pipeline context (actions)
@@ -35,7 +36,9 @@ const Action: React.FC<actionsComponentType> = ({name, index}) => {
       return null;
     case 'modify_settings':
       return null;
-    case 'add_remove_address':
+    case 'add_address':
+      return <AddAddresses {...{index}} />;
+    case 'remove_address':
       return null;
     default:
       throw Error('Action not found');

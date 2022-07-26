@@ -1,4 +1,4 @@
-import {ButtonText} from '@aragon/ui-components';
+import {ButtonText, ListItemAction} from '@aragon/ui-components';
 import {Trans, useTranslation} from 'react-i18next';
 import {useFieldArray} from 'react-hook-form';
 import React, {useEffect} from 'react';
@@ -59,6 +59,25 @@ const MintTokens: React.FC<Props> = ({index}) => {
     }
   };
 
+  const methodActions = [
+    {
+      component: <ListItemAction title={t('labels.duplicateAction')} bgWhite />,
+      callback: () => duplicateAction(index),
+    },
+    {
+      component: <ListItemAction title={t('labels.resetAction')} bgWhite />,
+      callback: handleReset,
+    },
+    {
+      component: (
+        <ListItemAction title={t('labels.removeEntireAction')} bgWhite />
+      ),
+      callback: () => {
+        removeAction(index);
+      },
+    },
+  ];
+
   return (
     <AccordionMethod
       type="action-builder"
@@ -67,9 +86,7 @@ const MintTokens: React.FC<Props> = ({index}) => {
       verified
       methodDescription={<MintTokenDescription />}
       additionalInfo={t('newProposal.mintTokens.additionalInfo')}
-      duplicateActionCallback={() => duplicateAction(index)}
-      removeActionCallback={() => removeAction(index)}
-      resetActionCallback={handleReset}
+      dropdownItems={methodActions}
     >
       <Container>
         {fields.map((field, index) => {
@@ -92,7 +109,7 @@ const MintTokens: React.FC<Props> = ({index}) => {
             onClick={handleAddWallet}
           />
 
-          <label className="flex-1 tablet:flex-initial py-1.5 px-2 space-x-1.5 h-6 font-bold rounded-xl cursor-pointer hover:text-primary-500 bg-ui-0 ft-text-base">
+          <label className="flex-1 tablet:flex-initial py-1.5 px-2 space-x-1.5 h-6 font-bold hover:text-primary-500 bg-ui-0 rounded-xl cursor-pointer ft-text-base">
             Upload CSV
             <input
               type="file"
@@ -137,7 +154,7 @@ const MintTokenDescription: React.FC = () => (
     <a
       href="data:text/csv;base64,QWRkcmVzcyxUb2tlbnMKMHgwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwLDEwLjUw"
       download="MintTokenTemplate.csv"
-      className="font-bold rounded focus:ring-2 focus:outline-none text-primary-500 hover:text-primary-700 focus:ring-primary-500"
+      className="font-bold text-primary-500 hover:text-primary-700 rounded focus:ring-2 focus:ring-primary-500 focus:outline-none"
     >
       this template
     </a>{' '}

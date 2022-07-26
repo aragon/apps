@@ -41,10 +41,7 @@ const ActionsProvider: React.FC<Props> = ({children}) => {
   const {remove} = useFieldArray({control, name: 'actions'});
 
   const addAction = useCallback(newAction => {
-    setActions((oldActions: ActionsContextType['actions']) => [
-      ...oldActions,
-      newAction,
-    ]);
+    setActions(oldActions => [...oldActions, newAction]);
   }, []);
 
   const removeAction = useCallback(

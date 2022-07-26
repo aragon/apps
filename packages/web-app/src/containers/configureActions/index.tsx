@@ -37,7 +37,7 @@ const ConfigureActions: React.FC = () => {
         ) : (
           <>
             {/* TODO: Refactor with StateEmpty component. Checkout APP-734 */}
-            <div className="flex flex-col items-center p-6 text-center rounded-xl bg-ui-0">
+            <div className="flex flex-col items-center p-6 text-center bg-ui-0 rounded-xl">
               <IlluObject object="smart_contract" />
               <h1 className="mt-1 text-xl font-bold text-ui-800">
                 {t('newProposal.configureActions.addFirstAction')}

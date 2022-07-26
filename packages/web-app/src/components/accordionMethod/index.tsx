@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import * as Accordion from '@radix-ui/react-accordion';
 import {
   AlertInline,
@@ -7,11 +7,10 @@ import {
   IconMenuVertical,
   IconSuccess,
   IconWarning,
-  ListItemAction,
-  Popover,
+  Dropdown,
+  ListItemProps,
 } from '@aragon/ui-components';
 import styled from 'styled-components';
-import {useTranslation} from 'react-i18next';
 
 type AccordionMethodType = {
   type: 'action-builder' | 'execution-widget';
@@ -20,9 +19,7 @@ type AccordionMethodType = {
   verified?: boolean;
   methodDescription?: string | React.ReactNode;
   additionalInfo?: string;
-  duplicateActionCallback?: () => void;
-  resetActionCallback?: () => void;
-  removeActionCallback?: () => void;
+  dropdownItems: ListItemProps[];
 };
 
 export const AccordionMethod: React.FC<AccordionMethodType> = ({
@@ -32,14 +29,9 @@ export const AccordionMethod: React.FC<AccordionMethodType> = ({
   verified = false,
   methodDescription,
   additionalInfo,
-  duplicateActionCallback,
-  resetActionCallback,
-  removeActionCallback,
+  dropdownItems,
   children,
 }) => {
-  const [openMenu, setOpenMenu] = useState(false);
-  const {t} = useTranslation();
-
   return (
     <Accordion.Root type="single" defaultValue="item-1" collapsible>
       <Accordion.Item value="item-1">
@@ -65,47 +57,18 @@ export const AccordionMethod: React.FC<AccordionMethodType> = ({
 
             <VStack>
               {type === 'action-builder' && (
-                <Popover
-                  open={openMenu}
-                  onOpenChange={setOpenMenu}
+                <Dropdown
                   side="bottom"
                   align="end"
-                  width={264}
-                  content={
-                    <div className="p-1.5 space-y-0.5">
-                      <ListItemAction
-                        title={t('labels.duplicateAction')}
-                        onClick={() => {
-                          duplicateActionCallback?.();
-                          setOpenMenu(false);
-                        }}
-                        bgWhite
-                      />
-                      <ListItemAction
-                        title={t('labels.resetAction')}
-                        onClick={() => {
-                          resetActionCallback?.();
-                          setOpenMenu(false);
-                        }}
-                        bgWhite
-                      />
-                      <ListItemAction
-                        title={t('labels.removeEntireAction')}
-                        onClick={() => {
-                          removeActionCallback?.();
-                          setOpenMenu(false);
-                        }}
-                        bgWhite
-                      />
-                    </div>
+                  listItems={dropdownItems}
+                  trigger={
+                    <ButtonIcon
+                      mode="ghost"
+                      size="medium"
+                      icon={<IconMenuVertical />}
+                    />
                   }
-                >
-                  <ButtonIcon
-                    mode="ghost"
-                    size="medium"
-                    icon={<IconMenuVertical />}
-                  />
-                </Popover>
+                />
               )}
               <Accordion.Trigger>
                 <AccordionButton
