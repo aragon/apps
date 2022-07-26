@@ -1,9 +1,6 @@
 import {useCache} from './useCache';
 import {useClient} from './useClient';
-import {
-  ICreateDaoERC20Voting,
-  ICreateDaoWhitelistVoting,
-} from '@aragon/sdk-client';
+import {ICreateParams} from '@aragon/sdk-client';
 import {Dao} from 'utils/types';
 
 interface IUseDaoResponse {
@@ -13,15 +10,15 @@ interface IUseDaoResponse {
 
 export const useDao = (): IUseDaoResponse => {
   const {set: setCache} = useCache();
-  const {erc20: erc20Client, whitelist: whitelistClient} = useClient();
+  const client = useClient();
 
-  const createErc20 = (dao: ICreateDaoERC20Voting): Promise<string> => {
-    if (!erc20Client) {
+  const createDao = (dao: ICreateParams): Promise<string> => {
+    if (!client) {
       return Promise.reject(
         new Error('ERC20 SDK client is not initialized correctly')
       );
     }
-    return erc20Client.dao
+    return client.methods
       .create(dao)
       .then((address: string) => {
         const cacheKey = `dao-${address}`;
