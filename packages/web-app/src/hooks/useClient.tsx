@@ -5,18 +5,10 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import {
-  ClientDaoERC20Voting,
-  ClientDaoWhitelistVoting,
-  Context as SdkContext,
-} from '@aragon/sdk-client';
+import {Client, Context as SdkContext} from '@aragon/sdk-client';
 import {useWallet} from './useWallet';
 
-interface ClientContext {
-  erc20?: ClientDaoERC20Voting;
-  whitelist?: ClientDaoWhitelistVoting;
-}
-const UseClientContext = createContext<ClientContext>({} as ClientContext);
+const UseClientContext = createContext<Client | undefined>({} as Client);
 
 export const useClient = () => {
   const client = useContext(UseClientContext);
@@ -30,9 +22,7 @@ export const useClient = () => {
 
 export const UseClientProvider = ({children}: {children: ReactNode}) => {
   const {signer} = useWallet();
-  const [erc20Client, setErc20Client] = useState<ClientDaoERC20Voting>();
-  const [whitelistClient, setWhitelistClient] =
-    useState<ClientDaoWhitelistVoting>();
+  const [client, setClient] = useState<Client>();
 
   useEffect(() => {
     if (signer) {
@@ -50,15 +40,11 @@ export const UseClientProvider = ({children}: {children: ReactNode}) => {
         daoFactoryAddress: '0xF4433059cb12E224EF33510a3bE3329c8c750fD8', // TODO: remove temporary until SDK updates
       });
 
-      setErc20Client(new ClientDaoERC20Voting(context));
-      setWhitelistClient(new ClientDaoWhitelistVoting(context));
+      setClient(new Client(context));
     }
   }, [signer]);
 
-  const value: ClientContext = {
-    erc20: erc20Client,
-    whitelist: whitelistClient,
-  };
+  const value: Client | undefined = client;
 
   return (
     <UseClientContext.Provider value={value}>
