@@ -294,7 +294,7 @@ const Proposal: React.FC = () => {
         nay: Math.floor(Math.random() * 100),
       }))
       .map(categorizeProposal);
-    if (daoProposals && daoProposals?.[0]?.type !== proposalStatus)
+    if (daoProposals?.[0]?.type !== proposalStatus)
       set('proposalStatus', daoProposals?.[0]?.type);
   }, [get, proposalData, set]);
 

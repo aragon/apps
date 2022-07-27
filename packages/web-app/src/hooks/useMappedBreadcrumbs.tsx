@@ -62,7 +62,6 @@ export function useMappedBreadcrumbs(): MappedBreadcrumbs {
     ? basePathIcons(breadcrumbs[0].path)
     : basePathIcons('governance');
 
-  // TODO: get proposal status
   const isProposalDetail = useMatch(Paths.Proposal) !== null;
 
   let tag;
