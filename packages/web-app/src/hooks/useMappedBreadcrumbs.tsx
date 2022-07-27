@@ -12,6 +12,7 @@ import {useMatch} from 'react-router-dom';
 import useBreadcrumbs, {BreadcrumbData} from 'use-react-router-breadcrumbs';
 
 import * as Paths from 'utils/paths';
+import {useCache} from './useCache';
 
 type MappedBreadcrumbs = {
   breadcrumbs: {
@@ -38,6 +39,8 @@ function basePathIcons(path: string) {
 }
 
 export function useMappedBreadcrumbs(): MappedBreadcrumbs {
+  const {get} = useCache();
+  const proposalStatus = get('proposalStatus');
   const breadcrumbs = useBreadcrumbs(routes, {
     excludePaths: [
       Paths.Dashboard,
@@ -63,7 +66,7 @@ export function useMappedBreadcrumbs(): MappedBreadcrumbs {
   const isProposalDetail = useMatch(Paths.Proposal) !== null;
 
   let tag;
-  if (isProposalDetail) tag = <Badge label="Status" />;
+  if (isProposalDetail) tag = <Badge label={proposalStatus} />;
 
   return {breadcrumbs, icon, tag};
 }

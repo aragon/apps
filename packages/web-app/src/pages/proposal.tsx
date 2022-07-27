@@ -38,6 +38,9 @@ import {formatUnits} from 'utils/library';
 import {StringIndexed} from 'utils/types';
 import {getFormattedUtcOffset} from 'utils/date';
 import {categorizeProposal} from './governance';
+import {useCache} from 'hooks/useCache';
+import {erc20VotingProposals} from 'queries/__generated__/erc20VotingProposals';
+import {shortenAddress} from '@aragon/ui-components/src/utils/addresses';
 
 /* MOCK DATA ================================================================ */
 
@@ -65,11 +68,12 @@ const Proposal: React.FC = () => {
   const {data: daoId, loading: daoIdLoading, error: daoIdError} = useDaoParam();
   const {network} = useNetwork();
   const {address} = useWallet();
-  const {breadcrumbs} = useMappedBreadcrumbs();
+  const {breadcrumbs, tag} = useMappedBreadcrumbs();
   const {t, i18n} = useTranslation();
   const {id} = useParams();
   const navigate = useNavigate();
   const {isDesktop} = useScreen();
+  const {set, get} = useCache();
 
   let proposalId = '';
   if (!id) navigate(NotFound);
@@ -281,11 +285,24 @@ const Proposal: React.FC = () => {
     });
   }, []);
 
+  useEffect(() => {
+    const proposalStatus = get('proposalStatus');
+    const daoProposals = proposalData?.erc20VotingProposals
+      .map((p: erc20VotingProposals) => ({
+        ...p,
+        yea: Math.floor(Math.random() * 100),
+        nay: Math.floor(Math.random() * 100),
+      }))
+      .map(categorizeProposal);
+    if (daoProposals && daoProposals?.[0]?.type !== proposalStatus)
+      set('proposalStatus', daoProposals?.[0]?.type);
+  }, [get, proposalData, set]);
+
   // TODO Do we still need this? [VR 10-05-2022]
   // const publisher =
   //   publisherAddress === account ? 'you' : shortenAddress(publisherAddress);
   const creator = proposalData?.erc20VotingProposals[0]?.creator;
-  const publisher = creator === address ? 'you' : creator;
+  const publisher = creator === address ? 'you' : shortenAddress(creator);
 
   if (proposalLoading || daoIdLoading) {
     return <Loading />;
@@ -310,6 +327,7 @@ const Proposal: React.FC = () => {
             }
             crumbs={breadcrumbs}
             icon={<IconGovernance />}
+            tag={tag}
           />
         )}
         <ProposalTitle>{metadata?.title}</ProposalTitle>

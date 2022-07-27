@@ -23,7 +23,7 @@ const Community: React.FC = () => {
   const {data: daoId} = useDaoParam();
   const {network} = useNetwork();
 
-  const {breadcrumbs, icon} = useMappedBreadcrumbs();
+  const {breadcrumbs, icon, tag} = useMappedBreadcrumbs();
 
   const {data: dao, loading: metadataLoading} = useDaoMetadata(daoId);
   const {data: whitelist, isLoading: whiteListLoading} = useDaoWhitelist(daoId);
@@ -49,6 +49,7 @@ const Community: React.FC = () => {
           <HeaderPage
             icon={icon}
             crumbs={breadcrumbs}
+            tag={tag}
             title={`${memberCount} ${t('labels.members')}`}
             description={
               walletBased
