@@ -66,7 +66,8 @@ export function useMappedBreadcrumbs(): MappedBreadcrumbs {
   const isProposalDetail = useMatch(Paths.Proposal) !== null;
 
   let tag;
-  if (isProposalDetail) tag = <Badge label={proposalStatus} />;
+  if (isProposalDetail)
+    tag = <Badge label={proposalStatus} className="capitalize" />;
 
   return {breadcrumbs, icon, tag};
 }
