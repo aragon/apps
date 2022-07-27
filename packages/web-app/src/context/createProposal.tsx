@@ -14,7 +14,7 @@ import {Governance} from 'utils/paths';
 import {useClient} from 'hooks/useClient';
 import {usePollGasFee} from 'hooks/usePollGasfee';
 import {DAO_BY_ADDRESS} from 'queries/dao';
-import {client} from './apolloClient';
+import {client as apolloClient} from './apolloClient';
 import {useNetwork} from './network';
 import {useDaoParam} from 'hooks/useDaoParam';
 import {Loading} from 'components/temporary';
@@ -39,10 +39,10 @@ const CreateProposalProvider: React.FC<Props> = ({
   const {open} = useGlobalModalContext();
 
   const {data: dao, loading} = useDaoParam();
-  const {erc20: erc20Client, whitelist: whitelistClient} = useClient();
+  const client = useClient();
   const {data, loading: daoDetailsLoading} = useQuery(DAO_BY_ADDRESS, {
     variables: {id: dao},
-    client: client[network],
+    client: apolloClient[network],
   });
 
   const [creationProcessState, setCreationProcessState] =
@@ -56,14 +56,10 @@ const CreateProposalProvider: React.FC<Props> = ({
   const estimateCreationFees = useCallback(async () => {
     const {__typename: type, id: votingAddress} = data?.dao?.packages[0].pkg;
 
-    return type === 'WhitelistPackage'
-      ? erc20Client?.estimate.createProposal(votingAddress, {
-          metadata: constants.AddressZero,
-        })
-      : whitelistClient?.estimate.createProposal(votingAddress, {
-          metadata: constants.AddressZero,
-        });
-  }, [data?.dao?.packages, erc20Client?.estimate, whitelistClient?.estimate]);
+    return client?.estimation?.createProposal(votingAddress, {
+      metadata: constants.AddressZero,
+    });
+  }, [client?.estimation, data?.dao?.packages]);
 
   const {tokenPrice, maxFee, averageFee, stopPolling} = usePollGasFee(
     estimateCreationFees,
@@ -85,11 +81,9 @@ const CreateProposalProvider: React.FC<Props> = ({
     }
   };
 
-  const createErc20VotingProposal = async (votingAddress: string) => {
-    if (!erc20Client) {
-      return Promise.reject(
-        new Error('ERC20 SDK client is not initialized correctly')
-      );
+  const createProposal = async (votingAddress: string) => {
+    if (!client) {
+      return Promise.reject(new Error('client is not initialized correctly'));
     }
 
     const proposalCreationParams: ICreateProposal = {
@@ -97,10 +91,7 @@ const CreateProposalProvider: React.FC<Props> = ({
       actions: encodeActions(),
     };
 
-    return erc20Client.dao.simpleVote.createProposal(
-      votingAddress,
-      proposalCreationParams
-    );
+    return client.methods.createProposal(proposalCreationParams);
   };
 
   const createWhitelistVotingProposal = async (votingAddress: string) => {
