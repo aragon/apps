@@ -72,7 +72,7 @@
     "security": "Security",
     "popularity": "Popularity",
     "daoName": "DAO Name",
-    "description": "Summary",
+    "summary": "Summary",
     "addLink": "Add Link",
     "addWallet": "Add Wallet",
     "removeLink": "Remove Link",
