@@ -43,7 +43,6 @@ const NewProposal: React.FC = () => {
    *                    Render                     *
    *************************************************/
 
-  console.log(errors, dirtyFields);
   if (loading) {
     return <Loading />;
   }

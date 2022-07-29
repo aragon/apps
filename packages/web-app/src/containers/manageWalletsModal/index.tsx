@@ -16,10 +16,10 @@ type ManageWalletsModalProps = {
   addWalletCallback: (wallets: Array<string>) => void;
   resetOnClose?: boolean;
   wallets: Array<string>;
-  initialSelections: Array<string>;
+  initialSelections?: Array<string>;
 };
 
-type SelectableWallets = Record<string, boolean>;
+type SelectableWallets = Set<string>;
 
 const ManageWalletsModal: React.FC<ManageWalletsModalProps> = ({
   addWalletCallback,
@@ -30,73 +30,20 @@ const ManageWalletsModal: React.FC<ManageWalletsModalProps> = ({
   const {t} = useTranslation();
   const {isManageWalletOpen, close} = useGlobalModalContext();
   const [searchValue, setSearchValue] = useState('');
-  const [selectedWallets, setSelectedWallets] = useState<SelectableWallets>({});
+  const [selectedWallets, setSelectedWallets] = useState<SelectableWallets>(
+    new Set()
+  );
 
-  const selectedWalletsNum = Object.keys(selectedWallets).length;
+  const selectedWalletsNum = selectedWallets.size;
   const selectAll = selectedWalletsNum === wallets.length;
 
   const filteredWallets = useMemo(() => {
     if (searchValue !== '') {
       const re = new RegExp(searchValue, 'i');
-      return wallets.reduce((tempSelectedWallets, wallet) => {
-        wallet.match(re) && tempSelectedWallets.push(wallet);
-        return tempSelectedWallets;
-      }, [] as Array<string>);
-    } else {
-      return wallets;
+      return wallets.filter(wallet => wallet.match(re));
     }
+    return wallets;
   }, [searchValue, wallets]);
-
-  /*************************************************
-   *             Callbacks and Handlers            *
-   *************************************************/
-  useEffect(() => {
-    /**
-     * Note: I very much dislike this pattern. That said, we need
-     * to somehow both load initial selections and keep them in sync
-     * with what the user has selected. Cancelling after changing the
-     * initial state will not work otherwise.
-     */
-    // map initial selections to selectedWallets.
-    if (initialSelections) {
-      const temp: SelectableWallets = {};
-      initialSelections.forEach(address => {
-        temp[address] = true;
-      });
-      setSelectedWallets(temp);
-    }
-  }, [initialSelections]);
-
-  // handles select all checkbox
-  const handleSelectAll = () => {
-    if (selectAll) {
-      setSelectedWallets({} as SelectableWallets);
-    } else {
-      const tempSelectedWallets = {...selectedWallets};
-      wallets.forEach(address => {
-        tempSelectedWallets[address] = true;
-      });
-      setSelectedWallets(tempSelectedWallets);
-    }
-  };
-
-  // handles checkbox selection for individual wallets
-  const handleSelectWallet = (wallet: string) => {
-    const tempSelectedWallets = {...selectedWallets};
-    tempSelectedWallets[wallet]
-      ? delete tempSelectedWallets[wallet]
-      : (tempSelectedWallets[wallet] = true);
-    setSelectedWallets(tempSelectedWallets);
-  };
-
-  // handles cleanup after modal is closed.
-  // @RakeshUp considering the initialSelection state, is it
-  // still necessary to include the resetOnclose logic?
-  const handleClose = () => {
-    setSearchValue('');
-    setSelectedWallets({});
-    close('manageWallet');
-  };
 
   const labels = useMemo(() => {
     if (selectedWalletsNum === 0) {
@@ -119,6 +66,65 @@ const ManageWalletsModal: React.FC<ManageWalletsModalProps> = ({
     }
   }, [selectedWalletsNum, t]);
 
+  /*************************************************
+   *             Callbacks and Handlers            *
+   *************************************************/
+  useEffect(() => {
+    /**
+     * Note: I very much dislike this pattern. That said, we need
+     * to somehow both load initial selections and keep them in sync
+     * with what the user has selected. Cancelling after changing the
+     * initial state will not work otherwise.
+     */
+    // map initial selections to selectedWallets.
+    if (initialSelections) {
+      setSelectedWallets(new Set(initialSelections));
+    }
+  }, [initialSelections]);
+
+  // handles select all checkbox
+  const handleSelectAll = () => {
+    if (selectAll) {
+      setSelectedWallets(new Set());
+    } else {
+      setSelectedWallets(previousState => {
+        const temp = new Set(previousState);
+
+        wallets.forEach(address => {
+          // not checking if address is already in the set because
+          // add should only add if element is not already in the set
+          temp.add(address);
+        });
+
+        return temp;
+      });
+    }
+  };
+
+  // handles checkbox selection for individual wallets
+  const handleSelectWallet = (wallet: string) => {
+    setSelectedWallets(previousState => {
+      const temp = new Set(previousState);
+
+      if (previousState.has(wallet)) temp.delete(wallet);
+      else temp.add(wallet);
+
+      return temp;
+    });
+  };
+
+  // handles cleanup after modal is closed.
+  // @RakeshUp considering the initialSelection state, is it
+  // still necessary to include the resetOnclose logic?
+  const handleClose = () => {
+    setSearchValue('');
+    setSelectedWallets(new Set());
+    close('manageWallet');
+  };
+
+  /*************************************************
+   *                    Render                     *
+   *************************************************/
   return (
     <ModalBottomSheetSwitcher
       isOpen={isManageWalletOpen}
@@ -152,7 +158,7 @@ const ManageWalletsModal: React.FC<ManageWalletsModalProps> = ({
               key={wallet}
               label={shortenAddress(wallet)}
               multiSelect
-              state={selectedWallets[wallet] ? 'active' : 'default'}
+              state={selectedWallets.has(wallet) ? 'active' : 'default'}
               onClick={() => handleSelectWallet(wallet)}
             />
           ))}
@@ -164,7 +170,7 @@ const ManageWalletsModal: React.FC<ManageWalletsModalProps> = ({
           label={labels.button as string}
           size="large"
           onClick={() => {
-            addWalletCallback(Object.keys(selectedWallets));
+            addWalletCallback(Array.from(selectedWallets));
             resetOnClose ? handleClose() : close('manageWallet');
           }}
         />
