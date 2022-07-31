@@ -10,9 +10,10 @@ import {getTokenInfo} from 'utils/tokens';
 
 type MembersListProps = {
   walletBased: boolean;
-  whitelist: DaoWhitelist;
-  daoMembers: DaoTokenBased;
-  token: {
+  whitelist?: DaoWhitelist;
+  daoMembers?: DaoTokenBased;
+  members: DaoTokenBased | DaoWhitelist;
+  token?: {
     id: string;
     symbol: string;
   };
@@ -20,9 +21,8 @@ type MembersListProps = {
 
 export const MembersList: React.FC<MembersListProps> = ({
   walletBased,
-  whitelist,
-  daoMembers,
   token,
+  members,
 }) => {
   const {network} = useNetwork();
   const [totalSupply, setTotalSupply] = useState<number>(0);
@@ -50,10 +50,10 @@ export const MembersList: React.FC<MembersListProps> = ({
     else window.open(baseUrl + '/enslookup-search?search=' + address, '_blank');
   };
 
-  if (walletBased)
+  if (walletBased) {
     return (
       <>
-        {whitelist?.map(({id}: DaoWhitelist[number]) => (
+        {(members as DaoWhitelist).map(({id}: DaoWhitelist[number]) => (
           <ListItemAddress
             key={id}
             label={id}
@@ -63,28 +63,30 @@ export const MembersList: React.FC<MembersListProps> = ({
         ))}
       </>
     );
-  else
+  } else {
     return (
       <>
-        {daoMembers.map(({address, balance}) => (
-          <ListItemAddress
-            key={address}
-            label={address}
-            src={address}
-            {...(!walletBased && balance
-              ? {
-                  tokenInfo: {
-                    amount: balance,
-                    symbol: token?.symbol,
-                    percentage: totalSupply
-                      ? Number(((balance / totalSupply) * 100).toFixed(2))
-                      : '-',
-                  },
-                }
-              : {})}
-            onClick={() => itemClickHandler(address)}
-          />
-        ))}
+        {token &&
+          (members as DaoTokenBased).map(({address, balance}) => (
+            <ListItemAddress
+              key={address}
+              label={address}
+              src={address}
+              {...(!walletBased && balance
+                ? {
+                    tokenInfo: {
+                      amount: balance,
+                      symbol: token.symbol,
+                      percentage: totalSupply
+                        ? Number(((balance / totalSupply) * 100).toFixed(2))
+                        : '-',
+                    },
+                  }
+                : {})}
+              onClick={() => itemClickHandler(address)}
+            />
+          ))}
       </>
     );
+  }
 };

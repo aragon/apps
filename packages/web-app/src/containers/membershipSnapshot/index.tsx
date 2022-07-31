@@ -66,9 +66,9 @@ export const MembershipSnapshot: React.FC<Props> = ({
         <div className="space-y-2 w-2/3">
           <ListItemGrid>
             <MembersList
-              whitelist={whitelist?.slice(0, 3)}
-              daoMembers={daoMembers?.slice(0, 3)}
-              {...{walletBased, token}}
+              walletBased={walletBased}
+              token={token}
+              members={walletBased ? whitelist : daoMembers}
             />
           </ListItemGrid>
           <ButtonText
@@ -100,9 +100,9 @@ export const MembershipSnapshot: React.FC<Props> = ({
         onClick={headerButtonHandler}
       />
       <MembersList
-        whitelist={whitelist?.slice(0, 3)}
-        daoMembers={daoMembers?.slice(0, 3)}
-        {...{walletBased, token}}
+        walletBased={walletBased}
+        token={token}
+        members={walletBased ? whitelist.slice(0, 3) : daoMembers.slice(0, 3)}
       />
       <ButtonText
         mode="secondary"
