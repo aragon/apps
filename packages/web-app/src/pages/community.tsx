@@ -101,7 +101,7 @@ const Community: React.FC = () => {
             <Loading />
           ) : (
             <>
-              {members.length === 0 ? (
+              {debouncedTerm !== '' && members.length === 0 ? (
                 <EmptyState />
               ) : (
                 <>
