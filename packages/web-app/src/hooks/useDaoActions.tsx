@@ -1,9 +1,11 @@
 import {useTranslation} from 'react-i18next';
 import {ActionParameter, HookData} from 'utils/types';
-import {useDaoWhitelist} from './useDaoMembers';
+import {useDaoMetadata} from './useDaoMetadata';
 
 export function useDaoActions(dao: string): HookData<ActionParameter[]> {
-  const {data: whitelist, isLoading, error} = useDaoWhitelist(dao);
+  const {data, error, loading: isLoading} = useDaoMetadata(dao);
+  const whitelist = data?.packages[0].pkg.__typename === 'WhitelistPackage';
+
   const {t} = useTranslation();
 
   const baseActions: ActionParameter[] = [
@@ -47,7 +49,7 @@ export function useDaoActions(dao: string): HookData<ActionParameter[]> {
   ]);
   return {
     data: whitelist ? whitelistActions : erc20Actions,
-    isLoading: isLoading,
-    error: error,
+    isLoading,
+    error,
   };
 }

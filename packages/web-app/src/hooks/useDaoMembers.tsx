@@ -11,18 +11,25 @@ import {TokenBalance, HookData} from 'utils/types';
 // members list as well for token based DAOs.
 export type DaoWhitelist = {
   id: string;
-}[];
+};
 
 export type DaoTokenBased = {
   address: string;
   balance: number;
-}[];
+};
 
 export type DaoMembers = {
-  members: DaoWhitelist | DaoTokenBased;
+  members: Array<DaoWhitelist | DaoTokenBased>;
   token?: TokenBalance['token'];
   totalMembers: number;
 };
+
+// this type guard will need to evolve when there are more types
+export function isWhitelistMember(
+  member: DaoTokenBased | DaoWhitelist
+): member is DaoWhitelist {
+  return Object.prototype.hasOwnProperty.call(member, 'id');
+}
 
 /**
  * Hook to fetch DAO members. Fetches token if DAO is token based, and allows
@@ -60,10 +67,8 @@ export const useDaoMembers = (
    *                Hooks & handlers               *
    *************************************************/
   // TODO: need to remove later, the sort will be handled within the query
-  const sortTokenMembers = (
-    a: DaoTokenBased[number],
-    b: DaoTokenBased[number]
-  ) => b.balance - a.balance;
+  const sortTokenMembers = (a: DaoTokenBased, b: DaoTokenBased) =>
+    b.balance - a.balance;
 
   const members = useMemo(() => {
     // TODO: Fetch token holders addresses and the balance for each address
