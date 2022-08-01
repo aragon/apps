@@ -108,7 +108,7 @@ const Governance: React.FC = () => {
         }`}
         onClick={() => navigate('new-proposal')}
       >
-        <div className="flex mt-3 desktop:mt-8">
+        <div className="flex overflow-auto mt-3 desktop:mt-8">
           <ButtonGroup
             bgWhite
             defaultValue="all"
