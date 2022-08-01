@@ -15,7 +15,7 @@ import {FormItem} from '../addAddresses';
 import {AddressRow} from '../addAddresses/addressRow';
 import {useDaoParam} from 'hooks/useDaoParam';
 import AccordionSummary from '../addAddresses/accordionSummary';
-import {useDaoWhitelist} from 'hooks/useDaoMembers';
+import {DaoWhitelist, useDaoMembers} from 'hooks/useDaoMembers';
 import {AccordionMethod} from 'components/accordionMethod';
 import ManageWalletsModal from 'containers/manageWalletsModal';
 import {useActionsContext} from 'context/actions';
@@ -34,7 +34,7 @@ const RemoveAddresses: React.FC<Props> = ({index: actionIndex}) => {
 
   // dao data
   const {data: dao} = useDaoParam();
-  const {data: members} = useDaoWhitelist(dao);
+  const {data} = useDaoMembers(dao);
 
   // form context data & hooks
   const {control} = useFormContext();
@@ -184,7 +184,9 @@ const RemoveAddresses: React.FC<Props> = ({index: actionIndex}) => {
 
         <ManageWalletsModal
           addWalletCallback={handleAddSelectedWallets}
-          wallets={members?.map(member => member.id) || []}
+          wallets={
+            (data.members as DaoWhitelist[])?.map(member => member.id) || []
+          }
           initialSelections={controlledWallets.map(field => field.address)}
         />
       </AccordionMethod>
