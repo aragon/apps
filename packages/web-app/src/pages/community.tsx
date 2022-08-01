@@ -37,7 +37,7 @@ const Community: React.FC = () => {
   const {
     data: {members, totalMembers, token},
     isLoading: membersLoading,
-  } = useDaoMembers(daoId, debouncedTerm);
+  } = useDaoMembers(daoId, debouncedTerm.toLowerCase());
 
   const walletBased = dao?.packages[0].pkg.__typename === 'WhitelistPackage';
 
