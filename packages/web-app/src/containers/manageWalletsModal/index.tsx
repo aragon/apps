@@ -112,8 +112,6 @@ const ManageWalletsModal: React.FC<ManageWalletsModalProps> = ({
   };
 
   // handles cleanup after modal is closed.
-  // @RakeshUp considering the initialSelection state, is it
-  // still necessary to include the resetOnclose logic?
   const handleClose = () => {
     setSearchValue('');
     setSelectedWallets(new Set());
