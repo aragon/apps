@@ -14,7 +14,6 @@ import {shortenAddress} from '@aragon/ui-components/src/utils/addresses';
 
 type ManageWalletsModalProps = {
   addWalletCallback: (wallets: Array<string>) => void;
-  resetOnClose?: boolean;
   wallets: Array<string>;
   initialSelections?: Array<string>;
 };
@@ -23,7 +22,6 @@ type SelectableWallets = Set<string>;
 
 const ManageWalletsModal: React.FC<ManageWalletsModalProps> = ({
   addWalletCallback,
-  resetOnClose = false,
   wallets,
   initialSelections,
 }) => {
@@ -171,7 +169,7 @@ const ManageWalletsModal: React.FC<ManageWalletsModalProps> = ({
           size="large"
           onClick={() => {
             addWalletCallback(Array.from(selectedWallets));
-            resetOnClose ? handleClose() : close('manageWallet');
+            handleClose();
           }}
         />
         <ButtonText
