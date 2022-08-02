@@ -153,7 +153,8 @@
     "singleAddressSelected": "1 Address selected",
     "addNWallets": "Add {{walletCount}} Wallets",
     "nAddressesSelected": "{{walletCount}} Addresses selected",
-    "noAddressSelected": "No address selected"
+    "noAddressSelected": "No address selected",
+    "you": "you"
   },
   "placeHolders": {
     "selectToken": "Select a Token ...",
