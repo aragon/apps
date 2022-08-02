@@ -1,22 +1,47 @@
 import {ButtonText, ListItemAction} from '@aragon/ui-components';
+import React, {useEffect, useState} from 'react';
+import {useFieldArray, useWatch} from 'react-hook-form';
 import {Trans, useTranslation} from 'react-i18next';
-import {useFieldArray} from 'react-hook-form';
-import React, {useEffect} from 'react';
 import styled from 'styled-components';
 
-import {useActionsContext} from 'context/actions';
 import {AccordionMethod} from 'components/accordionMethod';
+import {useActionsContext} from 'context/actions';
+import {useNetwork} from 'context/network';
+import {useProviders} from 'context/providers';
+import {CHAIN_METADATA} from 'utils/constants';
+import {fetchBalance, getTokenInfo} from 'utils/tokens';
 import {AddressAndTokenRow} from './addressTokenRow';
+import {BigNumber} from 'ethers';
 
 type Props = {
   index: number;
 };
 
+type MintInfo = {
+  address: string;
+  amount: string;
+};
+
 const MintTokens: React.FC<Props> = ({index}) => {
   const {t} = useTranslation();
+  const {network} = useNetwork();
+  const {infura} = useProviders();
+  const nativeCurrency = CHAIN_METADATA[network].nativeCurrency;
+  // TODO: Fetch this from subgraph
+  const tokenAddress = '0x35f7A3379B8D0613c3F753863edc85997D8D0968';
+
   const {removeAction, duplicateAction} = useActionsContext();
-  // const {control, setValue, clearErrors} = useFormContext();
   const {fields, append, remove} = useFieldArray({name: 'mintTokensToWallets'});
+  const mints = useWatch({name: 'mintTokensToWallets'}) as MintInfo[];
+  const [newTokens, setNewTokens] = useState<number>(0);
+  const [newHolders, setNewHolders] = useState(0);
+  const [totalTokens, setTotalTokens] = useState<number>(0);
+  const [tokenInfo, setTokenInfo] = useState({
+    decimals: 0,
+    symbol: '',
+    name: '',
+    totalSupply: 0,
+  });
 
   useEffect(() => {
     if (fields.length === 0) {
@@ -24,6 +49,46 @@ const MintTokens: React.FC<Props> = ({index}) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    // Fetching necessary info about the token.
+    try {
+      getTokenInfo(tokenAddress, infura, nativeCurrency).then(r => {
+        setTokenInfo(r);
+        setTotalTokens(r.totalSupply as number);
+      });
+    } catch (e) {
+      console.log('Error happened when fetching token infos: ', e);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Count number of addresses that don't yet own token
+    if (mints) {
+      Promise.all<BigNumber>(
+        mints.map(m =>
+          fetchBalance(tokenAddress, m.address, infura, nativeCurrency, false)
+        )
+      ).then(balances => {
+        const newHolderCount = balances.filter((b: BigNumber) =>
+          b.isZero()
+        ).length;
+        setNewHolders(newHolderCount);
+      });
+    }
+  }, [mints]);
+
+  useEffect(() => {
+    // Collecting token amounts that are to be minted
+    if (mints) {
+      let newTokensCount = 0;
+      mints.forEach(m => {
+        newTokensCount += parseInt(m.amount);
+      });
+      setNewTokens(newTokensCount);
+      setTotalTokens(tokenInfo.totalSupply + newTokensCount);
+    }
+  }, [mints]);
 
   const handleAddWallet = () => {
     append({address: '', amount: '0'});
@@ -120,25 +185,25 @@ const MintTokens: React.FC<Props> = ({index}) => {
             />
           </label>
         </ButtonContainer>
-
         <SummaryContainer>
-          <p>Summary</p>
+          <p>{t('labels.summary')}</p>
           <HStack>
-            <SummaryLabel>New Tokens</SummaryLabel>
-            <p>+8000 LRX</p>
+            <Label>{t('labels.newTokens')}</Label>
+            <p>
+              +{newTokens} {tokenInfo.symbol}
+            </p>
           </HStack>
           <HStack>
-            <SummaryLabel>New Holders</SummaryLabel>
-            <p>+2</p>
+            <Label>{t('labels.newHolders')}</Label>
+            <p>+{newHolders}</p>
           </HStack>
           <HStack>
-            <SummaryLabel>Total Tokens</SummaryLabel>
-            <p>100,000 LRX</p>
+            <Label>{t('labels.totalTokens')}</Label>
+            <p>
+              {totalTokens.toString()} {tokenInfo.symbol}
+            </p>
           </HStack>
-          <HStack>
-            <SummaryLabel>Total Holders</SummaryLabel>
-            <p>1000</p>
-          </HStack>
+          {/* TODO add total amount of token holders here. */}
         </SummaryContainer>
       </Container>
     </AccordionMethod>
@@ -149,7 +214,7 @@ export default MintTokens;
 
 const MintTokenDescription: React.FC = () => (
   <Trans i18nKey="newProposal.mintTokens.methodDescription">
-    Which wallet addresses should get tokens, and how much? Add the wallets you
+    Which wallet addresses should get tokens, and how many? Add the wallets you
     want here, and then choose the distribution. Upload a CSV with
     <a
       href="data:text/csv;base64,QWRkcmVzcyxUb2tlbnMKMHgwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwLDEwLjUw"
@@ -180,6 +245,6 @@ const HStack = styled.div.attrs({
   className: 'flex justify-between',
 })``;
 
-const SummaryLabel = styled.p.attrs({
+const Label = styled.p.attrs({
   className: 'font-normal text-ui-500',
 })``;
