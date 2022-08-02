@@ -17,11 +17,13 @@ import {MembersList} from 'components/membersList';
 import {useMappedBreadcrumbs} from 'hooks/useMappedBreadcrumbs';
 import {useNetwork} from 'context/network';
 import {CHAIN_METADATA} from 'utils/constants';
+import {useNavigate} from 'react-router-dom';
 
 const Community: React.FC = () => {
   const {t} = useTranslation();
   const {data: daoId} = useDaoParam();
   const {network} = useNetwork();
+  const navigate = useNavigate();
 
   const {breadcrumbs, icon, tag} = useMappedBreadcrumbs();
 
@@ -38,6 +40,14 @@ const Community: React.FC = () => {
   const MembersPerPage = 10;
   const walletBased = dao?.packages[0].pkg.__typename === 'WhitelistPackage';
   const memberCount = walletBased ? whitelist?.length : daoMembers?.length;
+
+  const handlePrimaryClick = () => {
+    if (walletBased) {
+      // Add/remove member flow
+    } else {
+      navigate('new-mint-token');
+    }
+  };
 
   if (whiteListLoading || tokenHoldersLoading || metadataLoading)
     return <Loading />;
@@ -59,6 +69,7 @@ const Community: React.FC = () => {
             buttonLabel={
               walletBased ? t('labels.addMember') : t('labels.mintTokens')
             }
+            onClick={handlePrimaryClick}
             {...(!walletBased && {
               secondaryButtonLabel: t('labels.seeAllHolders'),
               secondaryOnClick: () => {
