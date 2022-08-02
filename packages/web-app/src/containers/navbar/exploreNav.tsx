@@ -1,19 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
 import {ButtonWallet} from '@aragon/ui-components';
-// import {ButtonWallet, SearchInput, IconSearch} from '@aragon/ui-components';
 import {useTranslation} from 'react-i18next';
 
 import {useWallet} from 'hooks/useWallet';
 import Logo from 'public/logo.svg';
-// import useScreen from 'hooks/useScreen';
 import {useGlobalModalContext} from 'context/globalModals';
 import {Container, GridLayout} from 'components/layout';
 
 const ExploreNav: React.FC = () => {
   const {t} = useTranslation();
   const {address, ensName, ensAvatarUrl, isConnected, methods} = useWallet();
-  // const {isDesktop} = useScreen();
   const {open} = useGlobalModalContext();
 
   const handleWalletButtonClick = () => {
@@ -37,14 +34,6 @@ const ExploreNav: React.FC = () => {
           </LeftContent>
           <RightContent>
             <ActionsWrapper>
-              {/* {isDesktop ? (
-                <SearchInput
-                  placeholder={t('placeHolders.searchTokens')}
-                  value=""
-                />
-              ) : (
-                <SearchIcon />
-              )} */}
               <ButtonWallet
                 src={ensAvatarUrl || address}
                 onClick={handleWalletButtonClick}
@@ -85,9 +74,5 @@ const RightContent = styled.div.attrs({
 const ActionsWrapper = styled.div.attrs({
   className: 'flex space-x-3 items-center',
 })``;
-
-// const SearchIcon = styled(IconSearch).attrs({
-//   className: 'text-ui-0 h-2',
-// })``;
 
 export default ExploreNav;
