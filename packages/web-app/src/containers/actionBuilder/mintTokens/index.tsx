@@ -12,6 +12,8 @@ import {CHAIN_METADATA} from 'utils/constants';
 import {fetchBalance, getTokenInfo} from 'utils/tokens';
 import {AddressAndTokenRow} from './addressTokenRow';
 import {BigNumber} from 'ethers';
+import {useDaoParam} from 'hooks/useDaoParam';
+import {useDaoToken} from 'hooks/useDAoToken';
 
 type Props = {
   index: number;
@@ -24,11 +26,11 @@ type MintInfo = {
 
 const MintTokens: React.FC<Props> = ({index}) => {
   const {t} = useTranslation();
+  const {data: daoId} = useDaoParam();
   const {network} = useNetwork();
   const {infura} = useProviders();
   const nativeCurrency = CHAIN_METADATA[network].nativeCurrency;
-  // TODO: Fetch this from subgraph
-  const tokenAddress = '0x35f7A3379B8D0613c3F753863edc85997D8D0968';
+  const {data: daoToken, isLoading: daoTokenLoading} = useDaoToken(daoId);
 
   const {removeAction, duplicateAction} = useActionsContext();
   const {fields, append, remove} = useFieldArray({name: 'mintTokensToWallets'});
@@ -36,12 +38,7 @@ const MintTokens: React.FC<Props> = ({index}) => {
   const [newTokens, setNewTokens] = useState<number>(0);
   const [newHolders, setNewHolders] = useState(0);
   const [totalTokens, setTotalTokens] = useState<number>(0);
-  const [tokenInfo, setTokenInfo] = useState({
-    decimals: 0,
-    symbol: '',
-    name: '',
-    totalSupply: 0,
-  });
+  const [tokenSupply, setTokenSupply] = useState(0);
 
   useEffect(() => {
     if (fields.length === 0) {
@@ -52,22 +49,24 @@ const MintTokens: React.FC<Props> = ({index}) => {
 
   useEffect(() => {
     // Fetching necessary info about the token.
-    try {
-      getTokenInfo(tokenAddress, infura, nativeCurrency).then(r => {
-        setTokenInfo(r);
-        setTotalTokens(r.totalSupply as number);
-      });
-    } catch (e) {
-      console.log('Error happened when fetching token infos: ', e);
+    if (daoToken) {
+      try {
+        getTokenInfo(daoToken.id, infura, nativeCurrency).then(r => {
+          setTokenSupply(r.totalSupply as number);
+          setTotalTokens(r.totalSupply as number);
+        });
+      } catch (e) {
+        console.log('Error happened when fetching token infos: ', e);
+      }
     }
-  }, []);
+  }, [daoToken.id]);
 
   useEffect(() => {
     // Count number of addresses that don't yet own token
-    if (mints) {
+    if (mints && daoToken) {
       Promise.all<BigNumber>(
         mints.map(m =>
-          fetchBalance(tokenAddress, m.address, infura, nativeCurrency, false)
+          fetchBalance(daoToken.id, m.address, infura, nativeCurrency, false)
         )
       ).then(balances => {
         const newHolderCount = balances.filter((b: BigNumber) =>
@@ -76,7 +75,7 @@ const MintTokens: React.FC<Props> = ({index}) => {
         setNewHolders(newHolderCount);
       });
     }
-  }, [mints]);
+  }, [mints, daoToken]);
 
   useEffect(() => {
     // Collecting token amounts that are to be minted
@@ -86,9 +85,9 @@ const MintTokens: React.FC<Props> = ({index}) => {
         newTokensCount += parseInt(m.amount);
       });
       setNewTokens(newTokensCount);
-      setTotalTokens(tokenInfo.totalSupply + newTokensCount);
+      setTotalTokens(tokenSupply + newTokensCount);
     }
-  }, [mints]);
+  }, [mints, daoToken]);
 
   const handleAddWallet = () => {
     append({address: '', amount: '0'});
@@ -185,26 +184,28 @@ const MintTokens: React.FC<Props> = ({index}) => {
             />
           </label>
         </ButtonContainer>
-        <SummaryContainer>
-          <p>{t('labels.summary')}</p>
-          <HStack>
-            <Label>{t('labels.newTokens')}</Label>
-            <p>
-              +{newTokens} {tokenInfo.symbol}
-            </p>
-          </HStack>
-          <HStack>
-            <Label>{t('labels.newHolders')}</Label>
-            <p>+{newHolders}</p>
-          </HStack>
-          <HStack>
-            <Label>{t('labels.totalTokens')}</Label>
-            <p>
-              {totalTokens.toString()} {tokenInfo.symbol}
-            </p>
-          </HStack>
-          {/* TODO add total amount of token holders here. */}
-        </SummaryContainer>
+        {!daoTokenLoading && (
+          <SummaryContainer>
+            <p>{t('labels.summary')}</p>
+            <HStack>
+              <Label>{t('labels.newTokens')}</Label>
+              <p>
+                +{newTokens} {daoToken.symbol}
+              </p>
+            </HStack>
+            <HStack>
+              <Label>{t('labels.newHolders')}</Label>
+              <p>+{newHolders}</p>
+            </HStack>
+            <HStack>
+              <Label>{t('labels.totalTokens')}</Label>
+              <p>
+                {totalTokens.toString()} {daoToken.symbol}
+              </p>
+            </HStack>
+            {/* TODO add total amount of token holders here. */}
+          </SummaryContainer>
+        )}
       </Container>
     </AccordionMethod>
   );
