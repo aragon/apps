@@ -1,11 +1,3 @@
-import {EditorContent, useEditor} from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import TipTapLink from '@tiptap/extension-link';
-import {useTranslation} from 'react-i18next';
-import {useFormContext} from 'react-hook-form';
-import React, {useEffect, useState} from 'react';
-import styled from 'styled-components';
-
 import {
   Badge,
   ButtonText,
@@ -14,14 +6,47 @@ import {
   CardExecution,
   Link,
 } from '@aragon/ui-components';
+import styled from 'styled-components';
+import {format} from 'date-fns';
+import StarterKit from '@tiptap/starter-kit';
+import TipTapLink from '@tiptap/extension-link';
+import {useQuery} from '@apollo/client';
+import {useParams} from 'react-router-dom';
+import {useTranslation} from 'react-i18next';
+import {useFormContext} from 'react-hook-form';
+import {EditorContent, useEditor} from '@tiptap/react';
+import React, {useEffect, useMemo, useState} from 'react';
+
+import {Loading} from 'components/temporary';
+import {BigNumber} from '@ethersproject/bignumber';
+import {useNetwork} from 'context/network';
 import ResourceList from 'components/resourceList';
+import {formatUnits} from 'utils/library';
+import {getTokenInfo} from 'utils/tokens';
 import {VotingTerminal} from 'containers/votingTerminal';
+import {CHAIN_METADATA} from 'utils/constants';
+import {useSpecificProvider} from 'context/providers';
+import {DAO_PACKAGE_BY_DAO_ID} from 'queries/packages';
+import {getFormattedUtcOffset, KNOWN_FORMATS} from 'utils/date';
+import {useDaoMetadata} from 'hooks/useDaoMetadata';
 
 const ReviewProposal: React.FC = () => {
-  const [expandedProposal, setExpandedProposal] = useState(false);
-  const {getValues, setValue} = useFormContext();
   const {t} = useTranslation();
+  const {network} = useNetwork();
+  const provider = useSpecificProvider(CHAIN_METADATA[network].id);
+
+  const {dao} = useParams();
+  const {data: metadata, loading: metadataLoading} = useDaoMetadata(dao || '');
+  const {data, loading} = useQuery(DAO_PACKAGE_BY_DAO_ID, {
+    variables: {dao},
+  });
+
+  const {getValues, setValue} = useFormContext();
+  const [approval, setApproval] = useState('');
+  const [participation, setParticipation] = useState('');
   const values = getValues();
+
+  const [expandedProposal, setExpandedProposal] = useState(false);
   const editor = useEditor({
     editable: false,
     content: values.proposal,
@@ -33,15 +58,85 @@ const ReviewProposal: React.FC = () => {
     ],
   });
 
+  const startDate = useMemo(
+    () =>
+      `${format(
+        Date.parse(
+          `${values.startDate} ${values.startTime}:00 ${values.startUtc}`
+        ),
+        KNOWN_FORMATS.proposals
+      )} ${getFormattedUtcOffset()}`,
+    [values.startDate, values.startTime, values.startUtc]
+  );
+
+  const endDate = useMemo(
+    () =>
+      `${format(
+        Date.parse(`${values.endDate} ${values.endTime}:00 ${values.endUtc}`),
+        KNOWN_FORMATS.proposals
+      )} ${getFormattedUtcOffset()}`,
+    [values.endDate, values.endTime, values.endUtc]
+  );
+
+  /*************************************************
+   *                    Hooks                      *
+   *************************************************/
+  useEffect(() => {
+    async function mapToView() {
+      let formattedMinApproval: string;
+      let formattedParticipation: string;
+      const {token, supportRequiredPct, users} = data.daoPackages[0].pkg;
+
+      if (token) {
+        // get total supply
+        const {totalSupply} = await getTokenInfo(
+          token.id,
+          provider,
+          CHAIN_METADATA[network].nativeCurrency
+        );
+
+        // calculate & format approval
+        formattedMinApproval = `${formatUnits(
+          BigNumber.from(supportRequiredPct)
+            .mul(BigNumber.from(totalSupply))
+            .div(100),
+          token.decimals
+        )} ${token.symbol} (${BigInt(supportRequiredPct).toString()}%)`;
+
+        // calculate & format participation
+        formattedParticipation = `0 of ${formatUnits(
+          totalSupply,
+          token.decimals
+        )} ${token.symbol} (0%)`;
+      } else {
+        formattedMinApproval = `${BigNumber.from(supportRequiredPct)
+          .mul(users.length)
+          .div(100)} members (${BigInt(supportRequiredPct).toString()}%)`;
+        formattedParticipation = `0 of ${users.length} members (0%)`;
+      }
+      setApproval(formattedMinApproval);
+      setParticipation(formattedParticipation);
+    }
+
+    if (data) {
+      mapToView();
+    }
+  }, [data, network, provider]);
+
   useEffect(() => {
     if (values.proposal === '<p></p>') {
       setValue('proposal', '');
     }
   }, [setValue, values.proposal]);
 
+  /*************************************************
+   *                    Render                     *
+   *************************************************/
   if (!editor) {
     return null;
   }
+
+  if (loading || metadataLoading) return <Loading />;
 
   return (
     <>
@@ -53,12 +148,7 @@ const ReviewProposal: React.FC = () => {
         </div>
         <ProposerLink>
           {t('governance.proposals.publishedBy')}{' '}
-          <Link
-            external
-            label={'you'}
-            // label={shortenAddress(publisherAddress || '')}
-            // href={`${explorers[chainId]}${publisherAddress}`}
-          />
+          <Link external label={t('labels.you')} />
         </ProposerLink>
       </BadgeContainer>
 
@@ -89,14 +179,16 @@ const ReviewProposal: React.FC = () => {
               />
             </>
           )}
-          {/*
-            TODO: All the values inside the voting terminal is hardcoded.
-            The info tab needs to display data from the form context & graph query
-          */}
+
           <VotingTerminal
             breakdownTabDisabled
             votersTabDisabled
             voteNowDisabled
+            statusLabel={t('votingTerminal.notStartedYet')}
+            approval={approval}
+            participation={participation}
+            startDate={startDate}
+            endDate={endDate}
           />
 
           {/* TODO: generalize types so that proper execution card can be rendered */}
@@ -107,7 +199,7 @@ const ReviewProposal: React.FC = () => {
               title={t('governance.executionCard.title')}
               description={t('governance.executionCard.description')}
               to={action.to}
-              from="DAO Name" // TODO: get daoName, DAO name should be shown, but not sent
+              from={metadata.name}
               toLabel={t('labels.to')}
               fromLabel={t('labels.from')}
               tokenName={action.tokenName}
