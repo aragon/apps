@@ -24,6 +24,11 @@ type MintInfo = {
   amount: string;
 };
 
+type AddressBalance = {
+  address: string;
+  balance: BigNumber;
+};
+
 const MintTokens: React.FC<Props> = ({index}) => {
   const {t} = useTranslation();
   const {data: daoId} = useDaoParam();
@@ -35,10 +40,16 @@ const MintTokens: React.FC<Props> = ({index}) => {
   const {removeAction, duplicateAction} = useActionsContext();
   const {fields, append, remove} = useFieldArray({name: 'mintTokensToWallets'});
   const mints = useWatch({name: 'mintTokensToWallets'}) as MintInfo[];
+
   const [newTokens, setNewTokens] = useState<number>(0);
-  const [newHolders, setNewHolders] = useState(0);
   const [totalTokens, setTotalTokens] = useState<number>(0);
   const [tokenSupply, setTokenSupply] = useState(0);
+  const [checkedAddresses, setCheckedAddresses] = useState(
+    () => new Set<string>()
+  );
+  const [newTokenHolders, setNewTokenHolders] = useState(
+    () => new Set<string>()
+  );
 
   useEffect(() => {
     if (fields.length === 0) {
@@ -64,22 +75,51 @@ const MintTokens: React.FC<Props> = ({index}) => {
   useEffect(() => {
     // Count number of addresses that don't yet own token
     if (mints && daoToken) {
-      Promise.all<BigNumber>(
-        mints.map(m =>
-          fetchBalance(daoToken.id, m.address, infura, nativeCurrency, false)
-        )
-      ).then(balances => {
-        const newHolderCount = balances.filter((b: BigNumber) =>
-          b.isZero()
-        ).length;
-        setNewHolders(newHolderCount);
-      });
+      // only check rows where form input holds address
+      const validInputs = mints.filter(m => m.address !== '');
+
+      // only check addresses that have not previously been checked
+      const uncheckedAddresses = validInputs.filter(
+        m => !checkedAddresses.has(m.address)
+      );
+
+      if (uncheckedAddresses.length > 0) {
+        const promises: Promise<AddressBalance>[] = uncheckedAddresses.map(
+          (m: MintInfo) =>
+            fetchBalance(
+              daoToken.id,
+              m.address,
+              infura,
+              nativeCurrency,
+              false
+            ).then(b => {
+              //add address to promise to keep track later
+              return {address: m.address, balance: b};
+            })
+        );
+        Promise.all(promises).then((abs: AddressBalance[]) => {
+          // new holders are addresses that have 0 balance for token
+          const holderAddresses = abs.filter((ab: AddressBalance) =>
+            ab.balance.isZero()
+          );
+          setNewTokenHolders(prev => {
+            var temp = new Set(prev);
+            holderAddresses.forEach(ha => temp.add(ha.address));
+            return temp;
+          });
+          setCheckedAddresses(prev => {
+            var temp = new Set(prev);
+            uncheckedAddresses.forEach(ua => temp.add(ua.address));
+            return temp;
+          });
+        });
+      }
     }
-  }, [mints, daoToken]);
+  }, [mints, daoToken.id]);
 
   useEffect(() => {
     // Collecting token amounts that are to be minted
-    if (mints) {
+    if (mints && daoToken) {
       let newTokensCount = 0;
       mints.forEach(m => {
         newTokensCount += parseInt(m.amount);
@@ -87,7 +127,7 @@ const MintTokens: React.FC<Props> = ({index}) => {
       setNewTokens(newTokensCount);
       setTotalTokens(tokenSupply + newTokensCount);
     }
-  }, [mints, daoToken]);
+  }, [mints, daoToken.id]);
 
   const handleAddWallet = () => {
     append({address: '', amount: '0'});
@@ -158,7 +198,12 @@ const MintTokens: React.FC<Props> = ({index}) => {
             <AddressAndTokenRow
               key={field.id}
               index={index}
-              onDelete={index => remove(index)}
+              onDelete={index => {
+                // remove the address from the sets
+                checkedAddresses.delete(mints[index].address);
+                newTokenHolders.delete(mints[index].address);
+                remove(index);
+              }}
             />
           );
         })}
@@ -195,7 +240,7 @@ const MintTokens: React.FC<Props> = ({index}) => {
             </HStack>
             <HStack>
               <Label>{t('labels.newHolders')}</Label>
-              <p>+{newHolders}</p>
+              <p>+{newTokenHolders.size}</p>
             </HStack>
             <HStack>
               <Label>{t('labels.totalTokens')}</Label>
